@@ -153,6 +153,8 @@ Wikivoyage 审计是名称级近似匹配，不能直接等同于真实缺失。
 
 当前项目使用 [Open-Meteo Forecast API](https://open-meteo.com/en/docs)，代码入口是 `apps/worker/src/open-meteo.ts`。这个接口按经纬度请求天气，支持一次请求传入多个纬度/经度，并用 `timezone=auto` 自动返回对应时区天气。当前 Worker 每批请求 40 个城市，刷新未来 14 天的每日天气。
 
+Open-Meteo 返回的 `daily.time` 是地点当地自然日，不是 UTC 时间戳。因为请求使用 `timezone=auto`，中国城市按 `Asia/Shanghai` 日期理解，美国、日本、欧洲等城市按各自地点时区日期理解。数据库里的 `daily_forecasts.date` 也按这个 date-only 语义保存；代码读取 Postgres `date` 时不能用 `toISOString()` 转换，否则在中国开发环境会因为 UTC 偏移把 `2026-07-20` 变成 `2026-07-19`，导致缓存判断误以为每个城市还缺一天并重复请求 Open-Meteo。
+
 [Open-Meteo Geocoding API](https://open-meteo.com/en/docs/geocoding-api) 可以按名称搜索地点，并返回坐标、海拔、时区、人口等字段；它的地点数据来自 GeoNames。它适合做种子匹配校验和缺失坐标补全，不适合作为“热门旅游城市列表”的唯一来源，也不应该替代本项目自己的城市筛选真源。
 
 按 [Open-Meteo Terms](https://open-meteo.com/en/terms)，免费 API 的非商业使用限制是少于 10,000 calls/day、5,000 calls/hour、600 calls/minute。按 [Open-Meteo Pricing](https://open-meteo.com/en/pricing)，免费 API 无 SLA，商业用途或更高保障应使用 customer API；Open-Meteo 也支持自托管。

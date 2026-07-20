@@ -140,10 +140,21 @@ function mapCity(row: Record<string, unknown>): City {
   };
 }
 
+function formatDatabaseDate(value: unknown): string {
+  if (value instanceof Date) {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  return String(value).slice(0, 10);
+}
+
 function mapForecast(row: Record<string, unknown>): DailyForecast {
   return {
     cityId: String(row.city_id),
-    date: row.date instanceof Date ? row.date.toISOString().slice(0, 10) : String(row.date).slice(0, 10),
+    date: formatDatabaseDate(row.date),
     weatherCode: Number(row.weather_code),
     weatherType: row.weather_type as DailyForecast['weatherType'],
     temperatureMinC: Number(row.temperature_min_c),

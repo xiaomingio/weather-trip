@@ -50,6 +50,8 @@ apps/worker
 
 Worker 不重复请求数据库里已有的城市日期，减少 Open-Meteo API 调用。刷新失败时保留已有可用预报，只更新刷新状态里的错误摘要。
 
+`daily_forecasts.date` 保存的是天气源返回的当地自然日，不是 UTC 时间戳。当前 Open-Meteo 请求使用 `timezone=auto`，所以中国城市按 `Asia/Shanghai` 日期返回，美国城市按各自地点时区日期返回。Postgres `date` 读到 Node.js 后仍按 date-only 处理，不能用 `toISOString()` 转换，否则在中国开发环境会因为 UTC 偏移把日期回退一天，导致缓存判断重复请求。
+
 ## 城市维护
 
 GeoNames 官方导出包是城市维护输入，不是运行时依赖。需要刷新全球城市列表时，手动运行根脚本：
