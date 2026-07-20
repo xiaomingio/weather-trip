@@ -6,6 +6,8 @@
 
 `geo_names_cities` 继续保留 GeoNames 原始城市池，`cities` 从原始池和旅游种子重算得到。Worker 只读取 `cities` 刷新天气，不直接处理 GeoNames 全量城市。
 
+GeoNames 全量城市进入数据库，是为了让筛选可复算、可审计、可增量修正；不是为了让页面展示 17 万个城市，也不是为了每天刷新 17 万个天气点。公开产品只围绕 `cities` 这张系统关注表工作。
+
 ## 旧规则问题
 
 旧规则把 `PPLC`、`PPLA`、`PPLA2`、百万人口 `PPL`、每国人口前三和每个一级行政区人口前三都纳入 `cities`。按当前 GeoNames `cities1000.zip` 粗算，这会从约 17 万个导入城市中选出约 3 万个关注城市，主要放大来源是 `PPLA2` 和一级行政区兜底。
@@ -36,7 +38,14 @@
 
 | 决策 | 当时为什么这么做 | 发现的反例或风险 | 当前结论 |
 | --- | --- | --- | --- |
+| 把 GeoNames 全量城市导入 Postgres | Postgres 是运行时数据真源；GeoNames 是城市、坐标、行政字段和人口的原始来源 | 如果每次页面或 Worker 都从 GeoNames zip 读原始文件，启动和查询成本高，也无法和天气缓存、选择原因、i18n 名称稳定关联 | GeoNames zip 只作为手动导入输入，`geo_names_cities` 保存全量原始城市池 |
+| 拆出 `geo_names_cities` 和 `cities` | 原始数据和系统关注集合职责不同：一个保存来源事实，一个保存产品选择结果 | 直接把筛选字段写进 raw 表会混淆“GeoNames 原始字段”和“本系统聚合字段”；直接拿 raw 表给 Worker 会导致刷新/展示规模失控 | `geo_names_cities` 尽量按 GeoNames 原始列映射；`cities` 只保存最终天气点、排序和 `selection_reasons` |
+| 不展示、不刷新全部 GeoNames 城市 | 17 万城市适合做候选池，不适合做用户界面和每日天气任务 | 用户问到“中国好像有 5000 个城市”，说明全量展示会让用户无法选择；全球 17 万点也会让地图、列表和天气缓存失去焦点 | 页面和 Worker 只使用 `cities`；全量城市只用于离线筛选、匹配和后续补充 |
 | 废弃旧的行政全收规则 | 旧规则把 `PPLC`、`PPLA`、`PPLA2`、百万人口 `PPL`、每国人口前三、每一级行政区前三都收进来 | 本地粗算会从约 17 万个 GeoNames 城市里选出约 3 万个，远超天气刷新和前端展示需要 | 只保留首都、国家 profile 人口精选、旅游种子和明确的详细国家代表点 |
+| 不再使用旧 34 个样本城市生成城市主表 | 旧项目里 `data/cities.json` 可以帮助减少初次天气 API 调用 | 用户发现 34 个城市不是从 GeoNames 导入，且 `travel_rank` 等字段来源不清；继续把它们当主数据会污染新表 | `db:import-existing` 只把旧天气缓存映射到现有 `cities`，不会创建城市主记录 |
+| 删除 `travel_rank` 这类旧样本字段 | 早期样本里曾经有排序/旅行权重的影子字段 | `travel_rank` 不是 GeoNames 原始字段，很多值为空，也没有可复跑来源；把它放进 raw 表会让人误以为 GeoNames 提供旅游排名 | 旅游优先级只来自 `tourism-destinations.json`、国家 profile 和 `selection_reasons` |
+| 原始字段按原始语义保存 | GeoNames 的 `admin1_code`、`admin2_code` 等字段本身有明确来源语义 | 曾经把 `admin1_code` 和中国地图 adcode/聚合分组混用，会导致字段名看起来像 GeoNames 原始字段，实际却是派生值 | `geo_names_cities.admin1_code` 保持 GeoNames 原始值；派生展示分组、地图 adcode 和区域 key 放到前端 adapter 或单独派生结构 |
+| 不给 `geo_names_cities` 加单城刷新状态字段 | 一开始容易把天气刷新状态和城市主数据放在一起 | GeoNames 城市池低频全量导入，不会按单个城市每日刷新；`last_refresh_at` 这类字段表达的是 Worker 刷天气，不是 raw 城市数据 | 城市源数据只记录来源字段和行更新时间；天气刷新状态放 `daily_forecasts` / `refresh_status` |
 | 不做硬上限 | 1000 或 2000 这种全局硬切会让国家之间互相抢名额 | 中国、美国、日本这类大国需要更多点；小而热门的旅游城市又可能因为人口低被挤掉 | 用国家 profile 和详细覆盖级别自然收敛，当前刷新全集是 2,198 |
 | 先按国家 profile 做粗粒度精选 | 全球/洲际视图的目标是“旅行天气比较”，不是行政覆盖 | 只按全球人口排序会让普通大城市过多，旅游城市不足；不设国家差异又会让长尾国家失衡 | `populationFallback` 控制每个国家进入全球/洲际精选的代表城市数 |
 | 首都全部保留 | 长尾国家即使旅游量低，也要有最低可见性 | 只按旅游和人口会漏掉小国首都 | `feature:PPLC` 全部入选，当前 241 个首都命中 |
@@ -45,12 +54,15 @@
 | 不把 SPARQL 放进运行时 | Wikidata/Wikivoyage 有价值，但复杂查询慢且不稳定 | 本地样本里简单查询约 0.7 秒，带城市属性约 7.4 秒，层级推理超过 60 秒未返回 | SPARQL 只做离线审计或生成种子，Worker 每天只读数据库 |
 | 用 Open-Meteo 的经纬度能力，而不是找 provider 城市列表 | 当前天气接口支持任意经纬度和批量请求 | 小村是否有“专门天气预报”不是技术限制；真正限制是产品上是否值得独立展示 | 城市筛选真源和天气 provider 解耦，Open-Meteo 只影响刷新成本和日期语义 |
 | 扩大中国覆盖 | 早期全局精选下中国只有几十到一百多个点，不足以支撑中国旅行天气比较 | 用户发现云南缺大理、丽江；说明只按国家人口/旅游种子不够 | 中国必须有详细覆盖，但不能污染全球/洲际视图 |
+| 用通用 profile，而不是把中国写成产品特例 | 中国需要更细覆盖，但项目目标是国际化天气工具 | 用户明确反对“只针对中国”的逻辑；如果把中国特殊写死，后续美国、日本、欧洲重点国家会重复走同样弯路 | 通用字段是 `detailedCoverage`；当前中国为 `admin2`，美国、日本等重点国家为 `admin1`，是否下钻由国家 profile 显式配置 |
 | 废弃“中国每省人口前 20” | 这个规则能快速补云南，但仍然按省内人口机械截断 | Luohu District 是深圳内部城区，Majie 是昆明下的小地方，Longling County 是县级点；它们会和主城市重复，且中文名也不稳定 | 中国改为按地级行政区代表点，范围覆盖地级市、地区、自治州、盟和直辖市 |
 | 州、市、地区、盟按同一级别处理 | 中国旅行天气不应该只看“地级市”字面名称 | 大理白族自治州、西双版纳傣族自治州、迪庆藏族自治州等不是地级市，但旅游价值很高 | 中国 `detailedCoverage: "admin2"` 覆盖 333 个地级行政区口径，并把直辖市作为必选代表点 |
 | 代表点优先旅游种子 | 同一个地级行政区内，人口最大点不一定是最适合旅行天气代表的点 | 德宏州如果只按人口/feature 排序会选到 Fengping 或 Longling County，不如 Mangshi 适合作为州府和旅行代表点 | admin2/admin1 代表点排序先看 `tourism-destinations.json`，再看名称相似、feature code 和人口 |
 | 详细覆盖不只给中国 | 美国、日本等主流旅行国家也有内部气候差异和州/都道府县粒度 | 只给中国细粒度会让美国、日本下钻不足；但给所有国家都做详细覆盖会膨胀城市数 | `detailedCoverage` 目前给 13 个重点国家；中国按 admin2，其他重点国家按 admin1 |
 | 印度暂不开放国家下钻 | 印度有旅游价值，但当前产品优先级低于中国、美国、日本及欧美热门国家 | 如果把印度所有邦/地区也详细展开，会增加维护成本和展示复杂度 | India 保留 48 个全球/洲际精选城市，但不出现在国家详细选项里 |
 | 全球/洲际与国家下钻分开展示 | 天气刷新全集可以多一些，但全球地图不应该展示所有详细点 | 如果全球视图直接展示中国地级代表点、美国州代表点、日本都道府县代表点，会淹没真正的全球热门目的地 | 前端用 `selection_reasons` 控制可见性：全球/洲际显示 1,875 个精选点，进入详细国家后显示该国全部天气点 |
+| 增加 GeoNames admin 和 alternate names 表 | 国际化不能只靠 `cities1000` 的 `alternate_names` 字符串猜中文名，行政区也需要中英文名称 | 用户问到其他国家是否也需要行政数据、i18n 怎么处理；只做中国名称或手写翻译会和国际化目标冲突 | 导入 `admin1CodesASCII.txt`、`admin2Codes.txt` 和 `alternateNamesV2.zip` 中需要的中文名；英文用 `ascii_name`，中文按语言码匹配后回退英文 |
+| 中国地图 adcode 只放前端地图适配层 | Web 地图边界数据可能需要中国行政区划 adcode | adcode 不是 GeoNames 原始字段，也不是其他国家通用字段；写进 raw 表会破坏源数据语义 | DB 只保存 GeoNames admin code；地图区域 key、adcode 和边界匹配由 Web adapter 处理 |
 | 导入是全量重算，不是只增量追加 | 城市筛选规则会变化，需要能删除过时点 | 罗湖、马街、龙陵这类旧规则选出的点如果不删除，会一直残留 | `npm run cities:import-geonames` 重算 `current_city_selection` 后 upsert 新点并删除不再入选的 `cities` |
 
 ## 当前实现
@@ -189,12 +201,19 @@ Wikivoyage 审计是名称级近似匹配，不能直接等同于真实缺失。
 | --- | --- | --- |
 | [GeoNames `cities1000.zip`](https://download.geonames.org/export/dump/cities1000.zip) | 基础城市池、坐标、时区、人口、行政字段 | 手动导入时下载 |
 | [GeoNames `countryInfo.txt`](https://download.geonames.org/export/dump/countryInfo.txt) | 国家、洲别和国家代码 | 手动导入时下载 |
+| [GeoNames `admin1CodesASCII.txt`](https://download.geonames.org/export/dump/admin1CodesASCII.txt) | 一级行政区原始代码、英文名和 GeoNames ID | 手动导入时下载 |
+| [GeoNames `admin2Codes.txt`](https://download.geonames.org/export/dump/admin2Codes.txt) | 二级行政区原始代码、英文名和 GeoNames ID | 手动导入时下载 |
+| [GeoNames `alternateNamesV2.zip`](https://download.geonames.org/export/dump/alternateNamesV2.zip) | 城市和行政区中文名；当前只落系统需要的中文语言码 | 手动导入时下载 |
 | [Wikivoyage](https://www.wikivoyage.org/) / [Wikidata](https://www.wikidata.org/wiki/Wikidata:Data_access) | 开放旅行目的地种子，尤其是小城、岛屿、国家公园门户和历史城镇 | 建议用脚本按需刷新，结果落成种子文件 |
 | [UN Tourism Best Tourism Villages](https://tourism-villages.unwto.org/) | 人口很小但官方认可的旅游村镇种子 | 低频人工或脚本刷新 |
 | [UNESCO World Heritage List](https://whc.unesco.org/en/list/) | 遗产点附近目的地补充 | 低频脚本刷新，映射到附近城市 |
 | [Tripadvisor Travelers' Choice Destinations](https://www.tripadvisor.com/TravelersChoice-Destinations) / [Euromonitor Top 100 City Destinations](https://www.euromonitor.com/article/top-100-city-destinations-index-2025-driving-growth-and-innovation) | 人工校准热门目的地和高权重国家 | 不做运行时抓取，不作为唯一自动真源 |
 
 [GeoNames `cities1000`](https://download.geonames.org/export/dump/readme.txt) 不是旅游目的地全集。它收录人口超过 1000 或行政中心的 populated places，因此会缺失一些小岛、景区村镇、国家公园入口、滑雪村、潜水点和徒步目的地。缺失目的地通过旅游种子补齐，但不要求每个小目的地都变成独立天气城市。
+
+GeoNames 原始表只保存来源字段和必要的内部主键：`geo_names_cities.id = geonames-{geoname_id}` 是本系统稳定引用用的内部 ID，`geoname_id`、`admin1_code`、`admin2_code`、`feature_code`、`population` 等字段保持 GeoNames 原始语义。`selection_rank`、`selection_reasons`、旅游优先级、地图区域 key、前端展示分组等都是本系统派生结果，不能写回 `geo_names_cities` 伪装成来源字段。
+
+中英文展示也按来源分层：英文优先使用 GeoNames `ascii_name`；中文从 `geo_names_alternate_names` 里读取 `zh` / `zh-CN` / `zh-Hans` / `zh-Hant`，没有中文名时回退英文。`cities1000` 里的逗号分隔 `alternate_names` 只适合粗略匹配种子，不适合作为 i18n 真源，因为它没有完整语言码和 preferred/short/historic 等标记。
 
 ## 天气接口边界
 
@@ -268,6 +287,8 @@ const currentWeatherProviderProfile: WeatherProviderProfile = {
 - 人工 curated 种子：发现明显漏项时随代码一起提交
 
 日常天气刷新只读取数据库里的 `cities`，不重新研究城市列表。
+
+GeoNames 导出目录提供 `modifications-YYYY-MM-DD.txt` 和 `deletes-YYYY-MM-DD.txt` 这类按日期的变更文件，因此可以按天做增量同步；但本项目当前没有必要把城市主数据做成每日自动任务。全量手动导入更简单，也能在每次修改筛选规则后同步重算 `cities`，避免旧选择残留。
 
 ## 代码化原则
 
