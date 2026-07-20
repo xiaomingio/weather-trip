@@ -19,6 +19,8 @@ type CountryProfile = {
   detailedCoverage?: 'admin1' | 'admin2';
 };
 
+export type MapRegionLayer = 'country' | 'admin1' | 'china-admin1';
+
 const countryNames = {
   zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
   en: new Intl.DisplayNames(['en'], { type: 'region' })
@@ -53,6 +55,12 @@ function isGlobalScopeCity(city: City): boolean {
 function isDetailedCountryRegion(region: RegionKey): boolean {
   if (!region.startsWith('country:')) return false;
   return detailedCountryCodes.has(region.slice('country:'.length));
+}
+
+function parseAdmin1Region(region: RegionKey): { countryCode: string; admin1Code: string } | null {
+  const match = /^admin1:([A-Z]{2})\.(.+)$/.exec(region);
+  if (!match) return null;
+  return { countryCode: match[1], admin1Code: match[2] };
 }
 
 function matchesGlobalOrDetailedRegion(city: City, region: RegionKey, matchesRegion: boolean): boolean {
@@ -210,18 +218,25 @@ export function getSortedRegionOptions(locale: DisplayLocale): RegionOption[] {
   });
 }
 
+export function getPrimaryRegionOptions(locale: DisplayLocale): RegionOption[] {
+  return getSortedRegionOptions(locale).filter((option) => !option.id.startsWith('province:'));
+}
+
 export function getRegionOption(region: RegionKey): RegionOption {
   return regionOptions.find((option) => option.id === region) ?? regionOptions[0];
 }
 
 export function cityMatchesRegion(city: City, region: RegionKey): boolean {
+  const admin1Region = parseAdmin1Region(region);
+  if (admin1Region) {
+    return city.countryCode === admin1Region.countryCode && city.admin1GroupCode === admin1Region.admin1Code;
+  }
   return getRegionOption(region).matches(city);
 }
 
-export function shouldShowChinaProvinceLayer(region: RegionKey): boolean {
-  return ['world', 'asia', 'east_asia', 'country:CN'].includes(region) || region.startsWith('province:');
-}
-
-export function shouldFocusChinaProvinceLayer(region: RegionKey): boolean {
-  return region === 'country:CN' || region.startsWith('province:');
+export function getMapRegionLayer(region: RegionKey): MapRegionLayer {
+  if (region === 'country:CN' || region.startsWith('province:')) return 'china-admin1';
+  if (parseAdmin1Region(region)) return 'admin1';
+  if (isDetailedCountryRegion(region)) return 'admin1';
+  return 'country';
 }

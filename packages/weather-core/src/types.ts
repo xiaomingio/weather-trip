@@ -108,8 +108,10 @@ export type CityDailyWeather = {
 
 export type RegionWeatherSummary = {
   id: string;
+  level: 'country' | 'admin1';
+  countryCode: string;
+  admin1Code?: string;
   name: string;
-  admin1GroupCode: string;
   cityCount: number;
   weatherType: WeatherType;
   temperatureMeanC: number;

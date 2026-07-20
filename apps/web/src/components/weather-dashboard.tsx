@@ -36,20 +36,20 @@ import type {
   WeatherType
 } from 'weather-core/types';
 import { buildDailyWeather, cityMatchesRegion, scoreCityTravel } from '@/domain/scoring';
-import { buildChinaProvinceDailySummaries, buildChinaProvinceTravelSummaries } from '@/domain/region-weather';
+import { buildDailyRegionSummaries, buildTravelRegionSummaries } from '@/domain/region-weather';
 import {
+  getMapRegionLayer,
+  getPrimaryRegionOptions,
   getRegionGroup,
   getRegionLabel,
-  getSortedRegionOptions,
-  regionOptions,
-  shouldFocusChinaProvinceLayer,
-  shouldShowChinaProvinceLayer
+  regionOptions
 } from '@/domain/regions';
 import {
   type DisplayLocale,
   formatDateLabel,
   formatCityName,
   formatCityRegion,
+  formatCityRegionSegments,
   formatElevation,
   formatHumidity,
   formatTemperature,
@@ -71,9 +71,15 @@ import { WorldWeatherMap } from './world-weather-map';
 type WeatherDashboardProps = {
   locale: DisplayLocale;
   initialMode: ViewMode;
+  initialSearch: string;
   cities: City[];
   forecasts: DailyForecast[];
   availableDates: string[];
+};
+
+type RegionSelectOption = {
+  id: RegionKey;
+  label: string;
 };
 
 const weatherTypeIcons: Record<WeatherType, React.ReactNode> = {
@@ -110,6 +116,7 @@ const copy = {
     travelMode: '旅行筛选',
     dailyMode: '单日图层',
     region: '地区',
+    subRegion: '省份/州',
     time: '时间',
     nextDays: (days: number) => `未来 ${days} 天`,
     date: '日期',
@@ -148,6 +155,7 @@ const copy = {
     travelMode: 'Travel filter',
     dailyMode: 'Single-day layer',
     region: 'Region',
+    subRegion: 'State/province',
     time: 'Time',
     nextDays: (days: number) => `Next ${days} days`,
     date: 'Date',
@@ -215,10 +223,10 @@ function parseTravelFilterFromSearch(search: string): TravelFilter {
   const params = new URLSearchParams(search);
   const nextFilter: TravelFilter = { ...defaultTravelFilter };
   const region = params.get('region');
-  if (region && regionOptions.some((option) => option.id === region)) nextFilter.region = region;
+  if (region && isSupportedRegion(region)) nextFilter.region = region;
 
   const days = Number(params.get('days'));
-  if ([7, 10, 14].includes(days)) nextFilter.dateWindowDays = days;
+  if ([3, 5, 7, 10, 14].includes(days)) nextFilter.dateWindowDays = days;
 
   const temperature = params.get('temp');
   if (temperature === 'off') {
@@ -271,6 +279,12 @@ function parseTravelFilterFromSearch(search: string): TravelFilter {
 
 function readSearch(): string {
   return typeof window === 'undefined' ? '' : window.location.search;
+}
+
+function isSupportedRegion(region: RegionKey): boolean {
+  const admin1Match = /^admin1:([A-Z]{2})\..+$/.exec(region);
+  if (admin1Match) return regionOptions.some((option) => option.id === `country:${admin1Match[1]}`);
+  return regionOptions.some((option) => option.id === region);
 }
 
 function readLayerFromSearch(search: string): MapLayer {
@@ -378,12 +392,50 @@ function buildRegionAvailableDates(cities: City[], forecasts: DailyForecast[], r
   return [...dateCounts.keys()].sort();
 }
 
-export function WeatherDashboard({ locale, initialMode, cities, forecasts, availableDates }: WeatherDashboardProps) {
+function getPrimaryRegionId(region: RegionKey): RegionKey {
+  if (region.startsWith('province:')) return 'country:CN';
+  const admin1Match = /^admin1:([A-Z]{2})\./.exec(region);
+  if (admin1Match) return `country:${admin1Match[1]}`;
+  return region;
+}
+
+function buildSubRegionOptions(
+  cities: City[],
+  primaryRegion: RegionKey,
+  locale: DisplayLocale,
+  allLabel: string
+): RegionSelectOption[] {
+  if (!primaryRegion.startsWith('country:')) return [{ id: primaryRegion, label: allLabel }];
+  const countryCode = primaryRegion.slice('country:'.length);
+  const allOption = { id: primaryRegion, label: allLabel };
+
+  if (countryCode === 'CN') {
+    return [
+      allOption,
+      ...regionOptions
+        .filter((option) => option.id.startsWith('province:'))
+        .map((option) => ({ id: option.id, label: getRegionLabel(option, locale) }))
+    ];
+  }
+
+  const collator = new Intl.Collator(locale === 'zh' ? 'zh-CN-u-co-pinyin' : 'en', { sensitivity: 'base' });
+  const optionsById = new Map<RegionKey, RegionSelectOption>();
+  for (const city of cities) {
+    if (city.countryCode !== countryCode || !city.admin1GroupCode) continue;
+    const id = `admin1:${countryCode}.${city.admin1GroupCode}`;
+    const label = locale === 'zh' ? city.admin1LocalName ?? city.admin1 ?? city.admin1GroupCode : city.admin1 ?? city.admin1GroupCode;
+    optionsById.set(id, { id, label });
+  }
+
+  return [allOption, ...[...optionsById.values()].sort((a, b) => collator.compare(a.label, b.label) || a.id.localeCompare(b.id))];
+}
+
+export function WeatherDashboard({ locale, initialMode, initialSearch, cities, forecasts, availableDates }: WeatherDashboardProps) {
   const [mode, setMode] = useState<ViewMode>(initialMode);
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState(() => readDateFromSearch(readSearch(), availableDates[0] ?? ''));
-  const [layer, setLayer] = useState<MapLayer>(() => readLayerFromSearch(readSearch()));
-  const [travelFilter, setTravelFilter] = useState<TravelFilter>(() => parseTravelFilterFromSearch(readSearch()));
+  const [selectedDate, setSelectedDate] = useState(() => readDateFromSearch(initialSearch, availableDates[0] ?? ''));
+  const [layer, setLayer] = useState<MapLayer>(() => readLayerFromSearch(initialSearch));
+  const [travelFilter, setTravelFilter] = useState<TravelFilter>(() => parseTravelFilterFromSearch(initialSearch));
   const isApplyingPopState = useRef(false);
 
   const forecastsByCity = useMemo(() => groupForecastsByCity(forecasts), [forecasts]);
@@ -391,7 +443,13 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
     () => buildRegionAvailableDates(cities, forecasts, travelFilter.region),
     [cities, forecasts, travelFilter.region]
   );
-  const sortedRegionOptions = useMemo(() => getSortedRegionOptions(locale), [locale]);
+  const primaryRegionOptions = useMemo(() => getPrimaryRegionOptions(locale), [locale]);
+  const primaryRegion = getPrimaryRegionId(travelFilter.region);
+  const subRegionOptions = useMemo(
+    () => buildSubRegionOptions(cities, primaryRegion, locale, copy[locale].all),
+    [cities, locale, primaryRegion]
+  );
+  const canSelectSubRegion = subRegionOptions.length > 1;
   const forecastDayCount = Math.min(
     14,
     Math.max(availableDates.length, ...Array.from(forecastsByCity.values()).map((cityForecasts) => cityForecasts.length))
@@ -435,11 +493,14 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
   }, [cities, forecasts, selectedDate, travelFilter.region]);
 
   const regionSummaries = useMemo(() => {
-    if (!shouldShowChinaProvinceLayer(travelFilter.region)) return [];
     return mode === 'travel'
-      ? buildChinaProvinceTravelSummaries(cities, forecastsByCity, travelFilter)
-      : buildChinaProvinceDailySummaries(cities, forecasts, selectedDate);
-  }, [cities, forecasts, forecastsByCity, mode, selectedDate, travelFilter]);
+      ? buildTravelRegionSummaries(cities, forecastsByCity, travelFilter, locale)
+      : buildDailyRegionSummaries(cities, forecasts, selectedDate, travelFilter.region, locale);
+  }, [cities, forecasts, forecastsByCity, locale, mode, selectedDate, travelFilter]);
+  const selectableMapRegionIds = useMemo(
+    () => regionSummaries.map((summary) => summary.id).filter(isSupportedRegion),
+    [regionSummaries]
+  );
 
   const selectedTravelScore = travelScores.find((score) => score.city.id === selectedCityId) ?? travelScores[0];
   const selectedDailyWeather = dailyWeather.find((item) => item.city.id === selectedCityId) ?? dailyWeather[0];
@@ -472,6 +533,28 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
       setSelectedCityId(null);
     },
     [cities, forecasts, regionAvailableDates, selectedDate]
+  );
+
+  const setPrimaryRegion = useCallback(
+    (region: RegionKey) => {
+      setRegion(region);
+    },
+    [setRegion]
+  );
+
+  const setSubRegion = useCallback(
+    (region: RegionKey) => {
+      setRegion(region);
+    },
+    [setRegion]
+  );
+
+  const setMapRegion = useCallback(
+    (region: RegionKey) => {
+      if (!isSupportedRegion(region)) return;
+      setRegion(region);
+    },
+    [setRegion]
   );
 
   const setViewMode = useCallback(
@@ -540,10 +623,10 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
                   <SlidersHorizontal size={15} />
                   {copy[locale].region}
                 </span>
-                <select value={travelFilter.region} onChange={(event) => setRegion(event.target.value as RegionKey)}>
-                  {Array.from(new Set(sortedRegionOptions.map((option) => getRegionGroup(option, locale)))).map((group) => (
+                <select value={primaryRegion} onChange={(event) => setPrimaryRegion(event.target.value as RegionKey)}>
+                  {Array.from(new Set(primaryRegionOptions.map((option) => getRegionGroup(option, locale)))).map((group) => (
                     <optgroup key={group} label={group}>
-                      {sortedRegionOptions
+                      {primaryRegionOptions
                         .filter((option) => getRegionGroup(option, locale) === group)
                         .map((region) => (
                           <option key={region.id} value={region.id}>
@@ -555,25 +638,45 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
                 </select>
               </label>
 
+              <label className={`field ${canSelectSubRegion ? '' : 'is-disabled'}`}>
+                <span>
+                  <MapIcon size={15} />
+                  {copy[locale].subRegion}
+                </span>
+                <select
+                  value={canSelectSubRegion ? travelFilter.region : primaryRegion}
+                  disabled={!canSelectSubRegion}
+                  onChange={(event) => setSubRegion(event.target.value as RegionKey)}
+                >
+                  {subRegionOptions.map((region) => (
+                    <option key={region.id} value={region.id}>
+                      {region.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="filter-grid">
               {mode === 'travel' ? (
-                <>
-                  <label className="field">
-                    <span>
-                      <CalendarDays size={15} />
-                      {copy[locale].time}
-                    </span>
-                    <select
-                      value={travelFilter.dateWindowDays}
-                      onChange={(event) =>
-                        setTravelFilter((current) => ({ ...current, dateWindowDays: Number(event.target.value) }))
-                      }
-                    >
-                      <option value={7}>{copy[locale].nextDays(7)}</option>
-                      <option value={10}>{copy[locale].nextDays(10)}</option>
-                      <option value={14}>{copy[locale].nextDays(14)}</option>
-                    </select>
-                  </label>
-                </>
+                <label className="field time-field">
+                  <span>
+                    <CalendarDays size={15} />
+                    {copy[locale].time}
+                  </span>
+                  <select
+                    value={travelFilter.dateWindowDays}
+                    onChange={(event) =>
+                      setTravelFilter((current) => ({ ...current, dateWindowDays: Number(event.target.value) }))
+                    }
+                  >
+                    <option value={3}>{copy[locale].nextDays(3)}</option>
+                    <option value={5}>{copy[locale].nextDays(5)}</option>
+                    <option value={7}>{copy[locale].nextDays(7)}</option>
+                    <option value={10}>{copy[locale].nextDays(10)}</option>
+                    <option value={14}>{copy[locale].nextDays(14)}</option>
+                  </select>
+                </label>
               ) : (
                 <>
                   <div className="field date-slider-field">
@@ -862,10 +965,7 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
             <section className="map-forecast-panel" aria-label={locale === 'zh' ? '选中城市天气' : 'Selected city forecast'}>
               <div className="map-forecast-heading">
                 <strong>{formatCityName(selectedCity, locale)}</strong>
-                <span>
-                  {selectedCity.country}
-                  {selectedCity.admin1 ? ` · ${locale === 'zh' ? selectedCity.admin1LocalName ?? selectedCity.admin1 : selectedCity.admin1}` : ''} · {formatElevation(selectedCity.elevationMeters, locale)}
-                </span>
+                <span>{[...formatCityRegionSegments(selectedCity, locale), formatElevation(selectedCity.elevationMeters, locale)].join(' · ')}</span>
               </div>
               <div className="forecast-strip">
                 {selectedForecasts.slice(0, 14).map((forecast) => (
@@ -896,10 +996,12 @@ export function WeatherDashboard({ locale, initialMode, cities, forecasts, avail
             travelScores={travelScores}
             dailyWeather={dailyWeather}
             regionSummaries={regionSummaries}
-            showChinaProvinceLayer={shouldShowChinaProvinceLayer(travelFilter.region)}
-            focusChinaProvinceLayer={shouldFocusChinaProvinceLayer(travelFilter.region)}
+            activeRegion={travelFilter.region}
+            regionLayer={getMapRegionLayer(travelFilter.region)}
+            selectableRegionIds={selectableMapRegionIds}
             selectedCityId={effectiveSelectedCityId}
             onSelectCity={setSelectedCityId}
+            onSelectRegion={setMapRegion}
           />
         </section>
       </section>

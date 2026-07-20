@@ -20,16 +20,18 @@ export function formatCityName(city: City, locale: DisplayLocale = 'zh'): string
   return city.names[locale];
 }
 
-export function formatCityLocation(city: City, locale: DisplayLocale = 'zh'): string {
+export function formatCityRegionSegments(city: City, locale: DisplayLocale = 'zh'): string[] {
   const country = formatCountry(city, locale);
   const admin = locale === 'zh' ? city.admin1LocalName ?? city.admin1 : city.admin1;
-  return [country, admin, formatCityName(city, locale)].filter(Boolean).join(' ');
+  return [country, admin].filter((part): part is string => Boolean(part));
+}
+
+export function formatCityLocation(city: City, locale: DisplayLocale = 'zh'): string {
+  return [...formatCityRegionSegments(city, locale), formatCityName(city, locale)].filter(Boolean).join(' ');
 }
 
 export function formatCityRegion(city: City, locale: DisplayLocale = 'zh'): string {
-  const country = formatCountry(city, locale);
-  const admin = locale === 'zh' ? city.admin1LocalName ?? city.admin1 : city.admin1;
-  return [country, admin].filter(Boolean).join(locale === 'zh' ? '' : ' ');
+  return formatCityRegionSegments(city, locale).join(locale === 'zh' ? '' : ' ');
 }
 
 export function formatTemperature(value: number): string {

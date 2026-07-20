@@ -42,6 +42,7 @@ const description =
       client:load
       locale={locale}
       initialMode={initialMode}
+      initialSearch={Astro.url.search}
       cities={snapshot.cities}
       forecasts={snapshot.forecasts}
       availableDates={snapshot.availableDates}

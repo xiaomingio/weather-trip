@@ -243,7 +243,8 @@ h2 {
 }
 
 .date-slider-field,
-.layer-field {
+.layer-field,
+.time-field {
   grid-column: 1 / -1;
   display: grid;
   gap: 7px;
@@ -350,10 +351,12 @@ select {
 }
 
 .range-field.is-disabled,
+.field.is-disabled,
 .weather-chip-row.is-disabled {
   opacity: 0.42;
 }
 
+.field.is-disabled select,
 .temperature-slider[data-disabled],
 .weather-chip-row button:disabled {
   cursor: not-allowed;

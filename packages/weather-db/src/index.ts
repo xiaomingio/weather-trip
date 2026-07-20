@@ -3,6 +3,7 @@
  * 对应文档: docs/data-flow.md
  */
 import { Pool, type PoolClient } from 'pg';
+import OpenCC from 'opencc-js';
 import type { City, DailyForecast } from 'weather-core/types';
 import { ensureWeatherSchema } from './schema.js';
 
@@ -113,17 +114,31 @@ const regionByContinentCode: Record<string, City['region']> = {
 };
 
 const countryDisplayNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const toSimplifiedChinese = OpenCC.Converter({ from: 'twp', to: 'cn' });
+const chineseAlternateNameOrderSql = `
+  array_position(array['zh-CN', 'zh-Hans', 'zh', 'zh-Hant']::text[], iso_language),
+  is_preferred_name desc,
+  is_short_name desc,
+  length(alternate_name),
+  alternate_name
+`;
+
+function normalizeSimplifiedChinese(value: unknown): string | undefined {
+  if (!value) return undefined;
+  return toSimplifiedChinese(String(value));
+}
 
 function mapCity(row: Record<string, unknown>): City {
   const countryCode = String(row.country_code);
   const admin1Code = row.admin1_code ? String(row.admin1_code) : undefined;
   const admin1 = row.admin1_ascii_name ? String(row.admin1_ascii_name) : undefined;
-  const admin1LocalName = row.admin1_zh_name ? String(row.admin1_zh_name) : undefined;
+  const admin1LocalName = normalizeSimplifiedChinese(row.admin1_zh_name);
+  const cityZhName = normalizeSimplifiedChinese(row.city_zh_name);
 
   return {
     id: String(row.id),
     names: {
-      zh: row.city_zh_name ? String(row.city_zh_name) : String(row.ascii_name || row.name),
+      zh: cityZhName ?? String(row.ascii_name || row.name),
       en: String(row.ascii_name || row.name)
     },
     country: countryDisplayNames.of(countryCode) ?? countryCode,
@@ -194,7 +209,7 @@ export async function readCities(db: WeatherDatabase): Promise<City[]> {
       where geoname_id = geo_names_cities.geoname_id
         and iso_language in ('zh', 'zh-CN', 'zh-Hans', 'zh-Hant')
         and not is_historic
-      order by is_preferred_name desc, is_short_name desc, (iso_language = 'zh-CN') desc, length(alternate_name), alternate_name
+      order by ${chineseAlternateNameOrderSql}
       limit 1
     ) city_zh on true
     left join lateral (
@@ -203,7 +218,7 @@ export async function readCities(db: WeatherDatabase): Promise<City[]> {
       where geoname_id = admin1.geoname_id
         and iso_language in ('zh', 'zh-CN', 'zh-Hans', 'zh-Hant')
         and not is_historic
-      order by is_preferred_name desc, is_short_name desc, (iso_language = 'zh-CN') desc, length(alternate_name), alternate_name
+      order by ${chineseAlternateNameOrderSql}
       limit 1
     ) admin1_zh on true
     order by cities.selection_rank
@@ -231,7 +246,7 @@ async function readCitiesWithForecasts(db: WeatherDatabase): Promise<City[]> {
       where geoname_id = geo_names_cities.geoname_id
         and iso_language in ('zh', 'zh-CN', 'zh-Hans', 'zh-Hant')
         and not is_historic
-      order by is_preferred_name desc, is_short_name desc, (iso_language = 'zh-CN') desc, length(alternate_name), alternate_name
+      order by ${chineseAlternateNameOrderSql}
       limit 1
     ) city_zh on true
     left join lateral (
@@ -240,7 +255,7 @@ async function readCitiesWithForecasts(db: WeatherDatabase): Promise<City[]> {
       where geoname_id = admin1.geoname_id
         and iso_language in ('zh', 'zh-CN', 'zh-Hans', 'zh-Hant')
         and not is_historic
-      order by is_preferred_name desc, is_short_name desc, (iso_language = 'zh-CN') desc, length(alternate_name), alternate_name
+      order by ${chineseAlternateNameOrderSql}
       limit 1
     ) admin1_zh on true
     order by cities.selection_rank

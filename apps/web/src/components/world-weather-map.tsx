@@ -5,9 +5,16 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import maplibregl, { GeoJSONSource, Map as MapLibreMap, Marker } from 'maplibre-gl';
-import type { CityDailyWeather, CityTravelScore, MapLayer, RegionWeatherSummary, ViewMode } from 'weather-core/types';
-import { type DisplayLocale, formatCityName } from '@/domain/format';
+import maplibregl, {
+  GeoJSONSource,
+  Map as MapLibreMap,
+  Marker,
+  type MapGeoJSONFeature,
+  type MapLayerMouseEvent
+} from 'maplibre-gl';
+import type { CityDailyWeather, CityTravelScore, MapLayer, RegionKey, RegionWeatherSummary, ViewMode } from 'weather-core/types';
+import { type DisplayLocale, formatCityName, formatCityRegion } from '@/domain/format';
+import type { MapRegionLayer } from '@/domain/regions';
 import { getWeatherTypeLabel, weatherTypeEmoji } from '@/domain/weather';
 
 type MapPoint = {
@@ -30,16 +37,34 @@ type WorldWeatherMapProps = {
   travelScores: CityTravelScore[];
   dailyWeather: CityDailyWeather[];
   regionSummaries: RegionWeatherSummary[];
-  showChinaProvinceLayer: boolean;
-  focusChinaProvinceLayer: boolean;
+  activeRegion: RegionKey;
+  regionLayer: MapRegionLayer;
+  selectableRegionIds: RegionKey[];
   selectedCityId: string | null;
   onSelectCity: (cityId: string) => void;
+  onSelectRegion: (region: RegionKey) => void;
+};
+
+type MapGeoJson = {
+  type: 'FeatureCollection';
+  features: Array<{
+    type: 'Feature';
+    properties: Record<string, unknown>;
+    geometry: MapGeoJsonGeometry;
+  }>;
+};
+
+type MapGeoJsonGeometry = {
+  type: string;
+  coordinates?: unknown;
 };
 
 type LegendScale = {
   gradient: string;
   labels: [string, string, string];
 };
+
+type BoundsPoint = [number, number];
 
 function temperatureColor(value: number): string {
   if (value <= 0) return '#6ca6ff';
@@ -118,30 +143,25 @@ function layerLabel(summary: RegionWeatherSummary, layer: MapLayer, locale: Disp
   return `${Math.round(summary.comfortScore * 100)}%`;
 }
 
-function legendDescription(mode: ViewMode, layer: MapLayer, showChinaProvinceLayer: boolean, locale: DisplayLocale): string {
+function legendDescription(mode: ViewMode, layer: MapLayer, regionLayer: MapRegionLayer, locale: DisplayLocale): string {
+  const areaName =
+    regionLayer === 'country'
+      ? { zh: '国家/地区', en: 'country' }
+      : regionLayer === 'admin1'
+        ? { zh: '一级行政区', en: 'admin area' }
+        : { zh: '省级区域', en: 'province' };
+
   if (locale === 'en') {
-    if (showChinaProvinceLayer) {
-      if (layer === 'elevation') return 'Province areas are colored by sampled elevation; city markers keep temperature context.';
-      if (layer === 'humidity') return 'Color shows mean relative humidity; green is the comfortable range.';
-      if (mode === 'travel' && layer === 'comfort') return 'Color follows the current min/max matching-day distribution.';
-      return 'Province areas show the selected layer; city markers remain sample points.';
-    }
-
-    if (mode === 'travel') return 'Numbers show matching days; color follows the current result distribution.';
-    if (layer === 'comfort') return 'Comfort combines temperature, weather, humidity, rainfall, and wind.';
-    return 'Marker color follows the selected layer.';
+    if (layer === 'elevation') return `${areaName.en} areas are colored by sampled elevation; city markers keep temperature context.`;
+    if (layer === 'humidity') return 'Color shows mean relative humidity; green is the comfortable range.';
+    if (mode === 'travel' && layer === 'comfort') return 'Color follows the current min/max matching-day distribution.';
+    return `${areaName.en} areas show the selected layer; city markers remain sample points.`;
   }
 
-  if (showChinaProvinceLayer) {
-    if (layer === 'elevation') return '省级区域按海拔样本分层着色，城市点位保留温度';
-    if (layer === 'humidity') return '颜色显示日均相对湿度，绿色约为舒适湿度';
-    if (mode === 'travel' && layer === 'comfort') return '颜色按当前结果的最小/最大匹配天数分布';
-    return '省级区域显示当前图层主指标，城市点位是样本';
-  }
-
-  if (mode === 'travel') return '数字表示未来匹配天数，颜色按当前结果相对分布';
-  if (layer === 'comfort') return '旅行适合度综合气温、天气、湿度、降水和风速估算';
-  return '点位颜色随当前图层变化';
+  if (layer === 'elevation') return `${areaName.zh}按海拔样本分层着色，城市点位保留温度`;
+  if (layer === 'humidity') return '颜色显示日均相对湿度，绿色约为舒适湿度';
+  if (mode === 'travel' && layer === 'comfort') return '颜色按当前结果的最小/最大匹配天数分布';
+  return `${areaName.zh}显示当前图层主指标，城市点位是样本`;
 }
 
 function legendScale(mode: ViewMode, layer: MapLayer, locale: DisplayLocale): LegendScale {
@@ -193,6 +213,151 @@ function legendScale(mode: ViewMode, layer: MapLayer, locale: DisplayLocale): Le
   };
 }
 
+function regionSourceId(layer: MapRegionLayer): string {
+  if (layer === 'country') return 'world-countries';
+  if (layer === 'admin1') return 'detailed-admin1';
+  return 'china-provinces';
+}
+
+function regionFillLayerId(layer: MapRegionLayer): string {
+  return `${regionSourceId(layer)}-fill`;
+}
+
+function regionLineLayerId(layer: MapRegionLayer): string {
+  return `${regionSourceId(layer)}-line`;
+}
+
+function regionKeyForFeature(feature: { properties: Record<string, unknown> }, layer: MapRegionLayer): string {
+  if (layer === 'china-admin1') return `province:${String(feature.properties.adcode ?? '')}`;
+  return String(feature.properties.regionKey ?? '');
+}
+
+function regionKeyFromMapFeature(feature: MapGeoJSONFeature | undefined, layer: MapRegionLayer): RegionKey | null {
+  if (!feature) return null;
+  const key = regionKeyForFeature({ properties: feature.properties ?? {} }, layer);
+  return key ? key : null;
+}
+
+function cleanRegionLabel(name: string): string {
+  return name.replace(/省|市|自治区|特别行政区/g, '');
+}
+
+function decorateRegionGeojson(
+  geojson: MapGeoJson,
+  summaries: RegionWeatherSummary[],
+  activeLayer: MapRegionLayer,
+  targetLayer: MapRegionLayer,
+  activeRegion: RegionKey,
+  mode: ViewMode,
+  layer: MapLayer,
+  locale: DisplayLocale
+): MapGeoJson {
+  const summariesById = new globalThis.Map(summaries.map((summary) => [summary.id, summary]));
+  const regionMatchDays = summaries.map((summary) => summary.matchDays);
+  const minRegionMatchDays = Math.min(...regionMatchDays, 0);
+  const maxRegionMatchDays = Math.max(...regionMatchDays, 0);
+  const isActiveLayer = activeLayer === targetLayer;
+
+  return {
+    ...geojson,
+    features: geojson.features.map((feature) => {
+      const regionKey = regionKeyForFeature(feature, targetLayer);
+      const summary = summariesById.get(regionKey);
+      const isVisibleRegion = isActiveLayer && Boolean(summary);
+      const isActiveRegion = isVisibleRegion && regionKey === activeRegion;
+      const fillColor =
+        summary && mode === 'travel' && layer === 'comfort'
+          ? relativeMatchColor(summary.matchDays, minRegionMatchDays, maxRegionMatchDays)
+          : summary
+            ? layerColor(summary, layer)
+            : 'rgba(255,255,255,0)';
+
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          isVisibleRegion,
+          isActiveRegion,
+          fillColor,
+          fillOpacity: isVisibleRegion ? (layer === 'elevation' ? 0.34 : targetLayer === 'country' ? 0.5 : 0.62) : 0,
+          label: summary ? `${cleanRegionLabel(summary.name)} ${layerLabel(summary, layer, locale)}` : ''
+        }
+      };
+    })
+  };
+}
+
+function collectBoundsCoordinates(points: BoundsPoint[], coordinates: unknown): void {
+  if (!Array.isArray(coordinates)) return;
+  if (
+    coordinates.length >= 2 &&
+    typeof coordinates[0] === 'number' &&
+    typeof coordinates[1] === 'number' &&
+    Number.isFinite(coordinates[0]) &&
+    Number.isFinite(coordinates[1])
+  ) {
+    points.push([coordinates[0], coordinates[1]]);
+    return;
+  }
+
+  coordinates.forEach((item) => collectBoundsCoordinates(points, item));
+}
+
+function normalizeLongitude(longitude: number): number {
+  return ((longitude % 360) + 360) % 360;
+}
+
+function buildBoundsFromPoints(points: BoundsPoint[]): maplibregl.LngLatBounds | null {
+  if (points.length === 0) return null;
+
+  const latitudes = points.map(([, latitude]) => latitude);
+  const minLatitude = Math.min(...latitudes);
+  const maxLatitude = Math.max(...latitudes);
+  const longitudes = points.map(([longitude]) => normalizeLongitude(longitude)).sort((a, b) => a - b);
+
+  let largestGapIndex = 0;
+  let largestGap = -1;
+  for (let index = 0; index < longitudes.length; index += 1) {
+    const nextIndex = (index + 1) % longitudes.length;
+    const nextLongitude = nextIndex === 0 ? longitudes[0] + 360 : longitudes[nextIndex];
+    const gap = nextLongitude - longitudes[index];
+    if (gap > largestGap) {
+      largestGap = gap;
+      largestGapIndex = index;
+    }
+  }
+
+  const westIndex = (largestGapIndex + 1) % longitudes.length;
+  const westNormalized = longitudes[westIndex];
+  const eastNormalized =
+    longitudes[largestGapIndex] < westNormalized ? longitudes[largestGapIndex] + 360 : longitudes[largestGapIndex];
+  const west = westNormalized > 180 ? westNormalized - 360 : westNormalized;
+  const east = west + (eastNormalized - westNormalized);
+
+  return new maplibregl.LngLatBounds([west, minLatitude], [east, maxLatitude]);
+}
+
+function buildRegionBounds(
+  geojson: MapGeoJson | null,
+  summaries: RegionWeatherSummary[],
+  targetLayer: MapRegionLayer
+): maplibregl.LngLatBounds | null {
+  if (!geojson || summaries.length === 0) return null;
+
+  const summaryIds = new Set(summaries.map((summary) => summary.id));
+  const boundsPoints: BoundsPoint[] = [];
+  for (const feature of geojson.features) {
+    if (!summaryIds.has(regionKeyForFeature(feature, targetLayer))) continue;
+    collectBoundsCoordinates(boundsPoints, feature.geometry.coordinates);
+  }
+
+  return buildBoundsFromPoints(boundsPoints);
+}
+
+function buildPointBounds(points: MapPoint[]): maplibregl.LngLatBounds | null {
+  return buildBoundsFromPoints(points.map((point) => [point.longitude, point.latitude]));
+}
+
 export function WorldWeatherMap({
   mode,
   locale,
@@ -200,16 +365,24 @@ export function WorldWeatherMap({
   travelScores,
   dailyWeather,
   regionSummaries,
-  showChinaProvinceLayer,
-  focusChinaProvinceLayer,
+  activeRegion,
+  regionLayer,
+  selectableRegionIds,
   selectedCityId,
-  onSelectCity
+  onSelectCity,
+  onSelectRegion
 }: WorldWeatherMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<Marker[]>([]);
+  const regionGeojsonRef = useRef<Record<MapRegionLayer, MapGeoJson | null>>({
+    country: null,
+    admin1: null,
+    'china-admin1': null
+  });
   const [regionsReady, setRegionsReady] = useState(false);
   const scale = legendScale(mode, layer, locale);
+  const hasRegionLayer = regionSummaries.length > 0;
 
   const points = useMemo<MapPoint[]>(() => {
     if (mode === 'travel') {
@@ -221,7 +394,7 @@ export function WorldWeatherMap({
         const normalized = normalizeRangeValue(score.matchDays, minMatchDays, maxMatchDays);
         return {
           cityId: score.city.id,
-          label: `${formatCityName(score.city, locale)}, ${score.city.country}`,
+          label: `${formatCityName(score.city, locale)}, ${formatCityRegion(score.city, locale)}`,
           longitude: score.city.longitude,
           latitude: score.city.latitude,
           markerText: String(score.matchDays),
@@ -253,7 +426,7 @@ export function WorldWeatherMap({
 
       return {
         cityId: item.city.id,
-        label: `${formatCityName(item.city, locale)}, ${item.city.country}`,
+        label: `${formatCityName(item.city, locale)}, ${formatCityRegion(item.city, locale)}`,
         longitude: item.city.longitude,
         latitude: item.city.latitude,
         markerText:
@@ -263,8 +436,8 @@ export function WorldWeatherMap({
               ? `${Math.round(item.forecast.humidityMeanPercent)}%`
               : `${Math.round(item.forecast.temperatureMeanC)}°`,
         color: valueColor,
-        opacity: showChinaProvinceLayer ? 0.72 : 0.86,
-        size: showChinaProvinceLayer ? 24 : layer === 'comfort' ? 24 + item.comfortScore * 22 : 34,
+        opacity: hasRegionLayer ? 0.72 : 0.86,
+        size: hasRegionLayer ? 24 : layer === 'comfort' ? 24 + item.comfortScore * 22 : 34,
         sortValue: item.comfortScore,
         selected: selectedCityId === item.city.id
       };
@@ -272,7 +445,7 @@ export function WorldWeatherMap({
       if (a.selected !== b.selected) return a.selected ? 1 : -1;
       return a.sortValue - b.sortValue;
     });
-  }, [dailyWeather, layer, locale, mode, selectedCityId, showChinaProvinceLayer, travelScores]);
+  }, [dailyWeather, hasRegionLayer, layer, locale, mode, selectedCityId, travelScores]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -311,36 +484,60 @@ export function WorldWeatherMap({
     });
 
     mapRef.current.on('load', async () => {
-      const response = await fetch('/data/geo/china-provinces.geojson');
-      const geojson = await response.json();
+      const [countryGeojson, admin1Geojson, chinaGeojson] = await Promise.all([
+        fetch('/data/geo/world-countries.geojson').then((response) => response.json() as Promise<MapGeoJson>),
+        fetch('/data/geo/detailed-admin1.geojson').then((response) => response.json() as Promise<MapGeoJson>),
+        fetch('/data/geo/china-provinces.geojson').then((response) => response.json() as Promise<MapGeoJson>)
+      ]);
+      regionGeojsonRef.current = {
+        country: countryGeojson,
+        admin1: admin1Geojson,
+        'china-admin1': chinaGeojson
+      };
 
-      if (!mapRef.current?.getSource('china-provinces')) {
-        mapRef.current?.addSource('china-provinces', {
-          type: 'geojson',
-          data: geojson
+      (['country', 'admin1', 'china-admin1'] as MapRegionLayer[]).forEach((mapRegionLayer) => {
+        const sourceId = regionSourceId(mapRegionLayer);
+        if (!mapRef.current?.getSource(sourceId)) {
+          mapRef.current?.addSource(sourceId, {
+            type: 'geojson',
+            data: regionGeojsonRef.current[mapRegionLayer] as MapGeoJson
+          });
+        }
+
+        mapRef.current?.addLayer({
+          id: regionFillLayerId(mapRegionLayer),
+          type: 'fill',
+          source: sourceId,
+          layout: {
+            visibility: mapRegionLayer === regionLayer ? 'visible' : 'none'
+          },
+          paint: {
+            'fill-color': ['coalesce', ['get', 'fillColor'], 'rgba(255,255,255,0)'],
+            'fill-opacity': ['coalesce', ['get', 'fillOpacity'], 0],
+            'fill-outline-color': mapRegionLayer === 'country' ? 'rgba(24,32,31,0.18)' : 'rgba(24,32,31,0.28)'
+          }
         });
-      }
 
-      mapRef.current?.addLayer({
-        id: 'china-province-fill',
-        type: 'fill',
-        source: 'china-provinces',
-        paint: {
-          'fill-color': ['coalesce', ['get', 'fillColor'], 'rgba(255,255,255,0)'],
-          'fill-opacity': ['coalesce', ['get', 'fillOpacity'], 0],
-          'fill-outline-color': 'rgba(24,32,31,0.28)'
-        }
-      });
-
-      mapRef.current?.addLayer({
-        id: 'china-province-line',
-        type: 'line',
-        source: 'china-provinces',
-        paint: {
-          'line-color': 'rgba(24,32,31,0.35)',
-          'line-width': ['case', ['boolean', ['get', 'isActiveRegion'], false], 1.6, 0.7],
-          'line-opacity': ['case', ['boolean', ['get', 'isVisibleRegion'], false], 0.9, 0]
-        }
+        mapRef.current?.addLayer({
+          id: regionLineLayerId(mapRegionLayer),
+          type: 'line',
+          source: sourceId,
+          layout: {
+            visibility: mapRegionLayer === regionLayer ? 'visible' : 'none'
+          },
+          paint: {
+            'line-color': mapRegionLayer === 'country' ? 'rgba(24,32,31,0.22)' : 'rgba(24,32,31,0.35)',
+            'line-width': [
+              'case',
+              ['boolean', ['get', 'isActiveRegion'], false],
+              mapRegionLayer === 'country' ? 1.25 : 2,
+              ['boolean', ['get', 'isVisibleRegion'], false],
+              mapRegionLayer === 'country' ? 0.65 : 1.05,
+              0.3
+            ],
+            'line-opacity': ['case', ['boolean', ['get', 'isVisibleRegion'], false], mapRegionLayer === 'country' ? 0.65 : 0.9, 0]
+          }
+        });
       });
 
       setRegionsReady(true);
@@ -359,52 +556,77 @@ export function WorldWeatherMap({
 
   useEffect(() => {
     const map = mapRef.current;
-    const source = map?.getSource('china-provinces');
-    if (!map || !source || !('setData' in source) || !regionsReady) return;
+    if (!map || !regionsReady) return;
 
-    fetch('/data/geo/china-provinces.geojson')
-      .then((response) => response.json())
-      .then((geojson) => {
-        const summariesByAdmin = new globalThis.Map(regionSummaries.map((summary) => [summary.admin1GroupCode, summary]));
-        const regionMatchDays = regionSummaries.map((summary) => summary.matchDays);
-        const minRegionMatchDays = Math.min(...regionMatchDays, 0);
-        const maxRegionMatchDays = Math.max(...regionMatchDays, 0);
-        const features = geojson.features.map((feature: { properties: Record<string, unknown> }) => {
-          const adcode = String(feature.properties.adcode ?? '');
-          const summary = summariesByAdmin.get(adcode);
-          const isVisibleRegion = showChinaProvinceLayer && Boolean(summary);
-          const fillColor =
-            summary && mode === 'travel' && layer === 'comfort'
-              ? relativeMatchColor(summary.matchDays, minRegionMatchDays, maxRegionMatchDays)
-              : summary
-                ? layerColor(summary, layer)
-                : 'rgba(255,255,255,0)';
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              isVisibleRegion,
-              isActiveRegion: isVisibleRegion,
-              fillColor,
-              fillOpacity: isVisibleRegion ? (layer === 'elevation' ? 0.34 : 0.62) : 0,
-              label: summary ? `${summary.name.replace(/省|市|自治区|特别行政区/g, '')} ${layerLabel(summary, layer, locale)}` : ''
-            }
-          };
-        });
+    (['country', 'admin1', 'china-admin1'] as MapRegionLayer[]).forEach((mapRegionLayer) => {
+      const source = map.getSource(regionSourceId(mapRegionLayer));
+      const geojson = regionGeojsonRef.current[mapRegionLayer];
+      if (!source || !('setData' in source) || !geojson) return;
 
-        (source as GeoJSONSource).setData({ ...geojson, features });
-        if (map.getLayer('china-province-fill')) {
-          map.setLayoutProperty('china-province-fill', 'visibility', showChinaProvinceLayer ? 'visible' : 'none');
-        }
-        if (map.getLayer('china-province-line')) {
-          map.setLayoutProperty('china-province-line', 'visibility', showChinaProvinceLayer ? 'visible' : 'none');
-        }
+      (source as GeoJSONSource).setData(
+        decorateRegionGeojson(geojson, regionSummaries, regionLayer, mapRegionLayer, activeRegion, mode, layer, locale)
+      );
+      const visibility = mapRegionLayer === regionLayer ? 'visible' : 'none';
+      if (map.getLayer(regionFillLayerId(mapRegionLayer))) {
+        map.setLayoutProperty(regionFillLayerId(mapRegionLayer), 'visibility', visibility);
+      }
+      if (map.getLayer(regionLineLayerId(mapRegionLayer))) {
+        map.setLayoutProperty(regionLineLayerId(mapRegionLayer), 'visibility', visibility);
+      }
+    });
+  }, [activeRegion, layer, locale, mode, regionLayer, regionSummaries, regionsReady]);
 
-        if (focusChinaProvinceLayer) {
-          map.easeTo({ center: [104.5, 35.7], zoom: 3.05, duration: 420 });
-        }
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !regionsReady) return;
+
+    const selectableRegions = new Set(selectableRegionIds);
+    const mapRegionLayers: MapRegionLayer[] = ['country', 'admin1', 'china-admin1'];
+    const bindings = mapRegionLayers.map((mapRegionLayer) => {
+      const layerId = regionFillLayerId(mapRegionLayer);
+      const handleClick = (event: MapLayerMouseEvent) => {
+        const region = regionKeyFromMapFeature(event.features?.[0], mapRegionLayer);
+        if (!region || !selectableRegions.has(region)) return;
+        onSelectRegion(region);
+      };
+      const handleMouseMove = (event: MapLayerMouseEvent) => {
+        const region = regionKeyFromMapFeature(event.features?.[0], mapRegionLayer);
+        map.getCanvas().style.cursor = region && selectableRegions.has(region) ? 'pointer' : '';
+      };
+      const handleMouseLeave = () => {
+        map.getCanvas().style.cursor = '';
+      };
+
+      map.on('click', layerId, handleClick);
+      map.on('mousemove', layerId, handleMouseMove);
+      map.on('mouseleave', layerId, handleMouseLeave);
+
+      return { layerId, handleClick, handleMouseMove, handleMouseLeave };
+    });
+
+    return () => {
+      bindings.forEach(({ layerId, handleClick, handleMouseMove, handleMouseLeave }) => {
+        map.off('click', layerId, handleClick);
+        map.off('mousemove', layerId, handleMouseMove);
+        map.off('mouseleave', layerId, handleMouseLeave);
       });
-  }, [focusChinaProvinceLayer, layer, locale, mode, regionSummaries, regionsReady, showChinaProvinceLayer]);
+      map.getCanvas().style.cursor = '';
+    };
+  }, [onSelectRegion, regionsReady, selectableRegionIds]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !regionsReady) return;
+
+    const bounds = buildRegionBounds(regionGeojsonRef.current[regionLayer], regionSummaries, regionLayer) ?? buildPointBounds(points);
+    if (bounds) {
+      map.fitBounds(bounds, {
+        padding: activeRegion === 'world' ? 24 : 84,
+        maxZoom: activeRegion === 'world' ? 1.45 : regionLayer === 'country' ? 4.8 : 5.6,
+        duration: 420
+      });
+    }
+  }, [activeRegion, points, regionLayer, regionSummaries, regionsReady]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -433,7 +655,7 @@ export function WorldWeatherMap({
       <div ref={containerRef} className="weather-map" />
       <div className="map-legend">
         <div className="map-legend-main">
-          <span>{legendDescription(mode, layer, showChinaProvinceLayer, locale)}</span>
+          <span>{legendDescription(mode, layer, regionLayer, locale)}</span>
           <div className="legend-scale" aria-label={locale === 'zh' ? '颜色图例' : 'Color legend'}>
             <div className="legend-gradient" style={{ background: scale.gradient }} />
             <div className="legend-labels">
@@ -444,7 +666,7 @@ export function WorldWeatherMap({
           </div>
         </div>
         <span>
-          {showChinaProvinceLayer
+          {hasRegionLayer
             ? `${regionSummaries.length} ${locale === 'zh' ? '个区域' : 'regions'} · ${points.length} ${
                 locale === 'zh' ? '个城市' : 'cities'
               }`

@@ -19,6 +19,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "opencc-js": "^1.4.1",
     "pg": "^8.16.3",
     "weather-core": "*"
   },

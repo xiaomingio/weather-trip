@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import type { City, DailyForecast } from 'weather-core/types';
-import { getAvailableDates } from './index.js';
+import { getAvailableDates, readCities, type WeatherDatabase } from './index.js';
 
 function city(id: string): City {
   return {
@@ -41,5 +41,44 @@ describe('getAvailableDates', () => {
   it('does not expose dates when there are no cities or forecasts', () => {
     expect(getAvailableDates([], [forecast('a', '2026-07-21')])).toEqual([]);
     expect(getAvailableDates([city('a')], [])).toEqual([]);
+  });
+});
+
+describe('readCities', () => {
+  it('normalizes GeoNames Chinese alternate names to simplified Chinese', async () => {
+    const db = {
+      pool: {
+        query: async () => ({
+          rows: [
+            {
+              id: 'geonames-361058',
+              name: 'Alexandria',
+              ascii_name: 'Alexandria',
+              city_zh_name: '亞歷山卓',
+              country_code: 'EG',
+              admin1_code: '06',
+              admin1_ascii_name: 'Alexandria',
+              admin1_zh_name: '亞歷山大省',
+              latitude: 31.2,
+              longitude: 29.92,
+              timezone: 'Africa/Cairo',
+              population: 5_263_542,
+              elevation: 9,
+              dem: 9,
+              continent_code: 'AF',
+              selection_reasons: ['test']
+            }
+          ]
+        })
+      },
+      close: async () => {}
+    } as unknown as WeatherDatabase;
+
+    await expect(readCities(db)).resolves.toMatchObject([
+      {
+        names: { zh: '亚历山卓', en: 'Alexandria' },
+        admin1LocalName: '亚历山大省'
+      }
+    ]);
   });
 });
