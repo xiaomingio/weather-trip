@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import type { City, DailyForecast, TravelFilter } from 'weather-core/types';
 import { buildDailyWeather, calculateBestStreak, dayMatchesFilter, scoreCityTravel } from './scoring';
+import { getRegionGroup, getRegionLabel, getSortedRegionOptions } from './regions';
 
 const city: City = {
   id: 'test',
@@ -54,9 +55,9 @@ function forecast(partial: Partial<DailyForecast>): DailyForecast {
 function cityWith(partial: Partial<City>): City {
   return {
     ...city,
+    ...partial,
     id: partial.id ?? city.id,
-    names: partial.names ?? city.names,
-    population: partial.population
+    names: partial.names ?? city.names
   };
 }
 
@@ -136,5 +137,54 @@ describe('travel scoring', () => {
       'large-city',
       'mid-sized-city'
     ]);
+  });
+
+  it('keeps detailed China fallback cities inside China regions instead of the global view', () => {
+    const detailedChinaCity = cityWith({
+      id: 'cn-prefecture-representative',
+      country: 'China',
+      countryCode: 'CN',
+      admin1GroupCode: '29',
+      selectionReasons: ['fallback:china-admin2-representative']
+    });
+    const globalChinaCity = cityWith({
+      id: 'cn-tourism-city',
+      country: 'China',
+      countryCode: 'CN',
+      admin1GroupCode: '29',
+      selectionReasons: ['tourism:curated', 'fallback:china-admin2-representative']
+    });
+    const forecasts = [
+      forecast({ cityId: detailedChinaCity.id }),
+      forecast({ cityId: globalChinaCity.id })
+    ];
+
+    expect(buildDailyWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'world').map((item) => item.city.id)).toEqual([
+      'cn-tourism-city'
+    ]);
+    expect(buildDailyWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'country:CN').map((item) => item.city.id)).toEqual([
+      'cn-prefecture-representative',
+      'cn-tourism-city'
+    ]);
+    expect(
+      buildDailyWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'province:530000').map((item) => item.city.id)
+    ).toEqual(['cn-prefecture-representative', 'cn-tourism-city']);
+  });
+});
+
+describe('region sorting', () => {
+  it('keeps regions in product order and sorts countries by locale names', () => {
+    const zhOptions = getSortedRegionOptions('zh');
+    const zhRegions = zhOptions.filter((option) => getRegionGroup(option, 'zh') === '大区').map((option) => option.id);
+    const zhCountries = zhOptions
+      .filter((option) => getRegionGroup(option, 'zh') === '国家/地区')
+      .map((option) => getRegionLabel(option, 'zh'));
+    const enCountries = getSortedRegionOptions('en')
+      .filter((option) => getRegionGroup(option, 'en') === 'Countries')
+      .map((option) => getRegionLabel(option, 'en'));
+
+    expect(zhRegions).toEqual(['world', 'asia', 'east_asia', 'southeast_asia', 'europe', 'north_america', 'south_america', 'africa', 'oceania']);
+    expect(zhCountries.slice(0, 3)).toEqual(['澳大利亚', '德国', '法国']);
+    expect(enCountries.slice(0, 3)).toEqual(['Australia', 'Canada', 'China']);
   });
 });

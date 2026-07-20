@@ -48,24 +48,25 @@ function formatDateInTimezone(date: Date, timezone: string): string {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
-function buildForecastDateWindow(city: City, now = new Date()): string[] {
-  return Array.from({ length: forecastDays }, (_, index) => {
-    const date = new Date(now.getTime() + index * 24 * 60 * 60 * 1000);
+function buildForecastDateWindow(city: City, now = new Date(), startOffsetDays = 0, days = forecastDays): string[] {
+  return Array.from({ length: days }, (_, index) => {
+    const date = new Date(now.getTime() + (index + startOffsetDays) * 24 * 60 * 60 * 1000);
     return formatDateInTimezone(date, city.timezone);
   });
 }
 
-function buildDesiredCacheKeys(cities: City[]): { allKeys: Set<string>; keysByCity: Map<string, string[]> } {
-  const keysByCity = new Map<string, string[]>();
-  const allKeys = new Set<string>();
+function buildAcceptableCacheKeys(cities: City[]): { targetEntryCount: number; keysByCity: Map<string, Set<string>> } {
+  const keysByCity = new Map<string, Set<string>>();
+  const now = new Date();
 
   for (const city of cities) {
-    const cityKeys = buildForecastDateWindow(city).map((date) => forecastCacheKey(city.id, date));
+    const cityKeys = new Set(
+      buildForecastDateWindow(city, now, -1, forecastDays + 1).map((date) => forecastCacheKey(city.id, date))
+    );
     keysByCity.set(city.id, cityKeys);
-    cityKeys.forEach((key) => allKeys.add(key));
   }
 
-  return { allKeys, keysByCity };
+  return { targetEntryCount: cities.length * forecastDays, keysByCity };
 }
 
 function indexForecasts(forecasts: DailyForecast[]): Map<string, DailyForecast> {
@@ -76,17 +77,18 @@ export async function refreshWeather(db: WeatherDatabase): Promise<RefreshWeathe
   try {
     await setupWeatherDatabase(db);
     const [cities, existingForecasts] = await Promise.all([readCities(db), readForecasts(db)]);
-    const { allKeys: desiredCacheKeys, keysByCity } = buildDesiredCacheKeys(cities);
-    const forecastsByKey = indexForecasts(
-      existingForecasts.filter((forecast) => desiredCacheKeys.has(forecastCacheKey(forecast.cityId, forecast.date)))
-    );
+    const { targetEntryCount, keysByCity } = buildAcceptableCacheKeys(cities);
+    const forecastsByKey = indexForecasts(existingForecasts);
+    let cachedEntryCount = 0;
     const citiesToFetch = cities.filter((city) => {
-      const cityKeys = keysByCity.get(city.id) ?? [];
-      return cityKeys.some((key) => !forecastsByKey.has(key));
+      const cityKeys = keysByCity.get(city.id) ?? new Set<string>();
+      const existingCount = [...cityKeys].filter((key) => forecastsByKey.has(key)).length;
+      cachedEntryCount += Math.min(existingCount, forecastDays);
+      return existingCount < forecastDays;
     });
 
     console.log(
-      `Weather cache has ${forecastsByKey.size}/${desiredCacheKeys.size} city-date entries. ` +
+      `Weather cache has ${cachedEntryCount}/${targetEntryCount} city-date entries. ` +
         `${citiesToFetch.length}/${cities.length} cities need Open-Meteo fetch.`
     );
 
@@ -96,7 +98,7 @@ export async function refreshWeather(db: WeatherDatabase): Promise<RefreshWeathe
       const batchForecasts = await fetchForecastBatch(cityBatch, forecastDays);
       const missingForecasts = batchForecasts.filter((forecast) => {
         const key = forecastCacheKey(forecast.cityId, forecast.date);
-        return desiredCacheKeys.has(key) && !forecastsByKey.has(key);
+        return (keysByCity.get(forecast.cityId)?.has(key) ?? false) && !forecastsByKey.has(key);
       });
 
       await upsertForecasts(db, missingForecasts);

@@ -975,5 +975,169 @@
     "weatherMode": "standalone",
     "priority": 14,
     "geonameId": 1668399
+  },
+  {
+    "id": "curated:cn-dali",
+    "name": "Dali",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 12,
+    "geonameId": 1814093
+  },
+  {
+    "id": "curated:cn-lijiang",
+    "name": "Lijiang",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 12,
+    "geonameId": 1813253
+  },
+  {
+    "id": "curated:cn-jinghong",
+    "name": "Jinghong",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 14,
+    "geonameId": 1785710,
+    "notes": "Xishuangbanna main city weather point"
+  },
+  {
+    "id": "curated:cn-shangri-la",
+    "name": "Shangri-La",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 14,
+    "geonameId": 7910932
+  },
+  {
+    "id": "curated:cn-mangshi",
+    "name": "Mangshi",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 14,
+    "geonameId": 1280623,
+    "notes": "Dehong prefecture seat and main travel weather point"
+  },
+  {
+    "id": "curated:cn-yangshuo",
+    "name": "Yangshuo",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 14,
+    "geonameId": 1787323
+  },
+  {
+    "id": "curated:cn-zhangjiajie",
+    "name": "Zhangjiajie",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 14,
+    "geonameId": 1813171
+  },
+  {
+    "id": "curated:cn-huangshan",
+    "name": "Huangshan",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 14,
+    "geonameId": 1792359
+  },
+  {
+    "id": "curated:cn-dunhuang",
+    "name": "Dunhuang",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 16,
+    "geonameId": 1529531
+  },
+  {
+    "id": "curated:cn-kashgar",
+    "name": "Kashgar",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 16,
+    "geonameId": 1280849
+  },
+  {
+    "id": "curated:cn-turpan",
+    "name": "Turpan",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 16,
+    "geonameId": 1529114
+  },
+  {
+    "id": "curated:cn-wuyishan",
+    "name": "Wuyishan",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 16,
+    "geonameId": 1922014
+  },
+  {
+    "id": "curated:cn-lhasa",
+    "name": "Lhasa",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 16,
+    "geonameId": 1280737
+  },
+  {
+    "id": "curated:cn-wuzhen",
+    "name": "Wuzhen",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 18,
+    "geonameId": 1790848
+  },
+  {
+    "id": "curated:cn-leshan",
+    "name": "Leshan",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 18,
+    "geonameId": 1804153
+  },
+  {
+    "id": "curated:cn-enshi",
+    "name": "Enshi",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 18,
+    "geonameId": 1811720
+  },
+  {
+    "id": "curated:cn-fenghuang",
+    "name": "Fenghuang",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 18,
+    "geonameId": 7304020
+  },
+  {
+    "id": "curated:cn-jingdezhen",
+    "name": "Jingdezhen",
+    "countryCode": "CN",
+    "source": "curated",
+    "weatherMode": "standalone",
+    "priority": 18,
+    "geonameId": 1805680
   }
 ]

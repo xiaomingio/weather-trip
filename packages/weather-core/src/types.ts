@@ -50,6 +50,7 @@ export type City = {
   population?: number;
   elevationMeters: number;
   region: Exclude<WorldRegion, 'world'>;
+  selectionReasons?: string[];
 };
 
 export type DailyForecast = {

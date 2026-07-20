@@ -3,6 +3,7 @@
  * 对应文档: docs/product-design.md
  */
 import type { City, RegionKey } from 'weather-core/types';
+import countryProfiles from '../../../../data/city-selection/country-profiles.json';
 import { chinaAdmin1AdcodeByGeoNamesCode } from './china-admin1';
 import type { DisplayLocale } from './format';
 
@@ -12,6 +13,65 @@ export type RegionOption = {
   groups: Record<DisplayLocale, string>;
   matches: (city: City) => boolean;
 };
+
+type CountryProfile = {
+  countryCode: string;
+  detailedCoverage?: 'admin1' | 'admin2';
+};
+
+const countryNames = {
+  zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
+  en: new Intl.DisplayNames(['en'], { type: 'region' })
+};
+const detailedCountryCodes = new Set(
+  (countryProfiles as CountryProfile[])
+    .filter((profile) => profile.detailedCoverage)
+    .map((profile) => profile.countryCode)
+);
+const fixedRegionRank = new Map<RegionKey, number>([
+  ['world', 0],
+  ['asia', 1],
+  ['east_asia', 2],
+  ['southeast_asia', 3],
+  ['europe', 4],
+  ['north_america', 5],
+  ['south_america', 6],
+  ['africa', 7],
+  ['oceania', 8]
+]);
+
+function isGlobalScopeCity(city: City): boolean {
+  const reasons = city.selectionReasons ?? [];
+  return (
+    reasons.length === 0 ||
+    reasons.some((reason) => reason.startsWith('tourism:')) ||
+    reasons.includes('feature:PPLC') ||
+    reasons.includes('population:country-profile')
+  );
+}
+
+function isDetailedCountryRegion(region: RegionKey): boolean {
+  if (!region.startsWith('country:')) return false;
+  return detailedCountryCodes.has(region.slice('country:'.length));
+}
+
+function matchesGlobalOrDetailedRegion(city: City, region: RegionKey, matchesRegion: boolean): boolean {
+  if (!matchesRegion) return false;
+  if (isDetailedCountryRegion(region) || region.startsWith('province:')) return true;
+  return isGlobalScopeCity(city);
+}
+
+const detailedCountryOptions: RegionOption[] = (countryProfiles as CountryProfile[])
+  .filter((profile) => profile.detailedCoverage)
+  .map((profile) => ({
+    id: `country:${profile.countryCode}`,
+    labels: {
+      zh: countryNames.zh.of(profile.countryCode) ?? profile.countryCode,
+      en: countryNames.en.of(profile.countryCode) ?? profile.countryCode
+    },
+    groups: { zh: '国家/地区', en: 'Countries' },
+    matches: (city: City) => city.countryCode === profile.countryCode
+  }));
 
 export const chinaProvinceOptions: RegionOption[] = [
   ['22', '北京', 'Beijing'],
@@ -57,80 +117,62 @@ export const regionOptions: RegionOption[] = [
     id: 'world',
     labels: { zh: '全球', en: 'World' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: () => true
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'world', true)
   },
   {
     id: 'asia',
     labels: { zh: '亚洲', en: 'Asia' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => city.region === 'asia'
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'asia', city.region === 'asia')
   },
   {
     id: 'east_asia',
     labels: { zh: '东亚', en: 'East Asia' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => ['CN', 'JP', 'KR'].includes(city.countryCode ?? '')
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'east_asia', ['CN', 'JP', 'KR'].includes(city.countryCode ?? ''))
   },
   {
     id: 'southeast_asia',
     labels: { zh: '东南亚', en: 'Southeast Asia' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => ['SG', 'TH', 'VN', 'MY', 'ID', 'PH', 'KH', 'LA', 'MM', 'BN'].includes(city.countryCode ?? '')
+    matches: (city) =>
+      matchesGlobalOrDetailedRegion(
+        city,
+        'southeast_asia',
+        ['SG', 'TH', 'VN', 'MY', 'ID', 'PH', 'KH', 'LA', 'MM', 'BN'].includes(city.countryCode ?? '')
+      )
   },
   {
     id: 'europe',
     labels: { zh: '欧洲', en: 'Europe' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => city.region === 'europe'
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'europe', city.region === 'europe')
   },
   {
     id: 'north_america',
     labels: { zh: '北美', en: 'North America' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => city.region === 'north_america'
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'north_america', city.region === 'north_america')
   },
   {
     id: 'south_america',
     labels: { zh: '南美', en: 'South America' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => city.region === 'south_america'
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'south_america', city.region === 'south_america')
   },
   {
     id: 'africa',
     labels: { zh: '非洲', en: 'Africa' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => city.region === 'africa'
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'africa', city.region === 'africa')
   },
   {
     id: 'oceania',
     labels: { zh: '大洋洲', en: 'Oceania' },
     groups: { zh: '大区', en: 'Regions' },
-    matches: (city) => city.region === 'oceania'
+    matches: (city) => matchesGlobalOrDetailedRegion(city, 'oceania', city.region === 'oceania')
   },
-  {
-    id: 'country:CN',
-    labels: { zh: '中国', en: 'China' },
-    groups: { zh: '国家/地区', en: 'Countries' },
-    matches: (city) => city.countryCode === 'CN' || city.country === 'China'
-  },
-  {
-    id: 'country:US',
-    labels: { zh: '美国', en: 'United States' },
-    groups: { zh: '国家/地区', en: 'Countries' },
-    matches: (city) => city.countryCode === 'US' || city.country === 'United States'
-  },
-  {
-    id: 'country:JP',
-    labels: { zh: '日本', en: 'Japan' },
-    groups: { zh: '国家/地区', en: 'Countries' },
-    matches: (city) => city.countryCode === 'JP' || city.country === 'Japan'
-  },
-  {
-    id: 'country:RU',
-    labels: { zh: '俄罗斯', en: 'Russia' },
-    groups: { zh: '国家/地区', en: 'Countries' },
-    matches: (city) => city.countryCode === 'RU' || city.country === 'Russia'
-  },
+  ...detailedCountryOptions,
   ...chinaProvinceOptions
 ];
 
@@ -140,6 +182,32 @@ export function getRegionLabel(option: RegionOption, locale: DisplayLocale): str
 
 export function getRegionGroup(option: RegionOption, locale: DisplayLocale): string {
   return option.groups[locale];
+}
+
+export function getSortedRegionOptions(locale: DisplayLocale): RegionOption[] {
+  const groupRank = new Map(
+    locale === 'zh'
+      ? [
+          ['大区', 0],
+          ['国家/地区', 1],
+          ['中国省级', 2]
+        ]
+      : [
+          ['Regions', 0],
+          ['Countries', 1],
+          ['China provinces', 2]
+        ]
+  );
+  const collator = new Intl.Collator(locale === 'zh' ? 'zh-CN-u-co-pinyin' : 'en', { sensitivity: 'base' });
+
+  return [...regionOptions].sort((a, b) => {
+    const groupDiff = (groupRank.get(a.groups[locale]) ?? 99) - (groupRank.get(b.groups[locale]) ?? 99);
+    if (groupDiff !== 0) return groupDiff;
+    if (fixedRegionRank.has(a.id) || fixedRegionRank.has(b.id)) {
+      return (fixedRegionRank.get(a.id) ?? 99) - (fixedRegionRank.get(b.id) ?? 99);
+    }
+    return collator.compare(a.labels[locale], b.labels[locale]) || a.id.localeCompare(b.id);
+  });
 }
 
 export function getRegionOption(region: RegionKey): RegionOption {
