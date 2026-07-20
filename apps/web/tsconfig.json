@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "types": [
+      "astro/client",
+      "node"
+    ],
+    "noEmit": true
+  },
+  "references": [
+    {
+      "path": "../../packages/weather-core"
+    },
+    {
+      "path": "../../packages/weather-db"
+    }
+  ],
+  "include": [
+    "src/**/*.astro",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "astro.config.mjs"
+  ]
+}

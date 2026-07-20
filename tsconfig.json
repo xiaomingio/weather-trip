@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/weather-core"
+    },
+    {
+      "path": "./packages/weather-db"
+    },
+    {
+      "path": "./apps/worker"
+    }
+  ]
+}
