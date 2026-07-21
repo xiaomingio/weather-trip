@@ -18,6 +18,14 @@ export type WeatherSnapshot = {
   availableDates: string[];
 };
 
+export type RefreshStatus = {
+  key: string;
+  lastSuccessAt?: Date;
+  lastCompleteAt?: Date;
+  lastErrorType?: string;
+  lastErrorMessage?: string;
+};
+
 export type GeoNamesCity = {
   geonameId: number;
   name: string;
@@ -266,6 +274,21 @@ async function readCitiesWithForecasts(db: WeatherDatabase): Promise<City[]> {
 export async function readForecasts(db: WeatherDatabase): Promise<DailyForecast[]> {
   const result = await db.pool.query('select * from daily_forecasts order by city_id, date');
   return result.rows.map(mapForecast);
+}
+
+function mapRefreshStatus(row: Record<string, unknown>): RefreshStatus {
+  return {
+    key: String(row.key),
+    lastSuccessAt: row.last_success_at instanceof Date ? row.last_success_at : undefined,
+    lastCompleteAt: row.last_complete_at instanceof Date ? row.last_complete_at : undefined,
+    lastErrorType: row.last_error_type === null ? undefined : String(row.last_error_type),
+    lastErrorMessage: row.last_error_message === null ? undefined : String(row.last_error_message)
+  };
+}
+
+export async function readRefreshStatus(db: WeatherDatabase, key: string): Promise<RefreshStatus | undefined> {
+  const result = await db.pool.query('select * from refresh_status where key = $1', [key]);
+  return result.rows[0] ? mapRefreshStatus(result.rows[0]) : undefined;
 }
 
 export function getAvailableDates(cities: City[], forecasts: DailyForecast[]): string[] {

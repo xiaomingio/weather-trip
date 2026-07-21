@@ -42,13 +42,14 @@ refresh_status     # 全局刷新动作的最近成功/完成/错误状态
 ```text
 apps/worker
   -> 读取 cities 和 daily_forecasts
-  -> 计算未来 14 天缺失的 city/date
-  -> 只请求缺失城市批次
+  -> 读取 weather:refresh-daily 最近成功时间
+  -> 最近成功刷新不到 12 小时且未来 14 天天气窗口完整时跳过
+  -> 超过 12 小时后重新请求城市批次并覆盖未来 14 天缓存
   -> upsert daily_forecasts
   -> 更新 refresh_status
 ```
 
-Worker 不重复请求数据库里已有的城市日期，减少 Open-Meteo API 调用。刷新失败时保留已有可用预报，只更新刷新状态里的错误摘要。
+Worker 用 `refresh_status.last_success_at` 控制天气数据新鲜度，避免服务重启后短时间内重复打 Open-Meteo。超过 12 小时后会重新拉取未来天气窗口；这样昨天缓存过的“明天”天气，到了今天也会再次更新，因为预报本身会变化。刷新失败时保留已有可用预报，只更新刷新状态里的错误摘要。
 
 `daily_forecasts.date` 保存的是天气源返回的当地自然日，不是 UTC 时间戳。当前 Open-Meteo 请求使用 `timezone=auto`，所以中国城市按 `Asia/Shanghai` 日期返回，美国城市按各自地点时区日期返回。Postgres `date` 读到 Node.js 后仍按 date-only 处理，不能用 `toISOString()` 转换，否则在中国开发环境会因为 UTC 偏移把日期回退一天，导致缓存判断重复请求。
 

@@ -4,8 +4,10 @@
  * 对应文档: docs/product-design.md
  */
 import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
+import SitePreferences from '@/components/site-preferences.astro';
 import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath, topTabs } from '@/domain/navigation';
+import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import '@/styles/global.css';
 import '@/styles/landing.css';
 
@@ -15,7 +17,7 @@ type Props = {
 
 const requestedLocale = Astro.props.locale ?? Astro.params.locale;
 if (!Astro.props.locale && requestedLocale !== 'zh') {
-  return Astro.redirect('/');
+  return new Response('Not found', { status: 404 });
 }
 
 const locale: DisplayLocale = requestedLocale === 'zh' ? 'zh' : 'en';
@@ -137,6 +139,7 @@ const copy = {
     description: '查看全球城市未来天气，或先选择你想要的天气，再去找刚好适合抵达的地方。',
     brandZh: '天气旅行',
     heroTitle: '让天气替你挑一座城市',
+    heroTitleLines: ['让天气替你', '挑一座城市'],
     heroLead:
       '出发前先看全球城市接下来几天的温度、晴雨和湿度；也可以先选择你想要的天气，再去找刚好适合抵达的地方。',
     primaryAction: '查看全球天气',
@@ -160,6 +163,7 @@ const copy = {
       'Scan future weather across global cities, or first choose the weather you want, then find the right place to land.',
     brandZh: 'Weather Trip',
     heroTitle: 'Let weather pick your next city',
+    heroTitleLines: ['Let weather pick', 'your next city'],
     heroLead:
       'Before you go, scan temperature, sky, and humidity for cities worldwide—or first choose the weather you want, then find the right place to land.',
     primaryAction: 'View world weather',
@@ -173,8 +177,8 @@ const copy = {
     citySamples: 'City weather samples',
     artAlt: 'Travel weather map preview with climate layers and compass',
     figBrand: 'Weather Trip',
-    figLayers: 'Weather · Temp · RH · Elevation',
-    humidity: (v: number) => `RH ${v}%`,
+    figLayers: 'Weather · Temperature · Humidity · Elevation',
+    humidity: (v: number) => `Humidity ${v}%`,
     elevation: (v: number) => `Elevation ${v}m`
   }
 }[locale];
@@ -182,6 +186,8 @@ const copy = {
 const weatherPath = buildTopTabPath(locale, 'weather-map');
 const comparePath = buildTopTabPath(locale, 'city-finder');
 const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
+const seoPage = getPublicPage(locale, 'landing');
+const alternateLinks = getAlternateLinks('landing');
 ---
 
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'} data-weather-theme="sunny">
@@ -190,6 +196,18 @@ const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{copy.title}</title>
     <meta name="description" content={copy.description} />
+    <link rel="canonical" href={buildAbsoluteUrl(seoPage.path)} />
+    <link rel="alternate" hreflang="en" href={alternateLinks.en} />
+    <link rel="alternate" hreflang="zh-Hans" href={alternateLinks['zh-Hans']} />
+    <link rel="alternate" hreflang="x-default" href={alternateLinks['x-default']} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Weather Trip" />
+    <meta property="og:title" content={copy.title} />
+    <meta property="og:description" content={copy.description} />
+    <meta property="og:url" content={buildAbsoluteUrl(seoPage.path)} />
+    <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="landing-page">
     <main class="page">
@@ -214,7 +232,13 @@ const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
           >
             <span class="unit-label" data-unit-label>°C</span>
           </button>
-          <a class="nav-icon-btn" href={otherLandingPath} aria-label={copy.languageToggle} title={copy.languageToggle}>
+          <a
+            class="nav-icon-btn"
+            href={otherLandingPath}
+            data-locale-link={otherLocale}
+            aria-label={copy.languageToggle}
+            title={copy.languageToggle}
+          >
             <svg
               class="nav-icon"
               viewBox="0 0 24 24"
@@ -237,11 +261,15 @@ const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
         <canvas class="climate-canvas" data-climate-canvas aria-hidden="true"></canvas>
         <div class="hero-copy">
           <p class="kicker">{copy.brandZh}</p>
-          <h1>{copy.heroTitle}</h1>
+          <h1 class={`hero-title hero-title-${locale}`} aria-label={copy.heroTitle}>
+            {copy.heroTitleLines.map((line, index) => (
+              <span>{line}{locale === 'en' && index < copy.heroTitleLines.length - 1 ? ' ' : ''}</span>
+            ))}
+          </h1>
           <p class="lede">{copy.heroLead}</p>
           <div class="actions">
-            <a class="primary-link" href={weatherPath}>{copy.primaryAction}</a>
-            <a class="secondary-link" href={comparePath}>{copy.secondaryAction}</a>
+            <a class="primary-link" href={weatherPath}><span class="action-label">{copy.primaryAction}</span></a>
+            <a class="secondary-link" href={comparePath}><span class="action-label">{copy.secondaryAction}</span></a>
           </div>
           <ul class="coverage" aria-label={copy.coverageLabel}>
             <li>{citiesLabel} {copy.cities}</li>
@@ -379,6 +407,7 @@ const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
       </section>
     </main>
 
+    <SitePreferences />
     <script is:inline src="/landing/climate-canvas.js"></script>
     <script is:inline src="/landing/weather-atlas.js"></script>
     <script is:inline src="/landing/nav-prefs.js"></script>

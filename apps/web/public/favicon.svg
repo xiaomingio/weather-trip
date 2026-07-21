@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Weather Trip">
+  <rect width="64" height="64" rx="14" fill="#10231f"/>
+  <circle cx="25" cy="25" r="10" fill="#f8c14a"/>
+  <path d="M18 42h26a9 9 0 0 0 0-18 13 13 0 0 0-24-2 10 10 0 0 0-2 20z" fill="#f3f7f3"/>
+  <path d="M34 44l-7 10h8l-3 8 12-14h-8l4-4z" fill="#2f9e7e"/>
+</svg>

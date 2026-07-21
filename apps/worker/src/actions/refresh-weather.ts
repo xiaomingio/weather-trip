@@ -1,9 +1,10 @@
 /**
- * 文件说明: 增量刷新缺失的未来天气预报，避免重复调用 Open-Meteo 已缓存的城市日期。
+ * 文件说明: 按刷新新鲜度更新未来天气预报，避免短时间重复请求并定期覆盖过期预报。
  * 对应文档: docs/data-flow.md
  */
 import type { City, DailyForecast } from 'weather-core/types';
 import {
+  readRefreshStatus,
   readCities,
   readForecasts,
   setupWeatherDatabase,
@@ -17,11 +18,14 @@ import { fetchForecastBatch } from '../open-meteo.js';
 const actionKey = 'weather:refresh-daily';
 const batchSize = 40;
 const forecastDays = 14;
+const freshRefreshThresholdMs = 12 * 60 * 60 * 1000;
 
 export type RefreshWeatherResult = {
   cities: number;
   citiesFetched: number;
   forecastsUpserted: number;
+  skipped: boolean;
+  reason?: string;
 };
 
 function chunk<T>(items: T[], size: number): T[][] {
@@ -73,47 +77,72 @@ function indexForecasts(forecasts: DailyForecast[]): Map<string, DailyForecast> 
   return new Map(forecasts.map((forecast) => [forecastCacheKey(forecast.cityId, forecast.date), forecast]));
 }
 
+function isFreshRefresh(lastSuccessAt: Date | undefined, now: Date): boolean {
+  return Boolean(lastSuccessAt && now.getTime() - lastSuccessAt.getTime() < freshRefreshThresholdMs);
+}
+
 export async function refreshWeather(db: WeatherDatabase): Promise<RefreshWeatherResult> {
   try {
     await setupWeatherDatabase(db);
-    const [cities, existingForecasts] = await Promise.all([readCities(db), readForecasts(db)]);
+    const now = new Date();
+    const [cities, existingForecasts, refreshStatus] = await Promise.all([
+      readCities(db),
+      readForecasts(db),
+      readRefreshStatus(db, actionKey)
+    ]);
     const { targetEntryCount, keysByCity } = buildAcceptableCacheKeys(cities);
     const forecastsByKey = indexForecasts(existingForecasts);
     let cachedEntryCount = 0;
-    const citiesToFetch = cities.filter((city) => {
+    const citiesWithMissingForecasts = cities.filter((city) => {
       const cityKeys = keysByCity.get(city.id) ?? new Set<string>();
       const existingCount = [...cityKeys].filter((key) => forecastsByKey.has(key)).length;
       cachedEntryCount += Math.min(existingCount, forecastDays);
       return existingCount < forecastDays;
     });
+    const hasFreshRefresh = isFreshRefresh(refreshStatus?.lastSuccessAt, now);
+    const citiesToFetch = hasFreshRefresh ? citiesWithMissingForecasts : cities;
 
     console.log(
       `Weather cache has ${cachedEntryCount}/${targetEntryCount} city-date entries. ` +
-        `${citiesToFetch.length}/${cities.length} cities need Open-Meteo fetch.`
+        `${citiesToFetch.length}/${cities.length} cities need Open-Meteo fetch. ` +
+        `Last successful refresh: ${refreshStatus?.lastSuccessAt?.toISOString() ?? 'never'}.`
     );
+
+    if (hasFreshRefresh && citiesToFetch.length === 0) {
+      console.log('Weather refresh skipped because the last successful refresh is less than 12 hours old.');
+      return {
+        cities: cities.length,
+        citiesFetched: 0,
+        forecastsUpserted: 0,
+        skipped: true,
+        reason: 'fresh'
+      };
+    }
 
     let forecastsUpserted = 0;
     const cityBatches = chunk(citiesToFetch, batchSize);
     for (const [index, cityBatch] of cityBatches.entries()) {
       const batchForecasts = await fetchForecastBatch(cityBatch, forecastDays);
-      const missingForecasts = batchForecasts.filter((forecast) => {
+      const targetForecasts = batchForecasts.filter((forecast) => {
         const key = forecastCacheKey(forecast.cityId, forecast.date);
-        return (keysByCity.get(forecast.cityId)?.has(key) ?? false) && !forecastsByKey.has(key);
+        if (!(keysByCity.get(forecast.cityId)?.has(key) ?? false)) return false;
+        return !hasFreshRefresh || !forecastsByKey.has(key);
       });
 
-      await upsertForecasts(db, missingForecasts);
-      for (const forecast of missingForecasts) {
+      await upsertForecasts(db, targetForecasts);
+      for (const forecast of targetForecasts) {
         forecastsByKey.set(forecastCacheKey(forecast.cityId, forecast.date), forecast);
       }
-      forecastsUpserted += missingForecasts.length;
-      console.log(`Fetched batch ${index + 1}/${cityBatches.length}: ${cityBatch.length} cities, upserted ${missingForecasts.length} days`);
+      forecastsUpserted += targetForecasts.length;
+      console.log(`Fetched batch ${index + 1}/${cityBatches.length}: ${cityBatch.length} cities, upserted ${targetForecasts.length} days`);
     }
 
     await updateRefreshSuccess(db, actionKey);
     return {
       cities: cities.length,
       citiesFetched: citiesToFetch.length,
-      forecastsUpserted
+      forecastsUpserted,
+      skipped: false
     };
   } catch (error) {
     await updateRefreshFailure(db, actionKey, error);

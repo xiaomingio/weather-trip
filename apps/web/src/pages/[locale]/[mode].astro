@@ -1,35 +1,25 @@
 ---
 /**
- * 文件说明: 按中英文 locale 和工具 Tab 路径从 Postgres 读取天气快照并渲染 React 工具页。
+ * 文件说明: 按中英文 locale 和工具 Tab 路径渲染天气工具页客户端壳。
  * 对应文档: docs/data-flow.md
  */
-import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
+import SitePreferences from '@/components/site-preferences.astro';
 import { WeatherDashboard } from '@/components/weather-dashboard';
-import { resolveToolMode } from '@/domain/navigation';
+import { getToolPathSegment, resolveToolMode } from '@/domain/navigation';
+import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import '@/styles/global.css';
 
 const requestedLocale = Astro.props.locale ?? Astro.params.locale;
 const requestedMode = Astro.props.mode ?? Astro.params.mode;
 
 if (!Astro.props.locale && requestedLocale !== 'zh') {
-  return Astro.redirect('/');
+  return new Response('Not found', { status: 404 });
 }
 
 const locale = requestedLocale === 'zh' ? 'zh' : 'en';
 const initialMode = resolveToolMode(requestedMode);
 
-if (!initialMode) {
-  return Astro.redirect(locale === 'zh' ? '/zh' : '/');
-}
-
-const db = createWeatherDatabase();
-let snapshot;
-
-try {
-  snapshot = await readWeatherSnapshot(db);
-} finally {
-  await db.close();
-}
+if (!initialMode) return new Response('Not found', { status: 404 });
 
 const title =
   locale === 'zh'
@@ -43,6 +33,9 @@ const description =
     : initialMode === 'daily'
       ? 'View temperature, rainfall, RH, weather type, and comfort across global cities by date.'
       : 'Find matching cities by temperature, sky, RH, elevation, and trip length.';
+const tabId = getToolPathSegment(initialMode);
+const seoPage = getPublicPage(locale, tabId);
+const alternateLinks = getAlternateLinks(tabId);
 ---
 
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'} data-weather-theme="sunny">
@@ -51,6 +44,18 @@ const description =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={buildAbsoluteUrl(seoPage.path)} />
+    <link rel="alternate" hreflang="en" href={alternateLinks.en} />
+    <link rel="alternate" hreflang="zh-Hans" href={alternateLinks['zh-Hans']} />
+    <link rel="alternate" hreflang="x-default" href={alternateLinks['x-default']} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Weather Trip" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={buildAbsoluteUrl(seoPage.path)} />
+    <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="weather-page">
     <WeatherDashboard
@@ -58,9 +63,7 @@ const description =
       locale={locale}
       initialMode={initialMode}
       initialSearch={Astro.url.search}
-      cities={snapshot.cities}
-      forecasts={snapshot.forecasts}
-      availableDates={snapshot.availableDates}
     />
+    <SitePreferences />
   </body>
 </html>

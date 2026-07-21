@@ -29,6 +29,8 @@
   --theme-base-top: #fbfaf4;
   --theme-base-bottom: #f4f1e8;
   --page-pad: 12px;
+  --app-max-width: 1600px;
+  --app-shell-max-width: calc(var(--app-max-width) + (var(--page-pad) * 2));
 }
 
 * {
@@ -104,8 +106,11 @@ body.landing-page {
   gap: 10px;
   grid-template-rows: auto minmax(0, 1fr);
   height: 100vh;
+  margin: 0 auto;
+  max-width: var(--app-shell-max-width);
   overflow: hidden;
   padding: var(--page-pad);
+  width: 100%;
 }
 
 .site-nav {
@@ -779,37 +784,6 @@ select {
   line-height: 1;
 }
 
-.map-marker {
-  align-items: center;
-  background: color-mix(in srgb, var(--marker-color) var(--marker-opacity, 100%), transparent);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  border-radius: 999px;
-  box-shadow: 0 5px 14px rgba(24, 32, 31, 0.2);
-  color: #fff;
-  display: flex;
-  font-size: 11px;
-  font-weight: 400;
-  height: var(--marker-size);
-  justify-content: center;
-  line-height: 1;
-  min-height: 22px;
-  min-width: 22px;
-  padding: 0;
-  transform: translateZ(0);
-  width: var(--marker-size);
-}
-
-.map-marker.is-zero {
-  border-color: rgba(255, 255, 255, 0.42);
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.map-marker.is-selected {
-  border-color: rgba(255, 255, 255, 0.94);
-  border-width: 2px;
-  box-shadow: 0 8px 20px rgba(24, 32, 31, 0.24);
-}
-
 .results-panel {
   background: transparent;
   border: 0;
@@ -885,6 +859,15 @@ select {
   color: var(--muted);
 }
 
+.ranking-list-frame {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .ranking-list {
   display: grid;
   align-content: start;
@@ -897,6 +880,26 @@ select {
   min-height: 0;
   overflow: auto;
   padding: 0;
+}
+
+.load-more-results,
+.data-status {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.load-more-results:hover {
+  border-color: var(--sea);
+}
+
+.data-status {
+  color: var(--muted);
 }
 
 .empty-results {
@@ -932,6 +935,17 @@ select {
 .ranking-list button.is-active,
 .ranking-list button:hover {
   border-color: var(--sea);
+}
+
+.load-more-results-item {
+  display: block;
+}
+
+.ranking-list .load-more-results {
+  display: block;
+  font-weight: 500;
+  min-height: 40px;
+  text-align: center;
 }
 
 .ranking-list span {

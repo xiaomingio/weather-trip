@@ -5,16 +5,13 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import maplibregl, {
-  GeoJSONSource,
-  Map as MapLibreMap,
-  Marker
-} from 'maplibre-gl';
+import maplibregl, { GeoJSONSource, Map as MapLibreMap, type MapLayerMouseEvent } from 'maplibre-gl';
 import { Maximize2, Minimize2 } from 'lucide-react';
-import type { CityDailyWeather, CityTravelScore, MapLayer, RegionKey, RegionWeatherSummary, ViewMode, WeatherType } from 'weather-core/types';
+import type { MapLayer, RegionKey, RegionWeatherSummary, ViewMode } from 'weather-core/types';
 import { type DisplayLocale, type TemperatureUnit, celsiusToFahrenheit, formatCityName, formatCityRegion } from '@/domain/format';
 import type { MapRegionLayer } from '@/domain/regions';
 import { getWeatherTypeLabel, weatherTypeEmoji } from '@/domain/weather';
+import { type DashboardDailyResultItem, type DashboardResultItem, type DashboardTravelResultItem, isDashboardTravelItem } from '@/domain/weather-dashboard-shared';
 
 type MapPoint = {
   cityId: string;
@@ -34,8 +31,7 @@ type WorldWeatherMapProps = {
   mode: ViewMode;
   locale: DisplayLocale;
   layer: MapLayer;
-  travelScores: CityTravelScore[];
-  dailyWeather: CityDailyWeather[];
+  resultItems: DashboardResultItem[];
   regionSummaries: RegionWeatherSummary[];
   temperatureUnit: TemperatureUnit;
   activeRegion: RegionKey;
@@ -76,6 +72,37 @@ type MarkerViewport = {
   width: number;
   height: number;
 };
+
+type MapPointGeoJson = {
+  type: 'FeatureCollection';
+  features: Array<{
+    type: 'Feature';
+    properties: {
+      cityId: string;
+      label: string;
+      markerText: string;
+      color: string;
+      opacity: number;
+      size: number;
+      sortKey: number;
+      selected: boolean;
+      isZero: boolean;
+    };
+    geometry: {
+      type: 'Point';
+      coordinates: [number, number];
+    };
+  }>;
+};
+
+const emptyPointGeojson: MapPointGeoJson = {
+  type: 'FeatureCollection',
+  features: []
+};
+
+const pointSourceId = 'weather-points';
+const pointCircleLayerId = 'weather-point-circle';
+const pointLabelLayerId = 'weather-point-label';
 
 const elevationColorStops = [
   { maxMeters: 100, color: '#4f9d86', gradientPosition: 0 },
@@ -188,20 +215,6 @@ function markerRank(point: MapPoint): number {
   return (point.selected ? 1_000_000 : 0) + populationWeight + point.opacity * 24 + point.size;
 }
 
-function averageValue<T>(items: T[], getValue: (item: T) => number): number {
-  return items.reduce((sum, item) => sum + getValue(item), 0) / Math.max(items.length, 1);
-}
-
-function dominantWeatherType(forecasts: CityTravelScore['forecasts']): WeatherType {
-  const counts = new globalThis.Map<WeatherType, number>();
-
-  for (const forecast of forecasts) {
-    counts.set(forecast.weatherType, (counts.get(forecast.weatherType) ?? 0) + 1);
-  }
-
-  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'cloudy';
-}
-
 function precipitationMarkerText(value: number): string {
   if (value < 10) return value.toFixed(1);
   return String(Math.round(value));
@@ -222,11 +235,7 @@ function temperatureLabel(valueC: number, unit: TemperatureUnit): string {
   return `${Math.round(value)}°${unit.toUpperCase()}`;
 }
 
-function travelMarkerMetric(score: CityTravelScore, layer: MapLayer, matchColor: string, temperatureUnit: TemperatureUnit): MarkerMetric {
-  const averagePrecipitationMm = averageValue(score.forecasts, (forecast) => forecast.precipitationSumMm);
-  const averageHumidityPercent = averageValue(score.forecasts, (forecast) => forecast.humidityMeanPercent);
-  const weatherType = dominantWeatherType(score.forecasts);
-
+function travelMarkerMetric(score: DashboardTravelResultItem, layer: MapLayer, matchColor: string, temperatureUnit: TemperatureUnit): MarkerMetric {
   if (layer === 'temperature') {
     return {
       markerText: temperatureMarkerText(score.averageTemperatureC, temperatureUnit),
@@ -236,23 +245,23 @@ function travelMarkerMetric(score: CityTravelScore, layer: MapLayer, matchColor:
   }
   if (layer === 'weather') {
     return {
-      markerText: weatherTypeEmoji[weatherType] ?? '',
-      color: weatherColor(weatherType),
+      markerText: weatherTypeEmoji[score.weatherType] ?? '',
+      color: weatherColor(score.weatherType),
       sortValue: score.score
     };
   }
   if (layer === 'precipitation') {
     return {
-      markerText: precipitationMarkerText(averagePrecipitationMm),
-      color: precipitationColor(averagePrecipitationMm),
-      sortValue: averagePrecipitationMm
+      markerText: precipitationMarkerText(score.averagePrecipitationMm),
+      color: precipitationColor(score.averagePrecipitationMm),
+      sortValue: score.averagePrecipitationMm
     };
   }
   if (layer === 'humidity') {
     return {
-      markerText: `${Math.round(averageHumidityPercent)}%`,
-      color: humidityColor(averageHumidityPercent),
-      sortValue: averageHumidityPercent
+      markerText: `${Math.round(score.averageHumidityPercent)}%`,
+      color: humidityColor(score.averageHumidityPercent),
+      sortValue: score.averageHumidityPercent
     };
   }
   if (layer === 'elevation') {
@@ -270,7 +279,7 @@ function travelMarkerMetric(score: CityTravelScore, layer: MapLayer, matchColor:
   };
 }
 
-function dailyMarkerMetric(item: CityDailyWeather, layer: MapLayer, temperatureUnit: TemperatureUnit): MarkerMetric {
+function dailyMarkerMetric(item: DashboardDailyResultItem, layer: MapLayer, temperatureUnit: TemperatureUnit): MarkerMetric {
   if (layer === 'temperature') {
     return {
       markerText: temperatureMarkerText(item.forecast.temperatureMeanC, temperatureUnit),
@@ -539,12 +548,41 @@ function buildRegionBounds(
   return buildBoundsFromPoints(boundsPoints);
 }
 
+function buildPointGeojson(points: MapPoint[]): MapPointGeoJson {
+  return {
+    type: 'FeatureCollection',
+    features: points.map((point) => ({
+      type: 'Feature',
+      properties: {
+        cityId: point.cityId,
+        label: point.label,
+        markerText: point.markerText,
+        color: point.color,
+        opacity: point.opacity,
+        size: point.size,
+        sortKey: markerRank(point),
+        selected: point.selected,
+        isZero: point.sortValue === 0
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [point.longitude, point.latitude]
+      }
+    }))
+  };
+}
+
+function regionGeojsonUrl(layer: MapRegionLayer): string {
+  if (layer === 'country') return '/data/geo/world-countries.geojson';
+  if (layer === 'admin1') return '/data/geo/detailed-admin1.geojson';
+  return '/data/geo/china-provinces.geojson';
+}
+
 export function WorldWeatherMap({
   mode,
   locale,
   layer,
-  travelScores,
-  dailyWeather,
+  resultItems,
   regionSummaries,
   temperatureUnit,
   activeRegion,
@@ -554,13 +592,15 @@ export function WorldWeatherMap({
 }: WorldWeatherMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
-  const markersRef = useRef<Marker[]>([]);
+  const onSelectCityRef = useRef(onSelectCity);
+  const loadingRegionLayersRef = useRef<Partial<Record<MapRegionLayer, Promise<void>>>>({});
   const regionGeojsonRef = useRef<Record<MapRegionLayer, MapGeoJson | null>>({
     country: null,
     admin1: null,
     'china-admin1': null
   });
-  const [regionsReady, setRegionsReady] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const [regionDataVersion, setRegionDataVersion] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [markerViewport, setMarkerViewport] = useState<MarkerViewport>({ zoom: 1.35, width: 0, height: 0 });
   const scale = legendScale(mode, layer, locale);
@@ -574,13 +614,18 @@ export function WorldWeatherMap({
         ? 'Exit map fullscreen'
         : 'Fullscreen map';
 
+  useEffect(() => {
+    onSelectCityRef.current = onSelectCity;
+  }, [onSelectCity]);
+
   const points = useMemo<MapPoint[]>(() => {
     if (mode === 'travel') {
-      const matchDays = travelScores.map((score) => score.matchDays);
+      const travelItems = resultItems.filter(isDashboardTravelItem);
+      const matchDays = travelItems.map((score) => score.matchDays);
       const minMatchDays = Math.min(...matchDays, 0);
       const maxMatchDays = Math.max(...matchDays, 0);
 
-      return travelScores.map((score) => {
+      return travelItems.map((score) => {
         const normalized = normalizeRangeValue(score.matchDays, minMatchDays, maxMatchDays);
         const matchColor = relativeMatchColor(score.matchDays, minMatchDays, maxMatchDays);
         const metric = travelMarkerMetric(score, layer, matchColor, temperatureUnit);
@@ -603,7 +648,7 @@ export function WorldWeatherMap({
       });
     }
 
-    return dailyWeather.map((item) => {
+    return resultItems.filter((item): item is DashboardDailyResultItem => !isDashboardTravelItem(item)).map((item) => {
       const metric = dailyMarkerMetric(item, layer, temperatureUnit);
 
       return {
@@ -623,7 +668,7 @@ export function WorldWeatherMap({
       if (a.selected !== b.selected) return a.selected ? 1 : -1;
       return a.sortValue - b.sortValue;
     });
-  }, [dailyWeather, hasRegionLayer, layer, locale, mode, selectedCityId, temperatureUnit, travelScores]);
+  }, [hasRegionLayer, layer, locale, mode, resultItems, selectedCityId, temperatureUnit]);
 
   const updateMarkerViewport = useCallback(() => {
     const map = mapRef.current;
@@ -683,13 +728,91 @@ export function WorldWeatherMap({
   }, [hasRegionLayer, locale, points.length, regionSummaries.length, visiblePoints.length]);
 
   const pointBounds = useMemo(() => {
-    const boundsPoints =
-      mode === 'travel'
-        ? travelScores.map((score): BoundsPoint => [score.city.longitude, score.city.latitude])
-        : dailyWeather.map((item): BoundsPoint => [item.city.longitude, item.city.latitude]);
+    const boundsPoints = resultItems.map((item): BoundsPoint => [item.city.longitude, item.city.latitude]);
 
     return buildBoundsFromPoints(boundsPoints);
-  }, [dailyWeather, mode, travelScores]);
+  }, [resultItems]);
+
+  const ensureRegionLayer = useCallback(
+    async (targetLayer: MapRegionLayer) => {
+      const map = mapRef.current;
+      if (!map || !mapReady) return;
+      if (regionGeojsonRef.current[targetLayer]) return;
+      if (loadingRegionLayersRef.current[targetLayer]) {
+        await loadingRegionLayersRef.current[targetLayer];
+        return;
+      }
+
+      loadingRegionLayersRef.current[targetLayer] = fetch(regionGeojsonUrl(targetLayer))
+        .then((response) => response.json() as Promise<MapGeoJson>)
+        .then((geojson) => {
+          const currentMap = mapRef.current;
+          if (!currentMap) return;
+          regionGeojsonRef.current[targetLayer] = geojson;
+          const sourceId = regionSourceId(targetLayer);
+          if (!currentMap.getSource(sourceId)) {
+            currentMap.addSource(sourceId, {
+              type: 'geojson',
+              data: geojson
+            });
+          }
+
+          const beforePointLayer = currentMap.getLayer(pointCircleLayerId) ? pointCircleLayerId : undefined;
+          if (!currentMap.getLayer(regionFillLayerId(targetLayer))) {
+            currentMap.addLayer(
+              {
+                id: regionFillLayerId(targetLayer),
+                type: 'fill',
+                source: sourceId,
+                layout: {
+                  visibility: 'none'
+                },
+                paint: {
+                  'fill-color': ['coalesce', ['get', 'fillColor'], 'rgba(255,255,255,0)'],
+                  'fill-opacity': ['coalesce', ['get', 'fillOpacity'], 0],
+                  'fill-outline-color': targetLayer === 'country' ? 'rgba(24,32,31,0.18)' : 'rgba(24,32,31,0.28)'
+                }
+              },
+              beforePointLayer
+            );
+          }
+
+          if (!currentMap.getLayer(regionLineLayerId(targetLayer))) {
+            currentMap.addLayer(
+              {
+                id: regionLineLayerId(targetLayer),
+                type: 'line',
+                source: sourceId,
+                layout: {
+                  visibility: 'none'
+                },
+                paint: {
+                  'line-color': targetLayer === 'country' ? 'rgba(24,32,31,0.22)' : 'rgba(24,32,31,0.35)',
+                  'line-width': [
+                    'case',
+                    ['boolean', ['get', 'isActiveRegion'], false],
+                    targetLayer === 'country' ? 1.25 : 2,
+                    ['boolean', ['get', 'isVisibleRegion'], false],
+                    targetLayer === 'country' ? 0.65 : 1.05,
+                    0.3
+                  ],
+                  'line-opacity': ['case', ['boolean', ['get', 'isVisibleRegion'], false], targetLayer === 'country' ? 0.65 : 0.9, 0]
+                }
+              },
+              beforePointLayer
+            );
+          }
+
+          setRegionDataVersion((current) => current + 1);
+        })
+        .finally(() => {
+          delete loadingRegionLayersRef.current[targetLayer];
+        });
+
+      await loadingRegionLayersRef.current[targetLayer];
+    },
+    [mapReady]
+  );
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -727,64 +850,69 @@ export function WorldWeatherMap({
       }
     });
 
-    mapRef.current.on('load', async () => {
-      const [countryGeojson, admin1Geojson, chinaGeojson] = await Promise.all([
-        fetch('/data/geo/world-countries.geojson').then((response) => response.json() as Promise<MapGeoJson>),
-        fetch('/data/geo/detailed-admin1.geojson').then((response) => response.json() as Promise<MapGeoJson>),
-        fetch('/data/geo/china-provinces.geojson').then((response) => response.json() as Promise<MapGeoJson>)
-      ]);
-      regionGeojsonRef.current = {
-        country: countryGeojson,
-        admin1: admin1Geojson,
-        'china-admin1': chinaGeojson
-      };
+    const handlePointClick = (event: MapLayerMouseEvent) => {
+      const cityId = event.features?.[0]?.properties?.cityId;
+      if (typeof cityId === 'string') onSelectCityRef.current(cityId);
+    };
+    const handlePointEnter = () => {
+      const canvas = mapRef.current?.getCanvas();
+      if (canvas) canvas.style.cursor = 'pointer';
+    };
+    const handlePointLeave = () => {
+      const canvas = mapRef.current?.getCanvas();
+      if (canvas) canvas.style.cursor = '';
+    };
 
-      (['country', 'admin1', 'china-admin1'] as MapRegionLayer[]).forEach((mapRegionLayer) => {
-        const sourceId = regionSourceId(mapRegionLayer);
-        if (!mapRef.current?.getSource(sourceId)) {
-          mapRef.current?.addSource(sourceId, {
-            type: 'geojson',
-            data: regionGeojsonRef.current[mapRegionLayer] as MapGeoJson
-          });
-        }
+    mapRef.current.on('load', () => {
+      const map = mapRef.current;
+      if (!map) return;
 
-        mapRef.current?.addLayer({
-          id: regionFillLayerId(mapRegionLayer),
-          type: 'fill',
-          source: sourceId,
-          layout: {
-            visibility: mapRegionLayer === regionLayer ? 'visible' : 'none'
-          },
-          paint: {
-            'fill-color': ['coalesce', ['get', 'fillColor'], 'rgba(255,255,255,0)'],
-            'fill-opacity': ['coalesce', ['get', 'fillOpacity'], 0],
-            'fill-outline-color': mapRegionLayer === 'country' ? 'rgba(24,32,31,0.18)' : 'rgba(24,32,31,0.28)'
-          }
-        });
-
-        mapRef.current?.addLayer({
-          id: regionLineLayerId(mapRegionLayer),
-          type: 'line',
-          source: sourceId,
-          layout: {
-            visibility: mapRegionLayer === regionLayer ? 'visible' : 'none'
-          },
-          paint: {
-            'line-color': mapRegionLayer === 'country' ? 'rgba(24,32,31,0.22)' : 'rgba(24,32,31,0.35)',
-            'line-width': [
-              'case',
-              ['boolean', ['get', 'isActiveRegion'], false],
-              mapRegionLayer === 'country' ? 1.25 : 2,
-              ['boolean', ['get', 'isVisibleRegion'], false],
-              mapRegionLayer === 'country' ? 0.65 : 1.05,
-              0.3
-            ],
-            'line-opacity': ['case', ['boolean', ['get', 'isVisibleRegion'], false], mapRegionLayer === 'country' ? 0.65 : 0.9, 0]
-          }
-        });
+      map.addSource(pointSourceId, {
+        type: 'geojson',
+        data: emptyPointGeojson
       });
+      map.addLayer({
+        id: pointCircleLayerId,
+        type: 'circle',
+        source: pointSourceId,
+        layout: {
+          'circle-sort-key': ['to-number', ['get', 'sortKey'], 0]
+        },
+        paint: {
+          'circle-color': ['get', 'color'],
+          'circle-opacity': ['to-number', ['get', 'opacity'], 0.82],
+          'circle-radius': ['/', ['to-number', ['get', 'size'], 28], 2],
+          'circle-stroke-color': ['case', ['boolean', ['get', 'selected'], false], '#ffffff', 'rgba(255,255,255,0.72)'],
+          'circle-stroke-opacity': ['case', ['boolean', ['get', 'isZero'], false], 0.42, 0.92],
+          'circle-stroke-width': ['case', ['boolean', ['get', 'selected'], false], 2.6, 1]
+        }
+      });
+      map.addLayer({
+        id: pointLabelLayerId,
+        type: 'symbol',
+        source: pointSourceId,
+        layout: {
+          'text-allow-overlap': true,
+          'text-field': ['get', 'markerText'],
+          'text-ignore-placement': true,
+          'text-size': 11,
+          'symbol-sort-key': ['to-number', ['get', 'sortKey'], 0]
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': 'rgba(24,32,31,0.16)',
+          'text-halo-width': 0.6,
+          'text-opacity': ['case', ['boolean', ['get', 'isZero'], false], 0.72, 1]
+        }
+      });
+      map.on('click', pointCircleLayerId, handlePointClick);
+      map.on('click', pointLabelLayerId, handlePointClick);
+      map.on('mouseenter', pointCircleLayerId, handlePointEnter);
+      map.on('mouseenter', pointLabelLayerId, handlePointEnter);
+      map.on('mouseleave', pointCircleLayerId, handlePointLeave);
+      map.on('mouseleave', pointLabelLayerId, handlePointLeave);
 
-      setRegionsReady(true);
+      setMapReady(true);
     });
 
     mapRef.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
@@ -800,25 +928,27 @@ export function WorldWeatherMap({
     return () => {
       attributionTimers.forEach((timer) => window.clearTimeout(timer));
       cleanupAttribution();
-      markersRef.current.forEach((marker) => marker.remove());
-      markersRef.current = [];
+      mapRef.current?.off('click', pointCircleLayerId, handlePointClick);
+      mapRef.current?.off('click', pointLabelLayerId, handlePointClick);
+      mapRef.current?.off('mouseenter', pointCircleLayerId, handlePointEnter);
+      mapRef.current?.off('mouseenter', pointLabelLayerId, handlePointEnter);
+      mapRef.current?.off('mouseleave', pointCircleLayerId, handlePointLeave);
+      mapRef.current?.off('mouseleave', pointLabelLayerId, handlePointLeave);
       mapRef.current?.remove();
       mapRef.current = null;
     };
   }, []);
 
   useEffect(() => {
+    if (!mapReady) return;
+    void ensureRegionLayer(regionLayer);
+  }, [ensureRegionLayer, mapReady, regionLayer]);
+
+  useEffect(() => {
     const map = mapRef.current;
-    if (!map || !regionsReady) return;
+    if (!map || !mapReady) return;
 
     (['country', 'admin1', 'china-admin1'] as MapRegionLayer[]).forEach((mapRegionLayer) => {
-      const source = map.getSource(regionSourceId(mapRegionLayer));
-      const geojson = regionGeojsonRef.current[mapRegionLayer];
-      if (!source || !('setData' in source) || !geojson) return;
-
-      (source as GeoJSONSource).setData(
-        decorateRegionGeojson(geojson, regionSummaries, regionLayer, mapRegionLayer, activeRegion, mode, layer, locale, temperatureUnit)
-      );
       const visibility = mapRegionLayer === regionLayer ? 'visible' : 'none';
       if (map.getLayer(regionFillLayerId(mapRegionLayer))) {
         map.setLayoutProperty(regionFillLayerId(mapRegionLayer), 'visibility', visibility);
@@ -827,11 +957,19 @@ export function WorldWeatherMap({
         map.setLayoutProperty(regionLineLayerId(mapRegionLayer), 'visibility', visibility);
       }
     });
-  }, [activeRegion, layer, locale, mode, regionLayer, regionSummaries, regionsReady, temperatureUnit]);
+
+    const source = map.getSource(regionSourceId(regionLayer));
+    const geojson = regionGeojsonRef.current[regionLayer];
+    if (!source || !('setData' in source) || !geojson) return;
+
+    (source as GeoJSONSource).setData(
+      decorateRegionGeojson(geojson, regionSummaries, regionLayer, regionLayer, activeRegion, mode, layer, locale, temperatureUnit)
+    );
+  }, [activeRegion, layer, locale, mode, regionDataVersion, regionLayer, regionSummaries, mapReady, temperatureUnit]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !regionsReady) return;
+    if (!map || !mapReady) return;
 
     updateMarkerViewport();
     map.on('moveend', updateMarkerViewport);
@@ -843,11 +981,11 @@ export function WorldWeatherMap({
       map.off('zoomend', updateMarkerViewport);
       map.off('resize', updateMarkerViewport);
     };
-  }, [regionsReady, updateMarkerViewport]);
+  }, [mapReady, updateMarkerViewport]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !regionsReady) return;
+    if (!map || !mapReady) return;
 
     const bounds = buildRegionBounds(regionGeojsonRef.current[regionLayer], regionSummaries, regionLayer) ?? pointBounds;
     if (bounds) {
@@ -857,29 +995,15 @@ export function WorldWeatherMap({
         duration: 420
       });
     }
-  }, [activeRegion, pointBounds, regionLayer, regionSummaries, regionsReady]);
+  }, [activeRegion, pointBounds, regionDataVersion, regionLayer, regionSummaries, mapReady]);
 
   useEffect(() => {
-    if (!mapRef.current) return;
-
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current = visiblePoints.map((point) => {
-      const element = document.createElement('button');
-      element.type = 'button';
-      element.className = `map-marker${point.sortValue === 0 ? ' is-zero' : ''}${point.selected ? ' is-selected' : ''}`;
-      element.style.setProperty('--marker-color', point.color);
-      element.style.setProperty('--marker-opacity', `${Math.round(point.opacity * 100)}%`);
-      element.style.setProperty('--marker-size', `${point.size}px`);
-      element.style.zIndex = point.selected ? '30' : String(point.sortValue > 0 ? 20 : 10);
-      element.setAttribute('aria-label', point.label);
-      element.textContent = point.markerText;
-      element.addEventListener('click', () => onSelectCity(point.cityId));
-
-      return new maplibregl.Marker({ element })
-        .setLngLat([point.longitude, point.latitude])
-        .addTo(mapRef.current as MapLibreMap);
-    });
-  }, [onSelectCity, visiblePoints]);
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const source = map.getSource(pointSourceId);
+    if (!source || !('setData' in source)) return;
+    (source as GeoJSONSource).setData(buildPointGeojson(visiblePoints));
+  }, [mapReady, visiblePoints]);
 
   useEffect(() => {
     const resizeMap = () => {

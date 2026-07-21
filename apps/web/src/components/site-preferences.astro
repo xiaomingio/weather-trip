@@ -1,0 +1,85 @@
+---
+/**
+ * 文件说明: 为所有页面加载同一套顶部语言和温度单位偏好同步脚本。
+ * 对应文档: docs/product-design.md
+ */
+---
+
+<script>
+  import {
+    localeChangeEvent,
+    localeStorageKey,
+    normalizeLocale,
+    normalizeTemperatureUnit,
+    temperatureUnitChangeEvent,
+    temperatureUnitStorageKey
+  } from '@/domain/site-prefs';
+  import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
+
+  function readUnit(): TemperatureUnit {
+    return normalizeTemperatureUnit(window.localStorage.getItem(temperatureUnitStorageKey));
+  }
+
+  function currentLocale(): DisplayLocale {
+    return document.documentElement.lang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  }
+
+  function applyUnit(unit: TemperatureUnit, shouldBroadcast = false): void {
+    document.documentElement.dataset.tempUnit = unit;
+    for (const label of document.querySelectorAll<HTMLElement>('[data-unit-label]')) {
+      label.textContent = unit === 'f' ? '°F' : '°C';
+    }
+    for (const toggle of document.querySelectorAll<HTMLElement>('[data-unit-toggle]')) {
+      toggle.setAttribute('aria-pressed', unit === 'f' ? 'true' : 'false');
+    }
+    if (!shouldBroadcast) return;
+    window.dispatchEvent(
+      new CustomEvent(temperatureUnitChangeEvent, {
+        detail: { unit }
+      })
+    );
+  }
+
+  function saveUnit(unit: TemperatureUnit): void {
+    window.localStorage.setItem(temperatureUnitStorageKey, unit);
+    applyUnit(unit, true);
+  }
+
+  function saveLocale(locale: DisplayLocale, shouldBroadcast = true): void {
+    window.localStorage.setItem(localeStorageKey, locale);
+    document.documentElement.dataset.locale = locale;
+    if (!shouldBroadcast) return;
+    window.dispatchEvent(
+      new CustomEvent(localeChangeEvent, {
+        detail: { locale }
+      })
+    );
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const unitToggle = target?.closest('[data-unit-toggle]');
+    if (unitToggle) {
+      saveUnit(readUnit() === 'f' ? 'c' : 'f');
+      return;
+    }
+
+    const localeLink = target?.closest<HTMLElement>('[data-locale-link]');
+    if (!localeLink) return;
+    saveLocale(normalizeLocale(localeLink.dataset.localeLink, currentLocale()));
+  });
+
+  window.addEventListener('storage', (event) => {
+    if (event.key === temperatureUnitStorageKey) {
+      applyUnit(normalizeTemperatureUnit(event.newValue), true);
+      return;
+    }
+
+    if (event.key === localeStorageKey) {
+      document.documentElement.dataset.locale = normalizeLocale(event.newValue, currentLocale());
+    }
+  });
+
+  saveLocale(currentLocale(), false);
+  applyUnit(readUnit());
+</script>

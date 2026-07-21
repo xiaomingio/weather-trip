@@ -26,26 +26,14 @@ import {
   ThermometerSun
 } from 'lucide-react';
 import type {
-  City,
-  CityDailyWeather,
-  CityTravelScore,
-  DailyForecast,
   MapLayer,
   RegionKey,
   TravelFilter,
   ViewMode,
   WeatherType
 } from 'weather-core/types';
-import { buildDailyWeather, cityMatchesRegion, scoreCityTravel } from '@/domain/scoring';
 import { cityMatchesKeyword } from '@/domain/city-search';
-import { buildDailyRegionSummaries, buildTravelRegionSummaries } from '@/domain/region-weather';
-import {
-  getMapRegionLayer,
-  getPrimaryRegionOptions,
-  getRegionGroup,
-  getRegionLabel,
-  regionOptions
-} from '@/domain/regions';
+import { getMapRegionLayer, getPrimaryRegionOptions, getRegionGroup, getRegionLabel } from '@/domain/regions';
 import {
   type DisplayLocale,
   type TemperatureUnit,
@@ -71,20 +59,28 @@ import {
   weatherPresets
 } from '@/domain/weather';
 import { buildTopTabPath, buildToolPath, getToolPathSegment, resolveToolMode, topTabs } from '@/domain/navigation';
+import {
+  getAlternateLocale,
+  readStoredTemperatureUnit,
+  saveLocalePreference,
+  temperatureUnitChangeEvent
+} from '@/domain/site-prefs';
+import {
+  type WeatherDashboardPayload,
+  buildFilterSearch,
+  getPrimaryRegionId,
+  isDashboardTravelItem,
+  isSupportedRegion,
+  parseTravelFilterFromSearch,
+  readDateFromSearch,
+  readLayerFromSearch
+} from '@/domain/weather-dashboard-shared';
 import { WorldWeatherMap } from './world-weather-map';
 
 type WeatherDashboardProps = {
   locale: DisplayLocale;
   initialMode: ViewMode;
   initialSearch: string;
-  cities: City[];
-  forecasts: DailyForecast[];
-  availableDates: string[];
-};
-
-type RegionSelectOption = {
-  id: RegionKey;
-  label: string;
 };
 
 const weatherTypeIcons: Record<WeatherType, React.ReactNode> = {
@@ -194,99 +190,14 @@ const copy = {
   }
 };
 
-const defaultTravelFilter: TravelFilter = {
-  dateWindowDays: 14,
-  useTemperature: true,
-  temperatureMinC: 15,
-  temperatureMaxC: 30,
-  useHumidity: false,
-  humidityMinPercent: 40,
-  humidityMaxPercent: 70,
-  useElevation: false,
-  elevationMinMeters: elevationFilterBounds.minMeters,
-  elevationMaxMeters: elevationFilterBounds.maxMeters,
-  useWeather: true,
-  weatherTypes: ['sunny', 'partly_cloudy'],
-  region: 'world'
-};
-
 const regionStorageKey = 'weather-trip-region';
+const resultPageSize = 80;
 
 function readModeFromUrl(): ViewMode {
   if (typeof window === 'undefined') return 'travel';
 
   const mode = window.location.pathname.split('/').filter(Boolean).at(-1);
   return resolveToolMode(mode) ?? 'travel';
-}
-
-function parseNumberRange(value: string | null): [number, number] | null {
-  if (!value || value === 'off') return null;
-  const [minValue, maxValue] = value.split(',').map(Number);
-  if (!Number.isFinite(minValue) || !Number.isFinite(maxValue)) return null;
-  return [minValue, maxValue];
-}
-
-function parseTravelFilterFromSearch(search: string): TravelFilter {
-  const params = new URLSearchParams(search);
-  const nextFilter: TravelFilter = { ...defaultTravelFilter };
-  const region = params.get('region');
-  if (region && isSupportedRegion(region)) {
-    nextFilter.region = region;
-  } else {
-    const savedRegion = readSavedRegion();
-    if (savedRegion) nextFilter.region = savedRegion;
-  }
-
-  const days = Number(params.get('days'));
-  if ([3, 5, 7, 10, 14].includes(days)) nextFilter.dateWindowDays = days;
-
-  const temperature = params.get('temp');
-  if (temperature === 'off') {
-    nextFilter.useTemperature = false;
-  } else {
-    const range = parseNumberRange(temperature);
-    if (range) {
-      nextFilter.useTemperature = true;
-      [nextFilter.temperatureMinC, nextFilter.temperatureMaxC] = range;
-    }
-  }
-
-  const humidity = params.get('humidity');
-  if (humidity === 'off') {
-    nextFilter.useHumidity = false;
-  } else {
-    const range = parseNumberRange(humidity);
-    if (range) {
-      nextFilter.useHumidity = true;
-      [nextFilter.humidityMinPercent, nextFilter.humidityMaxPercent] = range;
-    }
-  }
-
-  const elevation = params.get('elevation');
-  if (elevation === 'off') {
-    nextFilter.useElevation = false;
-  } else {
-    const range = parseNumberRange(elevation);
-    if (range) {
-      nextFilter.useElevation = true;
-      [nextFilter.elevationMinMeters, nextFilter.elevationMaxMeters] = range;
-    }
-  }
-
-  const weather = params.get('weather');
-  if (weather === 'off') {
-    nextFilter.useWeather = false;
-  } else if (weather) {
-    const weatherTypes = weather
-      .split(',')
-      .filter((type): type is WeatherType => allWeatherTypes.includes(type as WeatherType));
-    if (weatherTypes.length > 0) {
-      nextFilter.useWeather = true;
-      nextFilter.weatherTypes = weatherTypes;
-    }
-  }
-
-  return nextFilter;
 }
 
 function readSearch(): string {
@@ -304,41 +215,8 @@ function saveRegion(region: RegionKey): void {
   window.localStorage.setItem(regionStorageKey, region);
 }
 
-function isSupportedRegion(region: RegionKey): boolean {
-  const admin1Match = /^admin1:([A-Z]{2})\..+$/.exec(region);
-  if (admin1Match) return regionOptions.some((option) => option.id === `country:${admin1Match[1]}`);
-  return regionOptions.some((option) => option.id === region);
-}
-
-function readLayerFromSearch(search: string): MapLayer {
-  const layer = new URLSearchParams(search).get('layer');
-  return layers.some((item) => item.id === layer) ? (layer as MapLayer) : 'comfort';
-}
-
-function readDateFromSearch(search: string, fallbackDate: string): string {
-  return new URLSearchParams(search).get('date') ?? fallbackDate;
-}
-
 const modeQueryStorageKey = (mode: ViewMode) =>
   `weather-trip-query-${getToolPathSegment(mode)}`;
-
-const temperatureUnitStorageKey = 'weather-trip-temp-unit';
-
-function readStoredTemperatureUnit(): TemperatureUnit {
-  if (typeof window === 'undefined') return 'c';
-  return window.localStorage.getItem(temperatureUnitStorageKey) === 'f' ? 'f' : 'c';
-}
-
-function saveTemperatureUnit(unit: TemperatureUnit): void {
-  if (typeof window === 'undefined') return;
-  window.localStorage.setItem(temperatureUnitStorageKey, unit);
-  document.documentElement.dataset.tempUnit = unit;
-  window.dispatchEvent(
-    new CustomEvent('weather-trip-temp-unit-change', {
-      detail: { unit }
-    })
-  );
-}
 
 function saveModeQuery(mode: ViewMode, search: string): void {
   if (typeof window === 'undefined') return;
@@ -348,40 +226,6 @@ function saveModeQuery(mode: ViewMode, search: string): void {
 function readSavedModeQuery(mode: ViewMode): string {
   if (typeof window === 'undefined') return '';
   return window.sessionStorage.getItem(modeQueryStorageKey(mode)) ?? '';
-}
-
-/** 两个工具 Tab 各自序列化自己的 query，不互相写入对方参数。 */
-function buildFilterSearch(
-  mode: ViewMode,
-  travelFilter: TravelFilter,
-  selectedDate: string,
-  layer: MapLayer
-): string {
-  const params = new URLSearchParams();
-  params.set('region', travelFilter.region);
-
-  if (mode === 'daily') {
-    if (selectedDate) params.set('date', selectedDate);
-    params.set('layer', layer);
-    return params.toString();
-  }
-
-  params.set('days', String(travelFilter.dateWindowDays));
-  params.set(
-    'temp',
-    travelFilter.useTemperature ? `${travelFilter.temperatureMinC},${travelFilter.temperatureMaxC}` : 'off'
-  );
-  params.set('weather', travelFilter.useWeather ? travelFilter.weatherTypes.join(',') : 'off');
-  params.set(
-    'humidity',
-    travelFilter.useHumidity ? `${travelFilter.humidityMinPercent},${travelFilter.humidityMaxPercent}` : 'off'
-  );
-  params.set(
-    'elevation',
-    travelFilter.useElevation ? `${travelFilter.elevationMinMeters},${travelFilter.elevationMaxMeters}` : 'off'
-  );
-
-  return params.toString();
 }
 
 function buildDashboardUrl(
@@ -422,109 +266,52 @@ function replaceDashboardUrl(
   window.history.replaceState(null, '', nextUrl);
 }
 
-function groupForecastsByCity(forecasts: DailyForecast[]): Map<string, DailyForecast[]> {
-  const grouped = new Map<string, DailyForecast[]>();
-
-  for (const forecast of forecasts) {
-    const list = grouped.get(forecast.cityId) ?? [];
-    list.push(forecast);
-    grouped.set(forecast.cityId, list);
-  }
-
-  for (const list of grouped.values()) {
-    list.sort((a, b) => a.date.localeCompare(b.date));
-  }
-
-  return grouped;
-}
-
-function buildRegionAvailableDates(cities: City[], forecasts: DailyForecast[], region: RegionKey): string[] {
-  const cityIds = new Set(cities.filter((city) => cityMatchesRegion(city, region)).map((city) => city.id));
-  if (cityIds.size === 0) return [];
-
-  const dateCounts = new Map<string, number>();
-  for (const forecast of forecasts) {
-    if (!cityIds.has(forecast.cityId)) continue;
-    dateCounts.set(forecast.date, (dateCounts.get(forecast.date) ?? 0) + 1);
-  }
-
-  const completeDates = [...dateCounts.entries()]
-    .filter(([, count]) => count === cityIds.size)
-    .map(([date]) => date)
-    .sort();
-  if (completeDates.length > 0) return completeDates;
-
-  return [...dateCounts.keys()].sort();
-}
-
-function getPrimaryRegionId(region: RegionKey): RegionKey {
-  if (region.startsWith('province:')) return 'country:CN';
-  const admin1Match = /^admin1:([A-Z]{2})\./.exec(region);
-  if (admin1Match) return `country:${admin1Match[1]}`;
-  return region;
-}
-
-function buildSubRegionOptions(
-  cities: City[],
-  primaryRegion: RegionKey,
+function buildDashboardApiUrl(
   locale: DisplayLocale,
-  allLabel: string
-): RegionSelectOption[] {
-  if (!primaryRegion.startsWith('country:')) return [{ id: primaryRegion, label: allLabel }];
-  const countryCode = primaryRegion.slice('country:'.length);
-  const allOption = { id: primaryRegion, label: allLabel };
-
-  if (countryCode === 'CN') {
-    return [
-      allOption,
-      ...regionOptions
-        .filter((option) => option.id.startsWith('province:'))
-        .map((option) => ({ id: option.id, label: getRegionLabel(option, locale) }))
-    ];
-  }
-
-  const collator = new Intl.Collator(locale === 'zh' ? 'zh-CN-u-co-pinyin' : 'en', { sensitivity: 'base' });
-  const optionsById = new Map<RegionKey, RegionSelectOption>();
-  for (const city of cities) {
-    if (city.countryCode !== countryCode || !city.admin1GroupCode) continue;
-    const id = `admin1:${countryCode}.${city.admin1GroupCode}`;
-    const label = locale === 'zh' ? city.admin1LocalName ?? city.admin1 ?? city.admin1GroupCode : city.admin1 ?? city.admin1GroupCode;
-    optionsById.set(id, { id, label });
-  }
-
-  return [allOption, ...[...optionsById.values()].sort((a, b) => collator.compare(a.label, b.label) || a.id.localeCompare(b.id))];
+  mode: ViewMode,
+  travelFilter: TravelFilter,
+  selectedDate: string,
+  layer: MapLayer,
+  selectedCityId: string | null
+): string {
+  const params = new URLSearchParams(buildFilterSearch(mode, travelFilter, selectedDate, layer));
+  params.set('locale', locale);
+  params.set('mode', mode);
+  if (selectedCityId) params.set('selectedCityId', selectedCityId);
+  return `/api/weather-dashboard.json?${params.toString()}`;
 }
 
-export function WeatherDashboard({ locale, initialMode, initialSearch, cities, forecasts, availableDates }: WeatherDashboardProps) {
+export function WeatherDashboard({ locale, initialMode, initialSearch }: WeatherDashboardProps) {
   const [mode, setMode] = useState<ViewMode>(initialMode);
   const [temperatureUnit, setTemperatureUnit] = useState<TemperatureUnit>(() => readStoredTemperatureUnit());
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState(() => readDateFromSearch(initialSearch, availableDates[0] ?? ''));
+  const [selectedDate, setSelectedDate] = useState(() => readDateFromSearch(initialSearch, ''));
   const [layer, setLayer] = useState<MapLayer>(() => readLayerFromSearch(initialSearch));
-  const [travelFilter, setTravelFilter] = useState<TravelFilter>(() => parseTravelFilterFromSearch(initialSearch));
+  const [travelFilter, setTravelFilter] = useState<TravelFilter>(() => parseTravelFilterFromSearch(initialSearch, readSavedRegion()));
   const [cityKeyword, setCityKeyword] = useState('');
+  const [dashboardData, setDashboardData] = useState<WeatherDashboardPayload | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [visibleResultLimit, setVisibleResultLimit] = useState(resultPageSize);
   const isApplyingPopState = useRef(false);
+  const isApplyingPayloadDate = useRef(false);
+  const otherLocale = getAlternateLocale(locale);
 
-  const forecastsByCity = useMemo(() => groupForecastsByCity(forecasts), [forecasts]);
-  const regionAvailableDates = useMemo(
-    () => buildRegionAvailableDates(cities, forecasts, travelFilter.region),
-    [cities, forecasts, travelFilter.region]
-  );
   const primaryRegionOptions = useMemo(() => getPrimaryRegionOptions(locale), [locale]);
   const primaryRegion = getPrimaryRegionId(travelFilter.region);
-  const subRegionOptions = useMemo(
-    () => buildSubRegionOptions(cities, primaryRegion, locale, copy[locale].all),
-    [cities, locale, primaryRegion]
-  );
+  const availableDates = dashboardData?.availableDates ?? [];
+  const regionAvailableDates = dashboardData?.regionAvailableDates ?? [];
+  const subRegionOptions = dashboardData?.subRegionOptions ?? [{ id: primaryRegion, label: copy[locale].all }];
   const canSelectSubRegion = subRegionOptions.length > 1;
   useEffect(() => {
     const handlePopState = () => {
       isApplyingPopState.current = true;
       const search = readSearch();
       setMode(readModeFromUrl());
-      setTravelFilter(parseTravelFilterFromSearch(search));
+      setTravelFilter(parseTravelFilterFromSearch(search, readSavedRegion()));
       setSelectedDate(readDateFromSearch(search, availableDates[0] ?? ''));
       setLayer(readLayerFromSearch(search));
+      setSelectedCityId(null);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -539,12 +326,16 @@ export function WeatherDashboard({ locale, initialMode, initialSearch, cities, f
 
     syncTemperatureUnit();
     window.addEventListener('storage', syncTemperatureUnit);
-    window.addEventListener('weather-trip-temp-unit-change', handleUnitChange as EventListener);
+    window.addEventListener(temperatureUnitChangeEvent, handleUnitChange as EventListener);
     return () => {
       window.removeEventListener('storage', syncTemperatureUnit);
-      window.removeEventListener('weather-trip-temp-unit-change', handleUnitChange as EventListener);
+      window.removeEventListener(temperatureUnitChangeEvent, handleUnitChange as EventListener);
     };
   }, []);
+
+  useEffect(() => {
+    saveLocalePreference(locale);
+  }, [locale]);
 
   useEffect(() => {
     if (isApplyingPopState.current) {
@@ -555,66 +346,79 @@ export function WeatherDashboard({ locale, initialMode, initialSearch, cities, f
   }, [layer, locale, mode, selectedDate, travelFilter]);
 
   useEffect(() => {
-    if (selectedDate && regionAvailableDates.includes(selectedDate)) return;
-    setSelectedDate(regionAvailableDates[0] ?? availableDates[0] ?? '');
-  }, [availableDates, regionAvailableDates, selectedDate]);
+    if (isApplyingPayloadDate.current) {
+      isApplyingPayloadDate.current = false;
+      return;
+    }
 
-  const travelScores = useMemo(() => {
-    return cities
-      .filter((city) => cityMatchesRegion(city, travelFilter.region))
-      .map((city) => scoreCityTravel(city, forecastsByCity.get(city.id) ?? [], travelFilter))
-      .sort((a, b) => b.score - a.score || b.matchDays - a.matchDays);
-  }, [cities, forecastsByCity, travelFilter]);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(async () => {
+      setIsLoadingData(true);
+      try {
+        const response = await fetch(buildDashboardApiUrl(locale, mode, travelFilter, selectedDate, layer, selectedCityId), {
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error(`Weather data request failed with ${response.status}.`);
+        const payload = (await response.json()) as WeatherDashboardPayload;
+        setDashboardData(payload);
+        setLoadError(null);
+        if (payload.selectedDate && payload.selectedDate !== selectedDate) {
+          isApplyingPayloadDate.current = true;
+          setSelectedDate(payload.selectedDate);
+        }
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setLoadError(error instanceof Error ? error.message : 'Weather data request failed.');
+      } finally {
+        if (!controller.signal.aborted) setIsLoadingData(false);
+      }
+    }, 160);
 
-  const dailyWeather = useMemo(() => {
-    return buildDailyWeather(cities, forecasts, selectedDate, travelFilter.region);
-  }, [cities, forecasts, selectedDate, travelFilter.region]);
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [layer, locale, mode, selectedCityId, selectedDate, travelFilter]);
 
-  const filteredTravelScores = useMemo(() => {
-    return travelScores.filter((score) => cityMatchesKeyword(score.city, cityKeyword));
-  }, [cityKeyword, travelScores]);
-
-  const filteredDailyWeather = useMemo(() => {
-    return dailyWeather.filter((item) => cityMatchesKeyword(item.city, cityKeyword));
-  }, [cityKeyword, dailyWeather]);
-
-  const regionSummaries = useMemo(() => {
-    return mode === 'travel'
-      ? buildTravelRegionSummaries(cities, forecastsByCity, travelFilter, locale)
-      : buildDailyRegionSummaries(cities, forecasts, selectedDate, travelFilter.region, locale);
-  }, [cities, forecasts, forecastsByCity, locale, mode, selectedDate, travelFilter]);
-  const selectedTravelScore = filteredTravelScores.find((score) => score.city.id === selectedCityId) ?? filteredTravelScores[0];
-  const selectedDailyWeather = filteredDailyWeather.find((item) => item.city.id === selectedCityId) ?? filteredDailyWeather[0];
-  const selectedCity = mode === 'travel' ? selectedTravelScore?.city : selectedDailyWeather?.city;
-  const selectedForecasts = selectedCity ? forecastsByCity.get(selectedCity.id) ?? [] : [];
+  const resultItems = useMemo(() => {
+    return (dashboardData?.resultItems ?? []).filter((item) => cityMatchesKeyword(item.city, cityKeyword));
+  }, [cityKeyword, dashboardData?.resultItems]);
+  const visibleResultItems = resultItems.slice(0, visibleResultLimit);
+  const selectedResultItem = resultItems.find((item) => item.city.id === selectedCityId) ?? resultItems[0];
+  const selectedCity = selectedResultItem?.city;
+  const selectedForecasts = dashboardData?.selectedCityForecasts ?? [];
   const effectiveSelectedCityId = selectedCity?.id ?? null;
-  const resultItems = mode === 'travel' ? filteredTravelScores : filteredDailyWeather;
   const selectedDateIndex = Math.max(0, regionAvailableDates.indexOf(selectedDate));
   const selectedWeatherSummary =
     travelFilter.weatherTypes.length === allWeatherTypes.length
       ? copy[locale].all
       : travelFilter.weatherTypes.map((type) => getWeatherTypeLabel(type, locale)).join(locale === 'zh' ? '、' : ', ');
 
-  const visibleCount = mode === 'travel' ? filteredTravelScores.length : filteredDailyWeather.length;
-  const visibleRegionCount = regionSummaries.length;
+  const visibleCount = resultItems.length;
+  const visibleRegionCount = dashboardData?.regionSummaries.length ?? 0;
   const excellentCount =
     mode === 'travel'
-      ? filteredTravelScores.filter((score) => score.matchDays / Math.max(score.totalDays, 1) >= 0.7).length
-      : filteredDailyWeather.length;
+      ? resultItems.filter((item) => isDashboardTravelItem(item) && item.matchDays / Math.max(item.totalDays, 1) >= 0.7).length
+      : resultItems.length;
+
+  useEffect(() => {
+    setVisibleResultLimit(resultPageSize);
+  }, [cityKeyword, dashboardData?.resultItems, mode]);
+
+  useEffect(() => {
+    if (!cityKeyword) return;
+    const firstResultCityId = resultItems[0]?.city.id ?? null;
+    const selectedCityIsVisible = Boolean(selectedCityId && resultItems.some((item) => item.city.id === selectedCityId));
+    if (firstResultCityId && !selectedCityIsVisible) setSelectedCityId(firstResultCityId);
+  }, [cityKeyword, resultItems, selectedCityId]);
 
   const setRegion = useCallback(
     (region: RegionKey) => {
-      const currentDateIndex = Math.max(0, regionAvailableDates.indexOf(selectedDate));
-      const nextRegionAvailableDates = buildRegionAvailableDates(cities, forecasts, region);
-      const nextDate =
-        nextRegionAvailableDates[Math.min(currentDateIndex, Math.max(nextRegionAvailableDates.length - 1, 0))] ?? selectedDate;
-
       setTravelFilter((current) => ({ ...current, region }));
       saveRegion(region);
-      setSelectedDate(nextDate);
       setSelectedCityId(null);
     },
-    [cities, forecasts, regionAvailableDates, selectedDate]
+    []
   );
 
   const setPrimaryRegion = useCallback(
@@ -639,12 +443,6 @@ export function WeatherDashboard({ locale, initialMode, initialSearch, cities, f
     });
   }, []);
 
-  const toggleTemperatureUnit = useCallback(() => {
-    const nextUnit = temperatureUnit === 'f' ? 'c' : 'f';
-    setTemperatureUnit(nextUnit);
-    saveTemperatureUnit(nextUnit);
-  }, [temperatureUnit]);
-
   return (
     <main className="app-shell">
       <header className="site-nav app-site-nav">
@@ -668,18 +466,19 @@ export function WeatherDashboard({ locale, initialMode, initialSearch, cities, f
           <button
             type="button"
             className="nav-icon-btn"
+            data-unit-toggle
             aria-label={locale === 'zh' ? '切换摄氏度与华氏度' : 'Switch Celsius / Fahrenheit'}
             aria-pressed={temperatureUnit === 'f'}
             title={locale === 'zh' ? '切换摄氏度与华氏度' : 'Switch Celsius / Fahrenheit'}
-            onClick={toggleTemperatureUnit}
           >
-            <span className="unit-label" suppressHydrationWarning>
+            <span className="unit-label" data-unit-label suppressHydrationWarning>
               {temperatureUnit === 'f' ? '°F' : '°C'}
             </span>
           </button>
           <a
             className="nav-icon-btn"
-            href={buildDashboardUrl(locale === 'zh' ? 'en' : 'zh', mode, travelFilter, selectedDate, layer)}
+            href={buildDashboardUrl(otherLocale, mode, travelFilter, selectedDate, layer)}
+            data-locale-link={otherLocale}
             aria-label={copy[locale].language}
             title={copy[locale].language}
           >
@@ -1022,43 +821,55 @@ export function WeatherDashboard({ locale, initialMode, initialSearch, cities, f
             />
           </label>
 
-          {resultItems.length > 0 ? (
-            <ol className="ranking-list">
-              {resultItems.map((item) => {
-                const city = item.city;
-                const active = effectiveSelectedCityId === city.id;
-                const primary =
-                  mode === 'travel'
-                    ? copy[locale].suitableDays((item as CityTravelScore).matchDays, (item as CityTravelScore).totalDays)
-                    : formatTemperatureRange(
-                        (item as CityDailyWeather).forecast.temperatureMinC,
-                        (item as CityDailyWeather).forecast.temperatureMaxC,
-                        locale,
-                        temperatureUnit
-                      );
-                const secondary =
-                  mode === 'travel'
-                    ? `${copy[locale].average} ${formatTemperature((item as CityTravelScore).averageTemperatureC, temperatureUnit)} · ${copy[
-                        locale
-                      ].dryDays((item as CityTravelScore).totalDays - (item as CityTravelScore).rainDays)}`
-                    : `${formatWeatherType((item as CityDailyWeather).forecast.weatherType, locale)} · ${copy[
-                        locale
-                      ].humidityValue(formatHumidity((item as CityDailyWeather).forecast.humidityMeanPercent))}`;
+          {loadError ? <div className="data-status">{loadError}</div> : null}
+          {isLoadingData && !dashboardData ? (
+            <div className="empty-results">{locale === 'zh' ? '正在加载天气数据' : 'Loading weather data'}</div>
+          ) : resultItems.length > 0 ? (
+            <div className="ranking-list-frame">
+              <ol className="ranking-list">
+                {visibleResultItems.map((item) => {
+                  const city = item.city;
+                  const active = effectiveSelectedCityId === city.id;
+                  const primary = isDashboardTravelItem(item)
+                    ? copy[locale].suitableDays(item.matchDays, item.totalDays)
+                    : formatTemperatureRange(item.forecast.temperatureMinC, item.forecast.temperatureMaxC, locale, temperatureUnit);
+                  const secondary = isDashboardTravelItem(item)
+                    ? `${copy[locale].average} ${formatTemperature(item.averageTemperatureC, temperatureUnit)} · ${copy[locale].dryDays(
+                        item.totalDays - item.rainDays
+                      )}`
+                    : `${formatWeatherType(item.forecast.weatherType, locale)} · ${copy[locale].humidityValue(
+                        formatHumidity(item.forecast.humidityMeanPercent)
+                      )}`;
 
-                return (
-                  <li key={city.id}>
-                    <button className={active ? 'is-active' : ''} type="button" onClick={() => setSelectedCityId(city.id)}>
-                      <span className="city-name-line">{formatCityName(city, locale)}</span>
-                      <span className="city-result-meta">
-                        <small className="city-region-label">{formatCityRegion(city, locale)}</small>
-                        <small className="city-weather-label">{secondary}</small>
-                        <b>{primary}</b>
-                      </span>
+                  return (
+                    <li key={city.id}>
+                      <button className={active ? 'is-active' : ''} type="button" onClick={() => setSelectedCityId(city.id)}>
+                        <span className="city-name-line">{formatCityName(city, locale)}</span>
+                        <span className="city-result-meta">
+                          <small className="city-region-label">{formatCityRegion(city, locale)}</small>
+                          <small className="city-weather-label">{secondary}</small>
+                          <b>{primary}</b>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+                {visibleResultLimit < resultItems.length ? (
+                  <li className="load-more-results-item">
+                    <button
+                      className="load-more-results"
+                      type="button"
+                      onClick={() => setVisibleResultLimit((current) => current + resultPageSize)}
+                    >
+                      {locale === 'zh' ? `加载更多 ${Math.min(resultPageSize, resultItems.length - visibleResultLimit)} 个` : `Load ${Math.min(
+                        resultPageSize,
+                        resultItems.length - visibleResultLimit
+                      )} more`}
                     </button>
                   </li>
-                );
-              })}
-            </ol>
+                ) : null}
+              </ol>
+            </div>
           ) : (
             <div className="empty-results">{copy[locale].noCityMatches}</div>
           )}
@@ -1110,9 +921,8 @@ export function WeatherDashboard({ locale, initialMode, initialSearch, cities, f
             mode={mode}
             locale={locale}
             layer={layer}
-            travelScores={filteredTravelScores}
-            dailyWeather={filteredDailyWeather}
-            regionSummaries={regionSummaries}
+            resultItems={resultItems}
+            regionSummaries={dashboardData?.regionSummaries ?? []}
             temperatureUnit={temperatureUnit}
             activeRegion={travelFilter.region}
             regionLayer={getMapRegionLayer(travelFilter.region)}

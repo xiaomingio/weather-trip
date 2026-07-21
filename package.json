@@ -19,12 +19,16 @@
     "arch:check": "depcruise --config .dependency-cruiser.cjs apps/*/src packages/*/src",
     "test": "npm --workspaces --include-workspace-root=false --if-present run test",
     "check": "npm run typecheck && npm run arch:check && npm test",
+    "deploy:validate": "tinyship validate",
+    "deploy:preflight": "tinyship preflight",
+    "deploy:dry-run": "tinyship dry-run all",
+    "deploy": "tinyship deploy",
     "cities:import-geonames": "npm run build --workspace weather-core && npm run build --workspace weather-db && tsx scripts/import-geonames-cities.ts",
     "db:import-existing": "npm run build --workspace weather-core && npm run build --workspace weather-db && tsx scripts/import-existing-weather-data.ts"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.10.1",
+    "@xiaomingio/tinyship": "^0.1.8",
     "dependency-cruiser": "^17.3.1",
     "playwright": "^1.61.1",
     "tsx": "^4.20.6",

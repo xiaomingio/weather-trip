@@ -26,4 +26,4 @@ npm run start
 npm run check
 ```
 
-Copy `.env.example` to `.env.development` and set `DATABASE_URL` there before running maintenance scripts or local apps through root commands. App-level `.env.development` files are only needed for app-specific overrides such as ports or refresh intervals.
+Copy `.env.example` to `.env.development` and set `DATABASE_URL` there before running maintenance scripts or local apps through root commands. App-level `.env.development` files are only needed for app-specific overrides such as ports or the Worker daily refresh time.
