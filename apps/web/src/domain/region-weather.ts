@@ -106,6 +106,8 @@ function summarizeAccumulator(value: RegionAccumulator): RegionWeatherSummary {
     humidityMeanPercent: value.forecasts.reduce((sum, forecast) => sum + forecast.humidityMeanPercent, 0) / Math.max(forecastCount, 1),
     elevationMeters: value.elevationMetersTotal / Math.max(cityCount, 1),
     precipitationSumMm: value.forecasts.reduce((sum, forecast) => sum + forecast.precipitationSumMm, 0) / Math.max(forecastCount, 1),
+    windSpeedMaxKmh:
+      value.forecasts.reduce((sum, forecast) => sum + (forecast.windSpeedMaxKmh ?? 0), 0) / Math.max(forecastCount, 1),
     comfortScore: totalDays > 0 ? matchDays / totalDays : value.forecasts.reduce((sum, forecast) => sum + calculateComfortScore(forecast), 0) / Math.max(forecastCount, 1),
     matchDays,
     totalDays

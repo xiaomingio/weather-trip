@@ -33,11 +33,14 @@ type WorldWeatherMapProps = {
   layer: MapLayer;
   resultItems: DashboardResultItem[];
   regionSummaries: RegionWeatherSummary[];
+  dataRegion: RegionKey | null;
   temperatureUnit: TemperatureUnit;
   activeRegion: RegionKey;
   regionLayer: MapRegionLayer;
   selectedCityId: string | null;
   onSelectCity: (cityId: string) => void;
+  statusLabel?: string | null;
+  statusKind?: 'loading' | 'empty';
 };
 
 type MapGeoJson = {
@@ -103,6 +106,8 @@ const emptyPointGeojson: MapPointGeoJson = {
 const pointSourceId = 'weather-points';
 const pointCircleLayerId = 'weather-point-circle';
 const pointLabelLayerId = 'weather-point-label';
+const defaultWorldCenter: [number, number] = [18, 23];
+const defaultWorldZoom = 1.35;
 
 const elevationColorStops = [
   { maxMeters: 100, color: '#4f9d86', gradientPosition: 0 },
@@ -178,6 +183,11 @@ function precipitationColor(value: number): string {
   return `rgba(43, 116, 181, ${opacity})`;
 }
 
+function windColor(value: number): string {
+  const normalized = Math.max(0, Math.min(1, value / 80));
+  return interpolateColor([89, 156, 178], [121, 98, 157], normalized);
+}
+
 function comfortColor(value: number): string {
   if (value >= 0.72) return '#2fa36b';
   if (value >= 0.45) return '#d0a02f';
@@ -225,6 +235,10 @@ function elevationMarkerText(value: number): string {
   return String(Math.round(value));
 }
 
+function windMarkerText(value: number): string {
+  return String(Math.round(value));
+}
+
 function temperatureMarkerText(valueC: number, unit: TemperatureUnit): string {
   const value = unit === 'f' ? celsiusToFahrenheit(valueC) : valueC;
   return `${Math.round(value)}°`;
@@ -255,6 +269,13 @@ function travelMarkerMetric(score: DashboardTravelResultItem, layer: MapLayer, m
       markerText: precipitationMarkerText(score.averagePrecipitationMm),
       color: precipitationColor(score.averagePrecipitationMm),
       sortValue: score.averagePrecipitationMm
+    };
+  }
+  if (layer === 'wind') {
+    return {
+      markerText: windMarkerText(score.averageWindSpeedKmh),
+      color: windColor(score.averageWindSpeedKmh),
+      sortValue: score.averageWindSpeedKmh
     };
   }
   if (layer === 'humidity') {
@@ -301,6 +322,14 @@ function dailyMarkerMetric(item: DashboardDailyResultItem, layer: MapLayer, temp
       sortValue: item.forecast.precipitationSumMm
     };
   }
+  if (layer === 'wind') {
+    const windSpeed = item.forecast.windSpeedMaxKmh ?? 0;
+    return {
+      markerText: windMarkerText(windSpeed),
+      color: windColor(windSpeed),
+      sortValue: windSpeed
+    };
+  }
   if (layer === 'humidity') {
     return {
       markerText: `${Math.round(item.forecast.humidityMeanPercent)}%`,
@@ -327,6 +356,7 @@ function layerColor(summary: RegionWeatherSummary, layer: MapLayer): string {
   if (layer === 'temperature') return temperatureColor(summary.temperatureMeanC);
   if (layer === 'weather') return weatherColor(summary.weatherType);
   if (layer === 'precipitation') return precipitationColor(summary.precipitationSumMm);
+  if (layer === 'wind') return windColor(summary.windSpeedMaxKmh);
   if (layer === 'humidity') return humidityColor(summary.humidityMeanPercent);
   if (layer === 'elevation') return elevationColor(summary.elevationMeters);
   return comfortColor(summary.comfortScore);
@@ -336,6 +366,7 @@ function layerLabel(summary: RegionWeatherSummary, layer: MapLayer, locale: Disp
   if (layer === 'temperature') return temperatureLabel(summary.temperatureMeanC, temperatureUnit);
   if (layer === 'weather') return getWeatherTypeLabel(summary.weatherType, locale);
   if (layer === 'precipitation') return `${summary.precipitationSumMm.toFixed(1)} mm`;
+  if (layer === 'wind') return `${Math.round(summary.windSpeedMaxKmh)} km/h`;
   if (layer === 'humidity') return `${Math.round(summary.humidityMeanPercent)}%`;
   if (layer === 'elevation') return `${Math.round(summary.elevationMeters)} m`;
   if (summary.totalDays > 0) return `${summary.matchDays}/${summary.totalDays}`;
@@ -353,12 +384,14 @@ function legendDescription(mode: ViewMode, layer: MapLayer, regionLayer: MapRegi
   if (locale === 'en') {
     if (layer === 'elevation') return `${areaName.en} areas are colored by sampled elevation; city markers keep temperature context.`;
     if (layer === 'humidity') return 'Color shows mean RH; green is the comfortable range.';
+    if (layer === 'wind') return 'Color shows max wind speed; darker purple means windier conditions.';
     if (mode === 'travel' && layer === 'comfort') return 'Color follows the current min/max matching-day distribution.';
     return `${areaName.en} areas show the selected layer; city markers remain sample points.`;
   }
 
   if (layer === 'elevation') return `${areaName.zh}按海拔样本分层着色，城市点位保留温度`;
   if (layer === 'humidity') return '颜色显示日均相对湿度，绿色约为舒适湿度';
+  if (layer === 'wind') return '颜色显示最大风速，越偏紫表示风越大';
   if (mode === 'travel' && layer === 'comfort') return '颜色按当前结果的最小/最大匹配天数分布';
   return `${areaName.zh}显示当前图层主指标，城市点位是样本`;
 }
@@ -389,6 +422,13 @@ function legendScale(mode: ViewMode, layer: MapLayer, locale: DisplayLocale): Le
     return {
       gradient: 'linear-gradient(90deg, rgba(43, 116, 181, 0.25) 0%, rgba(43, 116, 181, 0.6) 55%, rgba(43, 116, 181, 1) 100%)',
       labels: locale === 'zh' ? ['少', '中', '多'] : ['Low', 'Mid', 'High']
+    };
+  }
+
+  if (layer === 'wind') {
+    return {
+      gradient: 'linear-gradient(90deg, #59a8b2 0%, #7487aa 55%, #79629d 100%)',
+      labels: locale === 'zh' ? ['小', '中', '大'] : ['Light', 'Mid', 'Strong']
     };
   }
 
@@ -584,15 +624,19 @@ export function WorldWeatherMap({
   layer,
   resultItems,
   regionSummaries,
+  dataRegion,
   temperatureUnit,
   activeRegion,
   regionLayer,
   selectedCityId,
-  onSelectCity
+  onSelectCity,
+  statusLabel,
+  statusKind = 'empty'
 }: WorldWeatherMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const onSelectCityRef = useRef(onSelectCity);
+  const cameraRegionRef = useRef<RegionKey | null>(null);
   const loadingRegionLayersRef = useRef<Partial<Record<MapRegionLayer, Promise<void>>>>({});
   const regionGeojsonRef = useRef<Record<MapRegionLayer, MapGeoJson | null>>({
     country: null,
@@ -602,7 +646,7 @@ export function WorldWeatherMap({
   const [mapReady, setMapReady] = useState(false);
   const [regionDataVersion, setRegionDataVersion] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [markerViewport, setMarkerViewport] = useState<MarkerViewport>({ zoom: 1.35, width: 0, height: 0 });
+  const [markerViewport, setMarkerViewport] = useState<MarkerViewport>({ zoom: defaultWorldZoom, width: 0, height: 0 });
   const scale = legendScale(mode, layer, locale);
   const hasRegionLayer = regionSummaries.length > 0;
   const fullscreenLabel =
@@ -819,8 +863,8 @@ export function WorldWeatherMap({
 
     mapRef.current = new maplibregl.Map({
       container: containerRef.current,
-      center: [18, 23],
-      zoom: 1.35,
+      center: defaultWorldCenter,
+      zoom: defaultWorldZoom,
       minZoom: 1,
       maxZoom: 8,
       attributionControl: false,
@@ -987,15 +1031,30 @@ export function WorldWeatherMap({
     const map = mapRef.current;
     if (!map || !mapReady) return;
 
+    if (activeRegion === 'world') {
+      if (cameraRegionRef.current && cameraRegionRef.current !== activeRegion) {
+        map.jumpTo({
+          center: defaultWorldCenter,
+          zoom: defaultWorldZoom
+        });
+        updateMarkerViewport();
+      }
+      cameraRegionRef.current = activeRegion;
+      return;
+    }
+
+    if (dataRegion !== activeRegion) return;
+
     const bounds = buildRegionBounds(regionGeojsonRef.current[regionLayer], regionSummaries, regionLayer) ?? pointBounds;
     if (bounds) {
       map.fitBounds(bounds, {
-        padding: activeRegion === 'world' ? 24 : 84,
-        maxZoom: activeRegion === 'world' ? 1.45 : regionLayer === 'country' ? 4.8 : 5.6,
-        duration: 420
+        padding: 84,
+        maxZoom: regionLayer === 'country' ? 4.8 : 5.6,
+        duration: 0
       });
+      cameraRegionRef.current = activeRegion;
     }
-  }, [activeRegion, pointBounds, regionDataVersion, regionLayer, regionSummaries, mapReady]);
+  }, [activeRegion, dataRegion, pointBounds, regionDataVersion, regionLayer, regionSummaries, mapReady, updateMarkerViewport]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -1031,7 +1090,10 @@ export function WorldWeatherMap({
   }, [isFullscreen]);
 
   return (
-    <section className={`map-shell${isFullscreen ? ' is-fullscreen' : ''}`} aria-label={locale === 'zh' ? '全球天气地图' : 'Global weather map'}>
+    <section
+      className={`map-shell${isFullscreen ? ' is-fullscreen' : ''}${statusLabel ? ' has-status' : ''}`}
+      aria-label={locale === 'zh' ? '全球天气地图' : 'Global weather map'}
+    >
       <button
         className="map-fullscreen-button"
         type="button"
@@ -1040,9 +1102,14 @@ export function WorldWeatherMap({
         aria-pressed={isFullscreen}
         title={fullscreenLabel}
       >
-        {isFullscreen ? <Minimize2 size={18} aria-hidden="true" /> : <Maximize2 size={18} aria-hidden="true" />}
+        {isFullscreen ? <Minimize2 size={16} aria-hidden="true" /> : <Maximize2 size={16} aria-hidden="true" />}
       </button>
       <div ref={containerRef} className="weather-map" />
+      {statusLabel ? (
+        <div className={`map-panel-state${statusKind === 'loading' ? ' panel-loading-state' : ''}`} role="status">
+          {statusLabel}
+        </div>
+      ) : null}
       <div className="map-legend">
         <div className="map-legend-main">
           <span>{legendDescription(mode, layer, regionLayer, locale)}</span>

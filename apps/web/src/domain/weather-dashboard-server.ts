@@ -118,6 +118,7 @@ function buildTravelItems(cities: City[], forecastsByCity: Map<string, DailyFore
       averageTemperatureC: score.averageTemperatureC,
       averagePrecipitationMm: averageValue(score.forecasts, (forecast) => forecast.precipitationSumMm),
       averageHumidityPercent: averageValue(score.forecasts, (forecast) => forecast.humidityMeanPercent),
+      averageWindSpeedKmh: averageValue(score.forecasts, (forecast) => forecast.windSpeedMaxKmh ?? 0),
       rainDays: score.rainDays,
       bestStreakDays: score.bestStreakDays,
       weatherType: dominantWeatherType(score.forecasts)
@@ -161,6 +162,7 @@ export function buildWeatherDashboardPayload(
 
   return {
     mode,
+    region: travelFilter.region,
     selectedDate,
     availableDates: snapshot.availableDates,
     regionAvailableDates,

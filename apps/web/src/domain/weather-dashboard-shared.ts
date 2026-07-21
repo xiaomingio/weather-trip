@@ -4,7 +4,7 @@
  */
 import type { City, DailyForecast, MapLayer, RegionKey, RegionWeatherSummary, TravelFilter, ViewMode, WeatherType } from 'weather-core/types';
 import { getMapRegionLayer, regionOptions } from './regions';
-import { allWeatherTypes, elevationFilterBounds } from './weather';
+import { allWeatherTypes, elevationFilterBounds, precipitationFilterBounds, windSpeedFilterBounds } from './weather';
 
 export type DashboardTravelResultItem = {
   mode: 'travel';
@@ -15,6 +15,7 @@ export type DashboardTravelResultItem = {
   averageTemperatureC: number;
   averagePrecipitationMm: number;
   averageHumidityPercent: number;
+  averageWindSpeedKmh: number;
   rainDays: number;
   bestStreakDays: number;
   weatherType: WeatherType;
@@ -36,6 +37,7 @@ export type DashboardSubRegionOption = {
 
 export type WeatherDashboardPayload = {
   mode: ViewMode;
+  region: RegionKey;
   selectedDate: string;
   availableDates: string[];
   regionAvailableDates: string[];
@@ -53,6 +55,12 @@ export const defaultTravelFilter: TravelFilter = {
   useHumidity: false,
   humidityMinPercent: 40,
   humidityMaxPercent: 70,
+  usePrecipitation: false,
+  precipitationMinMm: precipitationFilterBounds.minMm,
+  precipitationMaxMm: 5,
+  useWind: false,
+  windSpeedMinKmh: windSpeedFilterBounds.minKmh,
+  windSpeedMaxKmh: 30,
   useElevation: false,
   elevationMinMeters: elevationFilterBounds.minMeters,
   elevationMaxMeters: elevationFilterBounds.maxMeters,
@@ -61,7 +69,7 @@ export const defaultTravelFilter: TravelFilter = {
   region: 'world'
 };
 
-const layers: MapLayer[] = ['comfort', 'temperature', 'weather', 'precipitation', 'humidity', 'elevation'];
+const layers: MapLayer[] = ['weather', 'temperature', 'humidity', 'precipitation', 'wind', 'elevation', 'comfort'];
 
 function parseNumberRange(value: string | null): [number, number] | null {
   if (!value || value === 'off') return null;
@@ -82,7 +90,7 @@ export function isSupportedRegion(region: RegionKey): boolean {
 
 export function readLayerFromSearch(search: string | URLSearchParams): MapLayer {
   const layer = searchParamsFrom(search).get('layer');
-  return layers.includes(layer as MapLayer) ? (layer as MapLayer) : 'comfort';
+  return layers.includes(layer as MapLayer) ? (layer as MapLayer) : 'weather';
 }
 
 export function readDateFromSearch(search: string | URLSearchParams, fallbackDate: string): string {
@@ -121,6 +129,28 @@ export function parseTravelFilterFromSearch(search: string | URLSearchParams, fa
     if (range) {
       nextFilter.useHumidity = true;
       [nextFilter.humidityMinPercent, nextFilter.humidityMaxPercent] = range;
+    }
+  }
+
+  const precipitation = params.get('precipitation');
+  if (precipitation === 'off') {
+    nextFilter.usePrecipitation = false;
+  } else {
+    const range = parseNumberRange(precipitation);
+    if (range) {
+      nextFilter.usePrecipitation = true;
+      [nextFilter.precipitationMinMm, nextFilter.precipitationMaxMm] = range;
+    }
+  }
+
+  const wind = params.get('wind');
+  if (wind === 'off') {
+    nextFilter.useWind = false;
+  } else {
+    const range = parseNumberRange(wind);
+    if (range) {
+      nextFilter.useWind = true;
+      [nextFilter.windSpeedMinKmh, nextFilter.windSpeedMaxKmh] = range;
     }
   }
 
@@ -170,6 +200,8 @@ export function buildFilterSearch(
   params.set('temp', travelFilter.useTemperature ? `${travelFilter.temperatureMinC},${travelFilter.temperatureMaxC}` : 'off');
   params.set('weather', travelFilter.useWeather ? travelFilter.weatherTypes.join(',') : 'off');
   params.set('humidity', travelFilter.useHumidity ? `${travelFilter.humidityMinPercent},${travelFilter.humidityMaxPercent}` : 'off');
+  params.set('precipitation', travelFilter.usePrecipitation ? `${travelFilter.precipitationMinMm},${travelFilter.precipitationMaxMm}` : 'off');
+  params.set('wind', travelFilter.useWind ? `${travelFilter.windSpeedMinKmh},${travelFilter.windSpeedMaxKmh}` : 'off');
   params.set('elevation', travelFilter.useElevation ? `${travelFilter.elevationMinMeters},${travelFilter.elevationMaxMeters}` : 'off');
 
   return params.toString();

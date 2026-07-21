@@ -4,9 +4,10 @@
  * 对应文档: docs/data-flow.md
  */
 import Analytics from '@/components/analytics.astro';
+import SiteNav from '@/components/site-nav.astro';
 import SitePreferences from '@/components/site-preferences.astro';
 import { WeatherDashboard } from '@/components/weather-dashboard';
-import { getToolPathSegment, resolveToolMode } from '@/domain/navigation';
+import { buildTopTabPath, getToolPathSegment, resolveToolMode } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import '@/styles/global.css';
 
@@ -35,6 +36,9 @@ const description =
       ? 'View temperature, rainfall, RH, weather type, and comfort across global cities by date.'
       : 'Find matching cities by temperature, sky, RH, elevation, and trip length.';
 const tabId = getToolPathSegment(initialMode);
+const otherLocale = locale === 'zh' ? 'en' : 'zh';
+const unitToggleLabel = locale === 'zh' ? '切换摄氏度与华氏度' : 'Switch Celsius / Fahrenheit';
+const languageLabel = locale === 'zh' ? 'English' : '中文';
 const seoPage = getPublicPage(locale, tabId);
 const alternateLinks = getAlternateLinks(tabId);
 ---
@@ -60,12 +64,22 @@ const alternateLinks = getAlternateLinks(tabId);
     <Analytics />
   </head>
   <body class="weather-page">
-    <WeatherDashboard
-      client:load
-      locale={locale}
-      initialMode={initialMode}
-      initialSearch={Astro.url.search}
-    />
+    <main class="app-shell">
+      <SiteNav
+        locale={locale}
+        activeTab={tabId}
+        unitToggleLabel={unitToggleLabel}
+        localeHref={`${buildTopTabPath(otherLocale, tabId)}${Astro.url.search}`}
+        localeLabel={languageLabel}
+        dynamicToolLinks
+      />
+      <WeatherDashboard
+        client:load
+        locale={locale}
+        initialMode={initialMode}
+        initialSearch={Astro.url.search}
+      />
+    </main>
     <SitePreferences />
   </body>
 </html>

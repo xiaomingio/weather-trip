@@ -1,0 +1,89 @@
+---
+/**
+ * 文件说明: 静态渲染 Weather Trip 顶部品牌、工具 Tab、温度单位和语言切换导航。
+ * 对应文档: docs/tool-responsive-layout.md
+ */
+import type { DisplayLocale } from '@/domain/format';
+import { buildTopTabPath, topTabs, type TopTabId } from '@/domain/navigation';
+
+type Props = {
+  locale: DisplayLocale;
+  activeTab: TopTabId;
+  unitToggleLabel: string;
+  localeHref: string;
+  localeLabel: string;
+  class?: string;
+  dynamicToolLinks?: boolean;
+  navLabel?: string;
+  tabHrefs?: Partial<Record<TopTabId, string>>;
+  unitLabel?: string;
+  unitPressed?: boolean;
+};
+
+const {
+  locale,
+  activeTab,
+  unitToggleLabel,
+  localeHref,
+  localeLabel,
+  dynamicToolLinks = false,
+  navLabel = 'Weather Trip',
+  tabHrefs = {},
+  unitLabel = '°C',
+  unitPressed = false
+} = Astro.props;
+const className = Astro.props.class;
+const otherLocale = locale === 'zh' ? 'en' : 'zh';
+---
+
+<header class:list={['site-nav', className]}>
+  <a class="brand" href={buildTopTabPath(locale, 'landing')}>Weather Trip</a>
+  <nav class="tabs" aria-label={navLabel}>
+    {
+      topTabs.map((tab) => (
+        <a
+          class={tab.id === activeTab ? 'is-active' : undefined}
+          href={tabHrefs[tab.id] ?? buildTopTabPath(locale, tab.id)}
+          data-top-tab-id={tab.id}
+        >
+          {tab.labels[locale]}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="nav-actions">
+    <button
+      type="button"
+      class="nav-icon-btn"
+      data-unit-toggle
+      aria-label={unitToggleLabel}
+      aria-pressed={unitPressed ? 'true' : 'false'}
+      title={unitToggleLabel}
+    >
+      <span class="unit-label" data-unit-label>{unitLabel}</span>
+    </button>
+    <a
+      class="nav-icon-btn"
+      href={localeHref}
+      data-locale-link={otherLocale}
+      data-dashboard-locale-link={dynamicToolLinks ? 'true' : undefined}
+      aria-label={localeLabel}
+      title={localeLabel}
+    >
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+        <path d="M2 12h20"></path>
+      </svg>
+    </a>
+  </div>
+</header>

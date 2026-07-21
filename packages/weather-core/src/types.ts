@@ -15,7 +15,7 @@ export type WeatherType =
   | 'light_snow'
   | 'snow';
 
-export type MapLayer = 'temperature' | 'weather' | 'precipitation' | 'humidity' | 'elevation' | 'comfort';
+export type MapLayer = 'weather' | 'temperature' | 'humidity' | 'precipitation' | 'wind' | 'comfort' | 'elevation';
 
 export type ViewMode = 'travel' | 'daily';
 
@@ -75,6 +75,12 @@ export type TravelFilter = {
   useHumidity: boolean;
   humidityMinPercent: number;
   humidityMaxPercent: number;
+  usePrecipitation: boolean;
+  precipitationMinMm: number;
+  precipitationMaxMm: number;
+  useWind: boolean;
+  windSpeedMinKmh: number;
+  windSpeedMaxKmh: number;
   useElevation: boolean;
   elevationMinMeters: number;
   elevationMaxMeters: number;
@@ -118,6 +124,7 @@ export type RegionWeatherSummary = {
   humidityMeanPercent: number;
   elevationMeters: number;
   precipitationSumMm: number;
+  windSpeedMaxKmh: number;
   comfortScore: number;
   matchDays: number;
   totalDays: number;

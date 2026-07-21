@@ -1,0 +1,689 @@
+<!--
+  文件说明: 绘制 Weather Trip 筛选摘要条、hover 浮层和移动端 bottom sheet 的交互设计图。
+  对应文档: 临时交互方案预览，不作为项目运行代码。
+-->
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather Trip Filter Interaction Mockup</title>
+    <style>
+      :root {
+        --ink: #18201f;
+        --muted: #69736f;
+        --paper: #f6f4ee;
+        --surface: #fffefa;
+        --line: #d8d2c6;
+        --sea: #2f7f74;
+        --soft: #edf4f1;
+        --shadow: 0 22px 60px rgba(35, 45, 42, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        align-items: center;
+        background:
+          radial-gradient(circle at 12% 18%, #deeeee 0, transparent 32%),
+          radial-gradient(circle at 92% 8%, rgba(224, 188, 100, 0.22) 0, transparent 30%),
+          linear-gradient(180deg, #fbfaf4, #f1ede3);
+        color: var(--ink);
+        display: grid;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        padding: 28px;
+      }
+
+      .board {
+        background: rgba(255, 253, 247, 0.72);
+        border: 1px solid rgba(24, 32, 31, 0.12);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 20px;
+        max-width: 1460px;
+        padding: 22px;
+        width: 100%;
+      }
+
+      .title-row {
+        align-items: end;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 24px;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .canvas {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(0, 1fr) 360px;
+      }
+
+      .desktop {
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid rgba(24, 32, 31, 0.1);
+        border-radius: 14px;
+        display: grid;
+        gap: 12px;
+        min-width: 0;
+        overflow: hidden;
+        padding: 14px;
+        position: relative;
+      }
+
+      .nav {
+        align-items: center;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 16px;
+      }
+
+      .brand {
+        color: #44544f;
+        font-size: 16px;
+        font-weight: 850;
+      }
+
+      .tabs {
+        background: rgba(251, 250, 244, 0.78);
+        border: 1px solid rgba(24, 32, 31, 0.12);
+        border-radius: 999px;
+        display: flex;
+        gap: 3px;
+        justify-self: center;
+        padding: 4px;
+      }
+
+      .tab {
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 760;
+        padding: 9px 14px;
+      }
+
+      .tab.active {
+        background: var(--ink);
+        color: white;
+      }
+
+      .actions {
+        color: #44544f;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .filter-dock {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(3, minmax(0, 0.75fr)) repeat(4, minmax(0, 1fr));
+        position: relative;
+      }
+
+      .filter-card {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(24, 32, 31, 0.12);
+        border-radius: 9px;
+        box-shadow: 0 8px 20px rgba(35, 45, 42, 0.06);
+        display: grid;
+        gap: 5px;
+        min-height: 58px;
+        padding: 8px 10px;
+      }
+
+      .filter-card.active {
+        border-color: rgba(47, 127, 116, 0.55);
+        box-shadow: 0 0 0 3px rgba(47, 127, 116, 0.1), 0 10px 22px rgba(35, 45, 42, 0.08);
+      }
+
+      .filter-label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .filter-value {
+        align-items: center;
+        display: flex;
+        font-size: 14px;
+        font-weight: 850;
+        justify-content: space-between;
+        min-width: 0;
+      }
+
+      .filter-value span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .presets {
+        align-items: center;
+        color: rgba(104, 113, 109, 0.9);
+        display: flex;
+        font-size: 12px;
+        gap: 12px;
+        grid-column: 4 / -1;
+        min-height: 24px;
+        overflow: hidden;
+        padding-left: 2px;
+      }
+
+      .presets b {
+        color: rgba(104, 113, 109, 0.9);
+        font-size: 11px;
+      }
+
+      .preset {
+        color: rgba(24, 32, 31, 0.78);
+        font-weight: 650;
+        white-space: nowrap;
+      }
+
+      .popover {
+        background: var(--surface);
+        border: 1px solid rgba(24, 32, 31, 0.14);
+        border-radius: 12px;
+        box-shadow: 0 24px 60px rgba(35, 45, 42, 0.24);
+        display: grid;
+        gap: 14px;
+        left: 43%;
+        padding: 14px;
+        position: absolute;
+        top: 130px;
+        width: 320px;
+        z-index: 5;
+      }
+
+      .popover::before {
+        background: var(--surface);
+        border-left: 1px solid rgba(24, 32, 31, 0.14);
+        border-top: 1px solid rgba(24, 32, 31, 0.14);
+        content: "";
+        height: 12px;
+        left: 42px;
+        position: absolute;
+        top: -7px;
+        transform: rotate(45deg);
+        width: 12px;
+      }
+
+      .popover-head {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .popover-head strong {
+        font-size: 15px;
+      }
+
+      .popover-head span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .range {
+        background: #eee8db;
+        border-radius: 999px;
+        height: 7px;
+        position: relative;
+      }
+
+      .range-fill {
+        background: #8fbfb2;
+        border-radius: inherit;
+        height: 100%;
+        left: 30%;
+        position: absolute;
+        width: 42%;
+      }
+
+      .knob {
+        background: var(--sea);
+        border: 3px solid white;
+        border-radius: 999px;
+        box-shadow: 0 3px 12px rgba(24, 32, 31, 0.24);
+        height: 20px;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+      }
+
+      .knob.a {
+        left: 30%;
+      }
+
+      .knob.b {
+        left: 72%;
+      }
+
+      .popover-foot {
+        align-items: center;
+        color: var(--muted);
+        display: flex;
+        font-size: 12px;
+        justify-content: space-between;
+      }
+
+      .workspace {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 0.95fr 0.8fr 1.55fr;
+        min-height: 500px;
+      }
+
+      .panel {
+        border-radius: 10px;
+        display: grid;
+        min-width: 0;
+      }
+
+      .cities,
+      .forecast {
+        gap: 8px;
+        grid-auto-rows: max-content;
+      }
+
+      .metric-row {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .metric,
+      .search,
+      .row,
+      .day {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(24, 32, 31, 0.12);
+        border-radius: 8px;
+      }
+
+      .metric {
+        display: grid;
+        gap: 4px;
+        padding: 10px;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+      }
+
+      .metric strong {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 24px;
+      }
+
+      .search {
+        color: var(--muted);
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .row,
+      .day {
+        align-items: center;
+        display: grid;
+        font-size: 13px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 10px;
+      }
+
+      .row.active {
+        border-color: var(--sea);
+      }
+
+      .row small,
+      .day small {
+        color: var(--muted);
+      }
+
+      .forecast-head {
+        display: grid;
+        gap: 4px;
+        padding: 4px 2px;
+      }
+
+      .forecast-head strong {
+        font-size: 16px;
+      }
+
+      .forecast-head span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .map {
+        background:
+          linear-gradient(120deg, rgba(102, 146, 172, 0.38), rgba(164, 194, 178, 0.42)),
+          repeating-linear-gradient(45deg, rgba(205, 129, 101, 0.36) 0 28px, rgba(213, 177, 112, 0.36) 28px 58px);
+        border: 1px solid rgba(24, 32, 31, 0.12);
+        border-radius: 10px;
+        min-height: 500px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .map::before {
+        color: rgba(24, 32, 31, 0.45);
+        content: "地图区域";
+        font-size: 22px;
+        font-weight: 850;
+        left: 24px;
+        position: absolute;
+        top: 22px;
+      }
+
+      .pin {
+        background: rgba(208, 160, 47, 0.9);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        border-radius: 999px;
+        height: 26px;
+        position: absolute;
+        width: 26px;
+      }
+
+      .pin.one {
+        left: 44%;
+        top: 46%;
+      }
+
+      .pin.two {
+        left: 63%;
+        top: 58%;
+      }
+
+      .pin.three {
+        left: 30%;
+        top: 66%;
+      }
+
+      .mobile {
+        background: #151d1b;
+        border-radius: 28px;
+        box-shadow: 0 24px 70px rgba(24, 32, 31, 0.24);
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 720px;
+        overflow: hidden;
+        padding: 12px;
+      }
+
+      .phone-screen {
+        background: linear-gradient(180deg, #fbfaf4, #efe8dc);
+        border-radius: 20px;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        overflow: hidden;
+        padding: 14px;
+        position: relative;
+      }
+
+      .phone-top {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .phone-top strong {
+        font-size: 15px;
+      }
+
+      .mobile-filters {
+        display: grid;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .mobile-main-row {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr 1fr auto;
+      }
+
+      .mobile-chip {
+        background: rgba(255, 255, 255, 0.84);
+        border: 1px solid rgba(24, 32, 31, 0.12);
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 750;
+        padding: 9px 10px;
+      }
+
+      .mobile-summary {
+        display: flex;
+        gap: 7px;
+        overflow: hidden;
+      }
+
+      .mobile-summary span {
+        background: rgba(255, 255, 255, 0.62);
+        border: 1px solid rgba(24, 32, 31, 0.08);
+        border-radius: 999px;
+        color: var(--muted);
+        flex: 0 0 auto;
+        font-size: 11px;
+        padding: 6px 9px;
+      }
+
+      .phone-list {
+        display: grid;
+        gap: 8px;
+        grid-auto-rows: max-content;
+        margin-top: 16px;
+      }
+
+      .sheet {
+        background: var(--surface);
+        border-radius: 18px 18px 0 0;
+        bottom: 0;
+        box-shadow: 0 -18px 40px rgba(35, 45, 42, 0.22);
+        display: grid;
+        gap: 14px;
+        left: 0;
+        padding: 10px 16px 18px;
+        position: absolute;
+        right: 0;
+      }
+
+      .handle {
+        background: rgba(24, 32, 31, 0.18);
+        border-radius: 999px;
+        height: 4px;
+        justify-self: center;
+        width: 46px;
+      }
+
+      .sheet h2 {
+        font-size: 16px;
+      }
+
+      .sheet .range {
+        margin: 8px 0 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="board">
+      <div class="title-row">
+        <div>
+          <h1>Weather Trip 筛选交互方案</h1>
+          <p class="subtitle">桌面 hover/focus/click 打开浮层；手机 tap 筛选摘要打开底部面板。</p>
+        </div>
+        <p class="subtitle">桌面：hover / focus / click　手机：tap / bottom sheet</p>
+      </div>
+
+      <section class="canvas">
+        <section class="desktop">
+          <header class="nav">
+            <div class="brand">Weather Trip</div>
+            <nav class="tabs">
+              <span class="tab">首页</span>
+              <span class="tab">天气地图</span>
+              <span class="tab active">城市查找</span>
+            </nav>
+            <div class="actions">°C　◎</div>
+          </header>
+
+          <section class="filter-dock">
+            <div class="filter-card">
+              <span class="filter-label">地区</span>
+              <div class="filter-value"><span>全球</span><span>⌄</span></div>
+            </div>
+            <div class="filter-card">
+              <span class="filter-label">省份/州</span>
+              <div class="filter-value"><span>全部</span><span>⌄</span></div>
+            </div>
+            <div class="filter-card">
+              <span class="filter-label">时间</span>
+              <div class="filter-value"><span>未来 14 天</span><span>⌄</span></div>
+            </div>
+            <div class="filter-card active">
+              <span class="filter-label">气温 · hover/focus/click</span>
+              <div class="filter-value"><span>15° - 30°</span><span>⌃</span></div>
+            </div>
+            <div class="filter-card">
+              <span class="filter-label">天气</span>
+              <div class="filter-value"><span>晴天、晴到多云</span><span>⌄</span></div>
+            </div>
+            <div class="filter-card">
+              <span class="filter-label">湿度</span>
+              <div class="filter-value"><span>40% - 70%</span><span>⌄</span></div>
+            </div>
+            <div class="filter-card">
+              <span class="filter-label">海拔</span>
+              <div class="filter-value"><span>不限</span><span>⌄</span></div>
+            </div>
+            <div class="presets">
+              <b>推荐</b>
+              <span class="preset">舒适晴朗</span>
+              <span class="preset">舒适无雨</span>
+              <span class="preset">无雨</span>
+              <span class="preset">清凉无雨</span>
+              <span class="preset">温暖晴朗</span>
+              <span class="preset">雨天</span>
+              <span class="preset">雪天</span>
+            </div>
+          </section>
+
+          <section class="popover">
+            <div class="popover-head">
+              <strong>气温</strong>
+              <span>15°C - 30°C</span>
+            </div>
+            <div class="range">
+              <div class="range-fill"></div>
+              <span class="knob a"></span>
+              <span class="knob b"></span>
+            </div>
+            <div class="popover-foot">
+              <span>启用气温筛选</span>
+              <span>重置</span>
+            </div>
+          </section>
+
+          <section class="workspace">
+            <div class="panel cities">
+              <div class="metric-row">
+                <div class="metric"><span>覆盖区域</span><strong>245</strong></div>
+                <div class="metric"><span>城市样本</span><strong>1875</strong></div>
+                <div class="metric"><span>高匹配城市</span><strong>3</strong></div>
+              </div>
+              <div class="search">搜索城市</div>
+              <div class="row active"><strong>特尔德</strong><small>12/14 适合</small></div>
+              <div class="row"><strong>奥克斯纳纳</strong><small>11/14 适合</small></div>
+              <div class="row"><strong>巴西利亚</strong><small>10/14 适合</small></div>
+              <div class="row"><strong>奇克拉约</strong><small>9/14 适合</small></div>
+              <div class="row"><strong>Amadora</strong><small>9/14 适合</small></div>
+            </div>
+
+            <div class="panel forecast">
+              <div class="forecast-head">
+                <strong>特尔德</strong>
+                <span>西班牙 · 加那利群岛 · 160 m</span>
+              </div>
+              <div class="day"><strong>7.20 周一</strong><small>22-28°C　63%</small></div>
+              <div class="day"><strong>7.21 周二</strong><small>21-27°C　69%</small></div>
+              <div class="day"><strong>7.22 周三</strong><small>21-28°C　68%</small></div>
+              <div class="day"><strong>7.23 周四</strong><small>22-28°C　68%</small></div>
+              <div class="day"><strong>7.24 周五</strong><small>22-28°C　67%</small></div>
+            </div>
+
+            <div class="map">
+              <span class="pin one"></span>
+              <span class="pin two"></span>
+              <span class="pin three"></span>
+            </div>
+          </section>
+        </section>
+
+        <aside class="mobile">
+          <div class="phone-screen">
+            <div class="phone-top">
+              <strong>Weather Trip</strong>
+              <span>tap 筛选 4</span>
+            </div>
+            <div class="mobile-filters">
+              <div class="mobile-main-row">
+                <div class="mobile-chip">全球</div>
+                <div class="mobile-chip">未来 14 天</div>
+                <div class="mobile-chip">筛选</div>
+              </div>
+              <div class="mobile-summary">
+                <span>15-30°C</span>
+                <span>晴天/多云</span>
+                <span>湿度 40-70</span>
+                <span>海拔不限</span>
+              </div>
+            </div>
+            <div class="phone-list">
+              <div class="row active"><strong>特尔德</strong><small>12/14</small></div>
+              <div class="row"><strong>奥克斯纳纳</strong><small>11/14</small></div>
+              <div class="row"><strong>巴西利亚</strong><small>10/14</small></div>
+            </div>
+            <div class="sheet">
+              <div class="handle"></div>
+              <h2>气温 · tap 后底部面板</h2>
+              <div class="popover-head">
+                <strong>15°C</strong>
+                <span>30°C</span>
+              </div>
+              <div class="range">
+                <div class="range-fill"></div>
+                <span class="knob a"></span>
+                <span class="knob b"></span>
+              </div>
+              <div class="popover-foot">
+                <span>启用气温筛选</span>
+                <span>完成</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>

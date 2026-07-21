@@ -64,7 +64,8 @@ export function formatCompactTemperatureRange(
 ): string {
   const displayMin = unit === 'f' ? celsiusToFahrenheit(min) : min;
   const displayMax = unit === 'f' ? celsiusToFahrenheit(max) : max;
-  return locale === 'zh' ? `${Math.round(displayMin)}~${Math.round(displayMax)}°` : `${Math.round(displayMin)}-${Math.round(displayMax)}°`;
+  const separator = locale === 'zh' ? '~' : '-';
+  return `${Math.round(displayMin)}${separator}${Math.round(displayMax)}°${unit.toUpperCase()}`;
 }
 
 export function formatElevation(value: number, locale: DisplayLocale = 'zh'): string {

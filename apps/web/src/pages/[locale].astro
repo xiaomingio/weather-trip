@@ -5,9 +5,10 @@
  */
 import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
 import Analytics from '@/components/analytics.astro';
+import SiteNav from '@/components/site-nav.astro';
 import SitePreferences from '@/components/site-preferences.astro';
 import type { DisplayLocale } from '@/domain/format';
-import { buildTopTabPath, topTabs } from '@/domain/navigation';
+import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import '@/styles/global.css';
 import '@/styles/landing.css';
@@ -213,51 +214,15 @@ const alternateLinks = getAlternateLinks('landing');
   </head>
   <body class="landing-page">
     <main class="page">
-      <header class="site-nav">
-        <a class="brand" href={buildTopTabPath(locale, 'landing')}>Weather Trip</a>
-        <nav class="tabs" aria-label={copy.brandZh}>
-          {
-            topTabs.map((tab) => (
-              <a class={tab.id === 'landing' ? 'is-active' : ''} href={buildTopTabPath(locale, tab.id)}>
-                {tab.labels[locale]}
-              </a>
-            ))
-          }
-        </nav>
-        <div class="nav-actions">
-          <button
-            type="button"
-            class="nav-icon-btn"
-            data-unit-toggle
-            aria-label={copy.unitToggle}
-            title={copy.unitToggle}
-          >
-            <span class="unit-label" data-unit-label>°C</span>
-          </button>
-          <a
-            class="nav-icon-btn"
-            href={otherLandingPath}
-            data-locale-link={otherLocale}
-            aria-label={copy.languageToggle}
-            title={copy.languageToggle}
-          >
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-              <path d="M2 12h20"></path>
-            </svg>
-          </a>
-        </div>
-      </header>
+      <SiteNav
+        locale={locale}
+        activeTab="landing"
+        unitLabel="°C"
+        unitToggleLabel={copy.unitToggle}
+        localeHref={otherLandingPath}
+        localeLabel={copy.languageToggle}
+        navLabel={copy.brandZh}
+      />
 
       <section class="hero" aria-label={copy.brandZh}>
         <canvas class="climate-canvas" data-climate-canvas aria-hidden="true"></canvas>

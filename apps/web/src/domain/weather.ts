@@ -13,6 +13,12 @@ type WeatherPresetFilter = Pick<
   | 'useHumidity'
   | 'humidityMinPercent'
   | 'humidityMaxPercent'
+  | 'usePrecipitation'
+  | 'precipitationMinMm'
+  | 'precipitationMaxMm'
+  | 'useWind'
+  | 'windSpeedMinKmh'
+  | 'windSpeedMaxKmh'
   | 'useElevation'
   | 'elevationMinMeters'
   | 'elevationMaxMeters'
@@ -33,6 +39,16 @@ export const temperatureFilterBounds = {
 export const humidityFilterBounds = {
   minPercent: 0,
   maxPercent: 100
+};
+
+export const precipitationFilterBounds = {
+  minMm: 0,
+  maxMm: 120
+};
+
+export const windSpeedFilterBounds = {
+  minKmh: 0,
+  maxKmh: 120
 };
 
 export const elevationFilterBounds = {
@@ -92,6 +108,12 @@ const defaultPresetFilter: WeatherPresetFilter = {
   useHumidity: false,
   humidityMinPercent: 40,
   humidityMaxPercent: 70,
+  usePrecipitation: false,
+  precipitationMinMm: precipitationFilterBounds.minMm,
+  precipitationMaxMm: 5,
+  useWind: false,
+  windSpeedMinKmh: windSpeedFilterBounds.minKmh,
+  windSpeedMaxKmh: 30,
   useElevation: false,
   elevationMinMeters: elevationFilterBounds.minMeters,
   elevationMaxMeters: elevationFilterBounds.maxMeters,
@@ -237,6 +259,12 @@ export function applyWeatherPreset(current: TravelFilter, preset: WeatherPreset)
     useHumidity: preset.useHumidity,
     humidityMinPercent: preset.humidityMinPercent,
     humidityMaxPercent: preset.humidityMaxPercent,
+    usePrecipitation: preset.usePrecipitation,
+    precipitationMinMm: preset.precipitationMinMm,
+    precipitationMaxMm: preset.precipitationMaxMm,
+    useWind: preset.useWind,
+    windSpeedMinKmh: preset.windSpeedMinKmh,
+    windSpeedMaxKmh: preset.windSpeedMaxKmh,
     useElevation: preset.useElevation,
     elevationMinMeters: preset.elevationMinMeters,
     elevationMaxMeters: preset.elevationMaxMeters,

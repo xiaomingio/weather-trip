@@ -19,9 +19,17 @@ export function dayMatchesFilter(day: DailyForecast, filter: TravelFilter): bool
   const humidityMatches =
     !filter.useHumidity ||
     (day.humidityMeanPercent >= filter.humidityMinPercent && day.humidityMeanPercent <= filter.humidityMaxPercent);
+  const precipitationMatches =
+    !filter.usePrecipitation ||
+    (day.precipitationSumMm >= filter.precipitationMinMm && day.precipitationSumMm <= filter.precipitationMaxMm);
+  const windMatches =
+    !filter.useWind ||
+    (typeof day.windSpeedMaxKmh === 'number' &&
+      day.windSpeedMaxKmh >= filter.windSpeedMinKmh &&
+      day.windSpeedMaxKmh <= filter.windSpeedMaxKmh);
   const weatherMatches = !filter.useWeather || filter.weatherTypes.includes(day.weatherType);
 
-  return temperatureMatches && humidityMatches && weatherMatches;
+  return temperatureMatches && humidityMatches && precipitationMatches && windMatches && weatherMatches;
 }
 
 export function calculateBestStreak(matches: boolean[]): number {
