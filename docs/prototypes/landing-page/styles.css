@@ -1,0 +1,518 @@
+/*
+  文件说明: Weather Trip 首页静态原型的视觉系统、首屏布局、Tab 和响应式规则。
+  对应文档: docs/product-design.md
+*/
+
+:root {
+  color-scheme: light;
+  --night: #10211e;
+  --ink: #172724;
+  --muted: #60706b;
+  --paper: #e7efeb;
+  --surface: rgba(252, 252, 247, 0.82);
+  --glass: rgba(13, 31, 28, 0.78);
+  --line: rgba(16, 33, 30, 0.15);
+  --sea: #247c73;
+  --rain: #3d86ac;
+  --sun: #f0c35b;
+  --front: #d86256;
+  --green: #39a47b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    linear-gradient(90deg, rgba(16, 33, 30, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(16, 33, 30, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 76% 10%, rgba(240, 195, 91, 0.28), transparent 30%),
+    var(--paper);
+  background-size: 44px 44px, 44px 44px, auto, auto;
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+.page-shell {
+  display: grid;
+  gap: 12px;
+  min-height: 100svh;
+  padding: 12px;
+}
+
+.site-bar {
+  align-items: start;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+}
+
+.weather-tabs {
+  align-items: center;
+  backdrop-filter: blur(20px);
+  background: rgba(250, 250, 246, 0.76);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 14px 40px rgba(25, 38, 36, 0.12);
+  display: flex;
+  gap: 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: none;
+}
+
+.weather-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.weather-tabs a {
+  align-items: center;
+  border-radius: 6px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 850;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.weather-tabs a span {
+  background: rgba(16, 33, 30, 0.24);
+  border-radius: 999px;
+  height: 7px;
+  width: 7px;
+}
+
+.weather-tabs a.is-active {
+  background: var(--night);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 18px rgba(16, 34, 31, 0.2);
+  color: #fff;
+}
+
+.weather-tabs a.is-active span {
+  background: var(--sun);
+  box-shadow: 0 0 0 4px rgba(240, 195, 91, 0.18);
+}
+
+.weather-tabs a:hover,
+.site-meta a:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--night);
+}
+
+.weather-tabs a.is-active:hover {
+  background: var(--night);
+  color: #fff;
+}
+
+.site-meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.site-meta a,
+.site-meta span {
+  backdrop-filter: blur(20px);
+  background: rgba(250, 250, 246, 0.76);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 850;
+  min-height: 34px;
+  padding: 7px 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hero {
+  align-items: end;
+  border: 1px solid rgba(16, 33, 30, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 34px 90px rgba(28, 44, 42, 0.18);
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  min-height: calc(100svh - 76px);
+  overflow: hidden;
+  padding: 58px 24px 24px;
+  position: relative;
+}
+
+.weather-canvas {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
+
+.hero-shade {
+  background:
+    linear-gradient(90deg, rgba(231, 239, 235, 0.96), rgba(231, 239, 235, 0.76) 42%, rgba(231, 239, 235, 0.04)),
+    linear-gradient(0deg, rgba(16, 33, 30, 0.17), transparent 46%);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.hero::after {
+  background:
+    repeating-linear-gradient(0deg, rgba(16, 33, 30, 0.06) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgba(16, 33, 30, 0.05) 0 1px, transparent 1px 34px);
+  content: "";
+  inset: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.54;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.hero-copy {
+  display: grid;
+  gap: 20px;
+  max-width: 760px;
+  padding: 32px 0 42px 28px;
+  position: relative;
+  z-index: 3;
+}
+
+.kicker {
+  background: rgba(16, 33, 30, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  color: #eef6ef;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 850;
+  justify-self: start;
+  letter-spacing: 0;
+  margin: 0;
+  padding: 7px 10px;
+  text-transform: uppercase;
+}
+
+h1 {
+  color: var(--night);
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", Georgia, "Times New Roman", serif;
+  font-size: 76px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.95;
+  margin: 0;
+  max-width: 700px;
+  text-wrap: balance;
+}
+
+.hero-copy p:not(.kicker) {
+  color: #394946;
+  font-size: 19px;
+  font-weight: 650;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 610px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.action-primary,
+.action-secondary {
+  align-items: center;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(16, 33, 30, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(19, 38, 35, 0.12);
+  display: inline-flex;
+  font-weight: 850;
+  min-height: 48px;
+  padding: 0 16px;
+  text-decoration: none;
+}
+
+.action-primary {
+  background: var(--night);
+  border-color: var(--night);
+  color: #fff;
+}
+
+.action-secondary {
+  background: rgba(250, 250, 246, 0.82);
+  color: var(--night);
+}
+
+.action-primary::after,
+.action-secondary::after {
+  content: "→";
+  margin-left: 10px;
+}
+
+.action-primary:hover,
+.action-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.mission-panel {
+  align-self: end;
+  backdrop-filter: blur(22px);
+  background: var(--glass);
+  border: 1px solid rgba(232, 240, 237, 0.24);
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(16, 33, 30, 0.28);
+  color: #f2fbf6;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  position: relative;
+  z-index: 3;
+}
+
+.panel-head,
+.metric-line {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.panel-head {
+  border-bottom: 1px solid rgba(232, 240, 237, 0.16);
+  color: rgba(242, 251, 246, 0.72);
+  font-size: 12px;
+  font-weight: 850;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.panel-head b {
+  color: var(--sun);
+}
+
+.metric-line {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(232, 240, 237, 0.1);
+  border-radius: 8px;
+  padding: 11px 12px;
+}
+
+.metric-line span {
+  color: rgba(242, 251, 246, 0.68);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.metric-line strong {
+  color: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.station-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.station-grid p {
+  background: rgba(232, 240, 237, 0.08);
+  border: 1px solid rgba(232, 240, 237, 0.1);
+  border-radius: 8px;
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  min-width: 0;
+  padding: 9px 10px;
+}
+
+.station-grid b {
+  color: var(--sun);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.station-grid small {
+  color: rgba(242, 251, 246, 0.78);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entry-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.entry-card {
+  background: rgba(250, 250, 246, 0.82);
+  border: 1px solid rgba(16, 33, 30, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(35, 45, 42, 0.08);
+  color: var(--night);
+  display: grid;
+  gap: 12px;
+  min-height: 188px;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  text-decoration: none;
+}
+
+.entry-card::before {
+  background: linear-gradient(90deg, var(--sea), var(--sun), var(--front));
+  content: "";
+  height: 5px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.entry-card span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.entry-card strong {
+  font-size: 28px;
+  line-height: 1.08;
+}
+
+.entry-card small {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.entry-card:hover {
+  border-color: rgba(36, 124, 115, 0.42);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .site-bar {
+    flex-direction: column;
+  }
+
+  .site-meta {
+    justify-content: flex-start;
+  }
+
+  .hero {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 88px 16px 16px;
+  }
+
+  .hero-shade {
+    background: linear-gradient(180deg, rgba(231, 239, 235, 0.95), rgba(231, 239, 235, 0.64) 58%, rgba(231, 239, 235, 0.2));
+  }
+
+  .hero-copy {
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 56px;
+  }
+
+  .mission-panel {
+    align-self: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .page-shell {
+    padding: 8px;
+  }
+
+  .site-bar {
+    top: 8px;
+  }
+
+  .weather-tabs {
+    width: 100%;
+  }
+
+  .weather-tabs a {
+    flex: 1 0 auto;
+    justify-content: center;
+    padding: 7px 10px;
+  }
+
+  .site-meta span {
+    display: none;
+  }
+
+  .hero {
+    gap: 18px;
+    padding: 72px 14px 14px;
+  }
+
+  h1 {
+    font-size: 43px;
+  }
+
+  .hero-copy p:not(.kicker) {
+    font-size: 16px;
+  }
+
+  .hero-actions,
+  .entry-grid,
+  .station-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-primary,
+  .action-secondary {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

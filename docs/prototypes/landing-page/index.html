@@ -1,0 +1,83 @@
+<!doctype html>
+<!--
+  文件说明: Weather Trip 首页静态视觉原型，用于独立验证 Landing page、顶部 Tab 和首屏气象场景。
+  对应文档: docs/product-design.md
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather Trip Landing Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="site-bar">
+        <nav class="weather-tabs" aria-label="Weather Trip">
+          <a class="is-active" href="./index.html"><span></span>首页</a>
+          <a href="#"><span></span>全球天气地图</a>
+          <a href="#"><span></span>按天气找城市</a>
+        </nav>
+        <div class="site-meta">
+          <a href="#">English</a>
+          <span>实时天气快照</span>
+          <span>未来 14 天</span>
+        </div>
+      </header>
+
+      <section class="hero" aria-label="Weather Trip">
+        <canvas class="weather-canvas" data-weather-canvas aria-hidden="true"></canvas>
+        <div class="hero-shade" aria-hidden="true"></div>
+
+        <div class="hero-copy">
+          <p class="kicker">Weather Trip</p>
+          <h1>用天气决定下一个城市</h1>
+          <p>
+            查看全球城市未来天气，也可以反过来输入温度、晴雨、湿度和海拔偏好，
+            找到更适合出发的地方。
+          </p>
+          <div class="hero-actions">
+            <a class="action-primary" href="#">查看天气地图</a>
+            <a class="action-secondary" href="#">按天气找城市</a>
+          </div>
+        </div>
+
+        <aside class="mission-panel" aria-label="天气数据概览">
+          <div class="panel-head">
+            <span>Live weather map</span>
+            <b>UTC+8 13:50</b>
+          </div>
+          <div class="metric-line">
+            <span>覆盖城市</span>
+            <strong>2,198</strong>
+          </div>
+          <div class="metric-line">
+            <span>国家和地区</span>
+            <strong>245</strong>
+          </div>
+          <div class="station-grid">
+            <p><b>31°</b><small>上海</small></p>
+            <p><b>27°</b><small>北京</small></p>
+            <p><b>29°</b><small>深圳</small></p>
+            <p><b>18°</b><small>伦敦</small></p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="entry-grid" aria-label="主要工具入口">
+        <a class="entry-card weather-entry" href="#">
+          <span>全球天气地图</span>
+          <strong>先看世界正在发生什么</strong>
+          <small>按日期切换气温、降水、湿度、天气类型、海拔和舒适度图层。</small>
+        </a>
+        <a class="entry-card match-entry" href="#">
+          <span>按天气找城市</span>
+          <strong>先说出你想要什么天气</strong>
+          <small>设定温度、晴雨、湿度、海拔和出行天数，让城市按匹配程度排序。</small>
+        </a>
+      </section>
+    </main>
+
+    <script src="./weather-canvas.js"></script>
+  </body>
+</html>

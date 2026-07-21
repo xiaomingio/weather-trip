@@ -51,8 +51,8 @@ type MapRegionSummary = {
   elevationMeters: number; // 样本平均海拔
   precipitationSumMm: number; // 样本平均降水
   comfortScore: number; // 单日舒适度或旅行匹配比例
-  matchDays: number; // 旅行筛选命中天数
-  totalDays: number; // 旅行筛选总天数
+  matchDays: number; // 天气匹配命中天数
+  totalDays: number; // 天气匹配总天数
 };
 ```
 

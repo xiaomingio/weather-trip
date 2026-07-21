@@ -1,17 +1,25 @@
 ---
 /**
- * 文件说明: 按中英文 locale 和查看模式路径从 Postgres 读取天气快照并渲染 React 工具页。
+ * 文件说明: 按中英文 locale 和工具 Tab 路径从 Postgres 读取天气快照并渲染 React 工具页。
  * 对应文档: docs/data-flow.md
  */
 import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
 import { WeatherDashboard } from '@/components/weather-dashboard';
+import { resolveToolMode } from '@/domain/navigation';
 import '@/styles/global.css';
 
-const locale = Astro.params.locale === 'en' ? 'en' : 'zh';
-const initialMode = Astro.params.mode === 'daily' ? 'daily' : 'travel';
+const requestedLocale = Astro.props.locale ?? Astro.params.locale;
+const requestedMode = Astro.props.mode ?? Astro.params.mode;
 
-if (Astro.params.mode !== 'travel' && Astro.params.mode !== 'daily') {
-  return Astro.redirect(`/${locale}/travel`);
+if (!Astro.props.locale && requestedLocale !== 'zh') {
+  return Astro.redirect('/');
+}
+
+const locale = requestedLocale === 'zh' ? 'zh' : 'en';
+const initialMode = resolveToolMode(requestedMode);
+
+if (!initialMode) {
+  return Astro.redirect(locale === 'zh' ? '/zh' : '/');
 }
 
 const db = createWeatherDatabase();
@@ -23,21 +31,28 @@ try {
   await db.close();
 }
 
-const title = locale === 'zh' ? 'Global Weather Atlas | 按天气选择下一站' : 'Global Weather Atlas | Pick a destination by weather';
+const title =
+  locale === 'zh'
+    ? `Weather Trip | ${initialMode === 'daily' ? '全球天气地图' : '按天气找城市'}`
+    : `Weather Trip | ${initialMode === 'daily' ? 'World Weather' : 'Weather Match'}`;
 const description =
   locale === 'zh'
-    ? '按天气、温度、降水、湿度和海拔筛选全球旅行目的地。'
-    : 'Find travel destinations by weather, temperature, rainfall, humidity, and elevation.';
+    ? initialMode === 'daily'
+      ? '按日期查看全球城市气温、降水、湿度、天气类型和舒适度。'
+      : '按温度、晴雨、湿度、海拔和出行天数反向寻找匹配城市。'
+    : initialMode === 'daily'
+      ? 'View temperature, rainfall, RH, weather type, and comfort across global cities by date.'
+      : 'Find matching cities by temperature, sky, RH, elevation, and trip length.';
 ---
 
-<html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'} data-weather-theme="sunny">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
   </head>
-  <body>
+  <body class="weather-page">
     <WeatherDashboard
       client:load
       locale={locale}

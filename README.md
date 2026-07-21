@@ -1,11 +1,11 @@
-# Global Weather
+# Weather Trip
 
-Astro + React weather travel tool with a separate Node.js Worker that refreshes forecast data into Postgres.
+Weather Trip helps users find travel destinations by weather, temperature, rainfall, humidity, and elevation. The app uses Astro + React for the public tool pages and a separate Node.js Worker to refresh forecast data into Postgres.
 
 ## Structure
 
 ```text
-apps/web       # Astro SSR public app, /zh and /en tool pages
+apps/web       # Astro SSR public app, English at / and Chinese under /zh
 apps/worker    # Node.js worker, database initialization and scheduled weather refresh
 packages/weather-core
 packages/weather-db

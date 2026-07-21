@@ -322,7 +322,7 @@ async function readAlternateNamesFromZip(zipPath: string, scopedGeonameIds: Set<
   return alternateNames;
 }
 
-const tempDir = await mkdtemp(path.join(os.tmpdir(), 'global-weather-geonames-'));
+const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weather-trip-geonames-'));
 const zipPath = path.join(tempDir, `${geonamesCitiesPackage}.zip`);
 const alternateNamesZipPath = path.join(tempDir, 'alternateNamesV2.zip');
 loadRootEnv();

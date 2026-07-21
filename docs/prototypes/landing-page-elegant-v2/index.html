@@ -1,0 +1,225 @@
+<!doctype html>
+<!--
+  文件说明: Weather Trip 首页优雅版优化原型，验证全屏单 Hero（城市示例与天气图切换）。
+  对应文档: docs/product-design.md
+-->
+<html lang="zh-CN" data-weather-theme="sunny">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>天气旅行 | 用天气决定下一个城市</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="site-nav">
+        <a class="brand" href="./index.html">Weather Trip</a>
+        <nav class="tabs" aria-label="天气旅行">
+          <a class="is-active" href="./index.html">首页</a>
+          <a href="#">全球天气地图</a>
+          <a href="#">按天气找城市</a>
+        </nav>
+        <div class="nav-actions">
+          <button
+            type="button"
+            class="nav-icon-btn"
+            data-unit-toggle
+            aria-label="切换摄氏度与华氏度"
+            title="切换摄氏度 / 华氏度"
+          >
+            <span class="unit-label" data-unit-label>°C</span>
+          </button>
+          <button
+            type="button"
+            class="nav-icon-btn"
+            data-lang-toggle
+            aria-label="切换语言"
+            title="Language"
+          >
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+              <path d="M2 12h20" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero" aria-label="天气旅行">
+        <canvas class="climate-canvas" data-climate-canvas aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <p class="kicker">天气旅行</p>
+          <h1>让天气替你挑一座城市</h1>
+          <p class="lede">
+            出发前先看全球城市接下来几天的温度、晴雨和湿度；也可以先选择你想要的天气，再去找刚好适合抵达的地方。
+          </p>
+          <div class="actions">
+            <a class="primary-link" href="#">查看全球天气</a>
+            <a class="secondary-link" href="#">寻找匹配城市</a>
+          </div>
+          <ul class="coverage" aria-label="数据覆盖">
+            <li>2000+ 城市</li>
+            <li>200+ 国家和地区</li>
+            <li>未来 14 天预报</li>
+          </ul>
+          <!-- 图标与主站 lucide-react 一致：Sun / Cloud / CloudDrizzle / CloudSnow / Droplets / Mountain -->
+          <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" />
+              <path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" />
+              <path d="m19.07 4.93-1.41 1.41" />
+            </symbol>
+            <symbol id="icon-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+            </symbol>
+            <symbol id="icon-drizzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+              <path d="M8 19v1" />
+              <path d="M8 14v1" />
+              <path d="M16 19v1" />
+              <path d="M16 14v1" />
+              <path d="M12 21v1" />
+              <path d="M12 16v1" />
+            </symbol>
+            <symbol id="icon-snow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+              <path d="M8 15h.01" />
+              <path d="M8 19h.01" />
+              <path d="M12 17h.01" />
+              <path d="M12 21h.01" />
+              <path d="M16 15h.01" />
+              <path d="M16 19h.01" />
+            </symbol>
+          </svg>
+
+          <ul class="city-samples" aria-label="旅游城市天气示例">
+            <li class="city-card tone-mild city-shanghai" data-temp-c="19" aria-label="上海 19° 多云 湿度 68% 海拔 4m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">19</span><span class="temp-unit">°C</span></strong>
+                <b>上海</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="多云"><svg class="meta-icon" aria-hidden="true"><use href="#icon-cloud"></use></svg></span>
+                <span class="meta" title="湿度 68%"><em>68%</em></span>
+                <span class="meta" title="海拔 4m"><em>4m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-sun city-nyc" data-temp-c="21" aria-label="纽约 21° 晴天 湿度 52% 海拔 10m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">21</span><span class="temp-unit">°C</span></strong>
+                <b>纽约</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="晴天"><svg class="meta-icon" aria-hidden="true"><use href="#icon-sun"></use></svg></span>
+                <span class="meta" title="湿度 52%"><em>52%</em></span>
+                <span class="meta" title="海拔 10m"><em>10m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-snow city-hokkaido" data-temp-c="-6" aria-label="北海道 -6° 小雪 湿度 74% 海拔 40m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">-6</span><span class="temp-unit">°C</span></strong>
+                <b>北海道</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="小雪"><svg class="meta-icon" aria-hidden="true"><use href="#icon-snow"></use></svg></span>
+                <span class="meta" title="湿度 74%"><em>74%</em></span>
+                <span class="meta" title="海拔 40m"><em>40m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-rain city-paris" data-temp-c="12" aria-label="巴黎 12° 小雨 湿度 81% 海拔 35m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">12</span><span class="temp-unit">°C</span></strong>
+                <b>巴黎</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="小雨"><svg class="meta-icon" aria-hidden="true"><use href="#icon-drizzle"></use></svg></span>
+                <span class="meta" title="湿度 81%"><em>81%</em></span>
+                <span class="meta" title="海拔 35m"><em>35m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-tropic city-rio" data-temp-c="31" aria-label="里约热内卢 31° 晴天 湿度 82% 海拔 11m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">31</span><span class="temp-unit">°C</span></strong>
+                <b>里约热内卢</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="晴天"><svg class="meta-icon" aria-hidden="true"><use href="#icon-sun"></use></svg></span>
+                <span class="meta" title="湿度 82%"><em>82%</em></span>
+                <span class="meta" title="海拔 11m"><em>11m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-sun city-sydney" data-temp-c="24" aria-label="悉尼 24° 晴天 湿度 55% 海拔 19m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">24</span><span class="temp-unit">°C</span></strong>
+                <b>悉尼</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="晴天"><svg class="meta-icon" aria-hidden="true"><use href="#icon-sun"></use></svg></span>
+                <span class="meta" title="湿度 55%"><em>55%</em></span>
+                <span class="meta" title="海拔 19m"><em>19m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-cool city-lhasa" data-temp-c="12" aria-label="拉萨 12° 晴天 湿度 32% 海拔 3650m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">12</span><span class="temp-unit">°C</span></strong>
+                <b>拉萨</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="晴天"><svg class="meta-icon" aria-hidden="true"><use href="#icon-sun"></use></svg></span>
+                <span class="meta" title="湿度 32%"><em>32%</em></span>
+                <span class="meta" title="海拔 3650m"><em>3650m</em></span>
+              </div>
+            </li>
+            <li class="city-card tone-desert city-cairo" data-temp-c="36" aria-label="开罗 36° 晴天 湿度 28% 海拔 74m">
+              <div class="city-head">
+                <strong data-temp-display><span class="temp-num">36</span><span class="temp-unit">°C</span></strong>
+                <b>开罗</b>
+              </div>
+              <div class="city-meta">
+                <span class="meta" title="晴天"><svg class="meta-icon" aria-hidden="true"><use href="#icon-sun"></use></svg></span>
+                <span class="meta" title="湿度 28%"><em>28%</em></span>
+                <span class="meta" title="海拔 74m"><em>74m</em></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <figure class="hero-art" data-weather-atlas>
+          <div class="weather-stack">
+            <img
+              class="weather-layer weather-layer-base"
+              src="./assets/climate-atlas-sunny.png"
+              alt="旅行天气地图、透明气候图层和指南针组成的画册式预览"
+            />
+            <img
+              class="weather-layer weather-layer-rain"
+              src="./assets/climate-atlas-rain.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <img
+              class="weather-layer weather-layer-snow"
+              src="./assets/climate-atlas-snow.png"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+          <figcaption>
+            <span>天气旅行</span>
+            <strong>天气 · 温度 · 湿度 · 海拔</strong>
+          </figcaption>
+        </figure>
+      </section>
+    </main>
+
+    <script src="./climate-canvas.js"></script>
+    <script src="./weather-atlas.js"></script>
+    <script src="./nav-prefs.js"></script>
+  </body>
+</html>

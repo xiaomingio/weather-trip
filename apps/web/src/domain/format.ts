@@ -6,6 +6,7 @@ import type { City, WeatherType } from 'weather-core/types';
 import { getWeatherTypeLabel } from './weather';
 
 export type DisplayLocale = 'zh' | 'en';
+export type TemperatureUnit = 'c' | 'f';
 
 const countryDisplayNames: Record<DisplayLocale, Intl.DisplayNames> = {
   zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
@@ -34,12 +35,36 @@ export function formatCityRegion(city: City, locale: DisplayLocale = 'zh'): stri
   return formatCityRegionSegments(city, locale).join(locale === 'zh' ? '' : ' ');
 }
 
-export function formatTemperature(value: number): string {
-  return `${Math.round(value)}°C`;
+export function celsiusToFahrenheit(value: number): number {
+  return (value * 9) / 5 + 32;
 }
 
-export function formatTemperatureRange(min: number, max: number, locale: DisplayLocale = 'zh'): string {
-  return locale === 'zh' ? `${Math.round(min)}~${Math.round(max)}°C` : `${Math.round(min)}-${Math.round(max)}°C`;
+export function formatTemperature(value: number, unit: TemperatureUnit = 'c'): string {
+  const displayValue = unit === 'f' ? celsiusToFahrenheit(value) : value;
+  return `${Math.round(displayValue)}°${unit.toUpperCase()}`;
+}
+
+export function formatTemperatureRange(
+  min: number,
+  max: number,
+  locale: DisplayLocale = 'zh',
+  unit: TemperatureUnit = 'c'
+): string {
+  const displayMin = unit === 'f' ? celsiusToFahrenheit(min) : min;
+  const displayMax = unit === 'f' ? celsiusToFahrenheit(max) : max;
+  const separator = locale === 'zh' ? '~' : '-';
+  return `${Math.round(displayMin)}${separator}${Math.round(displayMax)}°${unit.toUpperCase()}`;
+}
+
+export function formatCompactTemperatureRange(
+  min: number,
+  max: number,
+  locale: DisplayLocale = 'zh',
+  unit: TemperatureUnit = 'c'
+): string {
+  const displayMin = unit === 'f' ? celsiusToFahrenheit(min) : min;
+  const displayMax = unit === 'f' ? celsiusToFahrenheit(max) : max;
+  return locale === 'zh' ? `${Math.round(displayMin)}~${Math.round(displayMax)}°` : `${Math.round(displayMin)}-${Math.round(displayMax)}°`;
 }
 
 export function formatElevation(value: number, locale: DisplayLocale = 'zh'): string {
@@ -64,4 +89,14 @@ export function formatDateLabel(date: string, locale: DisplayLocale = 'zh'): str
     day: 'numeric',
     weekday: 'short'
   }).format(new Date(`${date}T12:00:00Z`));
+}
+
+export function formatCompactForecastDateLabel(date: string, locale: DisplayLocale = 'zh'): string {
+  const value = new Date(`${date}T12:00:00Z`);
+  const weekday = new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-US', {
+    timeZone: 'UTC',
+    weekday: 'short'
+  }).format(value);
+
+  return `${value.getUTCMonth() + 1}.${value.getUTCDate()} ${weekday}`;
 }

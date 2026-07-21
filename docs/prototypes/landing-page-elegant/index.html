@@ -1,0 +1,90 @@
+<!doctype html>
+<!--
+  文件说明: Weather Trip 首页优雅版静态原型，用于独立验证更柔和的旅行气候画册风格。
+  对应文档: docs/product-design.md
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather Trip Elegant Landing Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="site-nav">
+        <a class="brand" href="./index.html">Weather Trip</a>
+        <nav class="tabs" aria-label="Weather Trip">
+          <a class="is-active" href="./index.html">首页</a>
+          <a href="#">全球天气地图</a>
+          <a href="#">按天气找城市</a>
+        </nav>
+        <a class="language" href="#">English</a>
+      </header>
+
+      <section class="hero" aria-label="Weather Trip">
+        <canvas class="climate-canvas" data-climate-canvas aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <p class="kicker">14-day city weather atlas</p>
+          <h1>让天气替你挑一座城市</h1>
+          <p>
+            在出发前，看见世界各地接下来几天的温度、晴雨和湿度；
+            也可以先说出你喜欢的天气，再去找那个刚好适合抵达的地方。
+          </p>
+          <div class="actions">
+            <a class="primary-link" href="#">查看全球天气</a>
+            <a class="secondary-link" href="#">寻找匹配城市</a>
+          </div>
+        </div>
+
+        <figure class="hero-art" data-weather-atlas>
+          <div class="weather-stack">
+            <img
+              class="weather-layer weather-layer-base"
+              src="./assets/climate-atlas-sunny.png"
+              alt="旅行天气地图、透明气候图层和指南针组成的画册式预览"
+            />
+            <img
+              class="weather-layer weather-layer-rain"
+              src="./assets/climate-atlas-rain.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <img
+              class="weather-layer weather-layer-snow"
+              src="./assets/climate-atlas-snow.png"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+          <figcaption>
+            <span>Climate atlas preview</span>
+            <strong data-weather-label>晴天 · 温度 · 降水 · 湿度 · 海拔</strong>
+          </figcaption>
+        </figure>
+
+        <aside class="climate-note" aria-label="天气覆盖信息">
+          <span>覆盖 2,198 座城市</span>
+          <span>245 个国家和地区</span>
+          <span>未来 14 天预报</span>
+        </aside>
+      </section>
+
+      <section class="chapters" aria-label="主要工具入口">
+        <a class="chapter chapter-map" href="#">
+          <span>全球天气地图</span>
+          <strong>先看这一刻的世界</strong>
+          <small>按日期切换气温、降水、湿度、天气类型和舒适度图层。</small>
+        </a>
+        <a class="chapter chapter-match" href="#">
+          <span>按天气找城市</span>
+          <strong>先写下你想要的天气</strong>
+          <small>设定温度、晴雨、湿度和出行天数，让城市按匹配程度浮现。</small>
+        </a>
+      </section>
+    </main>
+
+    <script src="./climate-canvas.js"></script>
+    <script src="./weather-atlas.js"></script>
+  </body>
+</html>

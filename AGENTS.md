@@ -1,4 +1,4 @@
-# Global Weather
+# Weather Trip
 
 ## 项目入口
 
@@ -7,7 +7,7 @@
 ## 目录真源
 
 ```text
-apps/web/       # Astro SSR 公开工具页，路由 /zh 和 /en
+apps/web/       # Astro SSR 公开工具页，英文默认 /，中文路由 /zh
 apps/worker/    # Worker 长驻入口，dev 走源码，start 走 dist
 packages/       # 只有 Web 和 Worker 真实共享的类型、天气码和 DB 访问
 data/           # 一次性导入 Postgres 的旧天气缓存输入
