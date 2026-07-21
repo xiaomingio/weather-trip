@@ -451,6 +451,12 @@ h2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
 .range-field {
   grid-column: 1 / -1;
   display: grid;
@@ -472,9 +478,6 @@ h2 {
 .layer-field,
 .time-field {
   grid-column: 1 / -1;
-  display: grid;
-  gap: 7px;
-  min-width: 0;
 }
 
 .layer-button-row {
@@ -658,7 +661,7 @@ select {
   justify-content: flex-start;
   min-height: 0;
   overflow: auto;
-  padding: 12px;
+  padding: 0;
 }
 
 .filter-panel .control-surface {
@@ -793,7 +796,7 @@ select {
   gap: 10px;
   min-height: 0;
   overflow: hidden;
-  padding: 12px;
+  padding: 0;
 }
 
 .control-surface,
@@ -1170,10 +1173,19 @@ select {
 
   .site-nav {
     gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .brand {
+    grid-column: 1;
+    grid-row: 1;
     font-size: 15px;
+    min-width: 0;
+  }
+
+  .nav-actions {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .nav-icon-btn {
@@ -1191,10 +1203,22 @@ select {
   }
 
   .tabs a {
-    flex: 0 0 auto;
     font-size: 12px;
-    padding: 9px 10px;
+    min-height: 34px;
+    min-width: 0;
+    padding: 9px 4px;
     text-align: center;
+    white-space: normal;
+  }
+
+  .tabs {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-self: stretch;
+    overflow: visible;
+    width: 100%;
   }
 
   h1 {

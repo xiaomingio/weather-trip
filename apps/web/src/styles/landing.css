@@ -767,10 +767,19 @@ body.landing-page .hero-art figcaption strong {
 
   body.landing-page .site-nav {
     gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   body.landing-page .brand {
+    grid-column: 1;
+    grid-row: 1;
     font-size: 15px;
+    min-width: 0;
+  }
+
+  body.landing-page .nav-actions {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   body.landing-page .nav-icon-btn {
@@ -788,10 +797,22 @@ body.landing-page .hero-art figcaption strong {
   }
 
   body.landing-page .tabs a {
-    flex: 0 0 auto;
     font-size: 12px;
-    padding: 9px 10px;
+    min-height: 34px;
+    min-width: 0;
+    padding: 9px 4px;
     text-align: center;
+    white-space: normal;
+  }
+
+  body.landing-page .tabs {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-self: stretch;
+    overflow: visible;
+    width: 100%;
   }
 
   body.landing-page .hero {
