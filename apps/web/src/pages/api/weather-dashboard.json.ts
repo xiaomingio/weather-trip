@@ -15,6 +15,7 @@ type SnapshotCache = {
 
 let snapshotCache: SnapshotCache | null = null;
 const snapshotCacheTtlMs = 60_000;
+const supportedLocales: DisplayLocale[] = ['en', 'zh'];
 
 async function readCachedSnapshot(): Promise<WeatherSnapshot> {
   const now = Date.now();
@@ -43,8 +44,17 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
+export function readLocaleFromSearchParams(searchParams: URLSearchParams): DisplayLocale | null {
+  const localeParam = searchParams.get('locale');
+  if (!localeParam) return 'en';
+  if (supportedLocales.includes(localeParam as DisplayLocale)) return localeParam as DisplayLocale;
+  return null;
+}
+
 export const GET: APIRoute = async ({ url }) => {
-  const locale: DisplayLocale = url.searchParams.get('locale') === 'zh' ? 'zh' : 'en';
+  const locale = readLocaleFromSearchParams(url.searchParams);
+  if (!locale) return jsonResponse({ error: 'Unsupported locale.' }, 400);
+
   const modeParam = url.searchParams.get('mode');
   const mode = modeParam === 'daily' || modeParam === 'travel' ? modeParam : resolveToolMode(modeParam ?? undefined);
   if (!mode) return jsonResponse({ error: 'Unsupported mode.' }, 400);

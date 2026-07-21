@@ -4,6 +4,7 @@
  * 对应文档: docs/product-design.md
  */
 import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
+import Analytics from '@/components/analytics.astro';
 import SitePreferences from '@/components/site-preferences.astro';
 import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath, topTabs } from '@/domain/navigation';
@@ -208,6 +209,7 @@ const alternateLinks = getAlternateLinks('landing');
     <meta property="og:url" content={buildAbsoluteUrl(seoPage.path)} />
     <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
     <meta name="twitter:card" content="summary_large_image" />
+    <Analytics />
   </head>
   <body class="landing-page">
     <main class="page">

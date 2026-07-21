@@ -3,6 +3,7 @@
  * 文件说明: 按中英文 locale 和工具 Tab 路径渲染天气工具页客户端壳。
  * 对应文档: docs/data-flow.md
  */
+import Analytics from '@/components/analytics.astro';
 import SitePreferences from '@/components/site-preferences.astro';
 import { WeatherDashboard } from '@/components/weather-dashboard';
 import { getToolPathSegment, resolveToolMode } from '@/domain/navigation';
@@ -56,6 +57,7 @@ const alternateLinks = getAlternateLinks(tabId);
     <meta property="og:url" content={buildAbsoluteUrl(seoPage.path)} />
     <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
     <meta name="twitter:card" content="summary_large_image" />
+    <Analytics />
   </head>
   <body class="weather-page">
     <WeatherDashboard

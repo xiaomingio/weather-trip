@@ -1,20 +1,22 @@
 # Weather Trip
 
-Weather Trip helps users find travel destinations by weather, temperature, rainfall, humidity, and elevation. The app uses Astro + React for the public tool pages and a separate Node.js Worker to refresh forecast data into Postgres.
+Weather Trip 用天气、温度、降雨、湿度和海拔帮助用户寻找旅行目的地。公开工具页使用 Astro + React，独立 Node.js Worker 负责把天气预报刷新到 Postgres。
 
-## Structure
+## 目录结构
 
 ```text
-apps/web       # Astro SSR public app, English at / and Chinese under /zh
-apps/worker    # Node.js worker, database initialization and scheduled weather refresh
+apps/web       # Astro SSR 公开应用，英文默认 /，中文路由 /zh
+apps/worker    # Node.js Worker，数据库初始化和定时天气刷新
 packages/weather-core
 packages/weather-db
-data/          # one-time existing weather cache import input
+data/          # 一次性导入的旧天气缓存输入
 docs/
 scripts/
 ```
 
-## Commands
+生产发布和回滚说明见 `docs/launch.md`。
+
+## 常用命令
 
 ```bash
 npm install
@@ -26,4 +28,4 @@ npm run start
 npm run check
 ```
 
-Copy `.env.example` to `.env.development` and set `DATABASE_URL` there before running maintenance scripts or local apps through root commands. App-level `.env.development` files are only needed for app-specific overrides such as ports or the Worker daily refresh time.
+通过根目录命令运行维护脚本或本地应用前，复制 `.env.example` 为 `.env.development`，并在其中设置 `DATABASE_URL`。app 级 `.env.development` 只用于端口、Worker 每日刷新时间等 app 专属覆盖项。
