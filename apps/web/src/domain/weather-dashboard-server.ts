@@ -1,27 +1,41 @@
 /**
- * 文件说明: 在服务端按当前工具页筛选条件组装轻量化天气 Dashboard 响应。
+ * 文件说明: 在服务端分别按天气地图和城市查找业务组装轻量化工具页响应。
  * 对应文档: docs/data-flow.md
  */
 import type { WeatherSnapshot } from 'weather-db';
-import type { City, DailyForecast, RegionKey, TravelFilter, ViewMode, WeatherType } from 'weather-core/types';
+import type { City, DailyForecast, RegionKey, WeatherFilter, WeatherToolId, WeatherType } from 'weather-core/types';
 import type { DisplayLocale } from './format';
-import { buildDailyRegionSummaries, buildTravelRegionSummaries } from './region-weather';
-import { cityMatchesRegion, getRegionLabel, regionOptions } from './regions';
-import { buildDailyWeather, scoreCityTravel } from './scoring';
+import { buildWeatherMapRegionSummaries, buildCityFinderRegionSummaries } from './region-weather';
 import {
+  cityMatchesRegion,
+  getMapRegionLayer,
+  getPrimaryRegionOptions,
+  getRegionGroup,
+  getRegionLabel,
+  getRegionOption
+} from './regions';
+import { buildWeatherMapCityWeather, compareCityPopularity, scoreCityFinderMatch } from './scoring';
+import {
+  type DashboardWeatherMapResultItem,
   type DashboardResultItem,
   type DashboardSubRegionOption,
-  type WeatherDashboardPayload,
+  type MapBounds,
+  type WeatherToolPayload,
+  type CityForecastPayload,
+  type WeatherLayerPayload,
+  type MapDatesPayload,
+  type WeatherRegionOption,
+  type RegionsPayload,
+  type SubregionsPayload,
   getPrimaryRegionId,
-  parseTravelFilterFromSearch,
+  parseWeatherFilterFromSearch,
+  readLayerFromSearch,
   readDateFromSearch
 } from './weather-dashboard-shared';
 
-type WeatherDashboardDataParams = {
+type WeatherToolDataParams = {
   locale: DisplayLocale;
-  mode: ViewMode;
   searchParams: URLSearchParams;
-  selectedCityId?: string | null;
 };
 
 function groupForecastsByCity(forecasts: DailyForecast[]): Map<string, DailyForecast[]> {
@@ -69,25 +83,55 @@ function buildSubRegionOptions(
   const countryCode = primaryRegion.slice('country:'.length);
   const allOption = { id: primaryRegion, label: allLabel };
 
-  if (countryCode === 'CN') {
-    return [
-      allOption,
-      ...regionOptions
-        .filter((option) => option.id.startsWith('province:'))
-        .map((option) => ({ id: option.id, label: getRegionLabel(option, locale) }))
-    ];
-  }
-
   const collator = new Intl.Collator(locale === 'zh' ? 'zh-CN-u-co-pinyin' : 'en', { sensitivity: 'base' });
   const optionsById = new Map<RegionKey, DashboardSubRegionOption>();
   for (const city of cities) {
     if (city.countryCode !== countryCode || !city.admin1GroupCode) continue;
-    const id = `admin1:${countryCode}.${city.admin1GroupCode}`;
+    const id = `partition:${countryCode}.${city.admin1GroupCode}`;
     const label = locale === 'zh' ? city.admin1LocalName ?? city.admin1 ?? city.admin1GroupCode : city.admin1 ?? city.admin1GroupCode;
     optionsById.set(id, { id, label });
   }
 
   return [allOption, ...[...optionsById.values()].sort((a, b) => collator.compare(a.label, b.label) || a.id.localeCompare(b.id))];
+}
+
+function publicMapLayer(region: RegionKey): WeatherRegionOption['mapLayer'] {
+  return getMapRegionLayer(region) === 'country' ? 'country' : 'partition';
+}
+
+function buildBoundsForRegion(cities: City[], region: RegionKey): MapBounds | null {
+  const matchingCities = cities.filter((city) => cityMatchesRegion(city, region));
+  if (matchingCities.length === 0) return null;
+
+  const longitudes = matchingCities.map((city) => city.longitude);
+  const latitudes = matchingCities.map((city) => city.latitude);
+  return [Math.min(...longitudes), Math.min(...latitudes), Math.max(...longitudes), Math.max(...latitudes)];
+}
+
+function buildRegionOptionDto(cities: City[], region: RegionKey, locale: DisplayLocale): WeatherRegionOption {
+  const option = getRegionOption(region);
+  return {
+    id: region,
+    label: getRegionLabel(option, locale),
+    group: getRegionGroup(option, locale),
+    mapLayer: publicMapLayer(region),
+    bounds: buildBoundsForRegion(cities, region)
+  };
+}
+
+function buildSubRegionOptionDto(
+  cities: City[],
+  subRegionOption: DashboardSubRegionOption,
+  primaryRegion: RegionKey,
+  locale: DisplayLocale
+): WeatherRegionOption {
+  return {
+    id: subRegionOption.id,
+    label: subRegionOption.label,
+    group: getRegionLabel(getRegionOption(primaryRegion), locale),
+    mapLayer: publicMapLayer(subRegionOption.id),
+    bounds: buildBoundsForRegion(cities, subRegionOption.id)
+  };
 }
 
 function averageValue<T>(items: T[], getValue: (item: T) => number): number {
@@ -104,13 +148,13 @@ function dominantWeatherType(forecasts: DailyForecast[]): WeatherType {
   return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'cloudy';
 }
 
-function buildTravelItems(cities: City[], forecastsByCity: Map<string, DailyForecast[]>, filter: TravelFilter): DashboardResultItem[] {
+function buildCityFinderItems(cities: City[], forecastsByCity: Map<string, DailyForecast[]>, filter: WeatherFilter): DashboardResultItem[] {
   return cities
     .filter((city) => cityMatchesRegion(city, filter.region))
-    .map((city) => scoreCityTravel(city, forecastsByCity.get(city.id) ?? [], filter))
-    .sort((a, b) => b.score - a.score || b.matchDays - a.matchDays)
+    .map((city) => scoreCityFinderMatch(city, forecastsByCity.get(city.id) ?? [], filter))
+    .sort((a, b) => b.score - a.score || b.matchDays - a.matchDays || compareCityPopularity(a.city, b.city))
     .map((score) => ({
-      mode: 'travel',
+      tool: 'city-finder',
       city: score.city,
       matchDays: score.matchDays,
       totalDays: score.totalDays,
@@ -125,50 +169,128 @@ function buildTravelItems(cities: City[], forecastsByCity: Map<string, DailyFore
     }));
 }
 
-function buildDailyItems(cities: City[], forecasts: DailyForecast[], selectedDate: string, region: RegionKey): DashboardResultItem[] {
-  return buildDailyWeather(cities, forecasts, selectedDate, region).map((item) => ({
-    mode: 'daily',
+function buildWeatherMapItems(cities: City[], forecasts: DailyForecast[], selectedDate: string, region: RegionKey): DashboardWeatherMapResultItem[] {
+  return buildWeatherMapCityWeather(cities, forecasts, selectedDate, region).map((item) => ({
+    tool: 'weather-map',
     city: item.city,
     forecast: item.forecast,
     comfortScore: item.comfortScore
   }));
 }
 
-export function buildWeatherDashboardPayload(
+function buildWeatherToolPayload(
   snapshot: WeatherSnapshot,
-  { locale, mode, searchParams, selectedCityId }: WeatherDashboardDataParams
-): WeatherDashboardPayload {
-  const travelFilter = parseTravelFilterFromSearch(searchParams);
+  tool: WeatherToolId,
+  { locale, searchParams }: WeatherToolDataParams
+): WeatherToolPayload {
+  const weatherFilter = parseWeatherFilterFromSearch(searchParams);
   const forecastsByCity = groupForecastsByCity(snapshot.forecasts);
-  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, travelFilter.region);
+  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, weatherFilter.region);
   const requestedDate = readDateFromSearch(searchParams, regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '');
   const selectedDate = regionAvailableDates.includes(requestedDate)
     ? requestedDate
     : regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '';
-  const allLabel = locale === 'zh' ? '全部' : 'All';
-  const subRegionOptions = buildSubRegionOptions(snapshot.cities, getPrimaryRegionId(travelFilter.region), locale, allLabel);
   const resultItems =
-    mode === 'travel'
-      ? buildTravelItems(snapshot.cities, forecastsByCity, travelFilter)
-      : buildDailyItems(snapshot.cities, snapshot.forecasts, selectedDate, travelFilter.region);
-  const effectiveSelectedCityId = resultItems.some((item) => item.city.id === selectedCityId)
-    ? selectedCityId ?? null
-    : resultItems[0]?.city.id ?? null;
-  const selectedCityForecasts = effectiveSelectedCityId ? (forecastsByCity.get(effectiveSelectedCityId) ?? []).slice(0, 14) : [];
+    tool === 'city-finder'
+      ? buildCityFinderItems(snapshot.cities, forecastsByCity, weatherFilter)
+      : buildWeatherMapItems(snapshot.cities, snapshot.forecasts, selectedDate, weatherFilter.region);
   const regionSummaries =
-    mode === 'travel'
-      ? buildTravelRegionSummaries(snapshot.cities, forecastsByCity, travelFilter, locale)
-      : buildDailyRegionSummaries(snapshot.cities, snapshot.forecasts, selectedDate, travelFilter.region, locale);
+    tool === 'city-finder'
+      ? buildCityFinderRegionSummaries(snapshot.cities, forecastsByCity, weatherFilter, locale)
+      : buildWeatherMapRegionSummaries(snapshot.cities, snapshot.forecasts, selectedDate, weatherFilter.region, locale);
 
   return {
-    mode,
-    region: travelFilter.region,
+    tool: tool,
+    region: weatherFilter.region,
     selectedDate,
     availableDates: snapshot.availableDates,
     regionAvailableDates,
-    subRegionOptions,
+    subRegionOptions: [],
     resultItems,
     regionSummaries,
-    selectedCityForecasts
+    selectedCityForecasts: []
+  };
+}
+
+export function buildCitySearchPayload(snapshot: WeatherSnapshot, params: WeatherToolDataParams): WeatherToolPayload {
+  return buildWeatherToolPayload(snapshot, 'city-finder', params);
+}
+
+export function buildRegionsPayload(snapshot: WeatherSnapshot, { locale }: WeatherToolDataParams): RegionsPayload {
+  return {
+    regions: getPrimaryRegionOptions(locale).map((option) => buildRegionOptionDto(snapshot.cities, option.id, locale))
+  };
+}
+
+export function buildSubregionsPayload(
+  snapshot: WeatherSnapshot,
+  { locale, searchParams }: WeatherToolDataParams
+): SubregionsPayload {
+  const weatherFilter = parseWeatherFilterFromSearch(searchParams);
+  const primaryRegion = getPrimaryRegionId(weatherFilter.region);
+  const allLabel = locale === 'zh' ? '全部' : 'All';
+  return {
+    region: primaryRegion,
+    subRegions: buildSubRegionOptions(snapshot.cities, primaryRegion, locale, allLabel).map((option) =>
+      buildSubRegionOptionDto(snapshot.cities, option, primaryRegion, locale)
+    )
+  };
+}
+
+export function buildWeatherLayerPayload(
+  snapshot: WeatherSnapshot,
+  { locale, searchParams }: WeatherToolDataParams
+): WeatherLayerPayload {
+  const weatherFilter = parseWeatherFilterFromSearch(searchParams);
+  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, weatherFilter.region);
+  const requestedDate = readDateFromSearch(searchParams, regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '');
+  const selectedDate = regionAvailableDates.includes(requestedDate)
+    ? requestedDate
+    : regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '';
+  const responseDates = searchParams.has('date') ? [selectedDate] : regionAvailableDates.slice(0, 14);
+
+  return {
+    tool: 'weather-map',
+    region: weatherFilter.region,
+    selectedDate,
+    layer: readLayerFromSearch(searchParams),
+    days: responseDates.map((date) => ({
+      date,
+      resultItems: buildWeatherMapItems(snapshot.cities, snapshot.forecasts, date, weatherFilter.region),
+      regionSummaries: buildWeatherMapRegionSummaries(snapshot.cities, snapshot.forecasts, date, weatherFilter.region, locale)
+    }))
+  };
+}
+
+export function buildMapDatesPayload(
+  snapshot: WeatherSnapshot,
+  { searchParams }: WeatherToolDataParams
+): MapDatesPayload {
+  const weatherFilter = parseWeatherFilterFromSearch(searchParams);
+  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, weatherFilter.region);
+  const requestedDate = readDateFromSearch(searchParams, regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '');
+  const selectedDate = regionAvailableDates.includes(requestedDate)
+    ? requestedDate
+    : regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '';
+
+  return {
+    tool: 'weather-map',
+    region: weatherFilter.region,
+    selectedDate,
+    availableDates: snapshot.availableDates,
+    regionAvailableDates
+  };
+}
+
+export function buildCityForecastPayload(
+  snapshot: WeatherSnapshot,
+  { searchParams }: WeatherToolDataParams
+): CityForecastPayload {
+  const cityId = searchParams.get('cityId') ?? null;
+  const forecastsByCity = groupForecastsByCity(snapshot.forecasts);
+
+  return {
+    cityId,
+    selectedCityForecasts: cityId ? (forecastsByCity.get(cityId) ?? []).slice(0, 14) : []
   };
 }

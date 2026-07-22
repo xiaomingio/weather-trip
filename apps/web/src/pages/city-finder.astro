@@ -3,7 +3,9 @@
  * 文件说明: 渲染默认英文按天气查找城市工具页。
  * 对应文档: docs/product-design.md
  */
-import ToolPage from './[locale]/[mode].astro';
+import CityFinderToolPage from '@/components/CityFinderToolPage.astro';
+
+export const prerender = true;
 ---
 
-<ToolPage locale="en" mode="city-finder" />
+<CityFinderToolPage locale="en" />

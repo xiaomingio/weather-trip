@@ -22,11 +22,27 @@ const autoplayTransitionDuration = '2000ms';
 let activeWeatherIndex = 0;
 let autoplayTimer = 0;
 
+function ensureWeatherLayerLoaded(theme) {
+  if (theme === 'sunny') return;
+  const layer = weatherAtlas?.querySelector(`[data-weather-layer="${theme}"]`);
+  const source = layer?.querySelector('source[data-srcset]');
+  const image = layer?.querySelector('img[data-src]');
+  if (source?.dataset.srcset) {
+    source.srcset = source.dataset.srcset;
+    delete source.dataset.srcset;
+  }
+  if (image?.dataset.src) {
+    image.src = image.dataset.src;
+    delete image.dataset.src;
+  }
+}
+
 function setWeather(index, transitionDuration) {
   if (!weatherAtlas) return;
 
   activeWeatherIndex = index;
   const theme = weatherThemes[index];
+  ensureWeatherLayerLoaded(theme);
   weatherAtlas.style.setProperty('--weather-transition-duration', transitionDuration);
   weatherAtlas.style.setProperty('--rain-alpha', rainAlphas[index]);
   weatherAtlas.style.setProperty('--snow-alpha', snowAlphas[index]);

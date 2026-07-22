@@ -4,15 +4,15 @@
  */
 import type {
   City,
-  CityDailyWeather,
-  CityTravelScore,
+  WeatherMapCityWeather,
+  CityFinderScore,
   DailyForecast,
   RegionKey,
-  TravelFilter
+  WeatherFilter
 } from 'weather-core/types';
 import { cityMatchesRegion } from './regions';
 
-export function dayMatchesFilter(day: DailyForecast, filter: TravelFilter): boolean {
+export function dayMatchesFilter(day: DailyForecast, filter: WeatherFilter): boolean {
   const temperatureMatches =
     !filter.useTemperature ||
     (day.temperatureMinC >= filter.temperatureMinC && day.temperatureMaxC <= filter.temperatureMaxC);
@@ -44,11 +44,11 @@ export function calculateBestStreak(matches: boolean[]): number {
   return best;
 }
 
-export function scoreCityTravel(
+export function scoreCityFinderMatch(
   city: City,
   forecasts: DailyForecast[],
-  filter: TravelFilter
-): CityTravelScore {
+  filter: WeatherFilter
+): CityFinderScore {
   const elevationMatches =
     !filter.useElevation ||
     (city.elevationMeters >= filter.elevationMinMeters && city.elevationMeters <= filter.elevationMaxMeters);
@@ -99,12 +99,12 @@ export function compareCityPopularity(a: City, b: City): number {
   return (b.population ?? 0) - (a.population ?? 0) || a.id.localeCompare(b.id);
 }
 
-export function buildDailyWeather(
+export function buildWeatherMapCityWeather(
   cities: City[],
   forecasts: DailyForecast[],
   date: string,
   region: RegionKey
-): CityDailyWeather[] {
+): WeatherMapCityWeather[] {
   const forecastsByCity = new Map(forecasts.filter((day) => day.date === date).map((day) => [day.cityId, day]));
 
   return cities

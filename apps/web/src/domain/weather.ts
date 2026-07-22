@@ -3,10 +3,10 @@
  * 对应文档: docs/product-design.md
  */
 import type { DisplayLocale } from './format';
-import type { TravelFilter, WeatherType } from 'weather-core/types';
+import type { WeatherFilter, WeatherType } from 'weather-core/types';
 
 type WeatherPresetFilter = Pick<
-  TravelFilter,
+  WeatherFilter,
   | 'useTemperature'
   | 'temperatureMinC'
   | 'temperatureMaxC'
@@ -250,7 +250,7 @@ export function getWeatherPresetLabel(preset: WeatherPreset, locale: DisplayLoca
   return preset.labels[locale];
 }
 
-export function applyWeatherPreset(current: TravelFilter, preset: WeatherPreset): TravelFilter {
+export function applyWeatherPreset(current: WeatherFilter, preset: WeatherPreset): WeatherFilter {
   return {
     ...current,
     useTemperature: preset.useTemperature,

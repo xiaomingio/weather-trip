@@ -13,7 +13,7 @@
 | 全球 | 国家级为主，大国可叠加一级行政区 | 保证世界地图整体有颜色，避免欧洲小国和岛国被拆得过碎 |
 | 大洲 | 国家级为主，大国可叠加一级行政区 | 用户看的是区域分布，国家级更稳定；面积大、气候差异大的国家允许细化 |
 | 详细国家 | 按 `detailedCoverage` 决定 | `docs/city-selection.md` 中有 `detailedCoverage` 的国家才开放国家下钻；中国天气点按地级行政区代表点生成，其它当前详细国家按一级行政区代表点生成 |
-| 中国省级筛选 | 中国省级区域 | 中国继续使用省级面作为主要区域层，城市点作为样本补充 |
+| 详细地图分块 | `partition` 区域 | 所有详细国家使用同一套地图分块聚合，城市点作为样本补充 |
 | 未开放选择的国家 | 不单独处理 | 这些国家在全球和大洲视图中按国家级参与着色，不提供单国细分体验 |
 
 详细国家的真源是 `data/city-selection/country-profiles.json` 的 `detailedCoverage` 字段，并由 `docs/city-selection.md` 解释其选择原因。当前详细国家包括中国、美国、日本、法国、西班牙、意大利、墨西哥、泰国、土耳其、英国、德国、加拿大和澳大利亚。中国的天气点用 `admin2` 覆盖地级市、地区、自治州、盟和直辖市代表点；其它当前详细国家用 `admin1` 覆盖州、都道府县、省/大区等一级行政区代表点。
@@ -29,20 +29,20 @@
 
 ## 区域数据模型
 
-区域 summary 应使用通用区域 key，不再绑定中国 `adcode`。中国 `adcode` 只作为中国省级 GeoJSON 的展示层映射。
+区域 summary 使用通用 `partition` key。不同 GeoJSON 资产进入地图前统一标准化成 `regionKey`，天气聚合、筛选和着色逻辑只读取这个通用 key。
 
 ```ts
-type MapRegionLevel = 'country' | 'admin1';
+type MapRegionLevel = 'country' | 'partition';
 
 type MapRegionKey =
   | `country:${string}` // ISO 3166-1 alpha-2，例如 country:FR
-  | `admin1:${string}.${string}`; // GeoNames admin1 code，例如 admin1:US.CA
+  | `partition:${string}.${string}`; // 地图分块 key，例如 partition:US.CA
 
 type MapRegionSummary = {
   id: MapRegionKey; // 区域稳定 ID
-  level: MapRegionLevel; // 当前 summary 的行政层级
+  level: MapRegionLevel; // 当前 summary 的地图聚合层级
   countryCode: string; // ISO 3166-1 alpha-2
-  admin1Code?: string; // level 为 admin1 时填写
+  partitionCode?: string; // level 为 partition 时填写
   name: string; // 当前 locale 下可展示名称
   cityCount: number; // 参与聚合的城市样本数
   weatherType: WeatherType; // 城市样本中的主天气
@@ -66,13 +66,13 @@ type MapRegionSummary = {
 
 ## 选择规则
 
-地图选择和筛选表单共用同一个 `region` 真源。`region` query 始终保存最终生效地区：第一层国家或大区使用 `world`、`europe`、`country:US` 这类值；第二层区域使用 `province:530000` 或 `admin1:US.CA` 这类值。页面刷新、分享链接和语言切换都按这个最终地区恢复，再反推第一层列表和第二层列表的选中项。
+地图选择和筛选表单共用同一个 `region` 真源。`region` query 始终保存最终生效地区：第一层国家或大区使用 `world`、`europe`、`country:US` 这类值；第二层区域使用 `partition:US.CA`、`partition:CN.29` 这类值。页面刷新、分享链接和语言切换都按这个最终地区恢复，再反推第一层列表和第二层列表的选中项。
 
-地区筛选分成两个列表。第一个列表只放全球、主要大区和详细国家；第二个列表根据第一个列表动态显示该国家的省、州、都道府县或其它一级行政区。选择全球或大洲时，第二个列表不可用；选择中国时，第二个列表显示中国省级区域；选择其它详细国家时，第二个列表显示该国 GeoNames admin1 区域。
+地区筛选分成两个列表。第一个列表只放全球、主要大区和详细国家；第二个列表根据第一个列表动态显示该国家的地图分块区域。选择全球或大洲时，第二个列表不可用；选择详细国家时，第二个列表显示该国当前可用的地图分块。
 
 地图选择以着色区域面为单位，不以城市点或点位外接框为单位。用户点击可选国家、省、州或其它一级行政区时，系统更新最终 `region`，同步筛选列表和 URL；城市 marker 只用于选中城市详情，不改变地区筛选。
 
-全球和大洲视图中，只有已经开放为详细国家的国家面可以通过地图点击进入国家视图。详细国家视图中，点击一级行政区面进入对应 `admin1:<country>.<code>` 或 `province:<adcode>`。未开放选择的国家仍参与国家级着色，但不通过地图点击进入单国下钻。
+全球和大洲视图中，只有已经开放为详细国家的国家面可以通过地图点击进入国家视图。详细国家视图中，点击地图分块面进入对应 `partition:<country>.<code>`。未开放选择的国家仍参与国家级着色，但不通过地图点击进入单国下钻。
 
 ## 视野框选规则
 
@@ -92,16 +92,16 @@ type MapRegionSummary = {
 
 ## 实现约束
 
-地图底图和区域 GeoJSON 分开管理：世界国家边界、中国省级边界、其它大国一级行政区边界可以是不同数据源，但最终都映射到 `MapRegionKey`。
+地图底图和区域 GeoJSON 分开管理：世界国家边界和详细地区边界可以来自不同数据源，但最终都标准化到 `MapRegionKey`。
 
 天气数据仍然来自 `cities` 和 `daily_forecasts`。区域着色不新增天气请求，只复用已有城市样本聚合结果。增加国家筛选项前，需要先保证该国一级行政区边界、GeoNames admin1 code 和城市样本能稳定对齐。
 
 当前 Web 静态边界文件放在 `apps/web/public/data/geo/`：
 
 ```text
-world-countries.geojson   # Natural Earth admin-0，属性使用 country:<ISO_A2>
-detailed-admin1.geojson   # Natural Earth admin-1 详细国家子集，属性使用 admin1:<gn_a1_code>
-china-provinces.geojson   # 中国省级边界，属性通过 adcode 映射到 province:<adcode>
+world-countries.geojson   # Natural Earth admin-0，加载后使用 country:<ISO_A2>
+detailed-admin1.geojson   # 详细国家分块边界，加载后标准化到 partition:<country>.<code>
+china-provinces.geojson   # 详细地区边界资产，加载后标准化到 partition:<country>.<code>
 ```
 
 详细国家一级行政区优先使用边界数据里的 `gn_a1_code`，因为它和 GeoNames `admin1CodesASCII.txt` 的代码一致；不要用展示名称或 ISO 3166-2 手工猜测区域对应关系。

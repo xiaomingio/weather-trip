@@ -68,7 +68,7 @@ npm run cities:import-geonames
 ```text
 apps/web Astro page
   -> readWeatherSnapshot()
-  -> React WeatherDashboard
+  -> CityFinderDashboard / WeatherMapDashboard
 ```
 
 Web 只读已落库数据。`readWeatherSnapshot()` 只返回 `cities` 中已有天气缓存的城市，避免全球原始城市池被整表序列化到页面。公开页面不直接调用 Open-Meteo，不暴露数据库连接、刷新错误堆栈或内部调度状态。

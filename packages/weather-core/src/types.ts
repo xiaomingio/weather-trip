@@ -17,7 +17,7 @@ export type WeatherType =
 
 export type MapLayer = 'weather' | 'temperature' | 'humidity' | 'precipitation' | 'wind' | 'comfort' | 'elevation';
 
-export type ViewMode = 'travel' | 'daily';
+export type WeatherToolId = 'city-finder' | 'weather-map';
 
 export type WorldRegion =
   | 'world'
@@ -67,7 +67,7 @@ export type DailyForecast = {
   windSpeedMaxKmh?: number;
 };
 
-export type TravelFilter = {
+export type WeatherFilter = {
   dateWindowDays: number;
   useTemperature: boolean;
   temperatureMinC: number;
@@ -89,13 +89,7 @@ export type TravelFilter = {
   region: RegionKey;
 };
 
-export type DailyFilter = {
-  date: string;
-  layer: MapLayer;
-  region: RegionKey;
-};
-
-export type CityTravelScore = {
+export type CityFinderScore = {
   city: City;
   forecasts: DailyForecast[];
   matchDays: number;
@@ -106,7 +100,7 @@ export type CityTravelScore = {
   bestStreakDays: number;
 };
 
-export type CityDailyWeather = {
+export type WeatherMapCityWeather = {
   city: City;
   forecast: DailyForecast;
   comfortScore: number;
@@ -114,9 +108,9 @@ export type CityDailyWeather = {
 
 export type RegionWeatherSummary = {
   id: string;
-  level: 'country' | 'admin1';
+  level: 'country' | 'partition';
   countryCode: string;
-  admin1Code?: string;
+  partitionCode?: string;
   name: string;
   cityCount: number;
   weatherType: WeatherType;

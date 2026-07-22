@@ -1,9 +1,9 @@
 /**
- * 文件说明: 统一定义公开站点顶层 Tab、工具路径和内部查看模式的映射关系。
+ * 文件说明: 统一定义公开站点顶层 Tab 和两个天气工具页面的路径映射。
  * 对应文档: docs/product-design.md
  */
 
-import type { ViewMode } from 'weather-core/types';
+import type { WeatherToolId } from 'weather-core/types';
 import type { DisplayLocale } from './format';
 
 export type TopTabId = 'landing' | 'weather-map' | 'city-finder';
@@ -23,8 +23,8 @@ export function buildLandingPath(locale: DisplayLocale): string {
   return locale === 'zh' ? '/zh' : '/';
 }
 
-export function getToolPathSegment(mode: ViewMode): Exclude<TopTabId, 'landing'> {
-  return mode === 'daily' ? 'weather-map' : 'city-finder';
+export function getToolPathSegment(tool: WeatherToolId): Exclude<TopTabId, 'landing'> {
+  return tool;
 }
 
 export function buildTopTabPath(locale: DisplayLocale, tabId: TopTabId): string {
@@ -32,12 +32,6 @@ export function buildTopTabPath(locale: DisplayLocale, tabId: TopTabId): string 
   return `${locale === 'zh' ? '/zh' : ''}/${tabId}`;
 }
 
-export function buildToolPath(locale: DisplayLocale, mode: ViewMode): string {
-  return buildTopTabPath(locale, getToolPathSegment(mode));
-}
-
-export function resolveToolMode(pathSegment: string | undefined): ViewMode | null {
-  if (pathSegment === 'weather-map') return 'daily';
-  if (pathSegment === 'city-finder') return 'travel';
-  return null;
+export function buildToolPath(locale: DisplayLocale, tool: WeatherToolId): string {
+  return buildTopTabPath(locale, getToolPathSegment(tool));
 }

@@ -4,18 +4,57 @@
  * 对应文档: docs/product-design.md
  */
 import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
-import Analytics from '@/components/analytics.astro';
-import SiteNav from '@/components/site-nav.astro';
-import SitePreferences from '@/components/site-preferences.astro';
+import Analytics from '@/components/Analytics.astro';
+import SiteNav from '@/components/SiteNav.astro';
+import SitePreferences from '@/components/SitePreferences.astro';
 import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import '@/styles/global.css';
 import '@/styles/landing.css';
 
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'zh' } }];
+}
+
 type Props = {
   locale?: DisplayLocale;
 };
+
+type LandingStats = {
+  countryCount: number;
+  cityCount: number;
+  forecastDayCount: number;
+};
+
+const fallbackStats: LandingStats = {
+  countryCount: 200,
+  cityCount: 2000,
+  forecastDayCount: 14
+};
+
+async function readLandingStats(): Promise<LandingStats> {
+  let db;
+
+  try {
+    db = createWeatherDatabase();
+    const snapshot = await readWeatherSnapshot(db);
+    return {
+      countryCount: new Set(snapshot.cities.map((city) => city.countryCode ?? city.country)).size,
+      cityCount: snapshot.cities.length,
+      forecastDayCount: Math.min(14, snapshot.availableDates.length)
+    };
+  } catch (error) {
+    console.warn(
+      `Landing stats fell back to static coverage labels: ${error instanceof Error ? error.message : String(error)}`
+    );
+    return fallbackStats;
+  } finally {
+    await db?.close();
+  }
+}
 
 const requestedLocale = Astro.props.locale ?? Astro.params.locale;
 if (!Astro.props.locale && requestedLocale !== 'zh') {
@@ -25,18 +64,7 @@ if (!Astro.props.locale && requestedLocale !== 'zh') {
 const locale: DisplayLocale = requestedLocale === 'zh' ? 'zh' : 'en';
 const otherLocale: DisplayLocale = locale === 'zh' ? 'en' : 'zh';
 
-const db = createWeatherDatabase();
-let snapshot;
-
-try {
-  snapshot = await readWeatherSnapshot(db);
-} finally {
-  await db.close();
-}
-
-const countryCount = new Set(snapshot.cities.map((city) => city.countryCode ?? city.country)).size;
-const cityCount = snapshot.cities.length;
-const forecastDayCount = Math.min(14, snapshot.availableDates.length);
+const { countryCount, cityCount, forecastDayCount } = await readLandingStats();
 
 const citiesLabel = cityCount >= 2000 ? '2000+' : String(cityCount);
 const regionsLabel = countryCount >= 200 ? '200+' : String(countryCount);
@@ -190,6 +218,18 @@ const comparePath = buildTopTabPath(locale, 'city-finder');
 const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
 const seoPage = getPublicPage(locale, 'landing');
 const alternateLinks = getAlternateLinks('landing');
+const sunnyAtlas = {
+  png: '/landing/climate-atlas-sunny.png',
+  webp: '/landing/climate-atlas-sunny.webp'
+};
+const rainAtlas = {
+  png: '/landing/climate-atlas-rain.png',
+  webp: '/landing/climate-atlas-rain.webp'
+};
+const snowAtlas = {
+  png: '/landing/climate-atlas-snow.png',
+  webp: '/landing/climate-atlas-snow.webp'
+};
 ---
 
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'} data-weather-theme="sunny">
@@ -203,6 +243,7 @@ const alternateLinks = getAlternateLinks('landing');
     <link rel="alternate" hreflang="zh-Hans" href={alternateLinks['zh-Hans']} />
     <link rel="alternate" hreflang="x-default" href={alternateLinks['x-default']} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" href={sunnyAtlas.webp} type="image/webp" fetchpriority="high" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Weather Trip" />
     <meta property="og:title" content={copy.title} />
@@ -348,23 +389,41 @@ const alternateLinks = getAlternateLinks('landing');
 
         <figure class="hero-art" data-weather-atlas>
           <div class="weather-stack">
-            <img
-              class="weather-layer weather-layer-base"
-              src="/landing/climate-atlas-sunny.png"
-              alt={copy.artAlt}
-            />
-            <img
-              class="weather-layer weather-layer-rain"
-              src="/landing/climate-atlas-rain.png"
-              alt=""
-              aria-hidden="true"
-            />
-            <img
-              class="weather-layer weather-layer-snow"
-              src="/landing/climate-atlas-snow.png"
-              alt=""
-              aria-hidden="true"
-            />
+            <picture class="weather-layer weather-layer-base">
+              <source srcset={sunnyAtlas.webp} type="image/webp" />
+              <img
+                src={sunnyAtlas.png}
+                width="1248"
+                height="832"
+                alt={copy.artAlt}
+                decoding="async"
+                fetchpriority="high"
+              />
+            </picture>
+            <picture class="weather-layer weather-layer-rain" data-weather-layer="rain">
+              <source data-srcset={rainAtlas.webp} type="image/webp" />
+              <img
+                data-src={rainAtlas.png}
+                width="1248"
+                height="832"
+                alt=""
+                aria-hidden="true"
+                decoding="async"
+                loading="lazy"
+              />
+            </picture>
+            <picture class="weather-layer weather-layer-snow" data-weather-layer="snow">
+              <source data-srcset={snowAtlas.webp} type="image/webp" />
+              <img
+                data-src={snowAtlas.png}
+                width="1248"
+                height="832"
+                alt=""
+                aria-hidden="true"
+                decoding="async"
+                loading="lazy"
+              />
+            </picture>
           </div>
           <figcaption>
             <span>{copy.figBrand}</span>

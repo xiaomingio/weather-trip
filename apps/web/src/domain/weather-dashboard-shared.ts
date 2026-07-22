@@ -2,12 +2,12 @@
  * 文件说明: 定义天气工具页客户端和 API 共享的筛选默认值、URL 序列化和数据响应类型。
  * 对应文档: docs/product-design.md
  */
-import type { City, DailyForecast, MapLayer, RegionKey, RegionWeatherSummary, TravelFilter, ViewMode, WeatherType } from 'weather-core/types';
+import type { City, DailyForecast, MapLayer, RegionKey, RegionWeatherSummary, WeatherFilter, WeatherToolId, WeatherType } from 'weather-core/types';
 import { getMapRegionLayer, regionOptions } from './regions';
 import { allWeatherTypes, elevationFilterBounds, precipitationFilterBounds, windSpeedFilterBounds } from './weather';
 
-export type DashboardTravelResultItem = {
-  mode: 'travel';
+export type DashboardCityFinderResultItem = {
+  tool: 'city-finder';
   city: City;
   matchDays: number;
   totalDays: number;
@@ -21,22 +21,41 @@ export type DashboardTravelResultItem = {
   weatherType: WeatherType;
 };
 
-export type DashboardDailyResultItem = {
-  mode: 'daily';
+export type DashboardWeatherMapResultItem = {
+  tool: 'weather-map';
   city: City;
   forecast: DailyForecast;
   comfortScore: number;
 };
 
-export type DashboardResultItem = DashboardTravelResultItem | DashboardDailyResultItem;
+export type DashboardResultItem = DashboardCityFinderResultItem | DashboardWeatherMapResultItem;
 
 export type DashboardSubRegionOption = {
   id: RegionKey;
   label: string;
 };
 
-export type WeatherDashboardPayload = {
-  mode: ViewMode;
+export type MapBounds = [west: number, south: number, east: number, north: number];
+
+export type WeatherRegionOption = {
+  id: RegionKey;
+  label: string;
+  group: string;
+  mapLayer: 'country' | 'partition';
+  bounds: MapBounds | null;
+};
+
+export type RegionsPayload = {
+  regions: WeatherRegionOption[];
+};
+
+export type SubregionsPayload = {
+  region: RegionKey;
+  subRegions: WeatherRegionOption[];
+};
+
+export type WeatherToolPayload = {
+  tool: WeatherToolId;
   region: RegionKey;
   selectedDate: string;
   availableDates: string[];
@@ -47,7 +66,25 @@ export type WeatherDashboardPayload = {
   selectedCityForecasts: DailyForecast[];
 };
 
-export const defaultTravelFilter: TravelFilter = {
+export type WeatherLayerDateData = {
+  date: string;
+  resultItems: DashboardWeatherMapResultItem[];
+  regionSummaries: RegionWeatherSummary[];
+};
+
+export type WeatherLayerPayload = Pick<WeatherToolPayload, 'tool' | 'region' | 'selectedDate'> & {
+  layer: MapLayer;
+  days: WeatherLayerDateData[];
+};
+
+export type MapDatesPayload = Pick<WeatherToolPayload, 'tool' | 'region' | 'selectedDate' | 'availableDates' | 'regionAvailableDates'>;
+
+export type CityForecastPayload = {
+  cityId: string | null;
+  selectedCityForecasts: DailyForecast[];
+};
+
+export const defaultWeatherFilter: WeatherFilter = {
   dateWindowDays: 14,
   useTemperature: true,
   temperatureMinC: 15,
@@ -83,8 +120,8 @@ function searchParamsFrom(search: string | URLSearchParams): URLSearchParams {
 }
 
 export function isSupportedRegion(region: RegionKey): boolean {
-  const admin1Match = /^admin1:([A-Z]{2})\..+$/.exec(region);
-  if (admin1Match) return regionOptions.some((option) => option.id === `country:${admin1Match[1]}`);
+  const partitionMatch = /^partition:([A-Z]{2})\..+$/.exec(region);
+  if (partitionMatch) return regionOptions.some((option) => option.id === `country:${partitionMatch[1]}`);
   return regionOptions.some((option) => option.id === region);
 }
 
@@ -93,13 +130,17 @@ export function readLayerFromSearch(search: string | URLSearchParams): MapLayer 
   return layers.includes(layer as MapLayer) ? (layer as MapLayer) : 'weather';
 }
 
+export function isSupportedMapLayer(layer: string | undefined): layer is MapLayer {
+  return Boolean(layer && layers.includes(layer as MapLayer));
+}
+
 export function readDateFromSearch(search: string | URLSearchParams, fallbackDate: string): string {
   return searchParamsFrom(search).get('date') ?? fallbackDate;
 }
 
-export function parseTravelFilterFromSearch(search: string | URLSearchParams, fallbackRegion?: RegionKey | null): TravelFilter {
+export function parseWeatherFilterFromSearch(search: string | URLSearchParams, fallbackRegion?: RegionKey | null): WeatherFilter {
   const params = searchParamsFrom(search);
-  const nextFilter: TravelFilter = { ...defaultTravelFilter };
+  const nextFilter: WeatherFilter = { ...defaultWeatherFilter };
   const region = params.get('region');
   if (region && isSupportedRegion(region)) {
     nextFilter.region = region;
@@ -182,46 +223,45 @@ export function parseTravelFilterFromSearch(search: string | URLSearchParams, fa
 }
 
 export function buildFilterSearch(
-  mode: ViewMode,
-  travelFilter: TravelFilter,
+  tool: WeatherToolId,
+  weatherFilter: WeatherFilter,
   selectedDate: string,
   layer: MapLayer
 ): string {
   const params = new URLSearchParams();
-  params.set('region', travelFilter.region);
+  params.set('region', weatherFilter.region);
 
-  if (mode === 'daily') {
+  if (tool === 'weather-map') {
     if (selectedDate) params.set('date', selectedDate);
     params.set('layer', layer);
     return params.toString();
   }
 
-  params.set('days', String(travelFilter.dateWindowDays));
-  params.set('temp', travelFilter.useTemperature ? `${travelFilter.temperatureMinC},${travelFilter.temperatureMaxC}` : 'off');
-  params.set('weather', travelFilter.useWeather ? travelFilter.weatherTypes.join(',') : 'off');
-  params.set('humidity', travelFilter.useHumidity ? `${travelFilter.humidityMinPercent},${travelFilter.humidityMaxPercent}` : 'off');
-  params.set('precipitation', travelFilter.usePrecipitation ? `${travelFilter.precipitationMinMm},${travelFilter.precipitationMaxMm}` : 'off');
-  params.set('wind', travelFilter.useWind ? `${travelFilter.windSpeedMinKmh},${travelFilter.windSpeedMaxKmh}` : 'off');
-  params.set('elevation', travelFilter.useElevation ? `${travelFilter.elevationMinMeters},${travelFilter.elevationMaxMeters}` : 'off');
+  params.set('days', String(weatherFilter.dateWindowDays));
+  params.set('temp', weatherFilter.useTemperature ? `${weatherFilter.temperatureMinC},${weatherFilter.temperatureMaxC}` : 'off');
+  params.set('weather', weatherFilter.useWeather ? weatherFilter.weatherTypes.join(',') : 'off');
+  params.set('humidity', weatherFilter.useHumidity ? `${weatherFilter.humidityMinPercent},${weatherFilter.humidityMaxPercent}` : 'off');
+  params.set('precipitation', weatherFilter.usePrecipitation ? `${weatherFilter.precipitationMinMm},${weatherFilter.precipitationMaxMm}` : 'off');
+  params.set('wind', weatherFilter.useWind ? `${weatherFilter.windSpeedMinKmh},${weatherFilter.windSpeedMaxKmh}` : 'off');
+  params.set('elevation', weatherFilter.useElevation ? `${weatherFilter.elevationMinMeters},${weatherFilter.elevationMaxMeters}` : 'off');
 
   return params.toString();
 }
 
-export function isDashboardTravelItem(item: DashboardResultItem): item is DashboardTravelResultItem {
-  return item.mode === 'travel';
+export function isDashboardCityFinderItem(item: DashboardResultItem): item is DashboardCityFinderResultItem {
+  return item.tool === 'city-finder';
 }
 
-export function isDashboardDailyItem(item: DashboardResultItem): item is DashboardDailyResultItem {
-  return item.mode === 'daily';
+export function isDashboardWeatherMapItem(item: DashboardResultItem): item is DashboardWeatherMapResultItem {
+  return item.tool === 'weather-map';
 }
 
 export function getPrimaryRegionId(region: RegionKey): RegionKey {
-  if (region.startsWith('province:')) return 'country:CN';
-  const admin1Match = /^admin1:([A-Z]{2})\./.exec(region);
-  if (admin1Match) return `country:${admin1Match[1]}`;
+  const partitionMatch = /^partition:([A-Z]{2})\./.exec(region);
+  if (partitionMatch) return `country:${partitionMatch[1]}`;
   return region;
 }
 
-export function getRegionLayerFromFilter(filter: TravelFilter) {
+export function getRegionLayerFromFilter(filter: WeatherFilter) {
   return getMapRegionLayer(filter.region);
 }

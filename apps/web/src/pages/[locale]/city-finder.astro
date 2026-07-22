@@ -1,0 +1,19 @@
+---
+/**
+ * 文件说明: 渲染中文 City Finder 工具页路由。
+ * 对应文档: docs/product-design.md
+ */
+import CityFinderToolPage from '@/components/CityFinderToolPage.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'zh' } }];
+}
+
+if (Astro.params.locale !== 'zh') {
+  return new Response('Not found', { status: 404 });
+}
+---
+
+<CityFinderToolPage locale="zh" />

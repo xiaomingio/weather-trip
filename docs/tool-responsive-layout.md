@@ -8,18 +8,20 @@
 
 | 对象 | 真源 | 说明 |
 | --- | --- | --- |
-| 顶部导航 HTML | `apps/web/src/components/site-nav.astro` | 静态 Astro 组件，首页和工具页共用 |
+| 顶部导航 HTML | `apps/web/src/components/SiteNav.astro` | 静态 Astro 组件，首页和工具页共用 |
 | 顶部导航样式 | `apps/web/src/styles/global.css` | `.site-nav`、`.brand`、`.tabs`、`.nav-actions`、`.nav-icon-btn` 和 `--nav-*` 变量都在这里 |
-| 工具页外壳 | `apps/web/src/pages/[locale]/[mode].astro` | `SiteNav` 在 React island 外面，`WeatherDashboard` 只渲染工作区 |
+| City Finder 外壳 | `apps/web/src/pages/[locale]/city-finder.astro` | `SiteNav` 在 React island 外面，页面内容由 `CityFinderToolPage.astro` 接入 |
+| Weather Map 外壳 | `apps/web/src/pages/[locale]/weather-map.astro` | `SiteNav` 在 React island 外面，页面内容由 `WeatherMapToolPage.astro` 接入 |
 | Landing 外壳 | `apps/web/src/pages/[locale].astro` | 复用同一个 `SiteNav`，页面专属样式只负责 hero 和 Landing 内容 |
-| 工具页工作区 | `apps/web/src/components/weather-dashboard.tsx` | 负责筛选、城市列表、天气预报、地图和 URL 状态同步 |
-| 筛选控件 | `apps/web/src/components/weather-filter-docks.tsx` | 负责 `City Finder` 和 `Weather Map` 的筛选卡结构 |
+| City Finder 工作区 | `apps/web/src/components/weather-dashboard/CityFinderDashboard.tsx` | 负责城市查找页的筛选、城市列表、十四天预报、地图和 URL 状态同步 |
+| Weather Map 工作区 | `apps/web/src/components/weather-dashboard/WeatherMapDashboard.tsx` | 负责天气地图页的地区、日期、图层、排序、地图数据和 URL 状态同步 |
+| 筛选控件 | `apps/web/src/components/weather-filter-docks/CityFinderFilterDock.tsx`、`apps/web/src/components/weather-filter-docks/WeatherMapFilterDock.tsx` | 两个工具页各自拥有筛选入口，只复用稳定的小控件和类型 |
 
-页面专属 CSS 不覆盖顶部导航的字号、位置、断点、Tab 尺寸、颜色变量和按钮尺寸。需要改顶部导航时，只改 `site-nav.astro` 和 `global.css` 里的共享导航样式。
+页面专属 CSS 不覆盖顶部导航的字号、位置、断点、Tab 尺寸、颜色变量和按钮尺寸。需要改顶部导航时，只改 `SiteNav.astro` 和 `global.css` 里的共享导航样式。
 
 ## 静态化边界
 
-顶部导航本身是静态 HTML，不能做成 React 组件，也不能放进 `WeatherDashboard` 的 React island 里。原因是首页和工具页都需要尽量保持静态输出，方便 SEO、首屏性能和缓存。
+顶部导航本身是静态 HTML，不能做成 React 组件，也不能放进工具页 React island 里。原因是首页和工具页都需要尽量保持静态输出，方便 SEO、首屏性能和缓存。
 
 工具页允许 React 在 hydration 后增强静态导航里的链接，例如把语言切换链接同步成当前筛选条件对应的 URL，或把工具 Tab 链接同步成上次保存的 query。这个增强只更新已有 `<a>` 的 `href` 和 active class，不重新渲染导航结构。
 
@@ -28,8 +30,8 @@
 ┌────────────────────────────────────────────┐
 │ SiteNav.astro 静态 HTML                    │
 ├────────────────────────────────────────────┤
-│ WeatherDashboard React island              │
-│ 筛选 / 城市 / 天气 / 地图 / URL 状态同步    │
+│ CityFinderDashboard 或 WeatherMapDashboard │
+│ 各自的筛选 / 城市 / 天气 / 地图 / URL 同步  │
 └────────────────────────────────────────────┘
 ```
 
@@ -272,6 +274,6 @@ document.documentElement.scrollWidth <= document.documentElement.clientWidth
 | 检查项 | 标准 |
 | --- | --- |
 | 静态输出 | 首页 HTML 不包含 `astro-island` |
-| 工具页边界 | `.site-nav` 内没有 `astro-island`，导航在 `WeatherDashboard` island 之前 |
+| 工具页边界 | `.site-nav` 内没有 `astro-island`，导航在工具页 React island 之前 |
 | 三页一致 | `/`、`/city-finder`、`/weather-map` 在同一视口下 Tab 宽度、品牌字号、按钮位置一致 |
 | 垂直居中 | `.tabs a` 使用 `inline-flex` / `flex`，`align-items: center`，`justify-content: center` |

@@ -70,3 +70,7 @@ export const chinaProvinceNameByAdcode: Record<string, string> = {
   '640000': '宁夏回族自治区',
   '650000': '新疆维吾尔自治区'
 };
+
+export const chinaGeoNamesCodeByAdmin1Adcode: Record<string, string> = Object.fromEntries(
+  Object.entries(chinaAdmin1AdcodeByGeoNamesCode).map(([geoNamesCode, adcode]) => [adcode, geoNamesCode])
+);

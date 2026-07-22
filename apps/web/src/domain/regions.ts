@@ -1,10 +1,9 @@
 /**
- * 文件说明: 定义地区筛选项和地区匹配规则，支持大区、国家和中国省级行政区。
+ * 文件说明: 定义地区筛选项和地区匹配规则，支持大区、国家和通用一级行政区。
  * 对应文档: docs/product-design.md
  */
 import type { City, RegionKey } from 'weather-core/types';
 import countryProfiles from '../../../../data/city-selection/country-profiles.json';
-import { chinaAdmin1AdcodeByGeoNamesCode } from './china-admin1';
 import type { DisplayLocale } from './format';
 
 export type RegionOption = {
@@ -19,7 +18,7 @@ type CountryProfile = {
   detailedCoverage?: 'admin1' | 'admin2';
 };
 
-export type MapRegionLayer = 'country' | 'admin1' | 'china-admin1';
+export type MapRegionLayer = 'country' | 'partition';
 
 const countryNames = {
   zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
@@ -57,15 +56,15 @@ function isDetailedCountryRegion(region: RegionKey): boolean {
   return detailedCountryCodes.has(region.slice('country:'.length));
 }
 
-function parseAdmin1Region(region: RegionKey): { countryCode: string; admin1Code: string } | null {
-  const match = /^admin1:([A-Z]{2})\.(.+)$/.exec(region);
+export function parsePartitionRegion(region: RegionKey): { countryCode: string; partitionCode: string } | null {
+  const match = /^partition:([A-Z]{2})\.(.+)$/.exec(region);
   if (!match) return null;
-  return { countryCode: match[1], admin1Code: match[2] };
+  return { countryCode: match[1], partitionCode: match[2] };
 }
 
 function matchesGlobalOrDetailedRegion(city: City, region: RegionKey, matchesRegion: boolean): boolean {
   if (!matchesRegion) return false;
-  if (isDetailedCountryRegion(region) || region.startsWith('province:')) return true;
+  if (isDetailedCountryRegion(region)) return true;
   return isGlobalScopeCity(city);
 }
 
@@ -80,45 +79,6 @@ const detailedCountryOptions: RegionOption[] = (countryProfiles as CountryProfil
     groups: { zh: '国家/地区', en: 'Countries' },
     matches: (city: City) => city.countryCode === profile.countryCode
   }));
-
-export const chinaProvinceOptions: RegionOption[] = [
-  ['22', '北京', 'Beijing'],
-  ['28', '天津', 'Tianjin'],
-  ['10', '河北', 'Hebei'],
-  ['24', '山西', 'Shanxi'],
-  ['20', '内蒙古', 'Inner Mongolia'],
-  ['19', '辽宁', 'Liaoning'],
-  ['05', '吉林', 'Jilin'],
-  ['08', '黑龙江', 'Heilongjiang'],
-  ['23', '上海', 'Shanghai'],
-  ['04', '江苏', 'Jiangsu'],
-  ['02', '浙江', 'Zhejiang'],
-  ['01', '安徽', 'Anhui'],
-  ['07', '福建', 'Fujian'],
-  ['03', '江西', 'Jiangxi'],
-  ['25', '山东', 'Shandong'],
-  ['09', '河南', 'Henan'],
-  ['12', '湖北', 'Hubei'],
-  ['11', '湖南', 'Hunan'],
-  ['30', '广东', 'Guangdong'],
-  ['16', '广西', 'Guangxi'],
-  ['31', '海南', 'Hainan'],
-  ['33', '重庆', 'Chongqing'],
-  ['32', '四川', 'Sichuan'],
-  ['18', '贵州', 'Guizhou'],
-  ['29', '云南', 'Yunnan'],
-  ['14', '西藏', 'Tibet'],
-  ['26', '陕西', 'Shaanxi'],
-  ['15', '甘肃', 'Gansu'],
-  ['06', '青海', 'Qinghai'],
-  ['21', '宁夏', 'Ningxia'],
-  ['13', '新疆', 'Xinjiang']
-].map(([geoNamesAdmin1Code, labelZh, labelEn]) => ({
-  id: `province:${chinaAdmin1AdcodeByGeoNamesCode[geoNamesAdmin1Code]}`,
-  labels: { zh: labelZh, en: labelEn },
-  groups: { zh: '中国省级', en: 'China provinces' },
-  matches: (city: City) => city.countryCode === 'CN' && city.admin1GroupCode === geoNamesAdmin1Code
-}));
 
 export const regionOptions: RegionOption[] = [
   {
@@ -180,8 +140,7 @@ export const regionOptions: RegionOption[] = [
     groups: { zh: '大区', en: 'Regions' },
     matches: (city) => matchesGlobalOrDetailedRegion(city, 'oceania', city.region === 'oceania')
   },
-  ...detailedCountryOptions,
-  ...chinaProvinceOptions
+  ...detailedCountryOptions
 ];
 
 export function getRegionLabel(option: RegionOption, locale: DisplayLocale): string {
@@ -197,13 +156,11 @@ export function getSortedRegionOptions(locale: DisplayLocale): RegionOption[] {
     locale === 'zh'
       ? [
           ['大区', 0],
-          ['国家/地区', 1],
-          ['中国省级', 2]
+          ['国家/地区', 1]
         ]
       : [
           ['Regions', 0],
-          ['Countries', 1],
-          ['China provinces', 2]
+          ['Countries', 1]
         ]
   );
   const collator = new Intl.Collator(locale === 'zh' ? 'zh-CN-u-co-pinyin' : 'en', { sensitivity: 'base' });
@@ -219,7 +176,7 @@ export function getSortedRegionOptions(locale: DisplayLocale): RegionOption[] {
 }
 
 export function getPrimaryRegionOptions(locale: DisplayLocale): RegionOption[] {
-  return getSortedRegionOptions(locale).filter((option) => !option.id.startsWith('province:'));
+  return getSortedRegionOptions(locale);
 }
 
 export function getRegionOption(region: RegionKey): RegionOption {
@@ -227,16 +184,15 @@ export function getRegionOption(region: RegionKey): RegionOption {
 }
 
 export function cityMatchesRegion(city: City, region: RegionKey): boolean {
-  const admin1Region = parseAdmin1Region(region);
-  if (admin1Region) {
-    return city.countryCode === admin1Region.countryCode && city.admin1GroupCode === admin1Region.admin1Code;
+  const partitionRegion = parsePartitionRegion(region);
+  if (partitionRegion) {
+    return city.countryCode === partitionRegion.countryCode && city.admin1GroupCode === partitionRegion.partitionCode;
   }
   return getRegionOption(region).matches(city);
 }
 
 export function getMapRegionLayer(region: RegionKey): MapRegionLayer {
-  if (region === 'country:CN' || region.startsWith('province:')) return 'china-admin1';
-  if (parseAdmin1Region(region)) return 'admin1';
-  if (isDetailedCountryRegion(region)) return 'admin1';
+  if (parsePartitionRegion(region)) return 'partition';
+  if (isDetailedCountryRegion(region)) return 'partition';
   return 'country';
 }
