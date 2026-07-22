@@ -39,7 +39,39 @@ const weatherApiJsonCache = new Map<string, WeatherApiJsonCache>();
 const weatherApiEncodedJsonCache = new Map<string, WeatherApiEncodedJsonCache>();
 const snapshotCacheTtlMs = 60_000;
 const weatherApiJsonCacheTtlMs = 60_000;
+const weatherApiJsonCacheMaxEntries = 48;
+const weatherApiEncodedJsonCacheMaxEntries = 96;
 const supportedLocales: DisplayLocale[] = ['en', 'zh'];
+
+type ExpiringCacheEntry = {
+  expiresAt: number;
+};
+
+function readCacheEntry<T extends ExpiringCacheEntry>(cache: Map<string, T>, key: string): T | null {
+  const cached = cache.get(key);
+  if (!cached) return null;
+  if (cached.expiresAt > Date.now()) return cached;
+
+  cache.delete(key);
+  return null;
+}
+
+function writeCacheEntry<T extends ExpiringCacheEntry>(cache: Map<string, T>, key: string, value: T, maxEntries: number): void {
+  const now = Date.now();
+  for (const [cachedKey, cachedValue] of cache) {
+    if (cachedValue.expiresAt <= now) cache.delete(cachedKey);
+  }
+
+  if (cache.has(key)) cache.delete(key);
+
+  while (cache.size >= maxEntries) {
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey === undefined) break;
+    cache.delete(oldestKey);
+  }
+
+  cache.set(key, value);
+}
 
 async function readCachedSnapshot(): Promise<WeatherSnapshot> {
   const now = Date.now();
@@ -81,8 +113,8 @@ function compressedJsonTextResponse(json: string, request: Request, status = 200
 
   headers.set('content-encoding', encoding);
   const encodedCacheKey = cacheKey ? `${encoding}:${cacheKey}` : null;
-  const cachedBody = encodedCacheKey ? weatherApiEncodedJsonCache.get(encodedCacheKey) : null;
-  if (cachedBody && cachedBody.expiresAt > Date.now()) {
+  const cachedBody = encodedCacheKey ? readCacheEntry(weatherApiEncodedJsonCache, encodedCacheKey) : null;
+  if (cachedBody) {
     return new Response(cachedBody.body, { status, headers });
   }
 
@@ -97,10 +129,15 @@ function compressedJsonTextResponse(json: string, request: Request, status = 200
   );
 
   if (encodedCacheKey) {
-    weatherApiEncodedJsonCache.set(encodedCacheKey, {
-      expiresAt: Date.now() + weatherApiJsonCacheTtlMs,
-      body
-    });
+    writeCacheEntry(
+      weatherApiEncodedJsonCache,
+      encodedCacheKey,
+      {
+        expiresAt: Date.now() + weatherApiJsonCacheTtlMs,
+        body
+      },
+      weatherApiEncodedJsonCacheMaxEntries
+    );
   }
 
   return new Response(body, { status, headers });
@@ -127,8 +164,8 @@ export async function respondWithWeatherApiPayload({
   if (!locale) return compressedJsonResponse({ error: 'Unsupported locale.' }, request, 400);
 
   const cacheKey = `${cacheNamespace}:${url.searchParams.toString()}`;
-  const cachedJson = weatherApiJsonCache.get(cacheKey);
-  if (cachedJson && cachedJson.expiresAt > Date.now()) {
+  const cachedJson = readCacheEntry(weatherApiJsonCache, cacheKey);
+  if (cachedJson) {
     return compressedJsonTextResponse(cachedJson.json, request, 200, cacheKey);
   }
 
@@ -138,10 +175,15 @@ export async function respondWithWeatherApiPayload({
     searchParams: url.searchParams
   });
   const json = JSON.stringify(payload);
-  weatherApiJsonCache.set(cacheKey, {
-    expiresAt: Date.now() + weatherApiJsonCacheTtlMs,
-    json
-  });
+  writeCacheEntry(
+    weatherApiJsonCache,
+    cacheKey,
+    {
+      expiresAt: Date.now() + weatherApiJsonCacheTtlMs,
+      json
+    },
+    weatherApiJsonCacheMaxEntries
+  );
 
   return compressedJsonTextResponse(json, request, 200, cacheKey);
 }
