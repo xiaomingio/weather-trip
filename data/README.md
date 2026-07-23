@@ -15,70 +15,9 @@ data/
 
 `raw` 不做人工整理；`input` 是人工判断的真源；`generated` 不手工修改。需要调整 C2/C3、人口兜底、旅游目的地、边界补名或 admin2 过滤时，先看 `data/generated/*.md` 报告，再修改 `data/input/*.yml`，最后重新运行生成脚本。
 
-## 生成流程
+## 生成链路
 
-```mermaid
-flowchart TB
-  externalTourism["旅行目的地外部来源"]
-  extractTourism["tourism:raw<br/>extract-tourism-destinations.ts"]
-  rawTourism["data/raw/tourism-destinations/"]
-
-  generateTourism["static:tourism<br/>generate-tourism-destinations.ts"]
-  tourismGenerated["data/generated/tourism-destinations.json<br/>旅游目的地报告"]
-
-  generateCoverageCandidates["static:country-tier-candidates<br/>generate-country-tier-candidates.ts"]
-  coverageCandidateReport["data/generated/country-tier-candidate-report.*"]
-  humanReview["人工复核候选报告"]
-  coverageTierInput["data/input/country-tier-countries.yml"]
-
-  generateProfiles["static:profiles<br/>generate-country-profiles.ts"]
-  profilesGenerated["data/generated/country-profiles.json<br/>data/generated/country-profile-report.*"]
-
-  generateCities["static:cities<br/>generate-static-cities.ts"]
-  citiesGenerated["data/generated/cities.json<br/>城市选择报告"]
-  publicCities["apps/web/public/data/cities.json"]
-
-  generateWeather["weather:refresh<br/>generate-static-weather.ts"]
-  weatherGenerated["apps/web/public/data/weather/*<br/>R2 weather/*"]
-
-  generateGeo["static:geo<br/>generate-static-geo.ts"]
-  publicGeo["apps/web/public/data/geo/*<br/>边界报告"]
-
-  rawGeonames["data/raw/geonames/"]
-  rawBoundary["data/raw/geo-boundaries/"]
-  openMeteo["Open-Meteo"]
-  tourismInput["data/input/tourism-destination-overrides.yml"]
-  coverageRules["data/input/coverage-rules.yml"]
-  admin2Support["data/input/admin2-support-overrides.yml"]
-  boundaryLabels["data/input/boundary-label-overrides.yml"]
-
-  externalTourism --> extractTourism --> rawTourism
-  rawTourism --> generateTourism --> tourismGenerated
-  tourismGenerated --> generateCoverageCandidates
-  generateCoverageCandidates --> coverageCandidateReport --> humanReview --> coverageTierInput
-  coverageTierInput --> generateProfiles
-  tourismGenerated --> generateProfiles --> profilesGenerated
-  profilesGenerated --> generateCities --> citiesGenerated --> publicCities
-  publicCities --> generateWeather --> weatherGenerated
-  profilesGenerated --> generateGeo --> publicGeo
-
-  rawGeonames --> generateTourism
-  rawGeonames --> generateCoverageCandidates
-  rawGeonames --> generateProfiles
-  rawGeonames --> generateCities
-  rawGeonames --> generateGeo
-  rawBoundary --> generateGeo
-  tourismInput --> generateTourism
-  coverageRules --> generateCoverageCandidates
-  coverageRules --> generateProfiles
-  admin2Support --> generateCoverageCandidates
-  admin2Support --> generateProfiles
-  admin2Support --> generateCities
-  admin2Support --> generateGeo
-  boundaryLabels --> generateGeo
-  tourismGenerated --> generateCities
-  openMeteo --> generateWeather
-```
+完整数据流、脚本级流程图、输入依赖、生成顺序和公开产物见 `docs/specs/31-data-flow.md`。本 README 只保留 `data` 目录维护边界和常用命令入口。
 
 ## 运行入口
 
@@ -89,6 +28,6 @@ flowchart TB
 | `npm run static:country-tier-candidates` | 根据 GeoNames、国家分档规则、旅游目的地和 admin2 input 生成 C2/C3 候选复核表 | `data/generated/country-admin-stats.json`、`data/generated/country-tier-candidate-report.*` |
 | `npm run static:profiles` | 读取人工确认的 C2/C3 input，生成最终国家分档 | `data/generated/country-profiles.json`、`data/generated/country-profile-report.*` |
 | `npm run static:cities` | 根据国家分档、旅游目的地、admin2 input 和 GeoNames 生成城市列表 | `data/generated/cities.json`、`data/generated/city-selection-report.*`、`apps/web/public/data/cities.json` |
-| `npm run static:geo` | 根据边界 raw、国家分档、边界补名 input、admin2 input 和 GeoNames 生成地图边界 | `apps/web/public/data/geo/*`、`data/generated/geo-boundary-report.*` |
-| `npm run static:data` | 依次运行城市列表和地图边界生成 | 城市列表、国家分档、地图边界和对应报告 |
-| `npm run weather:refresh -- --source=open-meteo` | 根据公开城市列表请求 Open-Meteo 天气 | `apps/web/public/data/weather/*`；CI 生成 R2 上传目录 |
+| `npm run static:geo` | 根据边界 raw、国家分档、城市列表、边界补名 input、admin2 input 和 GeoNames 生成 Geo 区块数据 | `apps/web/public/data/geo/*`、`data/generated/geo-boundary-report.*` |
+| `npm run static:data` | 依次运行城市列表和 Geo 区块数据生成 | 城市列表、国家分档、Geo 区块数据和对应报告 |
+| `npm run weather:refresh -- --source=open-meteo` | 根据生成后的城市列表请求 Open-Meteo 天气 | `apps/web/public/data/weather/*`；CI 生成 R2 上传目录 |

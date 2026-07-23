@@ -74,14 +74,14 @@ apps/web/public/data/
         └── local.json
 ```
 
-前端数据 base URL 由环境变量或构建配置决定：
+前端数据 base URL 由环境变量或构建配置决定。`PUBLIC_STATIC_DATA_BASE_URL` 用于 `cities.json`，天气入口优先使用 `PUBLIC_R2_DATA_BASE_URL`；GeoJSON 边界当前随 Pages 发布在 `/data/geo/*`：
 
 ```text
 PUBLIC_STATIC_DATA_BASE_URL=/data
 PUBLIC_R2_DATA_BASE_URL=https://static.weather-trip.example.com
 ```
 
-`PUBLIC_R2_DATA_BASE_URL` 为空时，天气 current 和 forecast 从 `/data/weather/*` 读取。
+`PUBLIC_R2_DATA_BASE_URL` 为空时，天气 current 和 forecast 从 `PUBLIC_STATIC_DATA_BASE_URL/weather/*` 读取；本地默认就是 `/data/weather/*`。
 
 ## Wire 规则
 
@@ -128,6 +128,8 @@ type CityRowWire = [
 ```
 
 城市 JSON 使用短字段名和数组行是为了减小传输体积，并让 gzip / Brotli 更容易压缩。重复值放进 `d` 字典：国家、一级区域和二级区域都用下标引用。城市自己的中英文名只出现一次；天气包不保存城市名、国家名、行政区名和坐标。
+
+`WorldRegionCode` 只表达城市所属的六大洲。Weather Map 的固定地区选项还包含 `east_asia` 和 `southeast_asia`，它们由前端按国家集合匹配城市，并由 `region-outlines.geojson` 提供完整轮廓，不写入国家字典的 `worldRegion` 字段。
 
 国家名称默认来自标准地区显示名；`CN` 在本产品里展示为 `China / 中国`。`CN` 的 C3 详情以中国大陆地级区块为主体，并把香港、澳门和台湾作为 companion C3 区块放入中国详情图；香港、澳门和台湾仍作为独立 C1 地区进入城市字典和全球视图。
 
@@ -245,7 +247,7 @@ interface DailyForecast {
 
 `dates` 使用天气源返回的地点当地自然日，不是 UTC 时间戳。生成、比较和校验日期时使用 date-only 字符串，不能把城市当地日期转成 `toISOString()` 后再截取日期。`defaultDate` 只是 UI 默认日期；跨时区城市可能在窗口头尾有自然日差异，校验时按每个城市自己的 14 条 daily 结果判断。
 
-Open-Meteo Forecast API 支持最多 16 天预报；本项目使用未来 14 天。按 5,000 个以内城市估算，batch size 40 时，每日完整刷新最多约 125 个 HTTP 请求；如果实际城市数是 3,600 个左右，则约 90 个请求。刷新任务要限制并发、实现重试和失败摘要，不把失败半成品发布到 `weather/current.json`。
+Open-Meteo Forecast API 支持最多 16 天预报；本项目使用未来 14 天。按 5,000 个以内城市估算，batch size 40 时，每日完整刷新最多约 125 个 HTTP 请求；按当前 3,841 个城市计算约 97 个请求。刷新任务要限制并发、实现重试和失败摘要，不把失败半成品发布到 `weather/current.json`。
 
 刷新流程：
 
@@ -273,7 +275,7 @@ type RegionGeoFeatureProperties = {
 | 图层 | 文件 | 读取时机 | 匹配方式 |
 | --- | --- | --- | --- |
 | 全球混合边界 | `/data/geo/world.geojson` | 全球、大洲、区域和 C2 国家视图读取 | C1 国家使用 `country:<countryCode>`；C2/C3 国家一级区域使用 `admin1:<countryCode>.<admin1Code>` |
-| 选中地区轮廓 | `/data/geo/region-outlines.geojson` | Weather Map 初始化后读取，用于国家和大区的完整边框与地图定位 | 固定大区/洲使用 `asia`、`europe` 等同名 feature；C2/C3 国家使用 `country:<countryCode>` 完整国家面；国家内子地区使用当前边界包中同一 `regionKey` 的完整 feature |
+| 选中地区轮廓 | `/data/geo/region-outlines.geojson` | Weather Map 初始化后读取，用于国家和大区的完整边框与地图定位 | 固定大区使用 `asia`、`east_asia`、`southeast_asia`、`europe` 等同名 feature；C2/C3 国家使用 `country:<countryCode>` 完整国家面；国家内子地区使用当前边界包中同一 `regionKey` 的完整 feature |
 | C3 国家详情边界 | `/data/geo/countries/<country>.geojson` | 进入 C3 国家或 C3 一级区域时懒加载 | 同时包含 `admin1:<countryCode>.<admin1Code>` 和 `admin2:<countryCode>.<admin1Code>.<admin2Code>` |
 | 城市 | `/data/cities.json` | Weather Map 和 City Finder 共用 | 解码城市字典后生成同一套 region key |
 
@@ -285,29 +287,44 @@ type RegionGeoFeatureProperties = {
 
 ## 文件预算
 
-估算口径是 5,000 个以内城市、14 天预报窗口、国家/一级区域边界，以及覆盖设计要求的 C3 二级区域边界。尺寸指生产 minified JSON / GeoJSON。
+估算口径是 5,000 个以内城市、14 天预报窗口、国家/一级区域边界，以及覆盖设计要求的 C3 二级区域边界。尺寸按当前 3,841 个城市、5 个 C3 国家详情包校准，指生产 minified JSON / GeoJSON；gzip 和 Brotli 为本地压缩估算，线上必须确认实际响应压缩。
 
 | 文件 | 用途 | 何时读取 | 数量 | 原始尺寸 | gzip | Brotli |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
-| `/data/cities.json` | 城市主索引 | Weather Map 和 City Finder 都会读取 | 1 | 0.8-1.4 MiB | 250-500 KiB | 180-380 KiB |
+| `/data/cities.json` | 城市主索引 | Weather Map 和 City Finder 都会读取 | 1 | 0.5-0.8 MiB | 180-300 KiB | 140-240 KiB |
 | `weather/current.json` | 活跃天气入口 | 进入工具页后读取；短缓存，用来发现天气是否更新 | 1 | < 2 KiB | < 1 KiB | < 1 KiB |
-| `weather/forecast-14d/<date>.json` | 14 天预报包 | 读取 current 后加载；City Finder 用它筛选天气，Weather Map 用它按日期和图层着色 | 1 个活跃 forecast | 2.9-4.3 MiB | 820 KiB-1.45 MiB | 650 KiB-1.2 MiB |
-| `/data/geo/world.geojson` | 全球混合边界 | 全球、大洲、区域和 C2 国家视图读取 | 1 | 13.9 MiB | 745 KiB | 512 KiB |
-| `/data/geo/region-outlines.geojson` | 选中地区完整轮廓 | Weather Map 初始化后读取 | 1 | 2.7 MiB | 418 KiB | 147 KiB |
-| `/data/geo/countries/<C3-country>.geojson` | C3 国家详情包 | 进入对应 C3 国家或 C3 一级区域时懒加载 | 当前 5 个 | 1.2-3.2 MiB | 287-881 KiB | 175-516 KiB |
+| `weather/forecast-14d/<date>.json` | 14 天预报包 | 读取 current 后加载；City Finder 用它筛选天气，Weather Map 用它按日期和图层着色 | 1 个活跃 forecast | 1.2-2.0 MiB | 350-700 KiB | 300-600 KiB |
+| `/data/geo/world.geojson` | 全球混合边界 | 全球、大洲、区域和 C2 国家视图读取 | 1 | 10-15 MiB | 700 KiB-1.0 MiB | 500-800 KiB |
+| `/data/geo/region-outlines.geojson` | 选中地区完整轮廓 | Weather Map 初始化后读取 | 1 | 2-3 MiB | 300-450 KiB | 130-250 KiB |
+| `/data/geo/countries/<C3-country>.geojson` | C3 国家详情包 | 进入对应 C3 国家或 C3 一级区域时懒加载 | 当前 5 个：CN、ES、FR、IT、PE | 1-4 MiB | 300-950 KiB | 180-550 KiB |
 
-一个活跃快照约 17 个公开数据文件：Pages 侧 15 个，R2 侧 2 个。R2 如果保留 30 天历史预报包，会额外增加 30 个 `weather/forecast-14d/<date>.json`，但用户默认只读取 `weather/current.json` 指向的一个 forecast 文件。
+一个活跃快照约 10 个公开数据文件：Pages 侧 8 个，R2 侧 2 个。R2 如果保留 30 天历史预报包，会额外增加 30 个 `weather/forecast-14d/<date>.json`，但用户默认只读取 `weather/current.json` 指向的一个 forecast 文件。
 
-City Finder 只需要 `cities.json`、`weather/current.json` 和 `weather/forecast-14d/<date>.json`，压缩后约 1.1-1.9 MiB。Weather Map 全球视图再加 `world.geojson` 和 `region-outlines.geojson`，Brotli 后约增加 0.6 MiB；进入 C3 国家详情时再懒加载一个国家详情包。
+City Finder 只需要 `cities.json`、`weather/current.json` 和 `weather/forecast-14d/<date>.json`，压缩后通常在 0.5-1.0 MiB。Weather Map 全球视图再加 `world.geojson` 和 `region-outlines.geojson`，压缩后通常在 1.5-2.2 MiB，浏览器解压后需要解析十几 MiB JSON / GeoJSON。进入 C3 国家详情时再懒加载一个国家详情包，最重路径通常在 2-3 MiB gzip 内；同一会话如果访问全部 C3 国家详情包，累计下载和内存占用会继续上升。
+
+当前卡顿风险主要来自解压后的主线程工作，而不是压缩传输体积。`world.geojson` 是最大风险点，原始尺寸已经达到十几 MiB，JSON.parse、MapLibre 建 source/layer 和区域着色都会占用主线程。工具页还会在客户端解码城市和 14 天天气快照、构建地区选项和组装地图 payload；低端移动设备上，地图初始化、14 天预热和地区选项构建都可能出现可感知卡顿。
 
 | 文件 | 上限 |
 | --- | ---: |
 | `weather/forecast-14d/<date>.json` | 原始尺寸 < 5 MiB，压缩尺寸 < 1.5 MiB |
 | `cities.json` | 原始尺寸 < 1.5 MiB，压缩尺寸 < 500 KiB |
-| 任一 GeoJSON | gzip 和 Brotli 压缩尺寸 < 1 MiB |
+| `world.geojson` | 原始尺寸目标 < 8 MiB，gzip 和 Brotli 压缩尺寸 < 1 MiB |
+| 任一国家详情 GeoJSON | gzip 和 Brotli 压缩尺寸 < 1 MiB |
 | Pages 单文件硬边界 | 25 MiB |
 
-如果任一 GeoJSON 接近 8 MiB，先降低坐标精度、提高 simplify tolerance 或按国家拆包；如果 `weather/forecast-14d/<date>.json` 接近 5 MiB，先评估字段裁剪、整数化单位和 Web Worker 解析，不直接改成请求时数据库查询。
+`world.geojson` 当前已经超过 8 MiB 原始尺寸目标。优先生成更轻的世界概览边界，降低坐标精度、提高 simplify tolerance，或把一级区域边界按大洲/国家分片；C3 详情继续按国家懒加载。`region-outlines.geojson` 不应作为 Weather Map 全球首屏的硬依赖，只有选择具体地区、需要完整轮廓或地图定位时再读取。如果 `weather/forecast-14d/<date>.json` 接近 5 MiB，先评估字段裁剪、整数化单位、按默认日期拆出 Weather Map 轻包和 Web Worker 解析，不直接改成请求时数据库查询。
+
+## 数据格式选择
+
+`cities.json` 继续使用 compact JSON。城市索引需要名称、国家、行政区和坐标等结构化字段，当前约 0.5 MiB 原始尺寸不构成主要风险；短字段、字典表和 gzip / Brotli 已经能把传输压到几百 KiB。
+
+天气预报适合从 JSON 演进到定长二进制矩阵。天气数据是 `city x date x numeric fields`，字段稳定且多数是数值；可以用城市顺序作为隐式 city index，用日期顺序作为隐式 date index，把温度、降水、湿度、风速、天气码和缺测标记写进 `ArrayBuffer` / TypedArray。温度、降水和风速按 0.1 单位整数化，湿度和天气码用 `Uint8`，缺测用 bitmap 或 sentinel。这样浏览器不需要为 4 万多条日预报创建大量 JS object，解析成本从 `JSON.parse + 解码对象` 变成 `fetch arrayBuffer + DataView/TypedArray 视图`。具体方案见 `docs/specs/43-weather-matrix-performance.md`。
+
+MessagePack、CBOR 和 protobuf 可以减少原始文本尺寸，但在浏览器里仍需要解码成对象或数组；对当前 forecast 这种规则矩阵，收益通常不如自定义定长二进制明显。Parquet、SQLite/WASM 更适合分析或本地数据库场景，不适合作为公开工具页首屏默认格式。
+
+CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时天气格式。手写 CSV 解析必须处理转义、换行、空值、类型转换和列版本；即使用严格 TSV 避开大部分转义，浏览器仍要先把整段文本拆行、拆列、转数字，再组装索引。对天气这种固定字段矩阵，CSV 比 compact JSON 少不了多少传输体积，解析可靠性和 CPU 成本都不如 TypedArray 二进制。
+
+地图边界不适合继续无限扩大 GeoJSON。全球和详情边界优先考虑两条路：小规模时继续简化 GeoJSON 并按地区懒加载；边界复杂度继续增加时改为 vector tiles / PMTiles，让 MapLibre 按视口和缩放级别读取瓦片。TopoJSON 可以减少共享边界的重复坐标，但 MapLibre 不能直接消费 TopoJSON，前端转换仍会产生 CPU 成本；如果地图渲染是主要路径，vector tiles 更贴近最终消费形态。
 
 ## 拆分与缓存
 

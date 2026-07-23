@@ -102,132 +102,163 @@ Web 地图使用 `https://tile.openstreetmap.org/{z}/{x}/{y}.png` 作为 raster 
 
 ## 数据链路
 
+### 图 1：概念边界
+
 ```mermaid
 flowchart TD
-  coverage["覆盖设计<br/>docs/specs/30-weather-coverage-design.md"]
-  rules["覆盖规则<br/>data/input/coverage-rules.yml"]
-  inputFiles["人工/AI input<br/>data/input/*.yml"]
-  rawTourism["旅行目的地 raw<br/>data/raw/tourism-destinations/"]
-  geonames["GeoNames raw<br/>cities / country / admin / alternate names"]
-  tourism["旅游目的地输入<br/>data/generated/tourism-destinations.json"]
-  tourismReport["目的地报告<br/>data/generated/tourism-destination-report.*"]
-  countryProfiles["国家分层配置<br/>data/generated/country-profiles.json"]
-  cities["城市主索引<br/>data/generated/cities.json<br/>apps/web/public/data/cities.json"]
-  cityReport["城市报告<br/>data/generated/city-selection-report.*"]
-  boundaryRaw["边界 raw<br/>Natural Earth / geoBoundaries / DataV"]
-  geojson["GeoJSON 边界<br/>apps/web/public/data/geo/world.geojson<br/>apps/web/public/data/geo/region-outlines.geojson<br/>apps/web/public/data/geo/countries/<country>.geojson"]
-  geoReport["边界报告<br/>data/generated/geo-boundary-report.*"]
-  weatherSource["Open-Meteo Forecast API"]
-  weatherJson["天气包<br/>weather/current.json<br/>weather/forecast-14d/<date>.json"]
-  browser["Browser<br/>公开数据读取"]
+  design["覆盖设计<br/>国家分层 / 城市选择 / 地图着色"]
+  raw["外部来源快照<br/>GeoNames / 旅行目的地 / 边界源 / Open-Meteo"]
+  input["人工输入<br/>coverage / tier / tourism / admin2 / boundary labels"]
+  offline["离线生成<br/>对齐地点、筛选城市、标准化边界、刷新天气"]
+  generated["生成产物与报告<br/>data/generated/*"]
+  publicData["公开数据<br/>cities.json / geo/*.geojson / weather/*"]
+  browser["Browser<br/>本地筛选、排序、地图聚合和展示"]
 
-  coverage --> rules
-  rawTourism --> tourism
-  inputFiles -->|目的地确认 / 映射 override| tourism
-  geonames -->|地点对齐| tourism
-  tourism --> tourismReport
-  rules --> countryProfiles
-  inputFiles -->|覆盖 override| countryProfiles
-  tourism -->|旅游热度| countryProfiles
-  geonames --> countryProfiles
-  countryProfiles --> cities
-  tourism -->|目的地保留 / 映射 / 代表点优先级| cities
-  geonames --> cities
-  cities --> cityReport
-  cities --> geojson
-  boundaryRaw --> geojson
-  geonames --> geojson
-  inputFiles -->|边界补名| geojson
-  geojson --> geoReport
-  cities --> weatherSource
-  weatherSource --> weatherJson
-  cities --> browser
-  geojson --> browser
-  weatherJson --> browser
+  design --> input
+  raw --> offline
+  input --> offline
+  offline --> generated
+  generated --> publicData
+  publicData --> browser
 ```
 
-具体链路：
+上图只表达概念边界：外部来源保持 raw 语义，人工判断进入 `data/input/*.yml`，离线生成产物进入 `data/generated/*` 和公开数据目录，浏览器只读取公开 JSON / GeoJSON。脚本级生成流程按关键数据拆开，7 个生成脚本都在图里出现，但不要求一脚本一张图。
 
-```text
-data/input/coverage-rules.yml
-data/input/admin2-support-overrides.yml
-GeoNames raw
-  -> data/generated/country-admin-stats.json
-  -> data/generated/country-tier-candidate-report.json / .md
+### 图 2：旅行目的地
 
-data/generated/country-tier-candidate-report.md
-人工复核
-  -> data/input/country-tier-countries.yml
+旅行目的地生成包含 raw 抽取和静态目的地生成。人工复核 raw 目的地后，只写回 `data/input/tourism-destination-overrides.yml`。
 
-data/input/country-tier-countries.yml
-data/input/coverage-rules.yml
-data/input/admin2-support-overrides.yml
-GeoNames raw
-data/generated/tourism-destinations.json
-  -> data/generated/country-profiles.json
-  -> data/generated/country-profile-report.json / .md
+```mermaid
+flowchart TB
+  externalTourism["旅行目的地外部来源"]
+  extractTourism["tourism:raw<br/>extract-tourism-destinations.ts"]
+  rawTourism["data/raw/tourism-destinations/"]
+  tourismReview["人工复核 raw 目的地"]
+  tourismInput["data/input/tourism-destination-overrides.yml"]
+  rawGeonames["data/raw/geonames/"]
+  generateTourism["static:tourism<br/>generate-tourism-destinations.ts"]
+  tourismData["data/generated/tourism-destinations.json<br/>后续分档和城市选择输入"]
+  tourismReport["data/generated/tourism-destination-report.*<br/>复核匹配、歧义和未命中"]
 
-data/raw/tourism-destinations/*.json
-data/input/tourism-destination-overrides.yml
-GeoNames raw
-  -> data/generated/tourism-destinations.json
-  -> data/generated/tourism-destination-report.json / .md
+  externalTourism -->|抓取 / 抽取| extractTourism --> rawTourism
+  rawTourism -->|人工确认、合并、映射| tourismReview --> tourismInput
+  rawTourism -->|候选目的地来源| generateTourism
+  tourismInput -->|确认结果和保留权重| generateTourism
+  rawGeonames -->|地点匹配、坐标和行政归属| generateTourism
+  generateTourism --> tourismData
+  generateTourism --> tourismReport
+```
 
-data/generated/country-profiles.json
-data/generated/tourism-destinations.json
-GeoNames raw
-  -> data/generated/cities.json
-  -> data/generated/city-selection-report.json / .md
-  -> apps/web/public/data/cities.json
+### 图 3：国家数据
 
-Natural Earth / geoBoundaries / DataV-高德 raw
-data/generated/country-profiles.json
-data/generated/cities.json
-data/input/geo-boundary-sources.yml
-data/input/boundary-label-overrides.yml
-GeoNames admin raw
-  -> apps/web/public/data/geo/world.geojson
-  -> apps/web/public/data/geo/region-outlines.geojson
-  -> apps/web/public/data/geo/countries/<C3-country>.geojson
-  -> data/generated/geo-boundary-report.json / .md
+国家数据的最终生成产物是 `data/generated/country-profiles.json`。候选报告只用于人工复核，人工判断写回 `data/input/country-tier-countries.yml` 后，再生成 profiles；人工不直接修改候选报告或 profiles。
 
-Open-Meteo
-  -> apps/web/public/data/weather/current.json
-  -> apps/web/public/data/weather/forecast-14d/local.json
-  -> R2 weather/current.json
-  -> R2 weather/forecast-14d/<date>.json
+```mermaid
+flowchart TB
+  coverageRules["data/input/coverage-rules.yml"]
+  admin2Support["data/input/admin2-support-overrides.yml"]
+  rawGeonames["data/raw/geonames/"]
+  tourismGenerated["data/generated/tourism-destinations.json"]
+  generateCoverageCandidates["static:country-tier-candidates<br/>generate-country-tier-candidates.ts"]
+  countryAdminStats["data/generated/country-admin-stats.json<br/>国家行政区和候选城市统计"]
+  coverageCandidateReport["data/generated/country-tier-candidate-report.*<br/>复核升档收益和缺口"]
+  tierReview["人工复核候选报告"]
+  coverageTierInput["data/input/country-tier-countries.yml"]
+  generateProfiles["static:profiles<br/>generate-country-profiles.ts"]
+  profilesData["data/generated/country-profiles.json<br/>国家 C1/C2/C3 和覆盖层级"]
+  profilesReport["data/generated/country-profile-report.*<br/>复盘最终分档和代表点数量"]
+
+  coverageRules -->|候选阈值和预算| generateCoverageCandidates
+  admin2Support -->|可用 admin2 口径| generateCoverageCandidates
+  rawGeonames -->|国家、行政区和城市统计| generateCoverageCandidates
+  tourismGenerated -->|旅行热度| generateCoverageCandidates
+  generateCoverageCandidates --> countryAdminStats
+  generateCoverageCandidates --> coverageCandidateReport --> tierReview --> coverageTierInput
+  coverageTierInput -->|最终 C1/C2/C3 决定| generateProfiles
+  coverageRules -->|人口兜底和覆盖规则| generateProfiles
+  admin2Support -->|可用 admin2 口径| generateProfiles
+  rawGeonames -->|国家和行政区统计| generateProfiles
+  tourismGenerated -->|旅行热度| generateProfiles
+  generateProfiles --> profilesData
+  generateProfiles --> profilesReport
+```
+
+### 图 4：城市主索引
+
+城市主索引是前端城市、marker、搜索和天气刷新点的真源；公开城市包由同一次生成复制到 Web public 目录。
+
+```mermaid
+flowchart TB
+  profilesGenerated["data/generated/country-profiles.json"]
+  tourismGenerated["data/generated/tourism-destinations.json"]
+  admin2Support["data/input/admin2-support-overrides.yml"]
+  rawGeonames["data/raw/geonames/"]
+  generateCities["static:cities<br/>generate-static-cities.ts"]
+  citiesData["data/generated/cities.json<br/>源码产物，供复核和复制"]
+  cityReport["data/generated/city-selection-report.*<br/>复核覆盖缺口、弱代表点和旅游种子未命中"]
+  publicCities["apps/web/public/data/cities.json<br/>前端公开城市包"]
+
+  profilesGenerated -->|覆盖深度和人口兜底| generateCities
+  tourismGenerated -->|目的地保留和代表点优先级| generateCities
+  admin2Support -->|过滤不稳定二级区域| generateCities
+  rawGeonames -->|城市候选、坐标和名称| generateCities
+  generateCities --> citiesData --> publicCities
+  generateCities --> cityReport
+```
+
+### 图 5：Geo 区块数据
+
+`static:geo` 使用 profiles、城市主索引、边界 raw 和边界 input 生成前端可 hover、着色和定位的 GeoJSON 区块，并用报告记录匹配、缺口和体积。
+
+```mermaid
+flowchart TB
+  profilesGenerated["data/generated/country-profiles.json"]
+  citiesGenerated["data/generated/cities.json"]
+  rawBoundary["data/raw/geo-boundaries/"]
+  rawGeonames["data/raw/geonames/"]
+  geoSources["data/input/geo-boundary-sources.yml"]
+  boundaryLabels["data/input/boundary-label-overrides.yml"]
+  admin2Support["data/input/admin2-support-overrides.yml"]
+  generateGeo["static:geo<br/>generate-static-geo.ts"]
+  publicGeo["apps/web/public/data/geo/*<br/>前端区块、轮廓和 C3 详情包"]
+  geoReport["data/generated/geo-boundary-report.*<br/>复核匹配率、缺口、geometry 和体积"]
+
+  profilesGenerated -->|C2/C3 详情层级| generateGeo
+  citiesGenerated -->|regionKey 期望和点位校验| generateGeo
+  rawBoundary -->|geometry 来源| generateGeo
+  rawGeonames -->|admin 对齐| generateGeo
+  geoSources -->|详情源和合并口径| generateGeo
+  admin2Support -->|过滤不稳定二级区域| generateGeo
+  boundaryLabels -->|boundary-only 展示名| generateGeo
+  generateGeo --> publicGeo
+  generateGeo --> geoReport
+```
+
+### 图 6：天气刷新
+
+`weather:refresh` 只依赖生成后的城市主索引和天气源。本地默认写入 `apps/web/public/data/weather/*`，CI 可通过参数生成 R2 上传目录。
+
+```mermaid
+flowchart TB
+  citiesGenerated["data/generated/cities.json"]
+  openMeteo["Open-Meteo"]
+  generateWeather["weather:refresh<br/>generate-static-weather.ts"]
+  localWeather["apps/web/public/data/weather/*<br/>本地开发天气包"]
+  r2Weather["R2 weather/*<br/>生产活跃天气入口和 forecast"]
+
+  citiesGenerated -->|cityId 和经纬度| generateWeather
+  openMeteo --> generateWeather
+  generateWeather --> localWeather
+  generateWeather --> r2Weather
 ```
 
 `data/generated/tourism-destinations.json` 和 `data/generated/country-profiles.json` 都是生成产物，不手工维护。覆盖规则、raw 旅行清单和人工输入进入固定生成链路后，从 GeoNames raw 到最终城市、边界和天气 JSON 都可重复运行。
 
 边界和天气是两条数据流。GeoJSON 区块即使没有天气样本也必须保留，前端按无数据样式展示；天气缺失只影响颜色和 tooltip 的数据内容，不决定区块是否存在。底图和天气瓦片不生成本项目的 `regionKey`，也不能反向影响区域聚合。
 
-地图边界生成按前端会加载的视图校验输出。全球视图读取 `world.geojson`，其中 C1 城市聚合需要 `country:*`，C2/C3 城市聚合需要 `admin1:*`；选中地区高亮和地图定位读取 `region-outlines.geojson`，需要固定大区/洲和 C2/C3 国家这些可选项的完整轮廓；C3 国家详情读取 `countries/<country>.geojson`，需要对应 `admin2:*` 和人工保留的 `boundary:*`。`scripts/generate-static-geo.ts` 会从 `data/generated/cities.json` 推导当前前端会产生的 `regionKey`，再检查这些 key 是否存在于对应 GeoJSON 包，并确认每个可见 key 的 geometry 至少覆盖一个属于自己的城市点；同时 C2/C3 国家必须完整匹配 GeoNames admin1/admin2 目标集合。缺失或点位不覆盖时生成任务失败退出，不能只靠人工看报告发现。
+Geo 区块数据生成按前端会加载的视图校验输出。全球视图读取 `world.geojson`，其中 C1 城市聚合需要 `country:*`，C2/C3 城市聚合需要 `admin1:*`；选中地区高亮和地图定位读取 `region-outlines.geojson`，需要六大洲、东亚、东南亚和 C2/C3 国家这些可选项的完整轮廓；C3 国家详情读取 `countries/<country>.geojson`，需要对应 `admin2:*` 和人工保留的 `boundary:*`。`scripts/generate-static-geo.ts` 会从 `data/generated/cities.json` 推导当前前端会产生的 `regionKey`，再检查这些 key 是否存在于对应 GeoJSON 包，并确认每个可见 key 的 geometry 至少覆盖一个属于自己的城市点；同时 C2/C3 国家必须完整匹配 GeoNames admin1/admin2 目标集合。缺失或点位不覆盖时生成任务失败退出，不能只靠人工看报告发现。
 
-## 生成产物与报告
-
-| 文件 | 类型 | 维护方式 | 用途 |
-| --- | --- | --- | --- |
-| `data/input/coverage-rules.yml` | 输入规则 | 人工维护 | 国家分档阈值、预算、人口兜底和详细覆盖规则 |
-| `data/raw/tourism-destinations/` | 来源 raw | 自动抽取，保留来源原样 | Wikivoyage、UN Tourism 和 UNESCO 等来源里的原始旅行目的地清单，只表达目的地和来源 |
-| `data/input/tourism-destination-overrides.yml` | 输入 | 人工或 AI 辅助维护 | 人工确认的目的地、GeoNames 映射、处理模式和保留权重 |
-| `data/generated/tourism-destinations.json` | 生成产物 | 生成任务输出，不手工改 | 混合 raw、人工 override 和 GeoNames 后的旅游目的地输入 |
-| `data/generated/tourism-destination-report.json` / `.md` | 生成报告 | 生成任务输出 | raw 来源数量、名称匹配、歧义、未匹配和人工 override 对齐结果 |
-| `data/input/country-tier-countries.yml` | 输入 | 人工复核候选报告后维护 | 国家层级人工复核名单；`countryTier: C1` 表示候选已复核但不升档，`reason` 不进入生成产物 |
-| `data/input/admin2-support-overrides.yml` | 输入 | 人工复核 GeoNames admin2 口径后维护 | 过滤语义过细或不稳定的二级区域 |
-| `data/input/geo-boundary-sources.yml` | 输入 | 人工复核边界报告后维护 | 国家详情层级和 Natural Earth map unit 合并口径 |
-| `data/input/boundary-label-overrides.yml` | 输入 | 人工复核边界报告后维护 | boundary-only 区块展示名补充 |
-| `data/generated/country-admin-stats.json` | 生成参考 | 生成任务输出 | 每个国家 admin1/admin2 数量、候选城市覆盖、空间跨度和旅游种子分数 |
-| `data/generated/country-profiles.json` | 生成产物 | 生成任务输出，不手工改 | 国家 C1/C2/C3、详细区域层级和人口兜底 |
-| `data/generated/country-tier-candidate-report.json` / `.md` | 生成报告 | `scripts/generate-country-tier-candidates.ts` 输出 | C2/C3 候选国家审阅表、候选优先级、升档城市增量、代表点重合和空间/旅行/行政指标 |
-| `data/generated/country-profile-report.json` / `.md` | 生成报告 | 生成任务输出 | 国家分档结果、C2/C3 最终名单和代表点数量复盘 |
-| `data/generated/cities.json` | 生成产物 | 生成任务输出，不手工改 | 城市列表源码产物，供复核和 Pages 构建复制 |
-| `data/generated/city-selection-report.json` / `.md` | 生成报告 | 生成任务输出 | 覆盖缺口、弱代表点、旅游种子未命中和边界未匹配报告 |
-| `data/generated/geo-boundary-report.json` / `.md` | 生成报告 | 生成任务输出 | 边界来源、匹配率、未匹配 `regionKey`、geometry 校验、简化前后尺寸和 feature 数 |
-
-`country-tier-candidate-report.md` 由 `scripts/generate-country-tier-candidates.ts` 生成，只读取 GeoNames 国家/行政区/城市、生成后的旅游目的地输入、覆盖规则和 admin2 输入。表里按 C3 候选优先级排序，列出每个候选国家的国家代码、中文名、C2/C3 候选命中、C1/C2/C3 预计城市点数、升 C2/C3 的新增点数、代表点重合数、面积、经纬跨度、海拔跨度、旅行热度、空间分数、一级/二级行政区数量和二级区域城市覆盖率，不输出人工理由；命中 C3 的国家也会自动命中 C2，保证候选层级从粗到细单调包含。人工读这个表后，把最终决定写回 `data/input/country-tier-countries.yml`，再运行 `scripts/generate-country-profiles.ts` 生成 profiles。`countryTier: C1` 表示候选已复核但不升档；`reason` 只作为人工复核备注，生成脚本读取覆盖档位时会丢弃它；`country-profile-report.md` 只复盘最终选中的 C2/C3 国家和对应指标。
-
-报告需要能解释国家分档、城市数量、C2/C3 代表点覆盖、中国地级行政区和 companion C3 口径、小目的地处理结果、`regionKey` 边界匹配、弱代表点和名称异常。需要人工判断时，只补充 `data/input/*.yml` 或覆盖规则，不直接修改生成产物。
+需要人工判断时，只补充 `data/input/*.yml` 或覆盖规则，不直接修改生成产物。
 
 ## 运行边界
 
