@@ -11,6 +11,10 @@
     "./weather-code": {
       "types": "./dist/weather-code.d.ts",
       "default": "./dist/weather-code.js"
+    },
+    "./static-data": {
+      "types": "./dist/static-data.d.ts",
+      "default": "./dist/static-data.js"
     }
   },
   "scripts": {

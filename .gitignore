@@ -12,3 +12,5 @@ coverage/
 *.tsbuildinfo
 npm-debug.log*
 .DS_Store
+
+apps/web/public/data/weather/

@@ -6,12 +6,11 @@
   "scripts": {
     "dev": "astro dev --host ${WEB_HOST:-127.0.0.1} --port ${WEB_PORT:-3000}",
     "build": "astro build",
-    "start": "node ./dist/server/entry.mjs",
+    "start": "astro preview --host ${WEB_HOST:-127.0.0.1} --port ${WEB_PORT:-3000}",
     "typecheck": "astro check && tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "@astrojs/node": "^11.0.2",
     "@astrojs/react": "^6.0.1",
     "@radix-ui/react-slider": "^1.4.4",
     "astro": "^7.1.2",
@@ -19,8 +18,7 @@
     "maplibre-gl": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "weather-core": "*",
-    "weather-db": "*"
+    "weather-core": "*"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

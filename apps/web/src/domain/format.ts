@@ -1,20 +1,16 @@
 /**
  * 文件说明: 提供天气、温度、海拔和日期等前端格式化方法。
- * 对应文档: docs/product-design.md
+ * 对应文档: docs/specs/10-product-design.md
  */
 import type { City, WeatherType } from 'weather-core/types';
+import { countryLabel } from './country-labels';
 import { getWeatherTypeLabel } from './weather';
 
 export type DisplayLocale = 'zh' | 'en';
 export type TemperatureUnit = 'c' | 'f';
 
-const countryDisplayNames: Record<DisplayLocale, Intl.DisplayNames> = {
-  zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
-  en: new Intl.DisplayNames(['en-US'], { type: 'region' })
-};
-
 function formatCountry(city: City, locale: DisplayLocale): string {
-  return city.countryCode ? countryDisplayNames[locale].of(city.countryCode) ?? city.country : city.country;
+  return city.countryCode ? countryLabel(city.countryCode, locale) : city.country;
 }
 
 export function formatCityName(city: City, locale: DisplayLocale = 'zh'): string {

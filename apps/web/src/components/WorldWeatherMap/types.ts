@@ -14,6 +14,7 @@ export type MapPoint = {
   longitude: number;
   latitude: number;
   markerText: string;
+  markerIcon: string;
   color: string;
   opacity: number;
   size: number;
@@ -31,7 +32,6 @@ export type WorldWeatherMapProps = {
   dataRegion: RegionKey | null;
   temperatureUnit: TemperatureUnit;
   activeRegion: RegionKey;
-  regionLayer: MapRegionLayer;
   selectedCityId: string | null;
   onSelectCity: (cityId: string) => void;
   statusLabel?: string | null;
@@ -64,10 +64,12 @@ export type BoundsPoint = [number, number];
 export type RegionGeojsonAsset = {
   key: string;
   url: string;
+  layer: MapRegionLayer;
 };
 
 export type MarkerMetric = {
   markerText: string;
+  markerIcon: string;
   color: string;
   sortValue: number;
 };
@@ -86,6 +88,7 @@ export type MapPointGeoJson = {
       cityId: string;
       label: string;
       markerText: string;
+      markerIcon: string;
       color: string;
       opacity: number;
       size: number;

@@ -1,11 +1,11 @@
 /**
- * 文件说明: 并发启动所有 app 的构建产物入口，用于本地 dist 验证和生产进程拓扑参考。
- * 对应文档: docs/runtime.md
+ * 文件说明: 启动 Web 静态构建产物预览，用于本地 dist 验证。
+ * 对应文档: docs/specs/51-runtime.md
  */
 import { spawn } from 'node:child_process';
 import { buildAppEnv } from './env.mjs';
 
-const apps = ['web', 'worker'];
+const apps = ['web'];
 
 function startApp(app) {
   const child = spawn('npm', ['run', 'start', '--workspace', app], {

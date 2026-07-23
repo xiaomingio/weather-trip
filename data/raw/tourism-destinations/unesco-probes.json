@@ -1,0 +1,64 @@
+[
+  {
+    "url": "https://whc.unesco.org/en/list/xml/",
+    "transport": "fetch",
+    "ok": false,
+    "status": 403,
+    "statusText": "Forbidden",
+    "contentType": "text/html; charset=UTF-8",
+    "byteLength": 5590,
+    "blockedByCloudflare": true,
+    "bodyPreview": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"content-security-policy\" content=\"default-src &#39;none&#39;; script-src &#39;nonce-n1KWgRhD4fVQrkDG9iTgzi&#39; &#39;unsafe-eval&#39; https://challenges.cloudflare.com; script-src-attr &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src &#39;self&#39; https://challenges.cloudflare.com; connect-src &#39;self&#39; https://challenges.cloudflare.com; frame-src &#39;self&#39; https://challenges.cloudflare.com blob:; child-src &#39;self&#39; https://challenges.cloudflare."
+  },
+  {
+    "url": "https://whc.unesco.org/en/list/xml/",
+    "transport": "playwright",
+    "ok": true,
+    "status": 200,
+    "statusText": "",
+    "contentType": "text/xml;charset=UTF-8",
+    "byteLength": 2443521,
+    "blockedByCloudflare": false,
+    "bodyPreview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<query columns=\"216\" rows=\"1248\"><row><http_url>https://whc.unesco.org/en/list/1133</http_url><dossier>1133quinquies</dossier><id_number>1133</id_number><unique_number>2513</unique_number><image_url>https://whc.unesco.org/uploads/sites/site_1133.jpg</image_url><iso_code>al,at,ba,be,bg,ch,cz,de,es,fr,hr,it,mk,pl,ro,si,sk,ua</iso_code><justification></justification><geolocations><poi><latitude>38.1320000000</latitude><longitude>15.9610000000</longitude><iso2>it</iso2></poi><poi><latitude>39.8970000000</latitude><longitude>16.1970000000</longitude><iso2>it</iso2></poi><poi><latitude>39.9080000000</latitude><longitude>16.1050000000</longitude><iso2>it</iso2></poi><poi><latitude>41.1100000000</latitude><longitude>-3.4990000000</longitude><iso2>es</iso2></",
+    "pageTitle": "",
+    "finalUrl": "https://whc.unesco.org/en/list/xml/",
+    "savedAs": "unesco-world-heritage-list.xml",
+    "parsedCount": 1248
+  },
+  {
+    "url": "https://whc.unesco.org/en/list/xls/",
+    "transport": "fetch",
+    "ok": false,
+    "status": 403,
+    "statusText": "Forbidden",
+    "contentType": "text/html; charset=UTF-8",
+    "byteLength": 5590,
+    "blockedByCloudflare": true,
+    "bodyPreview": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"robots\" content=\"noindex,nofollow\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"content-security-policy\" content=\"default-src &#39;none&#39;; script-src &#39;nonce-KlW62bmSrTiWDJMsKj2fzT&#39; &#39;unsafe-eval&#39; https://challenges.cloudflare.com; script-src-attr &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src &#39;self&#39; https://challenges.cloudflare.com; connect-src &#39;self&#39; https://challenges.cloudflare.com; frame-src &#39;self&#39; https://challenges.cloudflare.com blob:; child-src &#39;self&#39; https://challenges.cloudflare."
+  },
+  {
+    "url": "https://whc.unesco.org/en/list/xls/",
+    "transport": "playwright",
+    "ok": false,
+    "status": 0,
+    "statusText": "",
+    "contentType": null,
+    "byteLength": 0,
+    "blockedByCloudflare": false,
+    "finalUrl": "about:blank",
+    "pageTitle": "",
+    "error": "page.goto: Download is starting\nCall log:\n\u001b[2m  - navigating to \"https://whc.unesco.org/en/list/xls/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "url": "https://whc.unesco.org/en/list/xlsx/",
+    "transport": "fetch",
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "contentType": "application/vnd.openxmlformats;charset=UTF-8",
+    "byteLength": 3003985,
+    "blockedByCloudflare": false,
+    "bodyPreview": "PK\u0003\u0004\u0014\u0000\u0006\u0000\b\u0000\u0000\u0000!\u0000�\u000fh8\u0001\u0000\u0000\u0002\u0005\u0000\u0000\u0013\u0000\b\u0002[Content_Types].xml �\u0004\u0002(�\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000�T�N�0\u0010�#�\u000f��(q�\u0010jʁ���K\u0002>`�7�UǶ�\u000b���\u0005�PiA�\u0012+���d���ɼw�\u000b&���j�\u001a�\u0002}\u0013���Z=>\\�G� \u0006o�\u0005��Z ������a\u0011�\n��T��9\u001ekMM�=P\u0015\"z�iC��5Mu�f\u0006S�\u0007�ѡn�g�\\�&�3l��qq>��K%\t\u001d��tY8p�\nbt�\u0001\u0016��śo,�;C%���:\u001biOd(��a�����V�I�`q\u0007�o�\u0017\u0019z��kH��\u0010f�z�\u0015*C��\u0006Mh�",
+    "savedAs": "unesco-world-heritage-list.xlsx"
+  }
+]

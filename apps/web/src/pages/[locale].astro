@@ -1,9 +1,10 @@
 ---
 /**
  * 文件说明: 渲染中英文 Landing 全屏 Hero 首页，含天气图切换、城市示例与工具 Tab 入口。
- * 对应文档: docs/product-design.md
+ * 对应文档: docs/specs/10-product-design.md
  */
-import { createWeatherDatabase, readWeatherSnapshot } from 'weather-db';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import Analytics from '@/components/Analytics.astro';
 import SiteNav from '@/components/SiteNav.astro';
 import SitePreferences from '@/components/SitePreferences.astro';
@@ -31,28 +32,25 @@ type LandingStats = {
 
 const fallbackStats: LandingStats = {
   countryCount: 200,
-  cityCount: 2000,
+  cityCount: 3500,
   forecastDayCount: 14
 };
 
 async function readLandingStats(): Promise<LandingStats> {
-  let db;
-
   try {
-    db = createWeatherDatabase();
-    const snapshot = await readWeatherSnapshot(db);
+    const report = JSON.parse(
+      await readFile(path.resolve(process.cwd(), '..', '..', 'data', 'generated', 'city-selection-report.json'), 'utf8')
+    ) as { cityCount: number; byCountry: unknown[] };
     return {
-      countryCount: new Set(snapshot.cities.map((city) => city.countryCode ?? city.country)).size,
-      cityCount: snapshot.cities.length,
-      forecastDayCount: Math.min(14, snapshot.availableDates.length)
+      countryCount: report.byCountry.length,
+      cityCount: report.cityCount,
+      forecastDayCount: 14
     };
   } catch (error) {
     console.warn(
       `Landing stats fell back to static coverage labels: ${error instanceof Error ? error.message : String(error)}`
     );
     return fallbackStats;
-  } finally {
-    await db?.close();
   }
 }
 
@@ -66,7 +64,7 @@ const otherLocale: DisplayLocale = locale === 'zh' ? 'en' : 'zh';
 
 const { countryCount, cityCount, forecastDayCount } = await readLandingStats();
 
-const citiesLabel = cityCount >= 2000 ? '2000+' : String(cityCount);
+const citiesLabel = cityCount >= 3500 ? '3500+' : String(cityCount);
 const regionsLabel = countryCount >= 200 ? '200+' : String(countryCount);
 
 type SampleWeather = 'sun' | 'cloud' | 'drizzle' | 'snow';
@@ -219,15 +217,12 @@ const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
 const seoPage = getPublicPage(locale, 'landing');
 const alternateLinks = getAlternateLinks('landing');
 const sunnyAtlas = {
-  png: '/landing/climate-atlas-sunny.png',
   webp: '/landing/climate-atlas-sunny.webp'
 };
 const rainAtlas = {
-  png: '/landing/climate-atlas-rain.png',
   webp: '/landing/climate-atlas-rain.webp'
 };
 const snowAtlas = {
-  png: '/landing/climate-atlas-snow.png',
   webp: '/landing/climate-atlas-snow.webp'
 };
 ---
@@ -390,9 +385,8 @@ const snowAtlas = {
         <figure class="hero-art" data-weather-atlas>
           <div class="weather-stack">
             <picture class="weather-layer weather-layer-base">
-              <source srcset={sunnyAtlas.webp} type="image/webp" />
               <img
-                src={sunnyAtlas.png}
+                src={sunnyAtlas.webp}
                 width="1248"
                 height="832"
                 alt={copy.artAlt}
@@ -401,9 +395,8 @@ const snowAtlas = {
               />
             </picture>
             <picture class="weather-layer weather-layer-rain" data-weather-layer="rain">
-              <source data-srcset={rainAtlas.webp} type="image/webp" />
               <img
-                data-src={rainAtlas.png}
+                data-src={rainAtlas.webp}
                 width="1248"
                 height="832"
                 alt=""
@@ -413,9 +406,8 @@ const snowAtlas = {
               />
             </picture>
             <picture class="weather-layer weather-layer-snow" data-weather-layer="snow">
-              <source data-srcset={snowAtlas.webp} type="image/webp" />
               <img
-                data-src={snowAtlas.png}
+                data-src={snowAtlas.webp}
                 width="1248"
                 height="832"
                 alt=""

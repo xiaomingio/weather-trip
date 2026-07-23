@@ -1,0 +1,13 @@
+# 地图边界来源补充配置。脚本优先用 Natural Earth 的 GeoNames id 和城市点校验；这里仅记录需要人工维护的边界源口径。
+
+countryDetailSources:
+  - countryCode: IT
+    admin2SourceLevel: ADM3
+
+naturalEarthCountryMapUnits:
+  - countryCode: SO
+    sourceNames:
+      - Somalia
+      - Puntland
+      - Somaliland
+    reason: Natural Earth 把 Somaliland 单独拆成非 ISO_A2=SO 的 map unit，全球 C1 索马里需要合并显示。

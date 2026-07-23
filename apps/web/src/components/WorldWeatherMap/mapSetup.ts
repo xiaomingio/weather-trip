@@ -4,10 +4,12 @@
  */
 
 import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl';
+import { buildWeatherTypeMapIconDataUrl, weatherTypeMapIconEntries } from '@/components/weather-icons';
 import type { MapPointGeoJson } from './types';
 
 export const pointSourceId = 'weather-points';
 export const pointCircleLayerId = 'weather-point-circle';
+export const pointIconLayerId = 'weather-point-icon';
 export const pointLabelLayerId = 'weather-point-label';
 export const defaultWorldCenter: [number, number] = [18, 23];
 export const defaultWorldZoom = 1.35;
@@ -85,6 +87,26 @@ export function createWorldMap(container: HTMLElement): MapLibreMap {
   return map;
 }
 
+function loadWeatherPointImage(source: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const image = new Image(24, 24);
+    image.decoding = 'async';
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = source;
+  });
+}
+
+export async function ensureWeatherPointImages(map: MapLibreMap): Promise<void> {
+  await Promise.all(
+    weatherTypeMapIconEntries.map(async ([type, imageId]) => {
+      if (map.hasImage(imageId)) return;
+      const image = await loadWeatherPointImage(buildWeatherTypeMapIconDataUrl(type));
+      if (image && !map.hasImage(imageId)) map.addImage(imageId, image, { pixelRatio: 1 });
+    })
+  );
+}
+
 export function addPointLayers(map: MapLibreMap): void {
   map.addSource(pointSourceId, {
     type: 'geojson',
@@ -107,9 +129,26 @@ export function addPointLayers(map: MapLibreMap): void {
     }
   });
   map.addLayer({
+    id: pointIconLayerId,
+    type: 'symbol',
+    source: pointSourceId,
+    filter: ['!=', ['get', 'markerIcon'], ''],
+    layout: {
+      'icon-allow-overlap': true,
+      'icon-image': ['get', 'markerIcon'],
+      'icon-ignore-placement': true,
+      'icon-size': ['/', ['to-number', ['get', 'size'], 28], 44],
+      'symbol-sort-key': ['to-number', ['get', 'sortKey'], 0]
+    },
+    paint: {
+      'icon-opacity': ['case', ['boolean', ['get', 'isZero'], false], 0.72, 1]
+    }
+  });
+  map.addLayer({
     id: pointLabelLayerId,
     type: 'symbol',
     source: pointSourceId,
+    filter: ['!=', ['get', 'markerText'], ''],
     layout: {
       'text-allow-overlap': true,
       'text-field': ['get', 'markerText'],

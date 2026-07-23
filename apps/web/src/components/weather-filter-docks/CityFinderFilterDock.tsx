@@ -5,25 +5,16 @@
 'use client';
 
 import * as Slider from '@radix-ui/react-slider';
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import {
   CalendarDays,
-  Cloud,
-  CloudDrizzle,
-  CloudFog,
-  CloudLightning,
-  CloudRain,
-  CloudSnow,
-  CloudSun,
-  Cloudy,
   Droplets,
   Mountain,
-  Snowflake,
-  Sun,
   ThermometerSun,
   Wind
 } from 'lucide-react';
 import type { WeatherType } from 'weather-core/types';
+import { WeatherTypeIcon } from '@/components/WeatherTypeIcon';
 import { formatCompactTemperatureRange } from '@/domain/format';
 import {
   allWeatherTypes,
@@ -45,19 +36,6 @@ import { formatCompactRange } from './filterFormat';
 import { PresetButton } from './PresetButton';
 import { RegionFields } from './RegionFields';
 import type { CityFinderFilterDockProps, FilterKey, RangePreset, WeatherTypePreset } from './types';
-
-const weatherTypeIcons: Record<WeatherType, ReactNode> = {
-  sunny: <Sun size={17} />,
-  partly_cloudy: <CloudSun size={17} />,
-  cloudy: <Cloud size={17} />,
-  overcast: <Cloudy size={17} />,
-  fog: <CloudFog size={17} />,
-  light_rain: <CloudDrizzle size={17} />,
-  rain: <CloudRain size={17} />,
-  thunderstorm: <CloudLightning size={17} />,
-  light_snow: <Snowflake size={17} />,
-  snow: <CloudSnow size={17} />
-};
 
 const temperaturePresets: RangePreset[] = [
   { id: 'cold', labels: { zh: '偏冷', en: 'Cold' }, values: [-10, 10] },
@@ -215,7 +193,7 @@ export function CityFinderFilterDock({
         activeKey={activeKey}
         label={copy.weather}
         value={weatherValue}
-        icon={<CloudSun size={15} />}
+        icon={<WeatherTypeIcon type="partly_cloudy" size={15} />}
         onOpen={setActiveKey}
         onClose={closePanel}
       >
@@ -249,7 +227,7 @@ export function CityFinderFilterDock({
               disabled={!weatherFilter.useWeather}
               onClick={() => toggleWeatherType(type)}
             >
-              {weatherTypeIcons[type]}
+              <WeatherTypeIcon type={type} size={17} />
             </button>
           ))}
         </div>
@@ -350,7 +328,7 @@ export function CityFinderFilterDock({
         activeKey={activeKey}
         label={copy.precipitation}
         value={precipitationValue}
-        icon={<CloudRain size={15} />}
+        icon={<WeatherTypeIcon type="rain" size={15} />}
         onOpen={setActiveKey}
         onClose={closePanel}
       >

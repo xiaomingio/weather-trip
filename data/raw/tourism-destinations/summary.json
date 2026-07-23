@@ -1,0 +1,77 @@
+{
+  "generatedAt": "2026-07-23T11:44:37.528Z",
+  "outputDir": "data/raw/tourism-destinations",
+  "sources": [
+    {
+      "source": "Wikivoyage quality city categories",
+      "url": "https://en.wikivoyage.org/w/api.php?action=query&list=categorymembers",
+      "extractable": "yes",
+      "count": 820,
+      "fields": [
+        "pageId",
+        "title",
+        "sourceCategories",
+        "sourceUrl"
+      ],
+      "risks": [
+        "Wikivoyage category membership is community-maintained and can change without release versioning."
+      ],
+      "rawFiles": [
+        "data/raw/tourism-destinations/wikivoyage-categorymembers.json",
+        "data/raw/tourism-destinations/wikivoyage-destinations.json"
+      ]
+    },
+    {
+      "source": "UN Tourism Best Tourism Villages",
+      "url": "https://tourism-villages.unwto.org/en/villages/",
+      "extractable": "yes",
+      "count": 237,
+      "fields": [
+        "id",
+        "title",
+        "address",
+        "country",
+        "region",
+        "years",
+        "latitude",
+        "longitude",
+        "detailUrl",
+        "imageUrl"
+      ],
+      "risks": [
+        "The machine-readable list is embedded in a WordPress map widget, so template/plugin changes can break extraction."
+      ],
+      "rawFiles": [
+        "data/raw/tourism-destinations/un-tourism-villages-page.json",
+        "data/raw/tourism-destinations/un-tourism-villages-map.json",
+        "data/raw/tourism-destinations/un-tourism-villages-destinations.json"
+      ]
+    },
+    {
+      "source": "UNESCO World Heritage List",
+      "url": "https://whc.unesco.org/en/list/xml/",
+      "extractable": "yes",
+      "count": 1248,
+      "fields": [
+        "id_number",
+        "unique_number",
+        "site",
+        "states",
+        "iso_code",
+        "regions",
+        "category",
+        "latitude",
+        "longitude"
+      ],
+      "risks": [
+        "Current command-line probe can be blocked by Cloudflare managed challenge; respect UNESCO syndication terms before publishing derived raw data."
+      ],
+      "rawFiles": [
+        "data/raw/tourism-destinations/unesco-world-heritage-list.xml",
+        "data/raw/tourism-destinations/unesco-world-heritage-destinations.json",
+        "data/raw/tourism-destinations/unesco-world-heritage-list.xlsx",
+        "data/raw/tourism-destinations/unesco-probes.json"
+      ]
+    }
+  ]
+}

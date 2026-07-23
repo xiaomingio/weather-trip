@@ -10,8 +10,16 @@ const elevationColorStops = [
   { maxMeters: 500, color: '#8fae5d', gradientPosition: 22 },
   { maxMeters: 1500, color: '#d1b55f', gradientPosition: 48 },
   { maxMeters: 3000, color: '#a96f4b', gradientPosition: 74 },
-  { color: '#e6e2d3', gradientPosition: 100 }
+  { color: '#74777a', gradientPosition: 100 }
 ] satisfies Array<{ maxMeters?: number; color: string; gradientPosition: number }>;
+
+const windColorStops = [
+  { valueKmh: 0, color: [47, 111, 179], gradientPosition: 0 },
+  { valueKmh: 20, color: [35, 136, 90], gradientPosition: 25 },
+  { valueKmh: 40, color: [152, 104, 29], gradientPosition: 50 },
+  { valueKmh: 60, color: [178, 74, 53], gradientPosition: 75 },
+  { valueKmh: 80, color: [112, 69, 160], gradientPosition: 100 }
+] satisfies Array<{ valueKmh: number; color: [number, number, number]; gradientPosition: number }>;
 
 export function temperatureColor(value: number): string {
   if (value <= 0) return '#6ca6ff';
@@ -26,11 +34,12 @@ export function weatherColor(type: string): string {
   if (type === 'light_rain' || type === 'rain' || type === 'thunderstorm') return '#3f88c5';
   if (type === 'light_snow' || type === 'snow') return '#8fb8d8';
   if (type === 'fog') return '#87909a';
-  return '#6d7f68';
+  if (type === 'overcast') return '#515a61';
+  return '#778991';
 }
 
 export function elevationColor(value: number): string {
-  return elevationColorStops.find((stop) => stop.maxMeters === undefined || value < stop.maxMeters)?.color ?? '#e6e2d3';
+  return elevationColorStops.find((stop) => stop.maxMeters === undefined || value < stop.maxMeters)?.color ?? '#74777a';
 }
 
 export function elevationGradient(): string {
@@ -46,13 +55,23 @@ export function humidityColor(value: number): string {
 }
 
 export function precipitationColor(value: number): string {
-  const opacity = Math.max(0.3, Math.min(1, value / 24 + 0.2));
-  return `rgba(43, 116, 181, ${opacity})`;
+  const normalized = Math.max(0, Math.min(1, value / 24));
+  return interpolateColor([166, 166, 166], [37, 99, 235], normalized);
 }
 
 export function windColor(value: number): string {
-  const normalized = Math.max(0, Math.min(1, value / 80));
-  return interpolateColor([89, 156, 178], [121, 98, 157], normalized);
+  const upperStop = windColorStops.find((stop) => value <= stop.valueKmh) ?? windColorStops[windColorStops.length - 1];
+  const upperIndex = windColorStops.indexOf(upperStop);
+  const lowerStop = windColorStops[Math.max(0, upperIndex - 1)];
+  const range = upperStop.valueKmh - lowerStop.valueKmh;
+  const progress = range === 0 ? 0 : (value - lowerStop.valueKmh) / range;
+
+  return interpolateColor(lowerStop.color, upperStop.color, progress);
+}
+
+export function windGradient(): string {
+  const stops = windColorStops.map((stop) => `${interpolateColor(stop.color, stop.color, 0)} ${stop.gradientPosition}%`);
+  return `linear-gradient(90deg, ${stops.join(', ')})`;
 }
 
 export function comfortColor(value: number): string {

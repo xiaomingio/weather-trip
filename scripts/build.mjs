@@ -1,14 +1,12 @@
 /**
- * 文件说明: 按 package 到 app 的顺序执行 workspace 构建，避免应用先于共享能力构建。
- * 对应文档: docs/runtime.md
+ * 文件说明: 按 core、静态数据、Web 的顺序执行静态公开数据版构建。
+ * 对应文档: docs/specs/31-data-flow.md, docs/specs/51-runtime.md
  */
 import { spawn } from 'node:child_process';
 
-const workspaces = ['weather-core', 'weather-db', 'worker', 'web'];
-
-function runBuild(workspace) {
+function runCommand(command, args) {
   return new Promise((resolve, reject) => {
-    const child = spawn('npm', ['run', 'build', '--workspace', workspace], {
+    const child = spawn(command, args, {
       cwd: process.cwd(),
       stdio: 'inherit'
     });
@@ -18,11 +16,11 @@ function runBuild(workspace) {
         resolve();
         return;
       }
-      reject(new Error(`${workspace} build failed with ${signal ?? code}`));
+      reject(new Error(`${command} ${args.join(' ')} failed with ${signal ?? code}`));
     });
   });
 }
 
-for (const workspace of workspaces) {
-  await runBuild(workspace);
-}
+await runCommand('npm', ['run', 'build', '--workspace', 'weather-core']);
+await runCommand('npm', ['run', 'static:data']);
+await runCommand('npm', ['run', 'build', '--workspace', 'web']);

@@ -1,0 +1,53 @@
+name: Refresh static weather
+
+on:
+  schedule:
+    - cron: '18 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      R2_ENDPOINT: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run static:cities
+
+      - name: Generate Open-Meteo forecast package
+        run: |
+          forecast_name="$(date -u +%F).json"
+          npm run weather:refresh -- \
+            --source=open-meteo \
+            --output-dir=.r2/weather \
+            --forecast-name="$forecast_name" \
+            --version-prefix=open-meteo
+
+      - name: Upload immutable forecast package
+        run: |
+          forecast_file="$(find .r2/weather/forecast-14d -type f -name '*.json' | sort | tail -n 1)"
+          aws s3 cp "$forecast_file" "s3://${{ secrets.R2_BUCKET_NAME }}/weather/forecast-14d/$(basename "$forecast_file")" \
+            --endpoint-url "$R2_ENDPOINT" \
+            --content-type "application/json; charset=utf-8" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Publish current pointer
+        run: |
+          aws s3 cp .r2/weather/current.json "s3://${{ secrets.R2_BUCKET_NAME }}/weather/current.json" \
+            --endpoint-url "$R2_ENDPOINT" \
+            --content-type "application/json; charset=utf-8" \
+            --cache-control "public, max-age=600, stale-while-revalidate=300"

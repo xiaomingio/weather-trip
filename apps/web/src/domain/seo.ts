@@ -6,7 +6,7 @@ import type { DisplayLocale } from './format';
 import { buildTopTabPath, topTabs, type TopTabId } from './navigation';
 
 export const siteOrigin = (process.env.SITE_URL ?? 'https://weather-trip.aicake.io').replace(/\/$/, '');
-export const ogImagePath = '/landing/climate-atlas-sunny.png';
+export const ogImagePath = '/landing/climate-atlas-sunny.webp';
 
 export type PublicPage = {
   tabId: TopTabId;
@@ -127,7 +127,7 @@ export function getLlmsTxt(): string {
     `- Chinese home: ${buildAbsoluteUrl('/zh')}`,
     '',
     '## Data',
-    'Weather data is refreshed into Postgres by the worker process and served from cached public snapshots. The public pages do not expose database credentials.',
+    'Weather data is served from static JSON snapshots. Local development reads /data, while production can read current weather packages from Cloudflare R2.',
     '',
     `Sitemap: ${buildAbsoluteUrl('/sitemap.xml')}`,
     ''

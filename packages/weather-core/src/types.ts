@@ -30,6 +30,8 @@ export type WorldRegion =
 
 export type RegionKey = string;
 
+export type CountryTier = 'C1' | 'C2' | 'C3';
+
 export type LocalizedText = {
   zh: string;
   en: string;
@@ -44,12 +46,20 @@ export type City = {
   admin1Code?: string;
   admin1GroupCode?: string;
   admin1LocalName?: string;
+  admin2?: string;
+  admin2Code?: string;
+  admin2LocalName?: string;
   latitude: number;
   longitude: number;
   timezone: string;
   population?: number;
   elevationMeters: number;
   region: Exclude<WorldRegion, 'world'>;
+  countryTier?: CountryTier;
+  rank?: number;
+  countryRegionKey?: string;
+  admin1RegionKey?: string;
+  admin2RegionKey?: string;
   selectionReasons?: string[];
 };
 
@@ -65,6 +75,16 @@ export type DailyForecast = {
   precipitationProbabilityMax?: number;
   precipitationSumMm: number;
   windSpeedMaxKmh?: number;
+};
+
+export type WeatherDataSnapshot = {
+  version: string;
+  generatedAt: string;
+  cityListVersion: string;
+  defaultDate: string;
+  availableDates: string[];
+  cities: City[];
+  forecasts: DailyForecast[];
 };
 
 export type WeatherFilter = {
@@ -108,11 +128,13 @@ export type WeatherMapCityWeather = {
 
 export type RegionWeatherSummary = {
   id: string;
-  level: 'country' | 'partition';
+  level: 'country' | 'admin1' | 'admin2';
   countryCode: string;
-  partitionCode?: string;
+  admin1Code?: string;
+  admin2Code?: string;
   name: string;
   cityCount: number;
+  forecastCount: number;
   weatherType: WeatherType;
   temperatureMeanC: number;
   humidityMeanPercent: number;

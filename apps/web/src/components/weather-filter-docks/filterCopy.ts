@@ -5,8 +5,8 @@
 
 export const filterCopy = {
   zh: {
-    region: '地区',
-    subRegion: '省份',
+    region: '地区/国家',
+    subRegion: '省/州/地区',
     time: '时间',
     nextDays: (days: number) => `${days}天`,
     date: '日期',
@@ -36,8 +36,8 @@ export const filterCopy = {
     comfortHelp: '舒适度按气温 42%、天气 28%、湿度 20% 和基础分 10% 计算，并扣除降水和最大风速；分数越高越适合户外活动。'
   },
   en: {
-    region: 'Region',
-    subRegion: 'Province',
+    region: 'Region/country',
+    subRegion: 'State/province/region',
     time: 'Time',
     nextDays: (days: number) => `${days}d`,
     date: 'Date',

@@ -1,0 +1,1507 @@
+{
+  "version": "country-profiles-3d5372799eab",
+  "generatedAt": "2026-07-23T18:10:11.450Z",
+  "profiles": [
+    {
+      "countryCode": "CN",
+      "tier": "global_hotspot",
+      "countryTier": "C3",
+      "detailedCoverage": "admin2",
+      "populationFallback": 80
+    },
+    {
+      "countryCode": "ES",
+      "tier": "global_hotspot",
+      "countryTier": "C3",
+      "detailedCoverage": "admin2",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "FR",
+      "tier": "global_hotspot",
+      "countryTier": "C3",
+      "detailedCoverage": "admin2",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "IT",
+      "tier": "global_hotspot",
+      "countryTier": "C3",
+      "detailedCoverage": "admin2",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "PE",
+      "tier": "global_hotspot",
+      "countryTier": "C3",
+      "detailedCoverage": "admin2",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "AR",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "AU",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "BR",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "CA",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "CL",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "CO",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "EG",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "ID",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "IN",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 80
+    },
+    {
+      "countryCode": "JP",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "MA",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "MX",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "MY",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "RU",
+      "tier": "major",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "TH",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "TR",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "TZ",
+      "tier": "major",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "US",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 65
+    },
+    {
+      "countryCode": "VN",
+      "tier": "global_hotspot",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "ZA",
+      "tier": "major",
+      "countryTier": "C2",
+      "detailedCoverage": "admin1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "AD",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "AE",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "AF",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "AG",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "AI",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "AL",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "AM",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "AO",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "AS",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "AT",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "AW",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "AX",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "AZ",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BA",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BB",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BD",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "BE",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "BF",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BG",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BH",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BI",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BJ",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BL",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BN",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BO",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "BQ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BS",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "BT",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "BW",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "BY",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "BZ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "CC",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "CD",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "CF",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "CG",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "CH",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "CI",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "CK",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "CM",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "CR",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "CU",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "CV",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "CW",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "CX",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "CY",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "CZ",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "DE",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "DJ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "DK",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "DM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "DO",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "DZ",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "EC",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "EE",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "EH",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "ER",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "ET",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "FI",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "FJ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "FK",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "FM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "FO",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GA",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GB",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "GD",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GE",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "GF",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GG",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GH",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "GI",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GL",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "GM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GN",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "GP",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GQ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GR",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "GS",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GT",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "GU",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GW",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "GY",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "HK",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "HN",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "HR",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "HT",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "HU",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "IE",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "IL",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "IM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "IO",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "IQ",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "IR",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "IS",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "JE",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "JM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "JO",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "KE",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "KG",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "KH",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "KI",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "KM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "KN",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "KP",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "KR",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "KW",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "KY",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "KZ",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "LA",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "LB",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "LC",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "LI",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "LK",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "LR",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "LS",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "LT",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "LU",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "LV",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "LY",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MC",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MD",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "ME",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MF",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MG",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MH",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MK",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "ML",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MM",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MN",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MO",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MP",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MQ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MR",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "MS",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MT",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MU",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "MV",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "MW",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "MZ",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "NA",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "NC",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "NE",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "NF",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "NG",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "NI",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "NL",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "NO",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "NP",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "NR",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "NU",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "NZ",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "OM",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "PA",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "PF",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "PG",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "PH",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 28
+    },
+    {
+      "countryCode": "PK",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 45
+    },
+    {
+      "countryCode": "PL",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "PM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "PN",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "PR",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "PS",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "PT",
+      "tier": "global_hotspot",
+      "countryTier": "C1",
+      "populationFallback": 35
+    },
+    {
+      "countryCode": "PW",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "PY",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "QA",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "RE",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "RO",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "RS",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "RW",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SA",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "SB",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SC",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "SD",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "SE",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "SG",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SH",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SI",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "SJ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SK",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SL",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SM",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SN",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SO",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "SR",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SS",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "ST",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SV",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SX",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "SY",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "SZ",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TC",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TD",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "TF",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TG",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "TJ",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "TK",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TL",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TM",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "TN",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "TO",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TT",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TV",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "TW",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "UA",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "UG",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "UY",
+      "tier": "regional",
+      "countryTier": "C1",
+      "populationFallback": 3
+    },
+    {
+      "countryCode": "UZ",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "VA",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "VC",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "VE",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "VG",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "VI",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "VU",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "WF",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "WS",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "XK",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "YE",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "YT",
+      "tier": "baseline",
+      "countryTier": "C1",
+      "populationFallback": 1
+    },
+    {
+      "countryCode": "ZM",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    },
+    {
+      "countryCode": "ZW",
+      "tier": "major",
+      "countryTier": "C1",
+      "populationFallback": 12
+    }
+  ]
+}

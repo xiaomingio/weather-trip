@@ -1,0 +1,93 @@
+# 边界文件里存在、但城市或 GeoNames 对齐不足的展示名称补充。
+
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659002
+  name:
+    zh: 阿拉尔
+    en: Aral
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659005
+  name:
+    zh: 北屯
+    en: Beitun
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659006
+  name:
+    zh: 铁门关
+    en: Tiemenguan
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659007
+  name:
+    zh: 双河
+    en: Shuanghe
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659008
+  name:
+    zh: 可克达拉
+    en: Kokdala
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659009
+  name:
+    zh: 昆玉
+    en: Kunyu
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "13"
+  sourceAdcode: 659010
+  name:
+    zh: 胡杨河
+    en: Huyanghe
+  reason: DataV 有这个新疆边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "31"
+  sourceAdcode: 469021
+  name:
+    zh: 定安
+    en: Ding'an County
+  reason: DataV 有这个海南边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "31"
+  sourceAdcode: 469022
+  name:
+    zh: 屯昌
+    en: Tunchang County
+  reason: DataV 有这个海南边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "31"
+  sourceAdcode: 469025
+  name:
+    zh: 白沙
+    en: Baisha Li Autonomous County
+  reason: DataV 有这个海南边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "31"
+  sourceAdcode: 469026
+  name:
+    zh: 昌江
+    en: Changjiang Li Autonomous County
+  reason: DataV 有这个海南边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "31"
+  sourceAdcode: 469027
+  name:
+    zh: 乐东
+    en: Ledong Li Autonomous County
+  reason: DataV 有这个海南边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。
+- countryCode: CN
+  admin1Code: "31"
+  sourceAdcode: 469028
+  name:
+    zh: 陵水
+    en: Lingshui Li Autonomous County
+  reason: DataV 有这个海南边界块，但当前城市集没有匹配的 GeoNames admin2 代表点。

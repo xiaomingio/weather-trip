@@ -1,6 +1,6 @@
 /**
- * 文件说明: 封装天气工具 React 组件使用的 URL、API 地址和跨 Tab 查询记忆。
- * 对应文档: docs/data-flow.md
+ * 文件说明: 封装天气工具 React 组件使用的页面 URL、分页大小和跨 Tab 查询记忆。
+ * 对应文档: docs/plans/free-static-data-plan.md
  */
 
 import type { MapLayer, RegionKey, WeatherFilter, WeatherToolId } from 'weather-core/types';
@@ -99,52 +99,4 @@ export function syncToolNavigationLinks(
       tabLink.href = buildToolTabUrl(locale, 'city-finder', activeTool);
     }
   }
-}
-
-export function buildCityFinderApiUrl(locale: DisplayLocale, weatherFilter: WeatherFilter): string {
-  const params = new URLSearchParams(buildFilterSearch('city-finder', weatherFilter, '', 'weather'));
-  params.set('locale', locale);
-  return `/api/city-search.json?${params.toString()}`;
-}
-
-export function buildMapDatesApiUrl(locale: DisplayLocale, weatherFilter: WeatherFilter, selectedDate: string): string {
-  const params = new URLSearchParams();
-  params.set('locale', locale);
-  params.set('region', weatherFilter.region);
-  if (selectedDate) params.set('date', selectedDate);
-  return `/api/map-dates.json?${params.toString()}`;
-}
-
-export function buildWeatherLayerApiUrl(
-  locale: DisplayLocale,
-  weatherFilter: WeatherFilter,
-  selectedDate: string,
-  layer: MapLayer,
-  includeDate: boolean
-): string {
-  const params = new URLSearchParams();
-  params.set('locale', locale);
-  params.set('region', weatherFilter.region);
-  if (includeDate && selectedDate) params.set('date', selectedDate);
-  return `/api/weather-layers/${layer}.json?${params.toString()}`;
-}
-
-export function buildCityForecastApiUrl(locale: DisplayLocale, cityId: string): string {
-  const params = new URLSearchParams();
-  params.set('locale', locale);
-  params.set('cityId', cityId);
-  return `/api/city-forecast.json?${params.toString()}`;
-}
-
-export function buildRegionsApiUrl(locale: DisplayLocale): string {
-  const params = new URLSearchParams();
-  params.set('locale', locale);
-  return `/api/regions.json?${params.toString()}`;
-}
-
-export function buildSubregionsApiUrl(locale: DisplayLocale, region: RegionKey): string {
-  const params = new URLSearchParams();
-  params.set('locale', locale);
-  params.set('region', region);
-  return `/api/subregions.json?${params.toString()}`;
 }

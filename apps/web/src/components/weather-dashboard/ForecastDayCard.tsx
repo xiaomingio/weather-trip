@@ -4,19 +4,8 @@
  */
 'use client';
 
-import {
-  Cloud,
-  CloudDrizzle,
-  CloudFog,
-  CloudLightning,
-  CloudRain,
-  CloudSnow,
-  CloudSun,
-  Cloudy,
-  Snowflake,
-  Sun
-} from 'lucide-react';
-import type { DailyForecast, WeatherType } from 'weather-core/types';
+import type { DailyForecast } from 'weather-core/types';
+import { WeatherTypeIcon } from '@/components/WeatherTypeIcon';
 import {
   type DisplayLocale,
   type TemperatureUnit,
@@ -34,19 +23,6 @@ type ForecastDayCardProps = {
   locale: DisplayLocale;
   temperatureUnit: TemperatureUnit;
   copy: DashboardPanelCopy;
-};
-
-const weatherTypeIcons: Record<WeatherType, React.ReactNode> = {
-  sunny: <Sun size={17} />,
-  partly_cloudy: <CloudSun size={17} />,
-  cloudy: <Cloud size={17} />,
-  overcast: <Cloudy size={17} />,
-  fog: <CloudFog size={17} />,
-  light_rain: <CloudDrizzle size={17} />,
-  rain: <CloudRain size={17} />,
-  thunderstorm: <CloudLightning size={17} />,
-  light_snow: <Snowflake size={17} />,
-  snow: <CloudSnow size={17} />
 };
 
 function formatPrecipitation(value: number): string {
@@ -120,7 +96,7 @@ export function ForecastDayCard({ cityName, forecast, locale, temperatureUnit, c
       <div className="forecast-day-heading">
         <strong className="forecast-date">{formatCompactForecastDateLabel(forecast.date, locale)}</strong>
         <span className="forecast-icon" aria-label={formatWeatherType(forecast.weatherType, locale)}>
-          {weatherTypeIcons[forecast.weatherType]}
+          <WeatherTypeIcon type={forecast.weatherType} size={17} />
         </span>
         <span className={`forecast-temperature ${temperatureToneClass(forecast.temperatureMeanC)}`}>
           {formatTemperatureRange(forecast.temperatureMinC, forecast.temperatureMaxC, locale, temperatureUnit)}

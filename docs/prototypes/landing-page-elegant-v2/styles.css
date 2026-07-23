@@ -557,7 +557,7 @@ h1 {
     -12px 10px 36px rgba(109, 155, 179, 0.05),
     12px -8px 32px rgba(216, 173, 87, 0.06),
     inset 0 1px 0 rgba(255, 253, 245, 0.66);
-  cursor: url('./assets/cursors/sunny.png') 16 16, pointer;
+  cursor: url('./assets/cursors/sunny.webp') 16 16, pointer;
   grid-column: 2;
   grid-row: 1;
   justify-self: stretch;

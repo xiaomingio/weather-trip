@@ -1,0 +1,3320 @@
+[
+  {
+    "id": "369",
+    "title": "Caspalá",
+    "address": "Caspalá, Argentina",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": -23.3631,
+    "longitude": -65.0919,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/caspala/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/caspala.jpg"
+  },
+  {
+    "id": "370",
+    "title": "Kaunertal",
+    "address": "Kaunertal, Austria, Europe",
+    "country": "Austria",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 47.03335145,
+    "longitude": 10.7479919,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kaunertal/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/kaunertal.jpg"
+  },
+  {
+    "id": "371",
+    "title": "Testo Alto",
+    "address": "Testo Alto, Brazil",
+    "country": "Brazil",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": -26.70717771,
+    "longitude": -49.16514732,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/testo-alto/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/testo-alto.jpg"
+  },
+  {
+    "id": "372",
+    "title": "Puerto Williams",
+    "address": "Puerto Williams, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": -54.93623045,
+    "longitude": -67.6088885,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/puerto-williams/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/puerto-williams.jpg"
+  },
+  {
+    "id": "373",
+    "title": "Pica",
+    "address": "Pica, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": -20.4894826,
+    "longitude": -69.330511,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pica/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/pica.jpg"
+  },
+  {
+    "id": "374",
+    "title": "Yucun",
+    "address": "Yucun, China, Asia-Pacific",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 34.3592235,
+    "longitude": 108.493728,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/yucun/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/yucun.jpg"
+  },
+  {
+    "id": "375",
+    "title": "Xidi",
+    "address": "Xidi, China, Asia-Pacific",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 29.9042326,
+    "longitude": 117.9903573,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/xidi/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/xidi.jpg"
+  },
+  {
+    "id": "376",
+    "title": "Pano Lefkara",
+    "address": "Pano Lefkara, Cyprus, Europe",
+    "country": "Cyprus",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 34.8693775,
+    "longitude": 33.3018827,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pano-lefkara/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/pano-lefkara.jpg"
+  },
+  {
+    "id": "377",
+    "title": "Wonchi",
+    "address": "Wonchi, Ethiopia, Africa",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "years": [
+      "2021"
+    ],
+    "latitude": 8.45491025,
+    "longitude": 39.2793576,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/wonchi/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/wonchi.jpg"
+  },
+  {
+    "id": "378",
+    "title": "Soufli",
+    "address": "Soufli, Greece, Europe",
+    "country": "Greece",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 41.19431645,
+    "longitude": 26.30132205,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/soufli/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/soufli.jpg"
+  },
+  {
+    "id": "379",
+    "title": "Pochampally",
+    "address": "Pochampally, India, Asia-Pacific",
+    "country": "India",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 17.34616175,
+    "longitude": 78.82096975,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pochampally/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/pochampally.jpg"
+  },
+  {
+    "id": "380",
+    "title": "Nglanggeran",
+    "address": "Nglanggeran, Indonesia, Asia-Pacific",
+    "country": "Indonesia",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": -7.8481875,
+    "longitude": 110.5385625,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/nglanggeran/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/nglanggeran.jpg"
+  },
+  {
+    "id": "381",
+    "title": "San Ginesio",
+    "address": "San Ginesio, Italy, Europe",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 43.06680367,
+    "longitude": 13.38724146,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/san-ginesio/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/san-ginesio.jpg"
+  },
+  {
+    "id": "382",
+    "title": "Niseko",
+    "address": "Niseko, Japan, Asia-Pacific",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 42.79263832,
+    "longitude": 140.6845034,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/niseko/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/niseko.jpg"
+  },
+  {
+    "id": "383",
+    "title": "Miyama",
+    "address": "Miyama, Japan, Asia-Pacific",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 35.26919804,
+    "longitude": 135.5934535,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/miyama/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/miyama.jpg"
+  },
+  {
+    "id": "384",
+    "title": "Olergesailie",
+    "address": "Olergesailie, Kenya, Africa",
+    "country": "Kenya",
+    "region": "Africa",
+    "years": [
+      "2021"
+    ],
+    "latitude": -1.57763,
+    "longitude": 36.44602,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/olergesailie/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/olergesailie.jpg"
+  },
+  {
+    "id": "385",
+    "title": "Rijal Alma'a",
+    "address": "Rijal Alma'a, Saudi Arabia, Middle East",
+    "country": "Saudi Arabia",
+    "region": "Middle East",
+    "years": [
+      "2021"
+    ],
+    "latitude": 18.2125386,
+    "longitude": 42.271654,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/rijal-almaa/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/rijal-almaa.jpg"
+  },
+  {
+    "id": "386",
+    "title": "Bkassine",
+    "address": "Bkassine, Lebanon, Middle East",
+    "country": "Lebanon",
+    "region": "Middle East",
+    "years": [
+      "2021"
+    ],
+    "latitude": 33.56783898,
+    "longitude": 35.57993448,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bkassine/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/bkassine.jpg"
+  },
+  {
+    "id": "387",
+    "title": "Kampung Batu Puteh",
+    "address": "Kampung Batu Puteh, Malaysia, Asia-Pacific",
+    "country": "Malaysia",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 2.550243,
+    "longitude": 102.1359794,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kampung-batu-puteh/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/kopel.jpg"
+  },
+  {
+    "id": "388",
+    "title": "Le Morne",
+    "address": "Le Morne, Mauritius, Africa",
+    "country": "Mauritius",
+    "region": "Africa",
+    "years": [
+      "2021"
+    ],
+    "latitude": -20.44231385,
+    "longitude": 57.32933505,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/le-morne/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/le-morne.jpg"
+  },
+  {
+    "id": "389",
+    "title": "Old Grand Port",
+    "address": "Old Grand Port, Mauritius, Africa",
+    "country": "Mauritius",
+    "region": "Africa",
+    "years": [
+      "2021"
+    ],
+    "latitude": -20.37481285,
+    "longitude": 57.71828415,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/old-grand-port/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/old-grand-port.jpg"
+  },
+  {
+    "id": "390",
+    "title": "Cuetzalan del Progreso",
+    "address": "Cuetzalan del Progreso, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": 20.0197859,
+    "longitude": -97.52484945,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/cuetzalan-del-progreso/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/cuetzalan.jpg"
+  },
+  {
+    "id": "391",
+    "title": "Maní",
+    "address": "Maní, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": 20.3855378,
+    "longitude": -89.39066625,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mani/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/mani.jpg"
+  },
+  {
+    "id": "392",
+    "title": "Sidi Kaouki",
+    "address": "Sidi Kaouki, Morocco, Africa",
+    "country": "Morocco",
+    "region": "Africa",
+    "years": [
+      "2021"
+    ],
+    "latitude": 31.3507367,
+    "longitude": -9.7960764,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sidi-kaouki/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/sidi-kaouki.jpg"
+  },
+  {
+    "id": "393",
+    "title": "Misfat Al Abriyeen",
+    "address": "Misfat Al Abriyeen, Oman, Middle East",
+    "country": "Oman",
+    "region": "Middle East",
+    "years": [
+      "2021"
+    ],
+    "latitude": 23.13935245,
+    "longitude": 57.30861415,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/misfat-al-abriyeen/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/misfat-al-abriyeen.jpg"
+  },
+  {
+    "id": "394",
+    "title": "San Cosme y Damián",
+    "address": "San Cosme y Damián, Paraguay",
+    "country": "Paraguay",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": -27.3192712,
+    "longitude": -56.33157725,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/san-cosme-y-damian/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/san-cosme-y-damian.jpg"
+  },
+  {
+    "id": "395",
+    "title": "Ollantaytambo",
+    "address": "Ollantaytambo, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2021"
+    ],
+    "latitude": -13.25829425,
+    "longitude": -72.26550215,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ollantaytambo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/ollantaytambo.jpg"
+  },
+  {
+    "id": "396",
+    "title": "Bojo",
+    "address": "Bojo, Philippines, Asia-Pacific",
+    "country": "Philippines",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 10.1925,
+    "longitude": 123.5455556,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bojo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/bojo.jpg"
+  },
+  {
+    "id": "397",
+    "title": "Cumeada",
+    "address": "Cumeada, Portugal, Europe",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 38.36,
+    "longitude": -7.51,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/cumeada/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/cumeada.jpg"
+  },
+  {
+    "id": "398",
+    "title": "Castelo Rodrigo",
+    "address": "Castelo Rodrigo, Portugal, Europe",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 40.875556,
+    "longitude": -6.963889,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/castelo-rodrigo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/castelo-rodrigo.jpg"
+  },
+  {
+    "id": "399",
+    "title": "Purple Island",
+    "address": "Purple Island, Republic of Korea, Asia-Pacific",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 34.7114538,
+    "longitude": 126.1101164,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/purple-island/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/purple-island.jpg"
+  },
+  {
+    "id": "400",
+    "title": "Ungok Village",
+    "address": "Ungok Village, Republic of Korea, Asia-Pacific",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2021"
+    ],
+    "latitude": 35.65212169928511,
+    "longitude": 126.57866132665772,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ungok-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/ungok-village.jpg"
+  },
+  {
+    "id": "402",
+    "title": "Nkotsi Village",
+    "address": "Nkotsi Village, Rwanda, Africa",
+    "country": "Rwanda",
+    "region": "Africa",
+    "years": [
+      "2021"
+    ],
+    "latitude": -1.5617977,
+    "longitude": 29.6372697,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/nkotsi-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/nkotsi.jpg"
+  },
+  {
+    "id": "403",
+    "title": "Mokra Gora",
+    "address": "Mokra Gora, Serbia, Europe",
+    "country": "Serbia",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 43.80669437,
+    "longitude": 19.51766857,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mokra-gora/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/mokra-gora.jpg"
+  },
+  {
+    "id": "404",
+    "title": "Radovlijca",
+    "address": "Radovlijca, Slovenia, Europe",
+    "country": "Slovenia",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 46.3419369,
+    "longitude": 14.176573,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/radovlijca/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/radovljica.jpg"
+  },
+  {
+    "id": "405",
+    "title": "Solčava",
+    "address": "Solčava , Slovenia, Europe",
+    "country": "Slovenia",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 46.41466815,
+    "longitude": 14.68214825,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/solcava/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/solcava.jpg"
+  },
+  {
+    "id": "406",
+    "title": "Morella",
+    "address": "Morella, Spain, Europe",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 40.61893078,
+    "longitude": -0.10150035,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/morella/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/morella.jpg"
+  },
+  {
+    "id": "407",
+    "title": "Lekunberri",
+    "address": "Lekunberri, Spain, Europe",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 43.00484465,
+    "longitude": -1.8951258,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/lekunberri/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/lekunberri.jpg"
+  },
+  {
+    "id": "408",
+    "title": "Valposchiavo",
+    "address": "Valposchiavo, Switzerland, Europe",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 46.32689356,
+    "longitude": 10.0527787,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/valposchiavo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/valposchiavo.jpg"
+  },
+  {
+    "id": "409",
+    "title": "Saas-Fee",
+    "address": "Saas-Fee, Switzerland, Europe",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 46.10656399,
+    "longitude": 7.92781637,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/saas-fee/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/saas-fee.jpg"
+  },
+  {
+    "id": "410",
+    "title": "Gruyères",
+    "address": "Gruyères, Switzerland, Europe",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 46.5721,
+    "longitude": 7.07186995,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/gruyeres/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/gruyeres.jpg"
+  },
+  {
+    "id": "411",
+    "title": "Taraklı",
+    "address": "Taraklı, Türkiye, Europe",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 40.395843,
+    "longitude": 30.493951,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/tarakli/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/tarakli.jpg"
+  },
+  {
+    "id": "412",
+    "title": "Mustafapaşa",
+    "address": "Mustafapaşa, Türkiye, Europe",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 38.584273,
+    "longitude": 34.8979301,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mustafapasa/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/mustafapasa.jpg"
+  },
+  {
+    "id": "413",
+    "title": "Bekhovo",
+    "address": "Bekhovo, Russian Federation, Europe",
+    "country": "Russian Federation",
+    "region": "Europe",
+    "years": [
+      "2021"
+    ],
+    "latitude": 54.75937505,
+    "longitude": 37.2503265,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bekhovo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2021/12/bekhovo.jpg"
+  },
+  {
+    "id": "417",
+    "title": "Zell am See",
+    "address": "Zell am See, Austria",
+    "country": "Austria",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 47.323585,
+    "longitude": 12.817929,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/zell-am-see/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-zell-am-see.jpg"
+  },
+  {
+    "id": "418",
+    "title": "Wagrain",
+    "address": "Wagrain, Austria",
+    "country": "Austria",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 47.31312,
+    "longitude": 13.30321,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/wagrain/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-wagrain.jpg"
+  },
+  {
+    "id": "419",
+    "title": "Puqueldón",
+    "address": "Puqueldón, Puqueldon, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": -42.600843,
+    "longitude": -73.671894,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/puqueldon/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-puqueldon.jpg"
+  },
+  {
+    "id": "420",
+    "title": "Dazhai",
+    "address": "Dazhai, Shanxi, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2022"
+    ],
+    "latitude": 37.571671,
+    "longitude": 113.710467,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/dazhai/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Dazhai.jpg"
+  },
+  {
+    "id": "421",
+    "title": "Jingzhu",
+    "address": "Jingzhu Town, Fengjie County, Chongqing, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2022"
+    ],
+    "latitude": 30.751719,
+    "longitude": 109.504635,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/jingzhu/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Jingzhu.jpg"
+  },
+  {
+    "id": "422",
+    "title": "Choachí",
+    "address": "Choachí, Cundinamarca, Colombia",
+    "country": "Colombia",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": 4.528876,
+    "longitude": -73.92734,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/choachi/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Choachi.jpg"
+  },
+  {
+    "id": "423",
+    "title": "Aguarico",
+    "address": "Aguarico, Ecuador",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": -0.926777,
+    "longitude": -75.401718,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/aguarico/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Aguarico.jpg"
+  },
+  {
+    "id": "424",
+    "title": "Angochagua",
+    "address": "Angochagua, Ecuador",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": 0.24533,
+    "longitude": -78.092731,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/angochagua/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Angochagua.jpg"
+  },
+  {
+    "id": "425",
+    "title": "Choke Mountains Ecovillage",
+    "address": "Ch'ok'e Terara, Ethiopia",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "years": [
+      "2022"
+    ],
+    "latitude": 10.7166667,
+    "longitude": 37.85,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/choke-mountains-ecovillage/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Choke.jpg"
+  },
+  {
+    "id": "426",
+    "title": "Mestia",
+    "address": "Mestia, Georgia",
+    "country": "Georgia",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 43.035363,
+    "longitude": 42.679975,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mestia/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Mestia.jpg"
+  },
+  {
+    "id": "428",
+    "title": "Kfar Kama",
+    "address": "Kfar Kama, Israel",
+    "country": "Israel",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 32.722302,
+    "longitude": 35.441891,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kfar-kama/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Kfar-Kama.jpg"
+  },
+  {
+    "id": "429",
+    "title": "Sauris Zahre",
+    "address": "Sauris / Zahre, Frazione Sauris di Sotto, Sauris, Province of Udine, Italy",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 46.466248,
+    "longitude": 12.709202,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sauris-zahre/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Sauris-Zahre.jpg"
+  },
+  {
+    "id": "430",
+    "title": "Isola Del Giglio",
+    "address": "Isola del Giglio, Italy",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 42.366423,
+    "longitude": 10.899863,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/isola-del-giglio/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Isola-Del-Giglio.jpg"
+  },
+  {
+    "id": "431",
+    "title": "Umm Qais",
+    "address": "Umm Qais, Jordan",
+    "country": "Jordan",
+    "region": "Middle East",
+    "years": [
+      "2022"
+    ],
+    "latitude": 32.654352,
+    "longitude": 35.679296,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/umm-qais/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Umm-Qais.jpg"
+  },
+  {
+    "id": "432",
+    "title": "Creel",
+    "address": "Creel, Chihuahua, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": 27.750014,
+    "longitude": -107.654576,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/creel/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Creel.jpg"
+  },
+  {
+    "id": "433",
+    "title": "El Fuerte",
+    "address": "El Fuerte, Sinaloa, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": 26.416106,
+    "longitude": -108.635462,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/el-fuerte/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-El-Fuerte.jpg"
+  },
+  {
+    "id": "434",
+    "title": "Ksar Elkhorbat",
+    "address": "Ksar Elkhorbat (ancien) قصر الخربات القديم, Ksar Lbour, Morocco",
+    "country": "Morocco",
+    "region": "Africa",
+    "years": [
+      "2022"
+    ],
+    "latitude": 31.492172,
+    "longitude": -5.089714,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ksar-elkhorbat/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Ksar-Elkhorbat.jpg"
+  },
+  {
+    "id": "435",
+    "title": "Moulay Bouzerktoune",
+    "address": "Moulay Bouzerktoune, Morocco",
+    "country": "Morocco",
+    "region": "Africa",
+    "years": [
+      "2022"
+    ],
+    "latitude": 31.643909,
+    "longitude": -9.675604,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/moulay-bouzerktoune/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Moulay-Bouzerktoune.jpg"
+  },
+  {
+    "id": "436",
+    "title": "Lamas",
+    "address": "Lamas, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": -6.422905,
+    "longitude": -76525333,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/lamas/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Lamas.jpg"
+  },
+  {
+    "id": "437",
+    "title": "Raqchi",
+    "address": "Raqchi, templo de Wiracocha, Via de Acceso Raqchi, Cusco, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2022"
+    ],
+    "latitude": -14.174468,
+    "longitude": -71.372806,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/raqchi/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-raqchi.jpg"
+  },
+  {
+    "id": "438",
+    "title": "Castelo Novo",
+    "address": "Castelo Novo, Portugal",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 40.077802,
+    "longitude": -7.496022,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/castelo-novo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Castelo-Novo.jpg"
+  },
+  {
+    "id": "439",
+    "title": "Pyeongsa-ri",
+    "address": "Pyeongsa-ri, Dolsan-eup, Yeosu-si, Jeollanam-do, Republic of Korea",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2022"
+    ],
+    "latitude": 35.18112326901059,
+    "longitude": 127.68314041693564,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pyeongsa-ri/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Pyeongsa-ri.jpg"
+  },
+  {
+    "id": "440",
+    "title": "Rășinari",
+    "address": "Rășinari, Romania",
+    "country": "Romania",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 45.7044,
+    "longitude": 24.0674,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/rasinari/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Rasinari.jpg"
+  },
+  {
+    "id": "441",
+    "title": "AlUla Old Town",
+    "address": "AlUla Old Town, 375, AlUla Saudi Arabia",
+    "country": "Saudi Arabia",
+    "region": "Middle East",
+    "years": [
+      "2022"
+    ],
+    "latitude": 26.625015,
+    "longitude": 37.911966,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/alula-old-town/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-AlUla-Old-Town.jpg"
+  },
+  {
+    "id": "442",
+    "title": "Bohinj",
+    "address": "Bohinjska Bistrica, Slovenia",
+    "country": "Slovenia",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 46.28684,
+    "longitude": 13.88499,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bohinj/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Bohinj.jpg"
+  },
+  {
+    "id": "443",
+    "title": "Rupit",
+    "address": "Rupit, Spain",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 42.023523,
+    "longitude": 2.46468,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/rupit/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Rupit.jpg"
+  },
+  {
+    "id": "444",
+    "title": "Alquézar",
+    "address": "Alquézar, Spain",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 42.172235,
+    "longitude": 0.023197,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/alquezar/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/MAPA-Alquezar.jpg"
+  },
+  {
+    "id": "445",
+    "title": "Guadalupe",
+    "address": "Guadalupe, Spain",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 39.452765,
+    "longitude": -5.3155576,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/guadalupe/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Guadalupe.jpg"
+  },
+  {
+    "id": "446",
+    "title": "Murten",
+    "address": "Murten, Switzerland",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 46.929527,
+    "longitude": 7.118668,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/murten/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/mapa-Murten.jpg"
+  },
+  {
+    "id": "447",
+    "title": "Andermatt",
+    "address": "Andermatt, Switzerland",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 46.633863,
+    "longitude": 8.593565,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/andermatt/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/MAPA-Andermatt.jpg"
+  },
+  {
+    "id": "448",
+    "title": "Birgi",
+    "address": "Birgi, Ödemiş/İzmir, Turkey",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2022"
+    ],
+    "latitude": 38.2578,
+    "longitude": 28.065162,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/birgi/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/MAPA-Birgi.jpg"
+  },
+  {
+    "id": "449",
+    "title": "Thái Hải",
+    "address": "Thái Hải, Thịnh Đức, Thái Nguyên, Thai Nguyen, Viet Nam",
+    "country": "Viet Nam",
+    "region": "Asia-Pacific",
+    "years": [
+      "2022"
+    ],
+    "latitude": 21.533222,
+    "longitude": 105.813944,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/thai-hai/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2022/12/MAPA-Thai-Hai.jpg"
+  },
+  {
+    "id": "450",
+    "title": "Ordino",
+    "address": "Ordino, Andorra",
+    "country": "Andorra",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 42.556038,
+    "longitude": 1.5295639,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ordino/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/ordino.jpg"
+  },
+  {
+    "id": "451",
+    "title": "La Carolina",
+    "address": "La Carolina, Argentina",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -32.8119534,
+    "longitude": -66.0986029,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/la-carolina/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/carolina.jpg"
+  },
+  {
+    "id": "452",
+    "title": "St. Anton am Arlberg",
+    "address": "St. Anton am Arlberg, Austria, Europe",
+    "country": "Austria",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 47.127222,
+    "longitude": 10.263611,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/st-anton-am-arlberg/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/st-anton-am-arlberg.jpg"
+  },
+  {
+    "id": "453",
+    "title": "Schladming",
+    "address": "Schladming, Austria, Europe",
+    "country": "Austria",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 47.39274,
+    "longitude": 13.69053,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/schladming/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/schladming.jpg"
+  },
+  {
+    "id": "454",
+    "title": "Caleta Tortel",
+    "address": "Caleta Tortel, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -47.797653,
+    "longitude": -73.539805,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/caletatortel/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/caletatortel.jpg"
+  },
+  {
+    "id": "455",
+    "title": "Barrancas",
+    "address": "Barrancas, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -34.49719,
+    "longitude": -71.982768,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/barrancas/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/barrancas.jpg"
+  },
+  {
+    "id": "456",
+    "title": "Pisco Elqui",
+    "address": "Pisco Elqui, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -30.12969,
+    "longitude": -70.493607,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/piscoelqui/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/piscoelqui.jpg"
+  },
+  {
+    "id": "457",
+    "title": "Xiajiang",
+    "address": "Xiajiang, China, Asia-Pacific",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 29.374183,
+    "longitude": 118.72524,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/xiajiang/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/xiajiang.jpg"
+  },
+  {
+    "id": "458",
+    "title": "Huangling",
+    "address": "Huangling, China, Asia-Pacific",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 29.402505,
+    "longitude": 116.955396,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/huangling/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/huangling.jpg"
+  },
+  {
+    "id": "459",
+    "title": "Zhujiawan",
+    "address": "Zhujiawan, China, Asia-Pacific",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 33.2081,
+    "longitude": 108.9963,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/zhujiawan/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/zhujiawan.jpg"
+  },
+  {
+    "id": "460",
+    "title": "Zhagana",
+    "address": "Zhagana, China, Asia-Pacific",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 34.238679,
+    "longitude": 103.193041,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/zhagana/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/zhagana.jpg"
+  },
+  {
+    "id": "461",
+    "title": "Filandia",
+    "address": "Filandia , Colombia",
+    "country": "Colombia",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": 4.674424,
+    "longitude": -75.655792,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/filandia/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/filandia.jpg"
+  },
+  {
+    "id": "462",
+    "title": "Zapatoca",
+    "address": "Zapatoca, Colombia",
+    "country": "Colombia",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": 6.815349,
+    "longitude": -73.274017,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/zapatoca/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/zapatoca.jpg"
+  },
+  {
+    "id": "463",
+    "title": "Slunj",
+    "address": "Slunj, Croatia, Europe",
+    "country": "Croatia",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 45.115,
+    "longitude": 15.5855,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/slunji-rastoke/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/slunj.jpg"
+  },
+  {
+    "id": "464",
+    "title": "Oyacachi",
+    "address": "Oyacachi, Ecuador",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -0.211774,
+    "longitude": -78.077912,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/oyacachi/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/oyacachi.jpg"
+  },
+  {
+    "id": "465",
+    "title": "Dahshour",
+    "address": "Dahshour, Egypt, Middle East",
+    "country": "Egypt",
+    "region": "Middle East",
+    "years": [
+      "2023"
+    ],
+    "latitude": 29.7971,
+    "longitude": 31.2433,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/dashour/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/dashour.jpg"
+  },
+  {
+    "id": "466",
+    "title": "Siwa",
+    "address": "Siwa, Egypt, Middle East",
+    "country": "Egypt",
+    "region": "Middle East",
+    "years": [
+      "2023"
+    ],
+    "latitude": 29.2032,
+    "longitude": 25.5195,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/siwa/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/siwa.jpg"
+  },
+  {
+    "id": "467",
+    "title": "Lephis Village",
+    "address": "Lephis Village, Ethiopia, Africa",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "years": [
+      "2023"
+    ],
+    "latitude": 7.433333,
+    "longitude": 38.866667,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/lephis/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/lephis.jpg"
+  },
+  {
+    "id": "468",
+    "title": "Tokaj",
+    "address": "Tokaj, Hungary, Europe",
+    "country": "Hungary",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 48.117512,
+    "longitude": 21.409758,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/tokaj/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/tokaj-.jpg"
+  },
+  {
+    "id": "469",
+    "title": "Dhordo",
+    "address": "Dhordo, India, Asia-Pacific",
+    "country": "India",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 23.787014,
+    "longitude": 69.512986,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/dhordo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/dhordo.jpg"
+  },
+  {
+    "id": "470",
+    "title": "Penglipuran",
+    "address": "Penglipuran, Indonesia, Asia-Pacific",
+    "country": "Indonesia",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": -8.423172,
+    "longitude": 115.360983,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/penglipuran/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/penglipuran.jpg"
+  },
+  {
+    "id": "471",
+    "title": "Kandovan",
+    "address": "Kandovan, Iran, Asia-Pacific",
+    "country": "Iran",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 37.795486,
+    "longitude": 46.250027,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kandovan/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/kandovan.jpg"
+  },
+  {
+    "id": "472",
+    "title": "Lerici",
+    "address": "Lerici, Italy, Europe",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 44.075662,
+    "longitude": 9.918009,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/lerici/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/lerici.jpg"
+  },
+  {
+    "id": "473",
+    "title": "Biei",
+    "address": "Biei, Japan, Asia-Pacific",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 43.594655,
+    "longitude": 142.46814,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/biei/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/biei.jpg"
+  },
+  {
+    "id": "474",
+    "title": "Shirakawa",
+    "address": "Shirakawa, Japan, Asia-Pacific",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 36.28419,
+    "longitude": 136.90233,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/shirakawa/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/shirakawa.jpg"
+  },
+  {
+    "id": "475",
+    "title": "Oku-Matsushima",
+    "address": "Oku-Matsushima, Japan, Asia-Pacific",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 38.37784,
+    "longitude": 141.163271,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/oku-matsushima/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/oku-matsushima.jpg"
+  },
+  {
+    "id": "476",
+    "title": "Hakuba",
+    "address": "Hakuba, Japan, Asia-Pacific",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 36.69274,
+    "longitude": 137.817847,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/hakuba/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/hakuba.jpg"
+  },
+  {
+    "id": "477",
+    "title": "Al Sela",
+    "address": "Al Sela, Jordan, Middle East",
+    "country": "Jordan",
+    "region": "Middle East",
+    "years": [
+      "2023"
+    ],
+    "latitude": 30.771087,
+    "longitude": 35.584286,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/al-sela/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/alsela.jpg"
+  },
+  {
+    "id": "478",
+    "title": "Saty",
+    "address": "Saty, Kazakhstan, Europe",
+    "country": "Kazakhstan",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 43.071632,
+    "longitude": 78.407016,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/saty/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/saty-1.jpg"
+  },
+  {
+    "id": "479",
+    "title": "Douma",
+    "address": "Douma, Lebanon, Middle East",
+    "country": "Lebanon",
+    "region": "Middle East",
+    "years": [
+      "2023"
+    ],
+    "latitude": 34.202552,
+    "longitude": 35.84133,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/douma/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/douma.jpg"
+  },
+  {
+    "id": "480",
+    "title": "Higueras",
+    "address": "Higueras, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": 25.96356,
+    "longitude": -100.01441,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/higueras/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/higueras.jpg"
+  },
+  {
+    "id": "481",
+    "title": "Omitlán de Juárez",
+    "address": "Omitlán de Juárez, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": 20.166729,
+    "longitude": -98.648885,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/omitlan-de-juarez/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/omitlan-de-juarez.jpg"
+  },
+  {
+    "id": "482",
+    "title": "Jalpa de Cánovas",
+    "address": "Jalpa de Cánovas , Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": 20.879387,
+    "longitude": -101.984836,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/jalpa-de-canovas/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/jalpadecanovas.jpg"
+  },
+  {
+    "id": "483",
+    "title": "Văleni",
+    "address": "Văleni, Moldova, Europe",
+    "country": "Moldova",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 45.657368,
+    "longitude": 28.181952,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/valeni/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/valeni.jpg"
+  },
+  {
+    "id": "484",
+    "title": "Taquile",
+    "address": "Taquile, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -15.77261,
+    "longitude": -69.683364,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/taquile/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/taquile.jpg"
+  },
+  {
+    "id": "485",
+    "title": "Chavín de Huantar",
+    "address": "Chavín de Huantar, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -9.595538,
+    "longitude": -77.1756,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/chavin-de-huantar/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/chavindehuantar.jpg"
+  },
+  {
+    "id": "486",
+    "title": "Chacas",
+    "address": "Chacas, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -9.161739,
+    "longitude": -77.368908,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/chacas/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/chacas.jpg"
+  },
+  {
+    "id": "487",
+    "title": "Paucartambo",
+    "address": "Paucartambo, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -13.313947,
+    "longitude": -71.593101,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/paucartambo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/paucartambo.jpg"
+  },
+  {
+    "id": "488",
+    "title": "Pozuzo",
+    "address": "Pozuzo, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2023"
+    ],
+    "latitude": -10.067958,
+    "longitude": -75.551479,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pozuzo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/pozuzo.jpg"
+  },
+  {
+    "id": "489",
+    "title": "Sortelha",
+    "address": "Sortelha , Portugal, Europe",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 40.336601,
+    "longitude": -7.20413,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sortelha/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/sortelha.jpg"
+  },
+  {
+    "id": "490",
+    "title": "Vila da Madalena",
+    "address": "Vila da Madalena, Portugal, Europe",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 38.530011,
+    "longitude": -28.520313,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/madalena/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/madalena.jpg"
+  },
+  {
+    "id": "491",
+    "title": "Manteigas",
+    "address": "Manteigas, Portugal, Europe",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 40.402054,
+    "longitude": -7.541696,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/manteigas/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/manteigas.jpg"
+  },
+  {
+    "id": "492",
+    "title": "Ericeira",
+    "address": "Ericeira, Portugal, Europe",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 38.966953,
+    "longitude": -9.406085,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ericeira/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/ericeira.jpg"
+  },
+  {
+    "id": "493",
+    "title": "Sehwa",
+    "address": "Sehwa, Republic of Korea, Asia-Pacific",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 33.526813,
+    "longitude": 126.85637,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sehwa/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/sehwa.jpg"
+  },
+  {
+    "id": "494",
+    "title": "Dongbaek",
+    "address": "Dongbaek, Republic of Korea, Asia-Pacific",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 33.32013,
+    "longitude": 126.745166,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/dongbaek/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/dongbaek.jpg"
+  },
+  {
+    "id": "495",
+    "title": "Mosan",
+    "address": "Mosan, Republic of Korea, Asia-Pacific",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 34.989189,
+    "longitude": 126.916166,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mosan/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/mosan.jpg"
+  },
+  {
+    "id": "496",
+    "title": "Sigüenza",
+    "address": "Sigüenza, Spain, Europe",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 41.067112,
+    "longitude": -2.645941,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/siguenza/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/siguenza.jpg"
+  },
+  {
+    "id": "497",
+    "title": "Cantavieja",
+    "address": "Cantavieja, Spain, Europe",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 40.525476,
+    "longitude": -0.404343,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/cantavieja/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/cantavieja.jpg"
+  },
+  {
+    "id": "498",
+    "title": "Oñati",
+    "address": "Oñati, Spain, Europe",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 43.034028,
+    "longitude": -2.416644,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/onati/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/onati.jpg"
+  },
+  {
+    "id": "499",
+    "title": "Morcote",
+    "address": "Morcote, Switzerland, Europe",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 45.927681,
+    "longitude": 8.908466,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/morcote/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/morcote.jpg"
+  },
+  {
+    "id": "500",
+    "title": "Saint-Ursanne",
+    "address": "Saint-Ursanne, Switzerland, Europe",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 47.363149,
+    "longitude": 7.151756,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/saint-ursanne/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/st-ursanne.jpg"
+  },
+  {
+    "id": "501",
+    "title": "Şirince",
+    "address": "Şirince, Türkiye, Europe",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 37.944809,
+    "longitude": 27.431566,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sirince/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/sirince.jpg"
+  },
+  {
+    "id": "502",
+    "title": "Sentob",
+    "address": "Sentob, Uzbekistan, Europe",
+    "country": "Uzbekistan",
+    "region": "Europe",
+    "years": [
+      "2023"
+    ],
+    "latitude": 40.624495,
+    "longitude": 66.675794,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sentob/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/sentob.jpg"
+  },
+  {
+    "id": "503",
+    "title": "Tân Hoá",
+    "address": "Tân Hoá, Viet Nam, Asia-Pacific",
+    "country": "Viet Nam",
+    "region": "Asia-Pacific",
+    "years": [
+      "2023"
+    ],
+    "latitude": 17.784523,
+    "longitude": 106.060818,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/tan-hoa/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2023/10/tanhoa.jpg"
+  },
+  {
+    "id": "504",
+    "title": "Caviahue-Copahue",
+    "address": "Caviahue-Copahue, Neuquén Province, Argentina",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": null,
+    "longitude": null,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/caviahue-copahue-argentina",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Caviahue-Copahue-Argentina-02_1.jpg"
+  },
+  {
+    "id": "505",
+    "title": "Villa Tulumba",
+    "address": "Villa Tulumba, Córdoba Province, Argentina",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -30.3958649,
+    "longitude": -64.1218055,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/villa-tulumba-argentina/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/tulumba01_1.jpg"
+  },
+  {
+    "id": "506",
+    "title": "Azheke",
+    "address": "A Zhe Ke, Yuanyang County, Yunnan, Honghe Hani and Yi Autonomous Prefecture, Yunnan, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 23.102259,
+    "longitude": 102.827832,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/azheke-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Azheke03_1.jpg"
+  },
+  {
+    "id": "507",
+    "title": "Gaiman",
+    "address": "Gaiman, Chubut Province, Argentina",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -43.2895976,
+    "longitude": -65.4920111,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/gaiman-argentina/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/gaiman03_1.jpg"
+  },
+  {
+    "id": "508",
+    "title": "St. Johann in Tirol",
+    "address": "St Johann in Tirol, Austria",
+    "country": "Austria",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 47.5221901,
+    "longitude": 12.4308125,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/st-johann-in-tirol-austria/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/St.-Johann-in-Tirol-Austria-1_1.jpg"
+  },
+  {
+    "id": "509",
+    "title": "Guanyang",
+    "address": "Guanyang, Guilin, Guangxi, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 25.6653699,
+    "longitude": 111.30531,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/guanyang-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2024/11/Guanyang_2024_MINI-300x282.jpg"
+  },
+  {
+    "id": "510",
+    "title": "Ralco",
+    "address": "Ralco, Alto Biobío, Chile",
+    "country": "Chile",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -37.896187,
+    "longitude": -71.618017,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ralco-chile/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Sin-titulo-1_1.jpg"
+  },
+  {
+    "id": "511",
+    "title": "Shibadong",
+    "address": "Shibadong, Zhongshan, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 22.4615199,
+    "longitude": 113.40281,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/shibadong-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Shibadong-China-1_1.jpg"
+  },
+  {
+    "id": "512",
+    "title": "Xitou",
+    "address": "Xitou Nature Education Area, 森林巷 Lugu Township, Nantou County, Taiwan",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 23.6745178,
+    "longitude": 120.7972515,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/xitou-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Xitou-China-1-1-scaled_1.jpg"
+  },
+  {
+    "id": "513",
+    "title": "Xiaogang",
+    "address": "Xiaogang, Susong County, Anqing, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 30.077846,
+    "longitude": 116.463908,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/xiaogang-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Xiaogang-China-2-scaled_1.jpg"
+  },
+  {
+    "id": "514",
+    "title": "Yandunjiao",
+    "address": "Yandunjiao Cultural Plaza, 正北方向160米 331, Rongcheng, Weihai, Shandong, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 37.29444999999999,
+    "longitude": 122.56591,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/yandunjiao-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Yandunjiao-China-1-scaled_1.jpg"
+  },
+  {
+    "id": "515",
+    "title": "Mindo",
+    "address": "Mindo, Ecuador",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -0.048717,
+    "longitude": -78.775198,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mindo-ecuador/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/mindo02_1.jpg"
+  },
+  {
+    "id": "516",
+    "title": "Abu Ghosoun",
+    "address": "Abu Ghosoun port, Road, Marsa Alam, Egypt",
+    "country": "Egypt",
+    "region": "Middle East",
+    "years": [
+      "2024"
+    ],
+    "latitude": 24.45350950000001,
+    "longitude": 35.20585440000001,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/abou-ghasoun-egypt/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Abu-Ghosoun-01_1.jpg"
+  },
+  {
+    "id": "517",
+    "title": "Mura",
+    "address": "Mura, Spain",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 41.6998359,
+    "longitude": 1.9768377,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mura-spain/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Mura-Spain-3-scaled_1.jpg"
+  },
+  {
+    "id": "518",
+    "title": "Palizada",
+    "address": "Palizada, Campeche, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 18.2545777,
+    "longitude": -92.0914799,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/palizada-mexico/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/palizada03_1.jpg"
+  },
+  {
+    "id": "519",
+    "title": "Jatiluwih",
+    "address": "Jatiluwih Rice Terraces, Jalan Jatiluwih Kawan, Jatiluwih, Tabanan Regency, Bali, Indonesia",
+    "country": "Indonesia",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": -8.37031,
+    "longitude": 115.131372,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/jatiluwih-indonesia/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Jatiluwih-Indonesia-1-scaled_1.jpg"
+  },
+  {
+    "id": "520",
+    "title": "Wukirsari",
+    "address": "Wukirsari, Bantul Regency, Special Region of Yogyakarta, Indonesia",
+    "country": "Indonesia",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": -7.9068968,
+    "longitude": 110.4142923,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/wukirsari-indonesia/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Wukirsari-Indonesia-2-scaled_1.jpg"
+  },
+  {
+    "id": "521",
+    "title": "San Casciano dei Bagni",
+    "address": "San Casciano dei Bagni, Province of Siena, Italy",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 42.8678287,
+    "longitude": 11.8775215,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/san-casciano-dei-bagni-italy/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/San-Casciano-scaled_1.jpg"
+  },
+  {
+    "id": "522",
+    "title": "Nishikawa",
+    "address": "Nishikawaguchi, Kawaguchi, Saitama, Japan",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 35.8107048,
+    "longitude": 139.7026251,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/nishikawa-japan/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Nishikawa-Japan-1-scaled_1.jpg"
+  },
+  {
+    "id": "523",
+    "title": "Amagi",
+    "address": "Amagi, Asakura, Fukuoka, Japan",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 33.4213242,
+    "longitude": 130.6560528,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/amagi-japan/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/8-1-scaled_1.jpg"
+  },
+  {
+    "id": "524",
+    "title": "Portobelo",
+    "address": "Portobelo, Panama",
+    "country": "Panama",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 9.5488889,
+    "longitude": -79.6530174,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/portobelo-panama/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/portobelo03_1.jpg"
+  },
+  {
+    "id": "525",
+    "title": "Huancaya",
+    "address": "Huancaya, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -12.2037852,
+    "longitude": -75.79891669999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/huancaya-peru/ ",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/huancaya-01_1.jpg"
+  },
+  {
+    "id": "526",
+    "title": "Leymebamba",
+    "address": "Leymebamba, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -6.707574399999999,
+    "longitude": -77.8035929,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/leymebamba-peru/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Leymebamba-Peru01_1.jpg"
+  },
+  {
+    "id": "527",
+    "title": "Pueblo de Maras",
+    "address": "Maras, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -13.3355616,
+    "longitude": -72.1570098,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pueblo-de-maras-peru/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Pueblo-de-Maras-03_1.jpg"
+  },
+  {
+    "id": "528",
+    "title": "Quinua",
+    "address": "Quinua, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -13.0502134,
+    "longitude": -74.13944219999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/quinua-peru/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/quinua01_1.jpg"
+  },
+  {
+    "id": "529",
+    "title": "Sibayo",
+    "address": "Sibayo, Peru",
+    "country": "Peru",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -15.3042718,
+    "longitude": -71.59613279999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/sibayo-peru/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/SIBAYO01_1.jpg"
+  },
+  {
+    "id": "530",
+    "title": "Romoos",
+    "address": "Romoos, Switzerland",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 47.01106859999999,
+    "longitude": 8.0276847,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/romoos-switzerland/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Screenshot-2024-11-15-010624-1_1.jpg"
+  },
+  {
+    "id": "531",
+    "title": "Ormana",
+    "address": "Ormana, İbradı/Antalya, Türkiye",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 37.074165,
+    "longitude": 31.58217999999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ormana-turkiye/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/07/imgi_4_Antalya_Ormana_Koy_Dugmeli_Evleri-15-scaled-1.jpg"
+  },
+  {
+    "id": "532",
+    "title": "Vorokhta",
+    "address": "Vorokhta, Ivano-Frankivsk Oblast, Ukraine",
+    "country": "Ukraine",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 48.2834458,
+    "longitude": 24.5670568,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/vorokhta-ukraine/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Vorokhta-1-scaled_1.jpg"
+  },
+  {
+    "id": "533",
+    "title": "Urych",
+    "address": "Urych, Lviv Oblast, Ukraine",
+    "country": "Ukraine",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 49.1822032,
+    "longitude": 23.4051376,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/urych-ukraine/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/2016_Roman-Barabakh-scaled_1.jpg"
+  },
+  {
+    "id": "534",
+    "title": "Tra Que Vegetable Village",
+    "address": "Tra Que Vegetable Village, Cẩm Hà, Hội An, Quảng Nam, Viet Nam",
+    "country": "Viet Nam",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 15.9023568,
+    "longitude": 108.337635,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/tra-que-vegetable-village-viet-nam/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Tra-Que-Vegetable-Village-Viet-Nam-1-scaled_1.jpg"
+  },
+  {
+    "id": "535",
+    "title": "Abo Noghta Castles & Historic Tabab",
+    "address": "Abo Noghta castles, Tabab Saudi Arabia",
+    "country": "Saudi Arabia",
+    "region": "Middle East",
+    "years": [
+      "2024"
+    ],
+    "latitude": 18.3743587,
+    "longitude": 42.37788150000001,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/abo-noghta-castles-historic-tabab-saudi-arabia/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/TABAD01_2.jpg"
+  },
+  {
+    "id": "536",
+    "title": "Aínsa",
+    "address": "Aínsa, Spain",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 42.4146941,
+    "longitude": 0.1403811,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ainsa-spain/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/8-scaled_1.jpg"
+  },
+  {
+    "id": "537",
+    "title": "Anogeia",
+    "address": "Anogeia, Greece",
+    "country": "Greece",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 35.3426875,
+    "longitude": 24.4855112,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/anogeia-greece/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/anogeia01_1.jpg"
+  },
+  {
+    "id": "538",
+    "title": "Bo Suak",
+    "address": "Bo Suak, Mueang Nan District, Nan, Thailand",
+    "country": "Thailand",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 18.7296988,
+    "longitude": 100.6309169,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bo-suak-thailand/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Bo-Suak-Thailand-1-scaled_1.jpg"
+  },
+  {
+    "id": "539",
+    "title": "Capulálpam de Méndez",
+    "address": "Capulalpam de Méndez, Oaxaca, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 17.3040094,
+    "longitude": -96.44701189999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/capulalpam-de-mendez-mexico/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/CAPULALPAM-7401_1.jpg"
+  },
+  {
+    "id": "540",
+    "title": "Cuatro Ciénegas de Carranza",
+    "address": "Cuatro Ciénegas de Carranza, Coahuila, Mexico",
+    "country": "Mexico",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 26.9875727,
+    "longitude": -102.0650887,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/cuatro-cienegas-mexico/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Cuatro-Cienegas-01_1.jpg"
+  },
+  {
+    "id": "541",
+    "title": "El Tambo",
+    "address": "El Tambo, Ecuador",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -2.5142583,
+    "longitude": -78.92599550000001,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/el-tambo-ecuador/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/el-tambo-02_1.jpg"
+  },
+  {
+    "id": "542",
+    "title": "El Valle de Antón",
+    "address": "El Valle de Antón, Panama",
+    "country": "Panama",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 8.6097836,
+    "longitude": -80.1316927,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/el-valle-de-anton-panama/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/valle-anton-03_1.jpg"
+  },
+  {
+    "id": "543",
+    "title": "Esfahak",
+    "address": "Esfahak, یزد، Iran",
+    "country": "Iran",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 33.3843995,
+    "longitude": 57.1943715,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/esfahak-islamic-republic-of-iran/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Esfahak-1_1.jpg"
+  },
+  {
+    "id": "544",
+    "title": "Gharb Suhayl",
+    "address": "Gharb Suhayl, Egypt",
+    "country": "Egypt",
+    "region": "Middle East",
+    "years": [
+      "2024"
+    ],
+    "latitude": 24.0511097,
+    "longitude": 32.859085,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/gharb-suhayl-egypt/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/ordino-24_1.jpg"
+  },
+  {
+    "id": "546",
+    "title": "Grand Baie",
+    "address": "Grand Baie, Mauritius",
+    "country": "Mauritius",
+    "region": "Africa",
+    "years": [
+      "2024"
+    ],
+    "latitude": -20.0089204,
+    "longitude": 57.5816352,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/grand-baie-mauritius/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/GB-02_1.jpg"
+  },
+  {
+    "id": "547",
+    "title": "Jardín",
+    "address": "Jardín, Antioquia, Colombia",
+    "country": "Colombia",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 5.598813199999999,
+    "longitude": -75.8198172,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/jardin-colombia/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/jardin01_1.jpg"
+  },
+  {
+    "id": "548",
+    "title": "Kalopanagiotis",
+    "address": "Kalopanagiotis, Cyprus",
+    "country": "Cyprus",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 34.9916085,
+    "longitude": 32.8282406,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kalopanagiotis-cyprus/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Kalopanagiotis-Cyprus-2-scaled_1.jpg"
+  },
+  {
+    "id": "549",
+    "title": "Obidos",
+    "address": "Óbidos, Portugal",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 39.3572399,
+    "longitude": -9.1578614,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/obidos-portugal/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/OBIDOS01_1.jpg"
+  },
+  {
+    "id": "550",
+    "title": "Pissouri",
+    "address": "Pissouri, Cyprus",
+    "country": "Cyprus",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 34.6767071,
+    "longitude": 32.6992551,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pissouri-cyprus/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Pissouri-Cyprus-3_1.jpg"
+  },
+  {
+    "id": "551",
+    "title": "Roches Noires",
+    "address": "Roches Noires, Mauritius",
+    "country": "Mauritius",
+    "region": "Africa",
+    "years": [
+      "2024"
+    ],
+    "latitude": -20.1100712,
+    "longitude": 57.72610419999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/roches-noires-mauritius/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/8-3_1.jpg"
+  },
+  {
+    "id": "552",
+    "title": "Ruboni",
+    "address": "Ruboni Community Camp, Uganda",
+    "country": "Uganda",
+    "region": "Africa",
+    "years": [
+      "2024"
+    ],
+    "latitude": 0.3504855,
+    "longitude": 30.02910140000001,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ruboni-uganda/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Ruboni-01_1.jpg"
+  },
+  {
+    "id": "553",
+    "title": "San Juan del Obispo",
+    "address": "San Juan del Obispo, Guatemala",
+    "country": "Guatemala",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 14.5221663,
+    "longitude": -90.72833539999999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/san-juan-del-obispo-guatemala/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/san-juan02_1.jpg"
+  },
+  {
+    "id": "554",
+    "title": "San Rafael de la Laguna",
+    "address": "San Rafael de la Laguna, Ecuador",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 0.1916347,
+    "longitude": -78.2298139,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/san-rafael-de-la-laguna-ecuador/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/SAN-RAFAEL-02_1.jpg"
+  },
+  {
+    "id": "555",
+    "title": "Santa Cruz da Graciosa",
+    "address": "Santa Cruz da Graciosa, Portugal",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 39.0862753,
+    "longitude": -28.0156811,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/santa-cruz-da-graciosa-portugal/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/SANTACRUZ01_1.jpg"
+  },
+  {
+    "id": "556",
+    "title": "Splügen",
+    "address": "Splügen, Rheinwald, Switzerland",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2024"
+    ],
+    "latitude": 46.5528268,
+    "longitude": 9.3233581,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/splugen-switzerland/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Splugen-Switzerland-1-scaled_1.jpg"
+  },
+  {
+    "id": "557",
+    "title": "Taoping",
+    "address": "Taopingxiang, Li County, Sichuan, Ngawa Tibetan and Qiang Autonomous Prefecture, Sichuan, China",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2024"
+    ],
+    "latitude": 31.55769999999999,
+    "longitude": 103.45092,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/taoping-china/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Taoping-China-1-scaled_1.jpg"
+  },
+  {
+    "id": "558",
+    "title": "Trevelin",
+    "address": "Trevelin, Chubut Province, Argentina",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": -43.0888123,
+    "longitude": -71.4625883,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/trevelin-argentina/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/trevelin02_1.jpg"
+  },
+  {
+    "id": "559",
+    "title": "Uaxactún",
+    "address": "Uaxactun, Guatemala",
+    "country": "Guatemala",
+    "region": "The Americas",
+    "years": [
+      "2024"
+    ],
+    "latitude": 17.3948975,
+    "longitude": -89.6334028,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/uaxactun-guatemala/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/06/Uaxactun03_1.jpg"
+  },
+  {
+    "id": "560",
+    "title": "Mórahalom",
+    "address": "Mórahalom, Hungary",
+    "country": "Hungary",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 46.2167,
+    "longitude": 19.8833,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/morahalom/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Morahalom_MINI.jpg"
+  },
+  {
+    "id": "561",
+    "title": "Agaete",
+    "address": "Spain, Las Palmas de Gran Canaria",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 28.09929883,
+    "longitude": -15.69796259,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/agaete/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Agaete_MINI-768x722.jpg"
+  },
+  {
+    "id": "562",
+    "title": "Akyaka",
+    "address": "Türkiye, Akyaka Village of Ula Municipality, Muğla Metropolitan Municipality",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 37.0469,
+    "longitude": 28.3283,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/akyaka/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Akyaka_MINI-768x722.jpg"
+  },
+  {
+    "id": "563",
+    "title": "Aldea San Cristóbal El Alto",
+    "address": "Guatemala, Aldea San Cristóbal El Alto",
+    "country": "Guatemala",
+    "region": "The Americas",
+    "years": [
+      "2025"
+    ],
+    "latitude": 17.461653,
+    "longitude": -90.056213,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/san-cristobal-el-alto/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/San-Cristobal-el-alto_MINI-768x722.jpg"
+  },
+  {
+    "id": "564",
+    "title": "Anıtlı",
+    "address": "Türkiye, Anıtlı Village",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 37.47823584,
+    "longitude": 41.61338807,
+    "detailUrl": "https://tourism-villages.unwto.org/en/?p=23962&preview=true",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Anitli_MINI-768x722.jpg"
+  },
+  {
+    "id": "566",
+    "title": "Arquà Petrarca",
+    "address": "Italy, Veneto, Padua",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 45.268889,
+    "longitude": 11.720278,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/arqua-petrarca/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Arqua-Petrarca_MINI-768x722.jpg"
+  },
+  {
+    "id": "567",
+    "title": "Asolo",
+    "address": "Italy, Veneto",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 45.80222,
+    "longitude": 11.912378,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/asolo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Asolo_MINI-768x722.jpg"
+  },
+  {
+    "id": "568",
+    "title": "Asuka",
+    "address": "Japan, Nara prefecture",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 34.4704,
+    "longitude": 135.8124,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/asuka/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Asuka-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "570",
+    "title": "Barbaros",
+    "address": "Türkiye, İzmir Metropolitan Municipality",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 38.32245,
+    "longitude": 26.5806,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/barbaros/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Barbaros_MINI-768x722.jpg"
+  },
+  {
+    "id": "571",
+    "title": "Bellano",
+    "address": "Italy, Lombardy",
+    "country": "Italy",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 46.0464,
+    "longitude": 9.3046,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bellano/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Bellano_MINI-300x282.jpg"
+  },
+  {
+    "id": "572",
+    "title": "Bled",
+    "address": "Slovenia",
+    "country": "Slovenia",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 46.3616,
+    "longitude": 14.0952,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/bled/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Bled_MINI-768x722.jpg"
+  },
+  {
+    "id": "573",
+    "title": "Carlos Pellegrini",
+    "address": "Argentina, Provincia de Corrientes",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2025"
+    ],
+    "latitude": -28.53516675,
+    "longitude": -57.17385729,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/carlos-pellegrini/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Carlos-Pellegrini_MINI-768x722.jpg"
+  },
+  {
+    "id": "574",
+    "title": "Chamarel",
+    "address": "Mauritius, District of Black River",
+    "country": "Mauritius",
+    "region": "Africa",
+    "years": [
+      "2025"
+    ],
+    "latitude": -20.4251,
+    "longitude": 57.3917,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/chamarel/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/10/Chamarel_MINI-300x282.jpg"
+  },
+  {
+    "id": "575",
+    "title": "Digang Village",
+    "address": "China, Hefu Town, Nanxun District, Huzhou City, Zhejiang Province",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 30.7573,
+    "longitude": 120.1588,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/digang-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Digang-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "576",
+    "title": "Dongluo Village",
+    "address": "Xinghua City (County-level), Taizhou Municipality, Jiangsu Province",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 33.0397,
+    "longitude": 119.7999,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/dongluo-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Dongluo-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "577",
+    "title": "Ezcaray",
+    "address": "La Rioja",
+    "country": "Spain",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 42.32705889,
+    "longitude": -3.015599699,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/ezcaray/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Ezcaray_MINI-768x722.jpg"
+  },
+  {
+    "id": "578",
+    "title": "Flößerstadt Schiltach",
+    "address": "Baden-Württemberg",
+    "country": "Germany",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 48.29190383,
+    "longitude": 8.346585041,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/floserstadt-schiltach/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/22-Floserstadt-Schiltach_MINI-768x722.jpg"
+  },
+  {
+    "id": "579",
+    "title": "Grand River South East",
+    "address": "THE DISTRICT COUNCIL OF FLACQ",
+    "country": "Mauritius",
+    "region": "Africa",
+    "years": [
+      "2025"
+    ],
+    "latitude": -20.28880401,
+    "longitude": 57.78156334,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/grand-river-south-east/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/10/Grand-River-South-East_MINI.jpg"
+  },
+  {
+    "id": "580",
+    "title": "Hosszúhetény",
+    "address": "Baranya County",
+    "country": "Hungary",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 46.1347,
+    "longitude": 18.3736,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/hosszuheteny/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Hosszuheteny_MINI-300x282.jpg"
+  },
+  {
+    "id": "581",
+    "title": "Huanggang Village",
+    "address": "Shuangjiang Town, Liping County, Qiandongnan Miao and Dong Autonomous Prefecture, Guizhou Province",
+    "country": "Chine",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 25.92,
+    "longitude": 108.97,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/huanggang-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Huanggang-Village_MINI-300x282.jpg"
+  },
+  {
+    "id": "582",
+    "title": "Jikayi Village",
+    "address": "Jikayi Village，Mo'erduoshan Town, Danba County, Ganzi Tibetan Autonomous Prefecture, Sichuan Province",
+    "country": "China",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 30.888,
+    "longitude": 101.9255,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/jikayi-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Jikayi-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "583",
+    "title": "Kale Üçağız",
+    "address": "Kale Üçağız, Demre, Antalya",
+    "country": "Türkiye",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 36.198874,
+    "longitude": 29.845878,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kale-ucagiz/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Kale-Ucagiz_MINI-768x722.jpg"
+  },
+  {
+    "id": "584",
+    "title": "Kandelous",
+    "address": "Yazd province",
+    "country": "Iran",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 36.32332685,
+    "longitude": 51.56591037,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kandelous/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Kandelous-MINI-768x722.jpg"
+  },
+  {
+    "id": "585",
+    "title": "Kaštelir Labinci",
+    "address": "Istarska županija (County of Istria)",
+    "country": "Croatia",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 45.30415,
+    "longitude": 13.68914,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kastelir-labinci/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Kastelir-Labinci_MINI-768x722.jpg"
+  },
+  {
+    "id": "586",
+    "title": "Khinalig",
+    "address": "Guba District",
+    "country": "Azerbaijan",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 44.618611,
+    "longitude": 17.143333,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/khinalig/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Khinalig_MINI-768x722.jpg"
+  },
+  {
+    "id": "587",
+    "title": "Kolochava",
+    "address": "Transcarpathian region",
+    "country": "Ukraine",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 48.41926834,
+    "longitude": 23.73746808,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/kolochava/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Kolochava_MINI-768x722.jpg"
+  },
+  {
+    "id": "588",
+    "title": "Koyasan",
+    "address": "Koyasan, Koya District Ito County Wakayama Prefecture",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 34.216071,
+    "longitude": 135.586562,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/koyasan/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/13-Koyasan_MINI-768x722.jpg"
+  },
+  {
+    "id": "589",
+    "title": "Krupa na Vrbasu",
+    "address": "BANJA LUKA - Municipality",
+    "country": "Bosnia and Herzegovina",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 44.618611,
+    "longitude": 17.143333,
+    "detailUrl": "https://tourism-villages.unwto.org/en/?p=24122&preview=true",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Krupa-na-Vrbasu_MINI-768x722.jpg"
+  },
+  {
+    "id": "590",
+    "title": "Lô Lô Chải",
+    "address": "Lũng Cú, Đồng Văn, Hà Giang, Viet Nam",
+    "country": "Viet Nam",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 23.1636,
+    "longitude": 105.4041,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/lo-lo-chai/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Lo-Lo-Chai_MINI-768x722.jpg"
+  },
+  {
+    "id": "591",
+    "title": "Loriga",
+    "address": "Centro region/ Guarda district / Seia municipality",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 40.326944,
+    "longitude": -7.690556,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/loriga/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Loriga_MINI-768x722.jpg"
+  },
+  {
+    "id": "592",
+    "title": "Maimará",
+    "address": "Provincia de Jujuy",
+    "country": "Argentina",
+    "region": "The Americas",
+    "years": [
+      "2025"
+    ],
+    "latitude": -23.624829,
+    "longitude": -65.408173,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/maimara/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Maimara_MINI-768x722.jpg"
+  },
+  {
+    "id": "593",
+    "title": "Marktgemeinde Bad Hindelang",
+    "address": "Bavaria, District Oberallgau",
+    "country": "Germany",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 47.50629,
+    "longitude": 10.369925,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/marktgemeinde-bad-hindelang/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Marktgemeinde-Bad-Hindelang_MINI-768x722.jpg"
+  },
+  {
+    "id": "594",
+    "title": "Masfout",
+    "address": "Ajman",
+    "country": "United Arab Emirates",
+    "region": "Middle East",
+    "years": [
+      "2025"
+    ],
+    "latitude": 24.81601194,
+    "longitude": 56.098,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/masfout/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Masfout_MINI-768x722.jpg"
+  },
+  {
+    "id": "595",
+    "title": "Mértola",
+    "address": "Mértola municipality",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 37.642394,
+    "longitude": -7.65735,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/mertola/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Mertola_MINI.jpg"
+  },
+  {
+    "id": "596",
+    "title": "Muju Village",
+    "address": "Muju-eup, Muju-gun, Jeonbuk-do, Republic of Korea",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 36.0072,
+    "longitude": 127.6606,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/muju-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Muju-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "597",
+    "title": "Murillo",
+    "address": "Tolima",
+    "country": "Colombia",
+    "region": "The Americas",
+    "years": [
+      "2025"
+    ],
+    "latitude": 4.873611,
+    "longitude": -75.170556,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/murillo/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Murillo_MINI-768x722.jpg"
+  },
+  {
+    "id": "598",
+    "title": "Neot Semadar",
+    "address": "Southern Arava",
+    "country": "Israel",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 30.04825,
+    "longitude": 35.02785,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/neot-semadar/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Neot-Semadar_MINI-300x282.jpg"
+  },
+  {
+    "id": "599",
+    "title": "North Azraq",
+    "address": "Hashemite Kingdom of Jordan / Zarqa Governorate / Azraq District / Azraq Municipality",
+    "country": "Jordan",
+    "region": "Middle East",
+    "years": [
+      "2025"
+    ],
+    "latitude": 31.8809715,
+    "longitude": 36.83108762,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/north-azraq/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/North-Azraq_MINI-768x722.jpg"
+  },
+  {
+    "id": "600",
+    "title": "Pacto",
+    "address": "Pichincha/Distrito Metropolitano de Quito",
+    "country": "Ecuador",
+    "region": "The Americas",
+    "years": [
+      "2025"
+    ],
+    "latitude": 0.141684,
+    "longitude": -78.767431,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pacto/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Pacto_MINI-300x282.jpg"
+  },
+  {
+    "id": "601",
+    "title": "Pemuteran",
+    "address": "Buleleng, Bali",
+    "country": "Indonesia",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": -8.14487,
+    "longitude": 114.64513,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pemuteran/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Pemuteran_MINI-768x722.jpg"
+  },
+  {
+    "id": "602",
+    "title": "Plateliai",
+    "address": "Plunge municipality",
+    "country": "Lithuania",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 56.042904,
+    "longitude": 21.815747,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/plateliai/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Plateliai_MINI-300x282.jpg"
+  },
+  {
+    "id": "603",
+    "title": "Pont-Croix",
+    "address": "Région Bretagne Département du Finistère Municipality of Pont-Croix",
+    "country": "France",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 48.04155415,
+    "longitude": -4.487528652,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/pont-croix/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Pont-Croix_MINI-1-768x722.jpg"
+  },
+  {
+    "id": "604",
+    "title": "Quynh Son Community-based Tourism Village",
+    "address": "Bac Quynh Commune, Bac Son District, Lang Son Province, Viet Nam",
+    "country": "Viet Nam",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 21.905611,
+    "longitude": 106.339139,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/quynh-son-community-based-tourism-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Quynh-Son-Community-based-Tourism-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "605",
+    "title": "Shafiabad",
+    "address": "Kerman province- Shahdad city",
+    "country": "Iran",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 30.54531733,
+    "longitude": 57.77139582,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/shafiabad/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/shafiabad_MINI-300x282.jpg"
+  },
+  {
+    "id": "606",
+    "title": "Shodoshima",
+    "address": "Shodoshima Town is a remote island located in the Seto Inland Sea and is part of Kagawa Prefecture",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 34.47986544,
+    "longitude": 134.2524946,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/shodoshima/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Shodoshima_MINI-768x722.jpg"
+  },
+  {
+    "id": "607",
+    "title": "Soheili",
+    "address": "Hormozgan-Qeshm island",
+    "country": "Iran",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 26.75651124,
+    "longitude": 55.78788074,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/soheili/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Soheili_MINI-768x722.jpg"
+  },
+  {
+    "id": "608",
+    "title": "Synevyrska Polyana",
+    "address": "Transcarpathia",
+    "country": "Ukraine",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 48.5844,
+    "longitude": 23.6864,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/synevyrska-polyana/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Synevyrska-Polyana_MINI-768x722.jpg"
+  },
+  {
+    "id": "609",
+    "title": "Tonosho",
+    "address": "Kagawa",
+    "country": "Japan",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 34.4868,
+    "longitude": 134.1888,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/tonosho/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Tonosho_MINI-768x722.jpg"
+  },
+  {
+    "id": "610",
+    "title": "Valendas",
+    "address": "Surselva, Safiental, Graubünden, Switzerland",
+    "country": "Switzerland",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 46.78805,
+    "longitude": 9.28347,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/valendas/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Valendas_MINI-768x722.jpg"
+  },
+  {
+    "id": "611",
+    "title": "Vila Nogueira de Azeitão",
+    "address": "Setúbal / Setúbal / Azeitão",
+    "country": "Portugal",
+    "region": "Europe",
+    "years": [
+      "2025"
+    ],
+    "latitude": 38.518806,
+    "longitude": -9.013634,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/vila-nogueira-de-azeitao/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/6-Vila-Nogueira-de-Azeitao_MINI-768x722.jpg"
+  },
+  {
+    "id": "612",
+    "title": "Yangsuri Village",
+    "address": "Gyeonggi-do",
+    "country": "Republic of Korea",
+    "region": "Asia-Pacific",
+    "years": [
+      "2025"
+    ],
+    "latitude": 37.541343,
+    "longitude": 127.324152,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/yangsuri-village/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/09/Yangsuri-Village_MINI-768x722.jpg"
+  },
+  {
+    "id": "613",
+    "title": "Antônio Prado",
+    "address": "Rio Grande do Sul",
+    "country": "Brazil",
+    "region": "The Americas",
+    "years": [
+      "2025"
+    ],
+    "latitude": -28.8568,
+    "longitude": -51.2823,
+    "detailUrl": "https://tourism-villages.unwto.org/en/villages/antonio-prado/",
+    "imageUrl": "https://tourism-villages.unwto.org/wp-content/uploads/2025/10/Antonio-Prado_MINI-768x722.jpg"
+  }
+]

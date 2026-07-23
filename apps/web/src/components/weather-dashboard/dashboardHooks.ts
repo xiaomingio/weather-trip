@@ -1,18 +1,19 @@
 /**
  * 文件说明: 提供天气工具两个 React 页面组件复用的浏览器偏好、地区选项、城市预报和延迟刷新状态 Hook。
- * 对应文档: docs/data-flow.md
+ * 对应文档: docs/plans/free-static-data-plan.md
  */
 
 import { useEffect, useState } from 'react';
 import type { DailyForecast, RegionKey } from 'weather-core/types';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
+import { loadWeatherSnapshot } from '@/domain/weather-data-source';
 import {
   readStoredTemperatureUnit,
   saveLocalePreference,
   temperatureUnitChangeEvent
 } from '@/domain/site-prefs';
-import type { CityForecastPayload, RegionsPayload, SubregionsPayload, WeatherRegionOption } from '@/domain/weather-dashboard-shared';
-import { buildCityForecastApiUrl, buildRegionsApiUrl, buildSubregionsApiUrl } from './dashboardApi';
+import type { WeatherRegionOption } from '@/domain/weather-dashboard-shared';
+import { buildCityForecastPayload, buildRegionsPayload, buildSubregionsPayload } from '@/domain/weather-dashboard-payload';
 
 export function useDelayedFlag(active: boolean, delayMs: number): boolean {
   const [visible, setVisible] = useState(false);
@@ -70,41 +71,38 @@ export function useRegionOptions(
   useEffect(() => {
     if (!isBrowserReady) return;
 
-    const controller = new AbortController();
+    let cancelled = false;
     void (async () => {
       try {
-        const response = await fetch(buildRegionsApiUrl(locale), {
-          signal: controller.signal
-        });
-        if (!response.ok) return;
-        const payload = (await response.json()) as RegionsPayload;
-        setPrimaryRegionOptions(payload.regions);
+        const snapshot = await loadWeatherSnapshot();
+        if (!cancelled) setPrimaryRegionOptions(buildRegionsPayload(snapshot, { locale, searchParams: new URLSearchParams() }).regions);
       } catch {
-        if (!controller.signal.aborted) setPrimaryRegionOptions([]);
+        if (!cancelled) setPrimaryRegionOptions([]);
       }
     })();
 
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [isBrowserReady, locale]);
 
   useEffect(() => {
     if (!isBrowserReady) return;
 
-    const controller = new AbortController();
+    let cancelled = false;
     void (async () => {
       try {
-        const response = await fetch(buildSubregionsApiUrl(locale, primaryRegion), {
-          signal: controller.signal
-        });
-        if (!response.ok) return;
-        const payload = (await response.json()) as SubregionsPayload;
-        setSubRegionOptions(payload.subRegions);
+        const snapshot = await loadWeatherSnapshot();
+        const searchParams = new URLSearchParams({ region: primaryRegion });
+        if (!cancelled) setSubRegionOptions(buildSubregionsPayload(snapshot, { locale, searchParams }).subRegions);
       } catch {
-        if (!controller.signal.aborted) setSubRegionOptions([]);
+        if (!cancelled) setSubRegionOptions([]);
       }
     })();
 
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [isBrowserReady, locale, primaryRegion]);
 
   return { primaryRegionOptions, subRegionOptions };
@@ -129,24 +127,23 @@ export function useSelectedCityForecasts(
       return;
     }
 
-    const controller = new AbortController();
+    let cancelled = false;
     setIsLoading(true);
     void (async () => {
       try {
-        const response = await fetch(buildCityForecastApiUrl(locale, cityId), {
-          signal: controller.signal
-        });
-        if (!response.ok) throw new Error(`City forecast request failed with ${response.status}.`);
-        const payload = (await response.json()) as CityForecastPayload;
-        if (payload.cityId === cityId) setForecasts(payload.selectedCityForecasts);
+        const snapshot = await loadWeatherSnapshot();
+        const payload = buildCityForecastPayload(snapshot, { locale, searchParams: new URLSearchParams({ cityId }) });
+        if (!cancelled && payload.cityId === cityId) setForecasts(payload.selectedCityForecasts);
       } catch {
-        if (!controller.signal.aborted) setForecasts([]);
+        if (!cancelled) setForecasts([]);
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     })();
 
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [cityId, isBrowserReady, locale]);
 
   return { forecasts, isLoading };

@@ -1,15 +1,15 @@
 /**
- * 文件说明: 并发启动所有 app 的源码开发入口，并在任一进程退出时清理整组进程。
- * 对应文档: docs/runtime.md
+ * 文件说明: 启动 Web 源码开发入口，读取已提交或手动生成的本地静态数据。
+ * 对应文档: docs/specs/51-runtime.md
  */
 import { spawn } from 'node:child_process';
 import { buildAppEnv } from './env.mjs';
 
-const apps = ['web', 'worker'];
+const apps = ['web'];
 
-function buildPackages() {
+function runCommand(command, args) {
   return new Promise((resolve, reject) => {
-    const child = spawn('npm', ['run', 'build', '--workspace', 'weather-core', '--workspace', 'weather-db'], {
+    const child = spawn(command, args, {
       cwd: process.cwd(),
       stdio: 'inherit'
     });
@@ -19,7 +19,7 @@ function buildPackages() {
         resolve();
         return;
       }
-      reject(new Error(`package build failed with ${signal ?? code}`));
+      reject(new Error(`${command} ${args.join(' ')} failed with ${signal ?? code}`));
     });
   });
 }
@@ -45,7 +45,7 @@ function startApp(app) {
 }
 
 let shuttingDown = false;
-await buildPackages();
+await runCommand('npm', ['run', 'build', '--workspace', 'weather-core']);
 const children = apps.map(startApp);
 
 function shutdown(code = 0) {

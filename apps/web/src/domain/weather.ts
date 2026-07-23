@@ -1,5 +1,5 @@
 /**
- * 文件说明: 维护 Web 工具页的天气展示标签、图例符号和筛选预设。
+ * 文件说明: 维护 Web 工具页的天气展示标签和筛选预设。
  * 对应文档: docs/product-design.md
  */
 import type { DisplayLocale } from './format';
@@ -81,19 +81,6 @@ export const weatherTypeLabels: Record<DisplayLocale, Record<WeatherType, string
     light_snow: 'Light snow',
     snow: 'Snow'
   }
-};
-
-export const weatherTypeEmoji: Record<WeatherType, string> = {
-  sunny: '☀',
-  partly_cloudy: '◐',
-  cloudy: '☁',
-  overcast: '●',
-  fog: '≋',
-  light_rain: '╎',
-  rain: '雨',
-  thunderstorm: 'ϟ',
-  light_snow: '✦',
-  snow: '雪'
 };
 
 export const allWeatherTypes = Object.keys(weatherTypeLabels.zh) as WeatherType[];

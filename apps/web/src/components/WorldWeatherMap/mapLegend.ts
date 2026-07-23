@@ -6,14 +6,14 @@
 import type { MapLayer, WeatherToolId } from 'weather-core/types';
 import type { DisplayLocale } from '@/domain/format';
 import type { MapRegionLayer } from '@/domain/regions';
-import { elevationGradient } from './mapColors';
+import { elevationGradient, precipitationColor, weatherColor, windGradient } from './mapColors';
 import type { LegendScale } from './types';
 
 export function legendDescription(tool: WeatherToolId, layer: MapLayer, regionLayer: MapRegionLayer, locale: DisplayLocale): string {
   const areaName =
-    regionLayer === 'country'
-      ? { zh: '国家/地区', en: 'country' }
-      : { zh: '地图分块', en: 'map region' };
+    regionLayer === 'world'
+      ? { zh: '全球分块', en: 'world map' }
+      : { zh: '国家分块', en: 'country map' };
 
   if (locale === 'en') {
     if (layer === 'elevation') return `${areaName.en} areas are colored by sampled elevation; city markers keep temperature context.`;
@@ -54,14 +54,16 @@ export function legendScale(tool: WeatherToolId, layer: MapLayer, locale: Displa
 
   if (layer === 'precipitation') {
     return {
-      gradient: 'linear-gradient(90deg, rgba(43, 116, 181, 0.25) 0%, rgba(43, 116, 181, 0.6) 55%, rgba(43, 116, 181, 1) 100%)',
+      gradient: `linear-gradient(90deg, ${precipitationColor(0)} 0%, ${precipitationColor(12)} 55%, ${precipitationColor(
+        24
+      )} 100%)`,
       labels: locale === 'zh' ? ['少', '中', '多'] : ['Low', 'Mid', 'High']
     };
   }
 
   if (layer === 'wind') {
     return {
-      gradient: 'linear-gradient(90deg, #59a8b2 0%, #7487aa 55%, #79629d 100%)',
+      gradient: windGradient(),
       labels: locale === 'zh' ? ['小', '中', '大'] : ['Light', 'Mid', 'Strong']
     };
   }
@@ -75,7 +77,9 @@ export function legendScale(tool: WeatherToolId, layer: MapLayer, locale: Displa
 
   if (layer === 'weather') {
     return {
-      gradient: 'linear-gradient(90deg, #e6ae2f 0%, #6d7f68 45%, #3f88c5 75%, #8fb8d8 100%)',
+      gradient: `linear-gradient(90deg, ${weatherColor('sunny')} 0%, ${weatherColor('cloudy')} 34%, ${weatherColor(
+        'overcast'
+      )} 52%, ${weatherColor('rain')} 76%, ${weatherColor('snow')} 100%)`,
       labels: locale === 'zh' ? ['晴', '阴', '雨雪'] : ['Sun', 'Cloud', 'Rain/snow']
     };
   }

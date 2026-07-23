@@ -1,0 +1,54 @@
+# 人工维护的覆盖规则。
+# 生成脚本读取本文件后输出 JSON 产物；不要直接修改 data/generated。
+
+version: 1
+
+# 城市规模预算只限制最终静态数据包，不决定国家层级人工复核名单。
+cityBudget:
+  maxCities: 5000
+  targetMinCities: 3500
+  targetMaxCities: 5000
+populationFallback:
+  globalHotspot: 35
+  major: 12
+  regional: 3
+  baseline: 1
+  largeCountryBoost:
+    - minPopulation: 1000000000
+      value: 80
+    - minPopulation: 300000000
+      value: 65
+    - minPopulation: 120000000
+      value: 45
+    - minPopulation: 60000000
+      value: 28
+
+# 国家热度粗分层，用于人口兜底和复核表排序，不直接决定 C2/C3。
+tierRules:
+  globalHotspot:
+    minTravelSeedCount: 4
+    minTravelSeedScore: 65
+  major:
+    minTravelSeedCount: 2
+    minTravelSeedScore: 24
+    minAreaSqKm: 300000
+    minPopulation: 25000000
+  regional:
+    minTravelSeedCount: 1
+    minPopulation: 3000000
+
+# C2/C3 候选规则。命中后进入复核表；C3 候选会自动进入 C2 复核，最终是否升档写在 input/country-tier-countries.yml。
+detailedCoverageRules:
+  c3:
+    minAdmin2Count: 35
+    maxAdmin2Count: 400
+    minAdmin2CityCoverageRatio: 0.55
+    minAreaSqKm: 300000
+    minSpatialScore: 3
+    minTravelSeedScore: 50
+  c2:
+    minAdmin1Count: 8
+    largeAreaSqKm: 900000
+    largeAdmin2Count: 400
+    minSpatialScore: 4
+    minTravelSeedScore: 16

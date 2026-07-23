@@ -1,29 +1,52 @@
 /**
- * 文件说明: 根据城市预报聚合国家和通用一级行政区地图区域天气。
- * 对应文档: docs/map-region-coloring.md
+ * 文件说明: 根据城市预报聚合国家、一级行政区和二级行政区地图区域天气。
+ * 对应文档: docs/specs/30-weather-coverage-design.md
  */
 import type { City, DailyForecast, RegionKey, RegionWeatherSummary, WeatherFilter, WeatherType } from 'weather-core/types';
+import { countryLabel } from './country-labels';
 import { calculateComfortScore, dayMatchesFilter } from './scoring';
-import { cityMatchesRegion, getMapRegionLayer, type MapRegionLayer } from './regions';
+import {
+  chinaCompanionAdmin2RegionForCountry,
+  cityMatchesRegion,
+  parseAdmin1Region,
+  parseAdmin2Region,
+  primaryCountryCodeForRegion
+} from './regions';
 import type { DisplayLocale } from './format';
 
 type RegionAccumulator = {
   id: string;
   level: RegionWeatherSummary['level'];
   countryCode: string;
-  partitionCode?: string;
+  admin1Code?: string;
+  admin2Code?: string;
   name: string;
   cityIds: Set<string>;
+  cityElevationIds: Set<string>;
   forecasts: DailyForecast[];
   matchDays: number;
   totalDays: number;
   elevationMetersTotal: number;
 };
 
-const countryDisplayNames = {
-  zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
-  en: new Intl.DisplayNames(['en'], { type: 'region' })
-};
+function chinaCompanionRegionForCity(city: City, activeRegion: RegionKey): Pick<RegionAccumulator, 'id' | 'level' | 'countryCode' | 'admin1Code' | 'admin2Code'> | null {
+  const companionAdmin2Region = chinaCompanionAdmin2RegionForCountry(city.countryCode);
+  if (!companionAdmin2Region) return null;
+
+  const companionAdmin2 = parseAdmin2Region(companionAdmin2Region);
+  if (!companionAdmin2) return null;
+  const selectedAdmin1 = parseAdmin1Region(activeRegion);
+  const selectedAdmin2 = parseAdmin2Region(activeRegion);
+  if (activeRegion !== 'country:CN' && selectedAdmin1?.admin1Code !== city.countryCode && selectedAdmin2?.admin1Code !== city.countryCode) return null;
+
+  return {
+    id: companionAdmin2Region,
+    level: 'admin2',
+    countryCode: 'CN',
+    admin1Code: companionAdmin2.admin1Code,
+    admin2Code: companionAdmin2.admin2Code
+  };
+}
 
 function dominantWeatherType(forecasts: DailyForecast[]): WeatherType {
   const counts = new Map<WeatherType, number>();
@@ -36,46 +59,87 @@ function dominantWeatherType(forecasts: DailyForecast[]): WeatherType {
 }
 
 function countryName(countryCode: string, locale: DisplayLocale): string {
-  return countryDisplayNames[locale].of(countryCode) ?? countryCode;
+  return countryLabel(countryCode, locale);
 }
 
-function regionIdForCity(city: City, layer: MapRegionLayer): string | null {
+function countryTierForCountry(cities: City[], countryCode: string): City['countryTier'] {
+  return cities.find((city) => city.countryCode === countryCode)?.countryTier ?? 'C1';
+}
+
+function regionIdForCity(city: City, activeRegion: RegionKey, allCities: City[]): Pick<RegionAccumulator, 'id' | 'level' | 'countryCode' | 'admin1Code' | 'admin2Code'> | null {
   if (!city.countryCode) return null;
-  if (layer === 'country') return `country:${city.countryCode}`;
-  if (!city.admin1GroupCode) return null;
-  return `partition:${city.countryCode}.${city.admin1GroupCode}`;
+  const chinaCompanionRegion = chinaCompanionRegionForCity(city, activeRegion);
+  if (chinaCompanionRegion) return chinaCompanionRegion;
+
+  const selectedAdmin1 = parseAdmin1Region(activeRegion);
+  const activeCountryCode = primaryCountryCodeForRegion(activeRegion);
+  const countryTier = countryTierForCountry(allCities, activeCountryCode ?? city.countryCode);
+
+  if ((selectedAdmin1 || activeCountryCode) && countryTier === 'C3') {
+    if (!city.admin1GroupCode || !city.admin2Code) return null;
+    return {
+      id: `admin2:${city.countryCode}.${city.admin1GroupCode}.${city.admin2Code}`,
+      level: 'admin2',
+      countryCode: city.countryCode,
+      admin1Code: city.admin1GroupCode,
+      admin2Code: city.admin2Code
+    };
+  }
+
+  const cityCountryTier = city.countryTier ?? 'C1';
+  if ((activeCountryCode && countryTier !== 'C1') || (!activeCountryCode && cityCountryTier !== 'C1')) {
+    if (!city.admin1GroupCode) return null;
+    return {
+      id: `admin1:${city.countryCode}.${city.admin1GroupCode}`,
+      level: 'admin1',
+      countryCode: city.countryCode,
+      admin1Code: city.admin1GroupCode
+    };
+  }
+
+  return {
+    id: `country:${city.countryCode}`,
+    level: 'country',
+    countryCode: city.countryCode
+  };
 }
 
-function regionNameForCity(city: City, layer: MapRegionLayer, locale: DisplayLocale): string {
-  if (layer === 'country') return countryName(city.countryCode ?? '', locale);
+function regionNameForCity(city: City, region: Pick<RegionAccumulator, 'level' | 'countryCode' | 'admin1Code'>, locale: DisplayLocale): string {
+  if (region.countryCode === 'CN' && region.admin1Code === city.countryCode && city.countryCode !== 'CN') return countryName(city.countryCode ?? '', locale);
+  const level = region.level;
+  if (level === 'country') return countryName(city.countryCode ?? '', locale);
+  if (level === 'admin2') return locale === 'zh' ? city.admin2LocalName ?? city.admin2 ?? city.admin2Code ?? '' : city.admin2 ?? city.admin2Code ?? '';
   return locale === 'zh' ? city.admin1LocalName ?? city.admin1 ?? city.admin1GroupCode ?? '' : city.admin1 ?? city.admin1GroupCode ?? '';
 }
 
 function ensureAccumulator(
   grouped: Map<string, RegionAccumulator>,
   city: City,
-  layer: MapRegionLayer,
+  activeRegion: RegionKey,
+  allCities: City[],
   locale: DisplayLocale
 ): RegionAccumulator | null {
-  const id = regionIdForCity(city, layer);
-  if (!id || !city.countryCode) return null;
+  const region = regionIdForCity(city, activeRegion, allCities);
+  if (!region || !city.countryCode) return null;
 
-  const current = grouped.get(id);
+  const current = grouped.get(region.id);
   if (current) return current;
 
   const accumulator: RegionAccumulator = {
-    id,
-    level: layer === 'country' ? 'country' : 'partition',
-    countryCode: city.countryCode,
-    partitionCode: layer === 'country' ? undefined : city.admin1GroupCode,
-    name: regionNameForCity(city, layer, locale),
+    id: region.id,
+    level: region.level,
+    countryCode: region.countryCode ?? city.countryCode,
+    admin1Code: region.admin1Code,
+    admin2Code: region.admin2Code,
+    name: regionNameForCity(city, region, locale),
     cityIds: new Set(),
+    cityElevationIds: new Set(),
     forecasts: [],
     matchDays: 0,
     totalDays: 0,
     elevationMetersTotal: 0
   };
-  grouped.set(id, accumulator);
+  grouped.set(region.id, accumulator);
   return accumulator;
 }
 
@@ -89,9 +153,11 @@ function summarizeAccumulator(value: RegionAccumulator): RegionWeatherSummary {
     id: value.id,
     level: value.level,
     countryCode: value.countryCode,
-    partitionCode: value.partitionCode,
+    admin1Code: value.admin1Code,
+    admin2Code: value.admin2Code,
     name: value.name,
     cityCount,
+    forecastCount,
     weatherType: dominantWeatherType(value.forecasts),
     temperatureMeanC: value.forecasts.reduce((sum, forecast) => sum + forecast.temperatureMeanC, 0) / Math.max(forecastCount, 1),
     humidityMeanPercent: value.forecasts.reduce((sum, forecast) => sum + forecast.humidityMeanPercent, 0) / Math.max(forecastCount, 1),
@@ -105,6 +171,14 @@ function summarizeAccumulator(value: RegionAccumulator): RegionWeatherSummary {
   };
 }
 
+function addCityGeography(accumulator: RegionAccumulator, city: City): void {
+  accumulator.cityIds.add(city.id);
+  if (!accumulator.cityElevationIds.has(city.id)) {
+    accumulator.cityElevationIds.add(city.id);
+    accumulator.elevationMetersTotal += city.elevationMeters;
+  }
+}
+
 export function buildWeatherMapRegionSummaries(
   cities: City[],
   forecasts: DailyForecast[],
@@ -112,20 +186,23 @@ export function buildWeatherMapRegionSummaries(
   region: RegionKey,
   locale: DisplayLocale
 ): RegionWeatherSummary[] {
-  const layer = getMapRegionLayer(region);
   const cityById = new Map(cities.map((city) => [city.id, city]));
   const grouped = new Map<string, RegionAccumulator>();
+
+  for (const city of cities) {
+    if (!cityMatchesRegion(city, region)) continue;
+    const accumulator = ensureAccumulator(grouped, city, region, cities, locale);
+    if (!accumulator) continue;
+    addCityGeography(accumulator, city);
+  }
 
   for (const forecast of forecasts) {
     if (forecast.date !== date) continue;
     const city = cityById.get(forecast.cityId);
     if (!city || !cityMatchesRegion(city, region)) continue;
-    const accumulator = ensureAccumulator(grouped, city, layer, locale);
+    const accumulator = ensureAccumulator(grouped, city, region, cities, locale);
     if (!accumulator) continue;
-    if (!accumulator.cityIds.has(city.id)) {
-      accumulator.cityIds.add(city.id);
-      accumulator.elevationMetersTotal += city.elevationMeters;
-    }
+    addCityGeography(accumulator, city);
     accumulator.forecasts.push(forecast);
   }
 
@@ -138,20 +215,18 @@ export function buildCityFinderRegionSummaries(
   filter: WeatherFilter,
   locale: DisplayLocale
 ): RegionWeatherSummary[] {
-  const layer = getMapRegionLayer(filter.region);
   const grouped = new Map<string, RegionAccumulator>();
 
   for (const city of cities) {
     if (!cityMatchesRegion(city, filter.region)) continue;
+    const accumulator = ensureAccumulator(grouped, city, filter.region, cities, locale);
+    if (!accumulator) continue;
+    addCityGeography(accumulator, city);
     const scopedForecasts = (forecastsByCity.get(city.id) ?? []).slice(0, filter.dateWindowDays);
     if (scopedForecasts.length === 0) continue;
-    const accumulator = ensureAccumulator(grouped, city, layer, locale);
-    if (!accumulator) continue;
-    accumulator.cityIds.add(city.id);
     accumulator.forecasts.push(...scopedForecasts);
     accumulator.matchDays += scopedForecasts.filter((forecast) => dayMatchesFilter(forecast, filter)).length;
     accumulator.totalDays += scopedForecasts.length;
-    accumulator.elevationMetersTotal += city.elevationMeters;
   }
 
   return [...grouped.values()].map(summarizeAccumulator);

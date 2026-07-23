@@ -1426,6 +1426,21 @@ select {
   padding: 10px 12px;
 }
 
+.region-hover-popup .maplibregl-popup-content {
+  border: 1px solid rgba(24, 32, 31, 0.16);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 26px rgba(24, 32, 31, 0.14);
+  color: #18201f;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 7px 9px;
+}
+
+.region-hover-popup .maplibregl-popup-tip {
+  border-top-color: rgba(255, 255, 255, 0.94);
+}
+
 .map-legend-main {
   display: grid;
   gap: 6px;

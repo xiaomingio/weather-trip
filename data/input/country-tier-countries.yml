@@ -1,0 +1,157 @@
+# 国家层级人工复核名单真源。
+# 先复核 data/generated/country-tier-candidate-report.md，再把人工决定写到这里。
+# countryTier 可写 C1、C2 或 C3；C1 表示候选已复核但不升档，只保留 reason 作为人工备注。
+
+- countryCode: CN
+  countryTier: C3
+  reason: 中国幅员大、地形和气候差异明显，GeoNames 支持的 admin2 行接近地级旅行天气区域，国家页需要二级区域聚合。
+- countryCode: ES
+  countryTier: C3
+  reason: 西班牙是热门旅行国家，二级区域数量可控，省级粒度适合国家页比较海岸、内陆、岛屿和山地天气。
+- countryCode: FR
+  countryTier: C3
+  reason: 法国旅行需求高，departement 数量可控，二级区域能表达海岸、山地、内陆和城市群天气差异。
+- countryCode: IT
+  countryTier: C3
+  reason: 意大利南北跨度、海岸和山地差异明显，province 级数量可控，适合国家页二级区域聚合。
+- countryCode: PE
+  countryTier: C3
+  reason: 秘鲁海岸、安第斯山地和亚马孙区域差异强，二级区域数量仍可控，适合旅行天气细分。
+- countryCode: AR
+  countryTier: C2
+  reason: 阿根廷南北跨度大、旅行区域分散，二级区域数量偏多，省级覆盖更适合地图和筛选。
+- countryCode: AU
+  countryTier: C2
+  reason: 澳大利亚面积大、气候区跨度明显，州/领地粒度足以表达主要旅行天气差异。
+- countryCode: BR
+  countryTier: C2
+  reason: 巴西面积大且内部气候差异强，municipality 数量过多，州级覆盖更稳定。
+- countryCode: CA
+  countryTier: C2
+  reason: 加拿大面积和纬度跨度大，省/地区级覆盖能表达主要旅行天气差异。
+- countryCode: CL
+  countryTier: C2
+  reason: 智利南北跨度极长，一级区域对旅行天气差异有明显表达价值。
+- countryCode: CO
+  countryTier: C2
+  reason: 哥伦比亚地形和气候垂直差异明显，municipality 数量过多，省级覆盖更适合。
+- countryCode: EG
+  countryTier: C2
+  reason: 埃及旅行点分布在尼罗河、红海、地中海和沙漠区域，一级区域覆盖比国家级颜色更有用。
+- countryCode: ID
+  countryTier: C2
+  reason: 印度尼西亚群岛跨度大，省级覆盖能表达岛屿和季风差异，二级区域数量偏多。
+- countryCode: IN
+  countryTier: C2
+  reason: 印度人口和旅行需求密集，区域气候差异强，district 级数量过多，邦/中央直辖区粒度更合适。
+- countryCode: JP
+  countryTier: C2
+  reason: 日本旅行需求强，岛屿和纬度差异明显，市町村级偏细，都道府县级适合地图比较。
+- countryCode: MA
+  countryTier: C2
+  reason: 摩洛哥旅行天气受海岸、山地、沙漠区域影响明显，一级区域覆盖比国家级颜色更有用。
+- countryCode: MX
+  countryTier: C2
+  reason: 墨西哥面积大、海岸和高原差异明显，municipality 数量过多，州级覆盖更稳定。
+- countryCode: MY
+  countryTier: C2
+  reason: 马来西亚分布在半岛和婆罗洲两侧，海岸、山地和热带降雨差异明显，一级区域覆盖比国家级颜色更有用。
+- countryCode: RU
+  countryTier: C2
+  reason: 俄罗斯面积和经度跨度极大，一级区域覆盖能避免国家级颜色抹平主要气候差异。
+- countryCode: TH
+  countryTier: C2
+  reason: 泰国旅行需求强，南北与海岛天气差异明显，一级区域覆盖适合国家页比较。
+- countryCode: TR
+  countryTier: C2
+  reason: 土耳其旅行需求强，东西跨度、海岸、内陆高原和山地差异明显，二级区域数量偏多，一级区域更适合国家页比较。
+- countryCode: TZ
+  countryTier: C2
+  reason: 坦桑尼亚旅行点覆盖海岸、山地、草原和湖区，一级区域能表达主要天气差异。
+- countryCode: US
+  countryTier: C2
+  reason: 美国面积大、气候区和旅行区域差异强，county 数量过多，州级覆盖适合地图和筛选。
+- countryCode: VN
+  countryTier: C2
+  reason: 越南南北跨度明显，旅行点分布在北部山地、中部海岸和南部三角洲，一级区域覆盖能表达主要天气差异。
+- countryCode: ZA
+  countryTier: C2
+  reason: 南非旅行点和气候区域分散，省级覆盖能表达海岸、内陆和高原差异。
+- countryCode: RO
+  countryTier: C1
+  reason: 罗马尼亚 admin2 异常多，旅行和空间分低，当前更像行政粒度误报。
+- countryCode: EC
+  countryTier: C1
+  reason: 厄瓜多尔有一定旅行和空间价值，但 C2 新增 15 点，先留作后续复核。
+- countryCode: HR
+  countryTier: C1
+  reason: 克罗地亚旅游分不错，但国土小、空间分为 0，C2 收益低。
+- countryCode: IR
+  countryTier: C1
+  reason: 伊朗面积和空间差异强，但旅行需求未到优先升档，admin2 覆盖率不足。
+- countryCode: SE
+  countryTier: C1
+  reason: 瑞典有空间差异，但旅行分偏弱，当前优先级低于已选 C2。
+- countryCode: DZ
+  countryTier: C1
+  reason: 阿尔及利亚面积大但旅行种子为 0，先不因纯面积升档。
+- countryCode: NG
+  countryTier: C1
+  reason: 尼日利亚面积和人口大，但旅行天气细分需求未证明。
+- countryCode: ET
+  countryTier: C1
+  reason: 埃塞俄比亚面积和高差强，但 C2 新增点少，先不升档。
+- countryCode: CD
+  countryTier: C1
+  reason: 刚果（金）面积大但旅行种子为 0，C2 新增点少。
+- countryCode: KZ
+  countryTier: C1
+  reason: 哈萨克斯坦面积大但旅行种子为 0，旅游天气价值未证明。
+- countryCode: BO
+  countryTier: C1
+  reason: 玻利维亚空间差异强但旅行种子为 0，C2 新增点很少。
+- countryCode: SA
+  countryTier: C1
+  reason: 沙特阿拉伯面积和空间差异强，但 admin2 覆盖率低，C2 新增点少。
+- countryCode: VE
+  countryTier: C1
+  reason: 委内瑞拉面积和空间差异强，但旅行种子为 0，暂不升档。
+- countryCode: IS
+  countryTier: C1
+  reason: 冰岛有旅行价值，但 C2 新增点很少，国家级和城市点目前够用。
+- countryCode: AO
+  countryTier: C1
+  reason: 安哥拉面积大但旅行种子为 0，且缺 admin1 代表点。
+- countryCode: ML
+  countryTier: C1
+  reason: 马里面积大但旅行种子为 0，C2 新增点少。
+- countryCode: MN
+  countryTier: C1
+  reason: 蒙古面积大但旅行种子为 0，admin2 覆盖率低。
+- countryCode: SD
+  countryTier: C1
+  reason: 苏丹面积大但旅行种子为 0，C2/C3 收益都低。
+- countryCode: MR
+  countryTier: C1
+  reason: 毛里塔尼亚面积大但旅行种子为 0，且缺 admin1 代表点。
+- countryCode: LY
+  countryTier: C1
+  reason: 利比亚面积大但旅行种子为 0，admin2 数据几乎不可用。
+- countryCode: LV
+  countryTier: C1
+  reason: 拉脱维亚国土小，主要由行政数量触发，旅行和空间价值不足。
+- countryCode: NE
+  countryTier: C1
+  reason: 尼日尔面积大但旅行种子为 0，C2 新增点很少。
+- countryCode: TD
+  countryTier: C1
+  reason: 乍得面积大但旅行种子为 0，admin2 覆盖率低。
+- countryCode: PR
+  countryTier: C1
+  reason: 波多黎各区域小，admin 数量导致机械误报。
+- countryCode: JM
+  countryTier: C1
+  reason: 牙买加是小岛国，admin2 数量导致机械误报。
+- countryCode: LC
+  countryTier: C1
+  reason: 圣卢西亚是小岛国，admin2 数量导致机械误报。

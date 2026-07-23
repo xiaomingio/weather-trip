@@ -8,11 +8,11 @@ const weatherCount = 3;
 const weatherThemes = ['sunny', 'rain', 'snow'];
 const rainAlphas = [0, 1, 0];
 const snowAlphas = [0, 0, 1];
-/* 光标图标来自主项目 lucide-react：Sun / CloudRain / CloudSnow；用透明 PNG 避免 SVG 光标白底 */
+/* 光标图标来自主项目 lucide-react：Sun / CloudRain / CloudSnow；用透明 WebP 避免 SVG 光标白底 */
 const weatherCursors = {
-  sunny: 'url("./assets/cursors/sunny.png") 16 16, pointer',
-  rain: 'url("./assets/cursors/rain.png") 16 16, pointer',
-  snow: 'url("./assets/cursors/snow.png") 16 16, pointer'
+  sunny: 'url("./assets/cursors/sunny.webp") 16 16, pointer',
+  rain: 'url("./assets/cursors/rain.webp") 16 16, pointer',
+  snow: 'url("./assets/cursors/snow.webp") 16 16, pointer'
 };
 
 const idleDelay = 3000;

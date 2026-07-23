@@ -1,13 +1,9 @@
 /**
  * 文件说明: 生成城市搜索索引，并按中文、英文和罗马化名称过滤城市。
- * 对应文档: docs/product-design.md
+ * 对应文档: docs/specs/10-product-design.md
  */
 import type { City } from 'weather-core/types';
-
-const countryDisplayNames = {
-  zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
-  en: new Intl.DisplayNames(['en-US'], { type: 'region' })
-};
+import { countrySearchLabels } from './country-labels';
 
 function normalizeSearchText(value: string): string {
   return value
@@ -21,11 +17,7 @@ function normalizeSearchText(value: string): string {
 
 function countryNames(city: City): string[] {
   if (!city.countryCode) return [];
-
-  return [
-    countryDisplayNames.zh.of(city.countryCode),
-    countryDisplayNames.en.of(city.countryCode)
-  ].filter((value): value is string => Boolean(value));
+  return countrySearchLabels(city.countryCode);
 }
 
 function citySearchParts(city: City): string[] {

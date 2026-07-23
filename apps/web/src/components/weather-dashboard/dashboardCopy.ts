@@ -1,6 +1,6 @@
 /**
  * 文件说明: 定义天气工具 React 面板共享的中英文文案。
- * 对应文档: docs/product-design.md
+ * 对应文档: docs/specs/10-product-design.md
  */
 
 export const dashboardCopy = {
@@ -14,8 +14,8 @@ export const dashboardCopy = {
     forecastPanel: '选中城市天气',
     mapPanel: '地图',
     language: 'English',
-    region: '地区',
-    subRegion: '省份/州',
+    region: '地区/国家',
+    subRegion: '省/州/地区',
     time: '时间',
     nextDays: (days: number) => `未来 ${days} 天`,
     date: '日期',
@@ -65,8 +65,8 @@ export const dashboardCopy = {
     forecastPanel: 'Selected city forecast',
     mapPanel: 'Map',
     language: '中文',
-    region: 'Region',
-    subRegion: 'State/province',
+    region: 'Region/country',
+    subRegion: 'State/province/region',
     time: 'Time',
     nextDays: (days: number) => `Next ${days} days`,
     date: 'Date',

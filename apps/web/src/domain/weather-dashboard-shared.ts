@@ -3,7 +3,7 @@
  * 对应文档: docs/product-design.md
  */
 import type { City, DailyForecast, MapLayer, RegionKey, RegionWeatherSummary, WeatherFilter, WeatherToolId, WeatherType } from 'weather-core/types';
-import { getMapRegionLayer, regionOptions } from './regions';
+import { getMapRegionLayer, parseAdmin2Region, regionOptions } from './regions';
 import { allWeatherTypes, elevationFilterBounds, precipitationFilterBounds, windSpeedFilterBounds } from './weather';
 
 export type DashboardCityFinderResultItem = {
@@ -41,7 +41,7 @@ export type WeatherRegionOption = {
   id: RegionKey;
   label: string;
   group: string;
-  mapLayer: 'country' | 'partition';
+  mapLayer: 'world' | 'country';
   bounds: MapBounds | null;
 };
 
@@ -120,9 +120,15 @@ function searchParamsFrom(search: string | URLSearchParams): URLSearchParams {
 }
 
 export function isSupportedRegion(region: RegionKey): boolean {
-  const partitionMatch = /^partition:([A-Z]{2})\..+$/.exec(region);
-  if (partitionMatch) return regionOptions.some((option) => option.id === `country:${partitionMatch[1]}`);
+  if (/^country:[A-Z]{2}$/.test(region)) return true;
+  if (/^admin1:[A-Z]{2}\..+$/.test(region)) return true;
   return regionOptions.some((option) => option.id === region);
+}
+
+export function normalizeSelectableRegion(region: RegionKey): RegionKey {
+  const admin2Region = parseAdmin2Region(region);
+  if (!admin2Region) return region;
+  return `admin1:${admin2Region.countryCode}.${admin2Region.admin1Code}`;
 }
 
 export function readLayerFromSearch(search: string | URLSearchParams): MapLayer {
@@ -142,10 +148,12 @@ export function parseWeatherFilterFromSearch(search: string | URLSearchParams, f
   const params = searchParamsFrom(search);
   const nextFilter: WeatherFilter = { ...defaultWeatherFilter };
   const region = params.get('region');
-  if (region && isSupportedRegion(region)) {
-    nextFilter.region = region;
-  } else if (fallbackRegion && isSupportedRegion(fallbackRegion)) {
-    nextFilter.region = fallbackRegion;
+  const requestedRegion = region ? normalizeSelectableRegion(region) : null;
+  const fallbackSelectableRegion = fallbackRegion ? normalizeSelectableRegion(fallbackRegion) : null;
+  if (requestedRegion && isSupportedRegion(requestedRegion)) {
+    nextFilter.region = requestedRegion;
+  } else if (fallbackSelectableRegion && isSupportedRegion(fallbackSelectableRegion)) {
+    nextFilter.region = fallbackSelectableRegion;
   }
 
   const days = Number(params.get('days'));
@@ -229,7 +237,7 @@ export function buildFilterSearch(
   layer: MapLayer
 ): string {
   const params = new URLSearchParams();
-  params.set('region', weatherFilter.region);
+  params.set('region', normalizeSelectableRegion(weatherFilter.region));
 
   if (tool === 'weather-map') {
     if (selectedDate) params.set('date', selectedDate);
@@ -257,8 +265,10 @@ export function isDashboardWeatherMapItem(item: DashboardResultItem): item is Da
 }
 
 export function getPrimaryRegionId(region: RegionKey): RegionKey {
-  const partitionMatch = /^partition:([A-Z]{2})\./.exec(region);
-  if (partitionMatch) return `country:${partitionMatch[1]}`;
+  const admin2Match = /^admin2:([A-Z]{2})\./.exec(region);
+  if (admin2Match) return `country:${admin2Match[1]}`;
+  const admin1Match = /^admin1:([A-Z]{2})\./.exec(region);
+  if (admin1Match) return `country:${admin1Match[1]}`;
   return region;
 }
 

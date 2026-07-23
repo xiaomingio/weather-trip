@@ -8,14 +8,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MapLayer, RegionKey, WeatherFilter } from 'weather-core/types';
 import { cityMatchesKeyword } from '@/domain/city-search';
 import { type DisplayLocale } from '@/domain/format';
-import { getMapRegionLayer } from '@/domain/regions';
 import { getAlternateLocale } from '@/domain/site-prefs';
+import { loadWeatherSnapshot } from '@/domain/weather-data-source';
+import { buildMapDatesPayload, buildWeatherLayerPayload } from '@/domain/weather-dashboard-payload';
 import {
   type DashboardWeatherMapResultItem,
   type MapDatesPayload,
   type WeatherToolPayload,
   type WeatherLayerDateData,
-  type WeatherLayerPayload,
   getPrimaryRegionId,
   isDashboardCityFinderItem,
   parseWeatherFilterFromSearch,
@@ -25,8 +25,6 @@ import {
 import { WeatherMapFilterDock } from '../weather-filter-docks/WeatherMapFilterDock';
 import { WorldWeatherMap } from '../WorldWeatherMap/WorldWeatherMap';
 import {
-  buildMapDatesApiUrl,
-  buildWeatherLayerApiUrl,
   readSavedRegion,
   readSearch,
   replaceToolUrl,
@@ -149,11 +147,11 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
     const timeoutId = window.setTimeout(async () => {
       setIsLoadingData(true);
       try {
-        const filtersResponse = await fetch(buildMapDatesApiUrl(locale, weatherFilter, selectedDate), {
-          signal: controller.signal
-        });
-        if (!filtersResponse.ok) throw new Error(`Weather filters request failed with ${filtersResponse.status}.`);
-        const filtersPayload = (await filtersResponse.json()) as MapDatesPayload;
+        const snapshot = await loadWeatherSnapshot();
+        if (controller.signal.aborted) return;
+        const filtersSearchParams = new URLSearchParams({ region: weatherFilter.region });
+        if (selectedDate) filtersSearchParams.set('date', selectedDate);
+        const filtersPayload = buildMapDatesPayload(snapshot, { locale, searchParams: filtersSearchParams });
         const nextDate =
           selectedDate && filtersPayload.regionAvailableDates.includes(selectedDate)
             ? selectedDate
@@ -163,11 +161,9 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
         let dayData = cachedDay ?? null;
 
         if (!dayData) {
-          const dayResponse = await fetch(buildWeatherLayerApiUrl(locale, weatherFilter, nextDate, layer, true), {
-            signal: controller.signal
-          });
-          if (!dayResponse.ok) throw new Error(`Weather map request failed with ${dayResponse.status}.`);
-          const dayPayload = (await dayResponse.json()) as WeatherLayerPayload;
+          const daySearchParams = new URLSearchParams({ region: weatherFilter.region, layer });
+          if (nextDate) daySearchParams.set('date', nextDate);
+          const dayPayload = buildWeatherLayerPayload(snapshot, { locale, searchParams: daySearchParams });
           dayData = dayPayload.days[0] ?? null;
           if (dayData) {
             const days = weatherMapDaysCache.current?.key === cacheKey ? weatherMapDaysCache.current.days : new Map<string, WeatherLayerDateData>();
@@ -207,11 +203,12 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
     const controller = new AbortController();
     const timeoutId = window.setTimeout(async () => {
       try {
-        const response = await fetch(buildWeatherLayerApiUrl(locale, weatherFilter, '', layer, false), {
-          signal: controller.signal
+        const snapshot = await loadWeatherSnapshot();
+        if (controller.signal.aborted) return;
+        const payload = buildWeatherLayerPayload(snapshot, {
+          locale,
+          searchParams: new URLSearchParams({ region: weatherFilter.region, layer })
         });
-        if (!response.ok) return;
-        const payload = (await response.json()) as WeatherLayerPayload;
         const days = new Map(payload.days.map((day) => [day.date, day]));
         weatherMapDaysCache.current = { key: cacheKey, days };
 
@@ -350,7 +347,6 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
             dataRegion={dashboardData?.region ?? null}
             temperatureUnit={temperatureUnit}
             activeRegion={weatherFilter.region}
-            regionLayer={getMapRegionLayer(weatherFilter.region)}
             selectedCityId={effectiveSelectedCityId}
             onSelectCity={setSelectedCityId}
             statusLabel={

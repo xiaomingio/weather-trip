@@ -8,11 +8,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { RegionKey, WeatherFilter } from 'weather-core/types';
 import { cityMatchesKeyword } from '@/domain/city-search';
 import { type DisplayLocale } from '@/domain/format';
-import { getMapRegionLayer } from '@/domain/regions';
 import { getAlternateLocale } from '@/domain/site-prefs';
+import { loadWeatherSnapshot } from '@/domain/weather-data-source';
+import { buildCitySearchPayload } from '@/domain/weather-dashboard-payload';
 import { allWeatherTypes, getWeatherTypeLabel } from '@/domain/weather';
 import {
   type WeatherToolPayload,
+  buildFilterSearch,
   getPrimaryRegionId,
   isDashboardCityFinderItem,
   parseWeatherFilterFromSearch
@@ -20,7 +22,6 @@ import {
 import { CityFinderFilterDock } from '../weather-filter-docks/CityFinderFilterDock';
 import { WorldWeatherMap } from '../WorldWeatherMap/WorldWeatherMap';
 import {
-  buildCityFinderApiUrl,
   readSavedRegion,
   readSearch,
   replaceToolUrl,
@@ -93,11 +94,12 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
     const timeoutId = window.setTimeout(async () => {
       setIsLoadingData(true);
       try {
-        const response = await fetch(buildCityFinderApiUrl(locale, weatherFilter), {
-          signal: controller.signal
+        const snapshot = await loadWeatherSnapshot();
+        if (controller.signal.aborted) return;
+        const payload = buildCitySearchPayload(snapshot, {
+          locale,
+          searchParams: new URLSearchParams(buildFilterSearch('city-finder', weatherFilter, '', 'weather'))
         });
-        if (!response.ok) throw new Error(`Weather data request failed with ${response.status}.`);
-        const payload = (await response.json()) as WeatherToolPayload;
         setDashboardData(payload);
         setLoadError(null);
       } catch (error) {
@@ -212,7 +214,6 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
             dataRegion={dashboardData?.region ?? null}
             temperatureUnit={temperatureUnit}
             activeRegion={weatherFilter.region}
-            regionLayer={getMapRegionLayer(weatherFilter.region)}
             selectedCityId={effectiveSelectedCityId}
             onSelectCity={setSelectedCityId}
             statusLabel={

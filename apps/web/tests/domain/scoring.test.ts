@@ -1,11 +1,12 @@
 /**
- * 文件说明: 覆盖天气筛选和舒适度评分这些会影响推荐结果的核心规则。
- * 对应文档: docs/product-design.md
+ * 文件说明: 覆盖天气筛选、舒适度评分和静态快照地区派生这些会影响推荐结果的核心规则。
+ * 对应文档: docs/plans/free-static-data-plan.md
  */
 import { describe, expect, it } from 'vitest';
-import type { City, DailyForecast, WeatherFilter } from 'weather-core/types';
+import type { City, DailyForecast, WeatherDataSnapshot, WeatherFilter } from 'weather-core/types';
 import { buildWeatherMapCityWeather, calculateBestStreak, dayMatchesFilter, scoreCityFinderMatch } from '@/domain/scoring';
-import { getRegionGroup, getRegionLabel, getSortedRegionOptions } from '@/domain/regions';
+import { getRegionGroup, getSortedRegionOptions } from '@/domain/regions';
+import { buildRegionsPayload } from '@/domain/weather-dashboard-payload';
 
 const city: City = {
   id: 'test',
@@ -145,7 +146,7 @@ describe('travel scoring', () => {
     ]);
   });
 
-  it('keeps detailed China fallback cities inside China regions instead of the global view', () => {
+  it('keeps all supported static weather points available in the global view', () => {
     const detailedChinaCity = cityWith({
       id: 'cn-prefecture-representative',
       country: 'China',
@@ -166,13 +167,14 @@ describe('travel scoring', () => {
     ];
 
     expect(buildWeatherMapCityWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'world').map((item) => item.city.id)).toEqual([
+      'cn-prefecture-representative',
       'cn-tourism-city'
     ]);
     expect(buildWeatherMapCityWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'country:CN').map((item) => item.city.id)).toEqual([
       'cn-prefecture-representative',
       'cn-tourism-city'
     ]);
-    expect(buildWeatherMapCityWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'partition:CN.29').map((item) => item.city.id)).toEqual([
+    expect(buildWeatherMapCityWeather([detailedChinaCity, globalChinaCity], forecasts, '2026-07-21', 'admin1:CN.29').map((item) => item.city.id)).toEqual([
       'cn-prefecture-representative',
       'cn-tourism-city'
     ]);
@@ -180,18 +182,32 @@ describe('travel scoring', () => {
 });
 
 describe('region sorting', () => {
-  it('keeps regions in product order and sorts countries by locale names', () => {
-    const zhOptions = getSortedRegionOptions('zh');
-    const zhRegions = zhOptions.filter((option) => getRegionGroup(option, 'zh') === '大区').map((option) => option.id);
-    const zhCountries = zhOptions
-      .filter((option) => getRegionGroup(option, 'zh') === '国家/地区')
-      .map((option) => getRegionLabel(option, 'zh'));
-    const enCountries = getSortedRegionOptions('en')
-      .filter((option) => getRegionGroup(option, 'en') === 'Countries')
-      .map((option) => getRegionLabel(option, 'en'));
+  it('keeps fixed regions in product order and derives detailed country options from the snapshot', () => {
+    const zhRegions = getSortedRegionOptions('zh').filter((option) => getRegionGroup(option, 'zh') === '大区').map((option) => option.id);
+    const countryCities = [
+      cityWith({ id: 'de-city', country: 'Germany', countryCode: 'DE', region: 'europe', countryTier: 'C1' }),
+      cityWith({ id: 'us-city', country: 'United States', countryCode: 'US', region: 'north_america', countryTier: 'C2' }),
+      cityWith({ id: 'fr-city', country: 'France', countryCode: 'FR', region: 'europe', countryTier: 'C3' }),
+      cityWith({ id: 'cn-city', country: 'China', countryCode: 'CN', region: 'asia', countryTier: 'C3' })
+    ];
+    const snapshot: WeatherDataSnapshot = {
+      version: 'test-weather',
+      generatedAt: '2026-07-21T00:00:00.000Z',
+      cityListVersion: 'test-cities',
+      defaultDate: '2026-07-21',
+      availableDates: ['2026-07-21'],
+      cities: countryCities,
+      forecasts: countryCities.map((item) => forecast({ cityId: item.id }))
+    };
+    const zhCountries = buildRegionsPayload(snapshot, { locale: 'zh', searchParams: new URLSearchParams() })
+      .regions.filter((option) => option.group === '地区/国家')
+      .map((option) => option.label);
+    const enCountries = buildRegionsPayload(snapshot, { locale: 'en', searchParams: new URLSearchParams() })
+      .regions.filter((option) => option.group === 'Countries')
+      .map((option) => option.label);
 
     expect(zhRegions).toEqual(['world', 'asia', 'east_asia', 'southeast_asia', 'europe', 'north_america', 'south_america', 'africa', 'oceania']);
-    expect(zhCountries.slice(0, 3)).toEqual(['澳大利亚', '德国', '法国']);
-    expect(enCountries.slice(0, 3)).toEqual(['Australia', 'Canada', 'China']);
+    expect(zhCountries).toEqual(['法国', '美国', '中国']);
+    expect(enCountries).toEqual(['China', 'France', 'United States']);
   });
 });
