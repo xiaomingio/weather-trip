@@ -1,0 +1,236 @@
+<!--
+  文件说明: 展示 Weather Trip 在 40,000+ 城市规模下的 World 概览、全量搜索和国家详细地图界面原型。
+  对应文档: 本文件只用于原型验证，不作为生产代码或业务规则真源。
+-->
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather Trip Global City Coverage Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar" aria-label="Prototype navigation">
+        <a class="brand" href="#">Weather Trip</a>
+        <nav class="tabs" aria-label="Tool tabs">
+          <a class="is-active" href="#">Weather Map</a>
+          <a href="#">City Finder</a>
+        </nav>
+        <div class="top-actions" aria-label="Display settings">
+          <button type="button">C</button>
+          <button type="button">中文</button>
+        </div>
+      </header>
+
+      <section class="scope-strip" aria-label="Coverage summary">
+        <div>
+          <span class="eyebrow">Coverage mode</span>
+          <strong>World overview shows major cities. Search covers all supported cities.</strong>
+        </div>
+        <dl class="scope-metrics">
+          <div>
+            <dt>Supported</dt>
+            <dd>42,186</dd>
+          </div>
+          <div>
+            <dt>World map</dt>
+            <dd>4,820</dd>
+          </div>
+          <div>
+            <dt>Japan detail</dt>
+            <dd>1,124</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="workspace" aria-label="Weather map workspace">
+        <aside class="search-panel" aria-label="Global city search">
+          <section class="panel-block">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">Global search</span>
+                <h1>Search every supported city</h1>
+              </div>
+              <span class="status-pill">All 42k</span>
+            </div>
+
+            <div class="search-box" aria-label="Search field mockup">
+              <span class="search-icon" aria-hidden="true"></span>
+              <span class="search-text">Kamakura</span>
+              <kbd>Enter</kbd>
+            </div>
+
+            <div class="notice">
+              This city is not shown in the World overview. Open its country map to see local detail.
+            </div>
+
+            <div class="result-group">
+              <div class="group-label">Best match</div>
+              <article class="search-result is-selected">
+                <div>
+                  <strong>Kamakura</strong>
+                  <span>Kanagawa, Japan</span>
+                </div>
+                <button type="button">Open Japan</button>
+              </article>
+            </div>
+
+            <div class="result-group">
+              <div class="group-label">Visible on current World map</div>
+              <article class="search-result">
+                <div>
+                  <strong>Kyoto</strong>
+                  <span>Kyoto, Japan</span>
+                </div>
+                <span class="mini-tag">Featured</span>
+              </article>
+              <article class="search-result">
+                <div>
+                  <strong>Tokyo</strong>
+                  <span>Tokyo, Japan</span>
+                </div>
+                <span class="mini-tag">Featured</span>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel-block">
+            <div class="panel-heading compact">
+              <div>
+                <span class="eyebrow">Region navigator</span>
+                <h2>Switch detail level</h2>
+              </div>
+            </div>
+
+            <div class="region-list">
+              <button class="region-row" type="button">
+                <span>World overview</span>
+                <strong>4,820 major cities</strong>
+              </button>
+              <button class="region-row is-active" type="button">
+                <span>Japan detail map</span>
+                <strong>1,124 cities</strong>
+              </button>
+              <button class="region-row" type="button">
+                <span>Kanagawa</span>
+                <strong>86 cities</strong>
+              </button>
+            </div>
+          </section>
+        </aside>
+
+        <section class="map-panel" aria-label="Map preview">
+          <header class="map-toolbar">
+            <div class="segmented">
+              <button type="button">World overview</button>
+              <button class="is-active" type="button">Japan detail</button>
+              <button type="button">Prefecture</button>
+            </div>
+            <div class="map-tools">
+              <button type="button">Weather</button>
+              <button type="button">Temp</button>
+              <button type="button">Rain</button>
+              <button type="button">Comfort</button>
+            </div>
+          </header>
+
+          <div class="map-canvas" aria-label="Map mockup">
+            <div class="map-grid"></div>
+            <div class="land land-asia"></div>
+            <div class="land land-japan"></div>
+            <div class="land land-americas"></div>
+            <div class="land land-europe"></div>
+
+            <span class="city-dot dot-tokyo" title="Tokyo"></span>
+            <span class="city-dot dot-kyoto" title="Kyoto"></span>
+            <span class="city-dot dot-sapporo" title="Sapporo"></span>
+            <span class="city-dot dot-osaka" title="Osaka"></span>
+            <span class="city-dot dot-fukuoka" title="Fukuoka"></span>
+            <span class="city-dot dot-kamakura is-selected" title="Kamakura"></span>
+
+            <div class="map-callout">
+              <span class="eyebrow">Selected from global search</span>
+              <strong>Kamakura, Japan</strong>
+              <p>Japan detail map loaded. Local cities are visible without changing the search query.</p>
+            </div>
+          </div>
+
+          <footer class="map-footer">
+            <span>Japan detail: 1,124 cities available today</span>
+            <span>Only visible markers are sent to the map layer at this zoom</span>
+          </footer>
+        </section>
+
+        <aside class="finder-panel" aria-label="City Finder all-city mode">
+          <section class="panel-block finder-block">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">City Finder</span>
+                <h2>Full database mode</h2>
+              </div>
+              <span class="status-pill strong">Not map-limited</span>
+            </div>
+
+            <div class="finder-note">
+              City Finder filters all supported cities. World overview visibility does not affect these results.
+            </div>
+
+            <div class="filter-stack">
+              <button class="filter-chip" type="button">
+                <span>Region</span>
+                <strong>All countries</strong>
+              </button>
+              <button class="filter-chip" type="button">
+                <span>Weather</span>
+                <strong>Sunny / partly cloudy</strong>
+              </button>
+              <button class="filter-chip" type="button">
+                <span>Temperature</span>
+                <strong>18-27 C</strong>
+              </button>
+              <button class="filter-chip" type="button">
+                <span>Rain</span>
+                <strong>Under 2 mm</strong>
+              </button>
+            </div>
+
+            <div class="finder-results">
+              <article class="finder-card">
+                <div>
+                  <strong>Kamakura</strong>
+                  <span>Japan detail map</span>
+                </div>
+                <b>92</b>
+              </article>
+              <article class="finder-card">
+                <div>
+                  <strong>Funchal</strong>
+                  <span>Portugal detail map</span>
+                </div>
+                <b>89</b>
+              </article>
+              <article class="finder-card">
+                <div>
+                  <strong>Santa Barbara</strong>
+                  <span>United States detail map</span>
+                </div>
+                <b>86</b>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel-block flow-block">
+            <span class="eyebrow">Interaction rule</span>
+            <ol>
+              <li>Search all cities.</li>
+              <li>If a city is outside World overview, offer its country map.</li>
+              <li>Open country map, zoom to city, keep it selected.</li>
+            </ol>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
