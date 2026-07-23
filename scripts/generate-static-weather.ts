@@ -97,6 +97,10 @@ function retryDelayMs(response: Response, retryIndex: number, baseDelayMs: numbe
   return baseDelayMs * (retryIndex + 1) * 3;
 }
 
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 function toNumber(value: unknown, field: string, cityId: string, date: string): number {
   const numberValue = Number(value);
   if (!Number.isFinite(numberValue)) throw new Error(`Open-Meteo returned invalid ${field} for ${cityId} on ${date}.`);
@@ -126,11 +130,21 @@ async function fetchOpenMeteoBatch(
   const url = `https://api.open-meteo.com/v1/forecast?${params.toString()}`;
   let response: Response | null = null;
   for (let retryIndex = 0; retryIndex <= options.maxRetries; retryIndex += 1) {
-    response = await fetch(url, {
-      headers: {
-        'user-agent': 'weather-trip-static-refresh/1.0'
+    try {
+      response = await fetch(url, {
+        headers: {
+          'user-agent': 'weather-trip-static-refresh/1.0'
+        }
+      });
+    } catch (error) {
+      if (retryIndex === options.maxRetries) {
+        throw new Error(`Open-Meteo batch ${batchIndex + 1} fetch failed after ${options.maxRetries + 1} attempts: ${errorMessage(error)}`);
       }
-    });
+      const waitMs = options.requestDelayMs * (retryIndex + 1) * 3;
+      console.log(`Open-Meteo batch ${batchIndex + 1} fetch failed; retrying in ${Math.round(waitMs / 1000)}s.`);
+      await sleep(waitMs);
+      continue;
+    }
     if (response.ok) break;
     if (response.status !== 429 || retryIndex === options.maxRetries) {
       throw new Error(`Open-Meteo batch ${batchIndex + 1} failed with ${response.status}.`);
