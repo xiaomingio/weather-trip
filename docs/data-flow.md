@@ -35,7 +35,7 @@ refresh_status     # 全局刷新动作的最近成功/完成/错误状态
 
 `geo_names_cities` 保留内部 `id = geonames-{geoname_id}` 供天气缓存引用，同时单独保存 GeoNames 原始 `geoname_id`。城市和行政区英文使用 GeoNames `ascii_name`；中文从 `geo_names_alternate_names` 按 `zh` / `zh-CN` / `zh-Hans` / `zh-Hant` 语言码读取，没有中文名时回退到英文。
 
-`cities` 从 `geo_names_cities` 和旅游目的地种子聚合生成，只保存当前系统关注的城市及选择原因。城市筛选和地图着色规则以 `docs/weather-coverage-design.md` 为真源；目标是覆盖全球旅行目的地，而不是覆盖所有行政中心。
+`cities` 从 `geo_names_cities` 和旅游目的地种子聚合生成，只保存当前系统关注的城市及选择原因。城市筛选和地图着色规则以 `docs/specs/weather-coverage-design.md` 为真源；目标是覆盖全球旅行目的地，而不是覆盖所有行政中心。
 
 ## 刷新链路
 
