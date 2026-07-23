@@ -2192,6 +2192,14 @@ select {
     min-width: 0;
   }
 
+  .filter-dock[data-variant='weather-map'] .filter-dock-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-dock[data-variant='weather-map'] .filter-date-card {
+    grid-column: 1 / -1;
+  }
+
   .filter-dock-presets {
     padding-left: 0;
   }

@@ -45,7 +45,7 @@ export function WeatherMapFilterDock({
         onSubRegionChange={onSubRegionChange}
       />
 
-      <div className="filter-select-card filter-inline-card">
+      <div className="filter-select-card filter-inline-card filter-date-card">
         <span className="filter-summary-label">
           <CalendarDays size={15} />
           {copy.date}
