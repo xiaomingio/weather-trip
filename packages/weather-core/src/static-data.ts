@@ -58,6 +58,7 @@ export type DayWeatherRowWire = [
   temperatureMaxC: number,
   temperatureMeanC: number,
   humidityMeanPercent: number,
+  precipitationProbabilityMax: number,
   precipitationSumMm: number,
   windSpeedMaxKmh: number | null
 ];
@@ -69,14 +70,15 @@ export type WeatherForecastBinInputRow = {
 };
 
 const forecastBinMagic = 'WTRP';
-const forecastBinFormatVersion = 1;
-const forecastBinHeaderLength = 64;
+const forecastBinFormatVersion = 2;
+const forecastBinHeaderLength = 68;
 const sourceElevationMissing = -32768;
 const windSpeedMissingKmh10 = 65535;
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 type ForecastBinHeader = {
+  formatVersion: number;
   fileLength: number;
   cityCount: number;
   dateCount: number;
@@ -88,6 +90,7 @@ type ForecastBinHeader = {
   temperatureMaxOffset: number;
   temperatureMeanOffset: number;
   humidityOffset: number;
+  precipitationProbabilityOffset: number;
   precipitationOffset: number;
   windOffset: number;
   missingOffset: number;
@@ -101,9 +104,9 @@ function alignTo(value: number, multiple: number): number {
   return Math.ceil(value / multiple) * multiple;
 }
 
-function checkedUint8(value: number, field: string): number {
+function checkedUint8(value: number, field: string, max = 255): number {
   const rounded = Math.round(value);
-  if (!Number.isInteger(rounded) || rounded < 0 || rounded > 255) throw new Error(`${field} must fit Uint8.`);
+  if (!Number.isInteger(rounded) || rounded < 0 || rounded > max) throw new Error(`${field} must fit Uint8.`);
   return rounded;
 }
 
@@ -172,9 +175,10 @@ function writeHeader(view: DataView, header: ForecastBinHeader): void {
   view.setUint32(40, header.temperatureMaxOffset, true);
   view.setUint32(44, header.temperatureMeanOffset, true);
   view.setUint32(48, header.humidityOffset, true);
-  view.setUint32(52, header.precipitationOffset, true);
-  view.setUint32(56, header.windOffset, true);
-  view.setUint32(60, header.missingOffset, true);
+  view.setUint32(52, header.precipitationProbabilityOffset ?? 0, true);
+  view.setUint32(56, header.precipitationOffset, true);
+  view.setUint32(60, header.windOffset, true);
+  view.setUint32(64, header.missingOffset, true);
 }
 
 function readHeader(view: DataView): ForecastBinHeader {
@@ -186,6 +190,7 @@ function readHeader(view: DataView): ForecastBinHeader {
   if (headerLength !== forecastBinHeaderLength) throw new Error(`Unsupported forecast bin header length: ${headerLength}.`);
 
   return {
+    formatVersion,
     fileLength: view.getUint32(8, true),
     cityCount: view.getUint32(12, true),
     dateCount: view.getUint32(16, true),
@@ -197,9 +202,10 @@ function readHeader(view: DataView): ForecastBinHeader {
     temperatureMaxOffset: view.getUint32(40, true),
     temperatureMeanOffset: view.getUint32(44, true),
     humidityOffset: view.getUint32(48, true),
-    precipitationOffset: view.getUint32(52, true),
-    windOffset: view.getUint32(56, true),
-    missingOffset: view.getUint32(60, true)
+    precipitationProbabilityOffset: view.getUint32(52, true),
+    precipitationOffset: view.getUint32(56, true),
+    windOffset: view.getUint32(60, true),
+    missingOffset: view.getUint32(64, true)
   };
 }
 
@@ -213,6 +219,7 @@ function assertOffsetOrder(header: ForecastBinHeader): void {
     header.temperatureMaxOffset,
     header.temperatureMeanOffset,
     header.humidityOffset,
+    header.precipitationProbabilityOffset,
     header.precipitationOffset,
     header.windOffset,
     header.missingOffset,
@@ -316,7 +323,8 @@ export function encodeWeatherForecastBin(dates: string[], rows: WeatherForecastB
   const temperatureMaxOffset = temperatureMinOffset + cellCount * Int16Array.BYTES_PER_ELEMENT;
   const temperatureMeanOffset = temperatureMaxOffset + cellCount * Int16Array.BYTES_PER_ELEMENT;
   const humidityOffset = temperatureMeanOffset + cellCount * Int16Array.BYTES_PER_ELEMENT;
-  const precipitationOffset = alignTo(humidityOffset + cellCount * Uint8Array.BYTES_PER_ELEMENT, 2);
+  const precipitationProbabilityOffset = humidityOffset + cellCount * Uint8Array.BYTES_PER_ELEMENT;
+  const precipitationOffset = alignTo(precipitationProbabilityOffset + cellCount * Uint8Array.BYTES_PER_ELEMENT, 2);
   const windOffset = precipitationOffset + cellCount * Uint16Array.BYTES_PER_ELEMENT;
   const missingOffset = windOffset + cellCount * Uint16Array.BYTES_PER_ELEMENT;
   const fileLength = missingOffset + cellCount * Uint8Array.BYTES_PER_ELEMENT;
@@ -325,6 +333,7 @@ export function encodeWeatherForecastBin(dates: string[], rows: WeatherForecastB
   const bytes = new Uint8Array(buffer);
   const view = new DataView(buffer);
   const header: ForecastBinHeader = {
+    formatVersion: forecastBinFormatVersion,
     fileLength,
     cityCount,
     dateCount,
@@ -336,6 +345,7 @@ export function encodeWeatherForecastBin(dates: string[], rows: WeatherForecastB
     temperatureMaxOffset,
     temperatureMeanOffset,
     humidityOffset,
+    precipitationProbabilityOffset,
     precipitationOffset,
     windOffset,
     missingOffset
@@ -351,6 +361,7 @@ export function encodeWeatherForecastBin(dates: string[], rows: WeatherForecastB
   const temperatureMaxC10 = new Int16Array(buffer, temperatureMaxOffset, cellCount);
   const temperatureMeanC10 = new Int16Array(buffer, temperatureMeanOffset, cellCount);
   const humidityMeanPercent = new Uint8Array(buffer, humidityOffset, cellCount);
+  const precipitationProbabilityMaxPercent = new Uint8Array(buffer, precipitationProbabilityOffset, cellCount);
   const precipitationSumMm10 = new Uint16Array(buffer, precipitationOffset, cellCount);
   const windSpeedMaxKmh10 = new Uint16Array(buffer, windOffset, cellCount);
   const missing = new Uint8Array(buffer, missingOffset, cellCount);
@@ -373,10 +384,15 @@ export function encodeWeatherForecastBin(dates: string[], rows: WeatherForecastB
       temperatureMaxC10[offset] = checkedInt16(scaled10(day[2], `${row.cityId}.${dates[dateIndex]}.temperatureMaxC`), 'temperatureMaxC10');
       temperatureMeanC10[offset] = checkedInt16(scaled10(day[3], `${row.cityId}.${dates[dateIndex]}.temperatureMeanC`), 'temperatureMeanC10');
       humidityMeanPercent[offset] = checkedUint8(day[4], `${row.cityId}.${dates[dateIndex]}.humidityMeanPercent`);
-      precipitationSumMm10[offset] = checkedUint16(scaled10(day[5], `${row.cityId}.${dates[dateIndex]}.precipitationSumMm`), 'precipitationSumMm10');
+      precipitationProbabilityMaxPercent[offset] = checkedUint8(
+        day[5],
+        `${row.cityId}.${dates[dateIndex]}.precipitationProbabilityMax`,
+        100
+      );
+      precipitationSumMm10[offset] = checkedUint16(scaled10(day[6], `${row.cityId}.${dates[dateIndex]}.precipitationSumMm`), 'precipitationSumMm10');
       windSpeedMaxKmh10[offset] =
-        typeof day[6] === 'number'
-          ? checkedUint16(scaled10(day[6], `${row.cityId}.${dates[dateIndex]}.windSpeedMaxKmh`), 'windSpeedMaxKmh10', windSpeedMissingKmh10 - 1)
+        typeof day[7] === 'number'
+          ? checkedUint16(scaled10(day[7], `${row.cityId}.${dates[dateIndex]}.windSpeedMaxKmh`), 'windSpeedMaxKmh10', windSpeedMissingKmh10 - 1)
           : windSpeedMissingKmh10;
     }
   }
@@ -427,6 +443,7 @@ export function decodeWeatherForecastBin(current: WeatherCurrentWire, input: Arr
       temperatureMaxC10: new Int16Array(buffer, header.temperatureMaxOffset, cellCount),
       temperatureMeanC10: new Int16Array(buffer, header.temperatureMeanOffset, cellCount),
       humidityMeanPercent: new Uint8Array(buffer, header.humidityOffset, cellCount),
+      precipitationProbabilityMaxPercent: new Uint8Array(buffer, header.precipitationProbabilityOffset, cellCount),
       precipitationSumMm10: new Uint16Array(buffer, header.precipitationOffset, cellCount),
       windSpeedMaxKmh10: new Uint16Array(buffer, header.windOffset, cellCount),
       missing: new Uint8Array(buffer, header.missingOffset, cellCount)
@@ -441,6 +458,7 @@ export function readForecastDay(matrix: WeatherForecastMatrix, cityId: string, d
 
   const offset = forecastOffset(matrix, cityIndex, dateIndex);
   if (matrix.fields.missing[offset]) return null;
+  const precipitationProbabilityMaxPercent = matrix.fields.precipitationProbabilityMaxPercent[offset];
   const windSpeedMaxKmh10 = matrix.fields.windSpeedMaxKmh10[offset];
 
   return {
@@ -452,6 +470,7 @@ export function readForecastDay(matrix: WeatherForecastMatrix, cityId: string, d
     temperatureMaxC: matrix.fields.temperatureMaxC10[offset] / 10,
     temperatureMeanC: matrix.fields.temperatureMeanC10[offset] / 10,
     humidityMeanPercent: matrix.fields.humidityMeanPercent[offset],
+    precipitationProbabilityMax: precipitationProbabilityMaxPercent,
     precipitationSumMm: matrix.fields.precipitationSumMm10[offset] / 10,
     windSpeedMaxKmh: windSpeedMaxKmh10 === windSpeedMissingKmh10 ? undefined : windSpeedMaxKmh10 / 10
   };

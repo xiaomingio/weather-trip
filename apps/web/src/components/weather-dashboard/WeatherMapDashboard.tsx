@@ -76,6 +76,20 @@ function buildWeatherMapDashboardPayload(filters: MapDatesPayload, day: WeatherL
   };
 }
 
+function buildEmptyWeatherMapDashboardPayload(region: RegionKey): WeatherToolPayload {
+  return {
+    tool: 'weather-map',
+    region,
+    selectedDate: '',
+    availableDates: [],
+    regionAvailableDates: [],
+    subRegionOptions: [],
+    resultItems: [],
+    regionSummaries: [],
+    selectedCityForecasts: []
+  };
+}
+
 export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboardProps) {
   const copy = getMessages(locale).dashboard;
   const temperatureUnit = useTemperatureUnitPreference(locale);
@@ -202,6 +216,7 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
       } catch (error) {
         if (controller.signal.aborted) return;
         isInitialStorageRestorePending.current = false;
+        setDashboardData(buildEmptyWeatherMapDashboardPayload(weatherFilter.region));
         setLoadError(error instanceof Error ? error.message : 'Weather map request failed.');
       } finally {
         if (!controller.signal.aborted) setIsLoadingData(false);
@@ -373,7 +388,7 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
               shouldShowDashboardLoading
                 ? copy.loadingWeatherData
                 : !dashboardData || resultItems.length === 0
-                  ? copy.noMapData
+                  ? loadError ?? copy.noMapData
                   : null
             }
             statusKind={shouldShowDashboardLoading ? 'loading' : 'empty'}

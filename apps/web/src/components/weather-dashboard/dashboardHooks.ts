@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import type { DailyForecast, RegionKey } from 'weather-core/types';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
-import { loadWeatherSnapshot } from '@/domain/weather-data-source';
+import { loadCitySnapshot, loadWeatherSnapshot } from '@/domain/weather-data-source';
 import {
   readStoredTemperatureUnit,
   saveLocalePreference,
@@ -74,7 +74,7 @@ export function useRegionOptions(
     let cancelled = false;
     void (async () => {
       try {
-        const snapshot = await loadWeatherSnapshot();
+        const snapshot = await loadCitySnapshot();
         if (!cancelled) setPrimaryRegionOptions(buildRegionsPayload(snapshot, { locale, searchParams: new URLSearchParams() }).regions);
       } catch {
         if (!cancelled) setPrimaryRegionOptions([]);
@@ -92,7 +92,7 @@ export function useRegionOptions(
     let cancelled = false;
     void (async () => {
       try {
-        const snapshot = await loadWeatherSnapshot();
+        const snapshot = await loadCitySnapshot();
         const searchParams = new URLSearchParams({ region: primaryRegion });
         if (!cancelled) setSubRegionOptions(buildSubregionsPayload(snapshot, { locale, searchParams }).subRegions);
       } catch {

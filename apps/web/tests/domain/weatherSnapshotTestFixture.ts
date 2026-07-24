@@ -19,6 +19,7 @@ export function forecastMatrixFromDailyForecasts(cities: City[], dates: string[]
         forecast.temperatureMaxC,
         forecast.temperatureMeanC,
         forecast.humidityMeanPercent,
+        forecast.precipitationProbabilityMax,
         forecast.precipitationSumMm,
         forecast.windSpeedMaxKmh ?? null
       ];
@@ -32,7 +33,8 @@ export function forecastMatrixFromDailyForecasts(cities: City[], dates: string[]
     ds: dates,
     cv: 'test-cities',
     f: 'weather/forecast-14d/test.bin',
-    fb: bin.byteLength
+    fb: bin.byteLength,
+    fh: 'test-hash'
   };
 
   return decodeWeatherForecastBin(current, bin);

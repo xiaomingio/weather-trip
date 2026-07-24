@@ -10,24 +10,25 @@ apps/web
   start -> astro preview 预览 dist
 ```
 
-运行时没有长期 Worker 进程、请求时 API 或数据库。城市和地图边界由 `npm run static:data` 构建并提交到 Git；天气刷新由独立脚本生成 R2 对象，本地需要天气数据时单独运行 `npm run weather:refresh -- --source=open-meteo`。
+运行时没有长期 Worker 进程、请求时 API 或数据库。城市、地图边界和天气数据刷新频率不同，分别由显式脚本生成；本地需要天气数据时单独运行 `npm run weather:refresh -- --source=open-meteo`。
 
 ## 页面运行边界
 
 顶部导航由 Astro 在构建期输出静态入口；React island 只管理当前工具页自己的筛选 URL 和工作区状态。固定 Tab URL、语言切换、温度单位、本地偏好和工具状态恢复规则见 `docs/specs/20-interaction-logic.md`。
 
+Weather Map 的底图、地区选项和 MVT 边界读取 `cities.json` 与 `/data/geo/region-tiles/*`，不以 `weather/current.json` 或 forecast bin 成功解码为前置条件。天气入口或 forecast bin 失效时，页面只把天气点位、天气图层、天气列表和单城市预报置为空或错误状态；地图边界仍继续显示，地区选择仍基于城市索引工作。City Finder 是天气筛选工具，天气快照不可用时可以进入错误 / 空状态。
+
 ## 仓库脚本
 
 | 命令 | 说明 |
 | --- | --- |
-| `npm run static:data` | 构建国家分档、城市 Wire、GeoJSON 边界中间产物、三档 MVT 地图瓦片和筛选报告 |
 | `npm run static:profiles` | 从 GeoNames、覆盖规则和旅游种子生成 `country-admin-stats.json`、`country-profiles.json` 和分档报告 |
 | `npm run static:cities` | 先生成 profiles，再从 GeoNames 和旅游种子生成 `data/generated/cities.json`、公开 `cities.json` 和筛选报告 |
 | `npm run static:geo` | 从 Natural Earth、geoBoundaries、DataV/高德（Amap）raw 生成标准化边界中间产物和边界报告，供 `static:geo:tiles` 切成前端运行时 MVT |
 | `npm run static:geo:tiles` | 从现有 GeoJSON 边界中间产物生成 `geo/region-tiles/{country,admin1,admin2}/{z}/{x}/{y}.mvt` 和瓦片报告 |
 | `npm run weather:refresh` | 刷新每日天气 current 和 forecast 包，CI 使用 `--source=open-meteo` 上传 R2 |
 | `npm run dev` | 启动 Web dev server，读取已提交或手动生成的 `apps/web/public/data/*` |
-| `npm run build` | 构建 core、生成静态数据，再执行 Astro 静态构建 |
+| `npm run build` | 构建 core，再执行 Astro 静态构建；不生成城市、Geo 或天气 data |
 | `npm run start` | 预览 `apps/web/dist` |
 | `npm run check` | 类型检查、架构检查和测试 |
 
@@ -37,7 +38,7 @@ CI 刷新天气时使用：
 npx tsx scripts/generate-static-weather.ts \
   --source=open-meteo \
   --output-dir=.r2/weather \
-  --forecast-name="$(date -u +%F).json" \
+  --forecast-name="$(date -u +%F).bin" \
   --version-prefix=open-meteo
 ```
 

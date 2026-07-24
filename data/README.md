@@ -29,5 +29,5 @@ data/
 | `npm run static:profiles` | 读取人工确认的 C2/C3 input，生成最终国家分档 | `data/generated/country-profiles.json`、`data/generated/country-profile-report.*` |
 | `npm run static:cities` | 根据国家分档、旅游目的地、admin2 input 和 GeoNames 生成城市列表 | `data/generated/cities.json`、`data/generated/city-selection-report.*`、`apps/web/public/data/cities.json` |
 | `npm run static:geo` | 根据边界 raw、国家分档、城市列表、边界补名 input、admin2 input 和 GeoNames 生成 GeoJSON 中间产物 | `data/generated/geo/*`、`data/generated/geo-boundary-report.*` |
-| `npm run static:data` | 依次运行城市列表和 Geo 区块数据生成 | 城市列表、国家分档、Geo 区块数据和对应报告 |
+| `npm run static:geo:tiles` | 根据 GeoJSON 中间产物生成地图瓦片 | `apps/web/public/data/geo/region-tiles/*`、`data/generated/geo-tile-report.*` |
 | `npm run weather:refresh -- --source=open-meteo` | 根据生成后的城市列表请求 Open-Meteo 天气 | `apps/web/public/data/weather/*`；CI 生成 R2 上传目录 |

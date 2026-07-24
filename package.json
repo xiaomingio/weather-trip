@@ -17,15 +17,14 @@
     "arch:check": "depcruise --config .dependency-cruiser.cjs apps/*/src packages/*/src",
     "test": "npm --workspaces --include-workspace-root=false --if-present run test",
     "check": "npm run typecheck && npm run arch:check && npm test",
+    "static:tourism:raw": "tsx scripts/generate-tourism-raw.ts",
     "static:tourism": "tsx scripts/generate-tourism-destinations.ts",
-    "static:country-tier-candidates": "npm run static:tourism && tsx scripts/generate-country-tier-candidates.ts",
-    "static:profiles": "npm run static:tourism && tsx scripts/generate-country-profiles.ts",
-    "static:cities": "npm run build --workspace weather-core && npm run static:profiles && tsx scripts/generate-static-cities.ts",
+    "static:country-tier-candidates": "tsx scripts/generate-country-tier-candidates.ts",
+    "static:profiles": "tsx scripts/generate-country-profiles.ts",
+    "static:cities": "tsx scripts/generate-static-cities.ts",
     "static:geo": "tsx scripts/generate-static-geo.ts",
     "static:geo:tiles": "tsx scripts/generate-static-geo-tiles.ts",
-    "static:data": "npm run static:cities && npm run static:geo && npm run static:geo:tiles",
-    "weather:refresh": "tsx scripts/generate-static-weather.ts",
-    "tourism:raw": "tsx scripts/generate-tourism-raw.ts"
+    "weather:refresh": "tsx scripts/generate-static-weather.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

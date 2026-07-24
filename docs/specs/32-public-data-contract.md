@@ -205,6 +205,7 @@ type WeatherForecastMatrix = {
     temperatureMaxC10: Int16Array;
     temperatureMeanC10: Int16Array;
     humidityMeanPercent: Uint8Array;
+    precipitationProbabilityMaxPercent: Uint8Array;
     precipitationSumMm10: Uint16Array;
     windSpeedMaxKmh10: Uint16Array; // 65535 表示单字段缺失
     missing: Uint8Array; // 1 表示该 city/date 缺测
@@ -216,7 +217,9 @@ type WeatherForecastMatrix = {
 
 Open-Meteo Forecast API 在响应顶层返回 `elevation`，并说明这个值用于 statistical downscaling；它不是 `daily` 数组里的逐日变量，但属于天气源本次 forecast 的点位元数据。刷新任务要把它保存到 `sourceElevationMeters`。地图的 elevation layer 优先使用天气源海拔，没有时回退到 `cities.json` 的 `elevationM`。如果后续天气源返回真正逐日变化的海拔或类似地形字段，再把它加入 forecast bin 字段数组。
 
-`weatherType` 和 `comfortScore` 不写入天气包，由前端通过 `weatherCode` 和共享公式计算。`precipitationProbabilityMax` 不进入首版传输字段；页面用 `precipitationSumMm` 表达降水，后续如果明确展示降水概率再加回。单位固定为摄氏度、毫米、公里/小时和百分比，不在每条记录里重复写单位。温度、降水和风速按 0.1 单位整数化，湿度和天气码用 `Uint8`，缺测用 `missing` byte，具体布局见 `docs/specs/41-weather-matrix-performance.md`。
+`weatherType` 和 `comfortScore` 不写入天气包，由前端通过 `weatherCode` 和共享公式计算。`precipitationProbabilityMax` 写入 forecast bin，用于选中城市的单日天气卡片；区域聚合和降水图层仍使用 `precipitationSumMm`。单位固定为摄氏度、毫米、公里/小时和百分比，不在每条记录里重复写单位。温度、降水和风速按 0.1 单位整数化，湿度、降雨概率和天气码用 `Uint8`，缺测用 `missing` byte，具体布局见 `docs/specs/41-weather-matrix-performance.md`。
+
+天气包加载失败不能阻断城市索引和地图边界。前端地区选项、地图底图和 MVT 边界只依赖 `cities.json` 与 `/data/geo/region-tiles/*`；`weather/current.json` 或 forecast bin 失效时，Weather Map 仍显示地图边界，只清空天气点位、天气图层、结果列表和城市预报，并展示天气数据错误状态。
 
 ```ts
 interface WeatherWindow {

@@ -123,6 +123,7 @@ async function fetchOpenMeteoBatch(
       'temperature_2m_min',
       'temperature_2m_mean',
       'relative_humidity_2m_mean',
+      'precipitation_probability_max',
       'precipitation_sum',
       'wind_speed_10m_max'
     ].join(','),
@@ -179,6 +180,7 @@ async function fetchOpenMeteoBatch(
         toNumber(daily?.temperature_2m_max?.[dateIndex], 'temperature_2m_max', cityId, date),
         toNumber(daily?.temperature_2m_mean?.[dateIndex], 'temperature_2m_mean', cityId, date),
         Math.round(toNumber(daily?.relative_humidity_2m_mean?.[dateIndex], 'relative_humidity_2m_mean', cityId, date)),
+        Math.round(toNumber(daily?.precipitation_probability_max?.[dateIndex], 'precipitation_probability_max', cityId, date)),
         toNumber(daily?.precipitation_sum?.[dateIndex], 'precipitation_sum', cityId, date),
         numericOrNull(Number(daily?.wind_speed_10m_max?.[dateIndex]))
       ]);

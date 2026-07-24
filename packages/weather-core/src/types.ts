@@ -72,7 +72,7 @@ export type DailyForecast = {
   temperatureMaxC: number;
   temperatureMeanC: number;
   humidityMeanPercent: number;
-  precipitationProbabilityMax?: number;
+  precipitationProbabilityMax: number;
   precipitationSumMm: number;
   windSpeedMaxKmh?: number;
 };
@@ -90,6 +90,7 @@ export type WeatherForecastMatrix = {
     temperatureMaxC10: Int16Array;
     temperatureMeanC10: Int16Array;
     humidityMeanPercent: Uint8Array;
+    precipitationProbabilityMaxPercent: Uint8Array;
     precipitationSumMm10: Uint16Array;
     windSpeedMaxKmh10: Uint16Array;
     missing: Uint8Array;

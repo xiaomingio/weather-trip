@@ -39,6 +39,8 @@ type WeatherToolDataParams = {
   searchParams: URLSearchParams;
 };
 
+type CitiesSnapshot = Pick<WeatherDataSnapshot, 'cities'>;
+
 function groupForecastsByCity(cities: City[], snapshot: WeatherDataSnapshot, dateWindowDays = snapshot.availableDates.length): Map<string, DailyForecast[]> {
   const grouped = new Map<string, DailyForecast[]>();
 
@@ -222,7 +224,7 @@ export function buildCitySearchPayload(snapshot: WeatherDataSnapshot, params: We
   return buildWeatherToolPayload(snapshot, 'city-finder', params);
 }
 
-export function buildRegionsPayload(snapshot: WeatherDataSnapshot, { locale }: WeatherToolDataParams): RegionsPayload {
+export function buildRegionsPayload(snapshot: CitiesSnapshot, { locale }: WeatherToolDataParams): RegionsPayload {
   const countryRegionIds = [
     ...new Set(
       snapshot.cities.flatMap((city) =>
@@ -244,7 +246,7 @@ export function buildRegionsPayload(snapshot: WeatherDataSnapshot, { locale }: W
 }
 
 export function buildSubregionsPayload(
-  snapshot: WeatherDataSnapshot,
+  snapshot: CitiesSnapshot,
   { locale, searchParams }: WeatherToolDataParams
 ): SubregionsPayload {
   const weatherFilter = parseWeatherFilterFromSearch(searchParams);

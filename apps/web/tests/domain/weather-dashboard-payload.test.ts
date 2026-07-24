@@ -43,6 +43,7 @@ function forecast(date: string, cityId = city.id, overrides: Partial<DailyForeca
     temperatureMaxC: 26,
     temperatureMeanC: 22,
     humidityMeanPercent: 50,
+    precipitationProbabilityMax: 0,
     precipitationSumMm: 0,
     windSpeedMaxKmh: 12,
     ...overrides

@@ -63,8 +63,8 @@ forecast 包里存在、但 `cities.json` 中不存在的 `cityId` 在查询和�
 forecast.bin
 ├── header
 │   ├── magic = WTRP
-│   ├── formatVersion = 1
-│   ├── headerLength = 64
+│   ├── formatVersion = 2
+│   ├── headerLength = 68
 │   ├── fileLength
 │   ├── cityCount / dateCount
 │   ├── cityDictionaryOffset
@@ -81,8 +81,8 @@ header 使用 little-endian 数字。`sourceElevationMeters` 和所有 16-bit �
 ```ts
 type ForecastBinHeader = {
   magic: 'WTRP';
-  formatVersion: 1;
-  headerLength: 64;
+  formatVersion: 2;
+  headerLength: 68;
   fileLength: number;
   cityCount: number;
   dateCount: number;
@@ -94,6 +94,7 @@ type ForecastBinHeader = {
   temperatureMaxOffset: number;
   temperatureMeanOffset: number;
   humidityOffset: number;
+  precipitationProbabilityOffset: number;
   precipitationOffset: number;
   windOffset: number;
   missingOffset: number;
@@ -111,12 +112,15 @@ type ForecastBinHeader = {
 | `sourceElevationMeters` | `Int16Array` | `-32768` | 天气源本次响应的点位海拔 |
 | `weatherCode` | `Uint8Array` | `missing=1` | Open-Meteo weather code 当前小于 100，保留 0-255 |
 | `humidityMeanPercent` | `Uint8Array` | `missing=1` | 0-100 |
+| `precipitationProbabilityMaxPercent` | `Uint8Array` | `missing=1` | Open-Meteo `precipitation_probability_max`，0-100；V2 forecast day 必填 |
 | `temperatureMinC10` / `temperatureMaxC10` / `temperatureMeanC10` | `Int16Array` | `missing=1` | 摄氏度乘以 10 |
 | `precipitationSumMm10` | `Uint16Array` | `missing=1` | mm 乘以 10 |
 | `windSpeedMaxKmh10` | `Uint16Array` | `65535` | km/h 乘以 10；单字段缺失不代表整天缺测 |
 | `missing` | `Uint8Array` | - | 1 表示该 city/date 没有可用天气 |
 
 `weatherType` 和 `comfortScore` 不写入天气包，由前端根据 `weatherCode` 和共享评分公式计算。单位固定为摄氏度、毫米、公里/小时和百分比，不在每条记录里重复保存单位。
+
+格式升级时先让 decoder 同时支持当前线上格式和新格式，再刷新并发布新的 forecast bin。新天气包已经写出后，不允许把前端 decoder 退回只支持旧格式；否则 Weather Map 必须仍降级显示地图边界，不能让天气解码错误阻断 MVT。
 
 ## 解码校验
 

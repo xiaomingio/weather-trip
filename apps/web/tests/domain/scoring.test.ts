@@ -55,6 +55,7 @@ function forecast(partial: Partial<DailyForecast>): DailyForecast {
     temperatureMaxC: 28,
     temperatureMeanC: 24,
     humidityMeanPercent: 55,
+    precipitationProbabilityMax: 0,
     precipitationSumMm: 0,
     ...partial
   };

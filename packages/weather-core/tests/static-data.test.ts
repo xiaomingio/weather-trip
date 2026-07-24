@@ -19,15 +19,15 @@ const rows: WeatherForecastBinInputRow[] = [
     cityId: 'city-a',
     sourceElevationM: 123,
     days: [
-      [0, 18.1, 25.2, 21.7, 55, 0.4, 12.3],
-      [61, 17, 24, 20.2, 80, 8.8, null]
+      [0, 18.1, 25.2, 21.7, 55, 12, 0.4, 12.3],
+      [61, 17, 24, 20.2, 80, 88, 8.8, null]
     ]
   },
   {
     cityId: 'city-b',
     sourceElevationM: null,
     days: [
-      [3, -2.5, 4.1, 1.2, 68, 0, 18],
+      [3, -2.5, 4.1, 1.2, 68, 0, 0, 18],
       null
     ]
   }
@@ -63,9 +63,11 @@ describe('weather forecast bin', () => {
       temperatureMaxC: 25.2,
       temperatureMeanC: 21.7,
       humidityMeanPercent: 55,
+      precipitationProbabilityMax: 12,
       precipitationSumMm: 0.4,
       windSpeedMaxKmh: 12.3
     });
+    expect(readForecastDay(matrix, 'city-b', '2026-07-21')).toMatchObject({ precipitationProbabilityMax: 0 });
     expect(readForecastDay(matrix, 'city-b', '2026-07-22')).toBeNull();
     expect(readForecastsForDate(matrix, '2026-07-21').map((forecast) => forecast.cityId)).toEqual(['city-a', 'city-b']);
   });

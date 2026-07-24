@@ -32,8 +32,8 @@ function formatPrecipitation(value: number): string {
   return `${value.toFixed(value > 0 && value < 1 ? 1 : 0)} mm`;
 }
 
-function formatPrecipitationProbability(value: number | undefined): string | null {
-  return typeof value === 'number' ? `${Math.round(value)}%` : null;
+function formatPrecipitationProbability(value: number): string {
+  return `${Math.round(value)}%`;
 }
 
 function formatWindSpeed(value: number | undefined): string | null {
@@ -65,7 +65,7 @@ function buildForecastDayTitle(
     `${labels.averageTemperature}: ${formatTemperature(forecast.temperatureMeanC, temperatureUnit)}`,
     `${labels.humidity}: ${formatHumidity(forecast.humidityMeanPercent)}`,
     `${labels.precipitation}: ${formatPrecipitation(forecast.precipitationSumMm)}`,
-    precipitationProbability ? `${labels.precipitationProbability}: ${precipitationProbability}` : null,
+    `${labels.precipitationProbability}: ${precipitationProbability}`,
     windSpeed ? `${labels.wind}: ${windSpeed}` : null
   ]
     .filter((line): line is string => Boolean(line))
@@ -90,12 +90,10 @@ export function ForecastDayCard({ cityName, forecast, locale, temperatureUnit, c
         </span>
       </div>
       <dl className="forecast-day-metrics">
-        {precipitationProbability ? (
-          <div className="forecast-metric forecast-metric-precipitation-probability">
-            <dt>{copy.forecastPrecipitationProbability}</dt>
-            <dd>{precipitationProbability}</dd>
-          </div>
-        ) : null}
+        <div className="forecast-metric forecast-metric-precipitation-probability">
+          <dt>{copy.forecastPrecipitationProbability}</dt>
+          <dd>{precipitationProbability}</dd>
+        </div>
         <div className="forecast-metric forecast-metric-humidity">
           <dt>{copy.forecastHumidity}</dt>
           <dd>{formatHumidity(forecast.humidityMeanPercent)}</dd>
