@@ -307,7 +307,7 @@ type WeatherRegionTileFeature = {
 | `weather/current.json` | 活跃天气入口 | 进入工具页后读取；短缓存，用来发现天气是否更新 | 1 | < 2 KiB |
 | `weather/forecast-14d/<date>.bin` | 14 天预报包 | 读取 current 后加载；City Finder 用它筛选天气，Weather Map 用它按日期和图层着色 | 1 个活跃 forecast | 0.7-1.0 MiB |
 | `/data/geo/region-tiles/manifest.json` | 边界瓦片 manifest | Weather Map 初始化时读取或由前端内置路径约定替代 | 1 | < 5 KiB |
-| `/data/geo/region-tiles/**/*.mvt` | 三档边界瓦片 | MapLibre 按 viewport / zoom 按需读取 | 当前 659 个 MVT | 7.63 MiB 总原始体积 |
+| `/data/geo/region-tiles/**/*.mvt` | 三档边界瓦片 | MapLibre 按 viewport / zoom 按需读取 | 当前 659 个 MVT | 7.59 MiB 总原始体积 |
 
 一个活跃快照约 10 个公开数据文件：Pages 侧 8 个，R2 侧 2 个。R2 如果保留 30 天历史预报包，会额外增加 30 个 `weather/forecast-14d/<date>.bin`，但用户默认只读取 `weather/current.json` 指向的一个 forecast 文件。
 

@@ -78,15 +78,15 @@ Open-Meteo 返回的 `daily.time` 表示地点当地自然日，而非 UTC 时�
 
 行政边界回答“地图上哪些块可以被着色、hover 和点击”。它需要低精度世界包、国家详情包、稳定 `regionKey` 和生成报告。边界与天气分开：缺天气数据时区域仍然显示边界，按无数据样式展示。
 
-行政边界使用多源离线生成：[Natural Earth](https://www.naturalearthdata.com/features/) 提供低精度世界国家和一级区域基础包，[geoBoundaries](https://www.geoboundaries.org/api.html) 提供可下载的多级行政边界，[DataV/高德（Amap）](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) 作为中国详情边界来源。生成阶段优先使用 Natural Earth `gn_id` 对齐 GeoNames admin1；当边界源实际是下级区域时，先用 ADM2 名称对齐 GeoNames admin2 再聚合成 admin1；遇到行政改革、旧边界源或无城市点分片时，再按 GeoNames 城市点、ADM1 父边界包含和最近城市兜底把同一国家的边界碎片聚合到当前 admin1。`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。最终前端只看到统一 `regionKey`，不看到供应商 adcode、GeoNames code 或名称匹配过程。
+行政边界使用多源离线生成：[Natural Earth](https://www.naturalearthdata.com/features/) 提供低精度世界国家和非中国一级区域基础包，[geoBoundaries](https://www.geoboundaries.org/api.html) 提供可下载的多级行政边界，[DataV/高德（Amap）](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) 提供中国国家、省级、地级和港澳台详情边界。非中国生成阶段优先使用 Natural Earth `gn_id` 对齐 GeoNames admin1；当边界源实际是下级区域时，先用 ADM2 名称对齐 GeoNames admin2 再聚合成 admin1；遇到行政改革、旧边界源或无城市点分片时，再按 GeoNames 城市点、ADM1 父边界包含和最近城市兜底把同一国家的边界碎片聚合到当前 admin1。`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。最终前端只看到统一 `regionKey`，不看到供应商 adcode、GeoNames code 或名称匹配过程。
 
-中国二级边界不能依赖通用边界源。当前 `CN` 展示口径是中国，使用 DataV/高德行政边界接口 `https://geo.datav.aliyun.com/areas_v3/bound/<adcode>_full.json` 生成中国大陆地级区块，再对齐到 GeoNames admin2 或保留为 boundary-only 区块；同时把香港、澳门和台湾作为 companion C3 区块放入 `CN` 详情包。香港和澳门使用 DataV/高德 `_full` 子区块并共享各自天气聚合 key；台湾的 DataV/高德可用边界为整体区块。
+中国边界使用 DataV/高德行政边界接口。`100000.json` 生成 `country:CN` 国家面；`100000_full.json` 生成中国大陆省级 `admin1:CN.*`，并通过稳定 adcode 映射对齐 GeoNames admin1 code；香港、澳门和台湾同时作为 `admin1:CN.HK/MO/TW` 和 companion C3 区块放入 `CN` 详情包。各省 `<adcode>_full.json` 生成地级区块，再对齐到 GeoNames admin2 或保留为 boundary-only 区块。香港和澳门使用 DataV/高德 `_full` 子区块并共享各自天气聚合 key；台湾的 DataV/高德可用边界为整体区块。
 
 | 方案 | 优点 | 限制 | 适合度 |
 | --- | --- | --- | --- |
 | [Natural Earth](https://www.naturalearthdata.com/features/) | 免费，提供多精度，世界级包很适合压缩 | 行政层级有限，不覆盖全球 admin2 | 世界包基础源 |
 | [geoBoundaries](https://www.geoboundaries.org/api.html) | API 支持 ADM0-ADM5，适合离线下载，元数据包含来源、许可证和统计 | 国家质量和口径随来源变化，需要脚本审计 | 详情包基础源 |
-| [DataV/高德中国边界](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) | 中国大陆地级区块完整度好，也能提供香港、澳门子区块和台湾整体边界 | 高德 adcode 和 GeoNames admin2 不是同一编码体系；自治区直辖县级市、兵团城市和 companion C3 口径需审计 | 中国详情源 |
+| [DataV/高德中国边界](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) | 中国国家、省级和地级区块完整度好，也能提供香港、澳门子区块和台湾整体边界 | 高德 adcode 和 GeoNames admin1/admin2 不是同一编码体系；自治区直辖县级市、兵团城市和 companion C3 口径需审计 | 中国边界源 |
 | [Mapbox Boundaries](https://docs.mapbox.com/data/boundaries/) | 商业边界产品成熟，可和 Mapbox 地图生态结合 | 商业授权，静态导出和长期 Git 提交需要按合同确认 | 后续评估 |
 | [MapTiler Countries](https://www.maptiler.com/countries/) | 提供国家、领土、邮编等边界产品，可用于 choropleth | 商业平台，不提供天气 | 后续评估 |
 | [Geoapify Boundaries API](https://www.geoapify.com/boundaries-api/) | 能取国家、省州、城市等 polygon，GeoJSON 友好 | API 计费/限额，不提供天气 | 后续评估 |

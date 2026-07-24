@@ -431,7 +431,7 @@ C3 国家每个二级区域至少选一个代表城市。二级区域代表点�
 | 覆盖复核     | 能发现缺失区域、异常二级区域、边界无法匹配区域和代表点过弱区域 |
 | 边界完整性   | `static:geo` 从城市包推导全球视图和 C3 国家详情会使用的 `regionKey`，缺任意可见区块或可见区块不覆盖自己的城市点时直接失败 |
 
-地图边界来源分三层：全球 C1 国家优先用 Natural Earth admin0 countries，小国和属地用 Natural Earth admin0 map units 补齐；C2/C3 一级行政区优先用 Natural Earth admin1 的 GeoNames id，对齐到 GeoNames admin1，或先对齐 GeoNames admin2 后聚合成 admin1。遇到行政改革或边界源层级较旧时，脚本会用 GeoNames 城市点把同一国家的边界碎片聚合到当前 admin1，并用点位覆盖校验挡住错配；`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。geoBoundaries 下载用的 ISO3 来自 GeoNames countryInfo。中国 C3 详情用 DataV/高德二级边界，中国大陆生成地级区块，香港、澳门和台湾作为 companion C3 区块进入 `CN` 详情包，同时仍作为独立 C1 地区进入城市和全球视图。`data/input/geo-boundary-sources.yml` 只记录需要人工维护的详情层级和 Natural Earth map unit 合并口径，脚本里不写国家专属 fallback 列表。
+地图边界来源分三层：全球 C1 国家优先用 Natural Earth admin0 countries，小国和属地用 Natural Earth admin0 map units 补齐；非中国 C2/C3 一级行政区优先用 Natural Earth admin1 的 GeoNames id，对齐到 GeoNames admin1，或先对齐 GeoNames admin2 后聚合成 admin1。遇到行政改革或边界源层级较旧时，脚本会用 GeoNames 城市点把同一国家的边界碎片聚合到当前 admin1，并用点位覆盖校验挡住错配；`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。geoBoundaries 下载用的 ISO3 来自 GeoNames countryInfo。中国 `country:CN`、大陆省级、地级、`admin1:CN.HK/MO/TW` 和港澳台 companion C3 区块都用 DataV/高德边界，香港、澳门和台湾同时仍作为独立 C1 地区进入城市和全球视图。`data/input/geo-boundary-sources.yml` 只记录需要人工维护的详情层级和 Natural Earth map unit 合并口径，脚本里不写国家专属 fallback 列表。
 
 ## 后续改进
 

@@ -1,6 +1,6 @@
 # 地图边界报告
 
-生成时间：`2026-07-24T12:23:39.277Z`
+生成时间：`2026-07-24T13:48:03.433Z`
 国家分层版本：`country-profiles-3d5372799eab`
 
 ## 生成检查
@@ -11,7 +11,7 @@
 
 | 预期国家 | 生成国家 | 预期 regionKey | 生成 regionKey | geometry 点位校验 regionKey |
 | ---: | ---: | ---: | ---: | ---: |
-| 245 | 245 | 1049 | 1049 | 1023 |
+| 245 | 245 | 1052 | 1052 | 1026 |
 
 ## 边界包
 
@@ -19,7 +19,7 @@
 | --- | ---: |
 | data/generated/geo/country.geojson | 245 |
 | data/generated/geo/c2_admin1.geojson | 695 |
-| data/generated/geo/c3_admin1.geojson | 109 |
+| data/generated/geo/c3_admin1.geojson | 112 |
 | data/generated/geo/c3_admin2/CN.geojson | 397 |
 | data/generated/geo/c3_admin2/ES.geojson | 52 |
 | data/generated/geo/c3_admin2/FR.geojson | 96 |
@@ -35,7 +35,7 @@
 | BR | C2 | 27/27 | 0/0 | 0 | Natural Earth 10m admin1 gn_id -> GeoNames admin1 | 0 | 0 |
 | CA | C2 | 13/13 | 0/0 | 0 | Natural Earth 10m admin1 gn_id -> GeoNames admin1 | 0 | 0 |
 | CL | C2 | 16/16 | 0/0 | 0 | Natural Earth 10m admin1 grouped to GeoNames admin1 by city points | 0 | 0 |
-| CN | C3 | 31/31 | 357/357 | 13 | Natural Earth 10m admin1 gn_id -> GeoNames admin1, DataV/高德（Amap） province full boundary converted by adcode, DataV/高德（Amap） Hong Kong/Macau/Taiwan detail boundary | 0 | 0 |
+| CN | C3 | 34/34 | 357/357 | 13 | DataV/高德（Amap） province and Hong Kong/Macau/Taiwan admin1 boundary converted by adcode, DataV/高德（Amap） province full boundary converted by adcode, DataV/高德（Amap） Hong Kong/Macau/Taiwan detail boundary | 0 | 0 |
 | CO | C2 | 33/33 | 0/0 | 0 | Natural Earth 10m admin1 gn_id -> GeoNames admin1 | 0 | 0 |
 | EG | C2 | 27/27 | 0/0 | 0 | Natural Earth 10m admin1 gn_id -> GeoNames admin1 | 0 | 0 |
 | ES | C3 | 19/19 | 52/52 | 0 | Natural Earth 10m admin1 gn_id -> GeoNames admin2 grouped to admin1, geoBoundaries gbOpen ADM2 simplified | 0 | 0 |

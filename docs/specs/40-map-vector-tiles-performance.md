@@ -154,7 +154,7 @@ type GeoTileGenerationTier =
 | 包 | 档位 | feature 数 | 实际切片 zoom | 逻辑 tile 数 | MVT 原始字节估算 | 最大单 tile |
 | --- | --- | ---: | --- | ---: | ---: | ---: |
 | `country/` | country | 245 | z1-z2 | 16 | 约 1.14 MB | 约 272.8 KB |
-| `admin1/` | admin1+country-fallback | 1024 | z3-z4 | 190 | 约 2.97 MB | 约 229.4 KB |
+| `admin1/` | admin1+country-fallback | 1027 | z3-z4 | 190 | 约 2.94 MB | 约 229.4 KB |
 | `admin2/` | admin2+boundary+admin1/country-fallback | 1732 | z5 | 453 | 约 3.52 MB | 约 194.2 KB |
 
 按当前三档模型生成，总 MVT 文件数为 659。对比把现有全部边界直接切 z1-z8 的试算结果，后者约 23,220 个非空 tile。这个下降主要不是打包格式带来的，而是高精度档停止生成 z6-z8 细碎 tile 带来的。
