@@ -48,8 +48,8 @@ export function markerCellSize(zoom: number, pointCount: number): number {
 }
 
 export function markerRank(point: MapPoint): number {
-  const populationWeight = Math.log10(Math.max(point.prominence, 0) + 10) * 100;
-  return (point.selected ? 1_000_000 : 0) + populationWeight + point.opacity * 24 + point.size;
+  const defaultRankWeight = Math.max(0, 100_000 - point.rank);
+  return (point.selected ? 1_000_000 : 0) + defaultRankWeight + point.opacity * 24 + point.size;
 }
 
 function precipitationMarkerText(value: number): string {
@@ -255,7 +255,7 @@ export function buildMapPoints({
         opacity: score.matchDays === 0 ? 0.22 : Math.max(0.48, Math.min(1, 0.5 + normalized * 0.5)),
         size: 34,
         sortValue: metric.sortValue,
-        prominence: score.city.population ?? 0,
+        rank: score.city.rank ?? Number.MAX_SAFE_INTEGER,
         selected: selectedCityId === score.city.id
       };
     }).sort((left, right) => {
@@ -280,7 +280,7 @@ export function buildMapPoints({
       opacity: hasRegionLayer ? 0.72 : 0.86,
       size: layer === 'comfort' ? 34 : hasRegionLayer ? 28 : 34,
       sortValue: metric.sortValue,
-      prominence: item.city.population ?? 0,
+      rank: item.city.rank ?? Number.MAX_SAFE_INTEGER,
       selected: selectedCityId === item.city.id
     };
   }).sort((left, right) => {

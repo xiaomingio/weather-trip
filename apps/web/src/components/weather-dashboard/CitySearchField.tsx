@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染天气工具页结果面板里的城市搜索输入框。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

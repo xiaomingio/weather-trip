@@ -95,8 +95,8 @@ export function calculateComfortScore(day: DailyForecast): number {
   return Math.max(0, Math.min(1, score));
 }
 
-export function compareCityPopularity(a: City, b: City): number {
-  return (b.population ?? 0) - (a.population ?? 0) || a.id.localeCompare(b.id);
+export function compareCityDefaultRank(a: City, b: City): number {
+  return (a.rank ?? Number.MAX_SAFE_INTEGER) - (b.rank ?? Number.MAX_SAFE_INTEGER) || a.id.localeCompare(b.id);
 }
 
 export function buildWeatherMapCityWeather(
@@ -113,7 +113,7 @@ export function buildWeatherMapCityWeather(
       const forecast = forecastsByCity.get(city.id);
       return forecast ? [{ city, forecast, comfortScore: calculateComfortScore(forecast) }] : [];
     })
-    .sort((a, b) => compareCityPopularity(a.city, b.city));
+    .sort((a, b) => compareCityDefaultRank(a.city, b.city));
 }
 
 export { cityMatchesRegion };

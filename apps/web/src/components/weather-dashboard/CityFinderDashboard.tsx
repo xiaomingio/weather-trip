@@ -21,12 +21,11 @@ import {
 import { CityFinderFilterDock } from '../weather-filter-docks/CityFinderFilterDock';
 import { WorldWeatherMap } from '../WorldWeatherMap/WorldWeatherMap';
 import {
-  readSavedRegion,
+  readInitialToolSearch,
   readSearch,
   replaceToolUrl,
   resultPageSize,
-  saveRegion,
-  saveSearchRegion
+  saveToolSearch
 } from './dashboardApi';
 import { dashboardCopy } from './dashboardCopy';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
@@ -51,14 +50,16 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
   const [visibleResultLimit, setVisibleResultLimit] = useState(resultPageSize);
   const [isBrowserReady, setIsBrowserReady] = useState(false);
   const isApplyingPopState = useRef(false);
+  const isRestoringSavedState = useRef(false);
   const primaryRegion = getPrimaryRegionId(weatherFilter.region);
   const { primaryRegionOptions, subRegionOptions } = useRegionOptions(locale, primaryRegion, isBrowserReady);
   const canSelectSubRegion = subRegionOptions.length > 1;
 
   useEffect(() => {
-    const search = readSearch() || initialSearch;
-    saveSearchRegion(search);
-    setWeatherFilter(parseWeatherFilterFromSearch(search, readSavedRegion()));
+    const { search, restoredFromStorage } = readInitialToolSearch('city-finder', initialSearch);
+    if (!restoredFromStorage) saveToolSearch('city-finder', search);
+    isRestoringSavedState.current = restoredFromStorage;
+    setWeatherFilter(parseWeatherFilterFromSearch(search));
     setIsBrowserReady(true);
   }, [initialSearch]);
 
@@ -66,8 +67,8 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
     const handlePopState = () => {
       isApplyingPopState.current = true;
       const search = readSearch();
-      saveSearchRegion(search);
-      setWeatherFilter(parseWeatherFilterFromSearch(search, readSavedRegion()));
+      saveToolSearch('city-finder', search);
+      setWeatherFilter(parseWeatherFilterFromSearch(search));
       setSelectedCityId(null);
     };
     window.addEventListener('popstate', handlePopState);
@@ -78,6 +79,10 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
     if (!isBrowserReady) return;
     if (isApplyingPopState.current) {
       isApplyingPopState.current = false;
+      return;
+    }
+    if (isRestoringSavedState.current) {
+      isRestoringSavedState.current = false;
       return;
     }
     replaceToolUrl(locale, 'city-finder', weatherFilter, '', 'weather');
@@ -147,7 +152,6 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
 
   const setRegion = useCallback((region: RegionKey) => {
     setWeatherFilter((current) => ({ ...current, region }));
-    saveRegion(region);
     setSelectedCityId(null);
   }, []);
 

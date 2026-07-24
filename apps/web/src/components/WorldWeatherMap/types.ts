@@ -19,7 +19,7 @@ export type MapPoint = {
   opacity: number;
   size: number;
   sortValue: number;
-  prominence: number;
+  rank: number;
   selected: boolean;
 };
 

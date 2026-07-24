@@ -1,6 +1,6 @@
 /**
  * 文件说明: 覆盖公开天气二进制包的编码、解码、矩阵寻址和基础错包校验。
- * 对应文档: docs/specs/43-weather-matrix-performance.md
+ * 对应文档: docs/specs/41-weather-matrix-performance.md
  */
 import { describe, expect, it } from 'vitest';
 import {

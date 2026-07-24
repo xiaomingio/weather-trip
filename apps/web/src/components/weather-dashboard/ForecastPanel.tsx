@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染选中城市的标题信息、十四天预报列表和预报加载状态。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

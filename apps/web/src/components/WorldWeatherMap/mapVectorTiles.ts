@@ -1,6 +1,6 @@
 /**
  * 文件说明: 处理 WorldWeatherMap 静态矢量瓦片 source、样式表达式和地区 hover 文案。
- * 对应文档: docs/specs/42-map-vector-tiles-performance.md
+ * 对应文档: docs/specs/40-map-vector-tiles-performance.md
  */
 import type { MapLayer, RegionWeatherSummary, WeatherToolId } from 'weather-core/types';
 import type { FilterSpecification, Map as MapLibreMap } from 'maplibre-gl';

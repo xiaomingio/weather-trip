@@ -1,6 +1,6 @@
 /**
  * 文件说明: 定义免费静态数据方案的公开数据契约，并把城市 JSON 与天气二进制包解码为应用模型。
- * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
+ * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/41-weather-matrix-performance.md
  */
 import { weatherCodeToType } from './weather-code.js';
 import type { City, CountryTier, DailyForecast, WeatherDataSnapshot, WeatherForecastMatrix } from './types.js';

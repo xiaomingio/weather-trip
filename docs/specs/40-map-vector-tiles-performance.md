@@ -2,7 +2,7 @@
 
 ## 文档边界
 
-本文定义把现有行政边界发布为静态矢量瓦片的性能优化方案。天气覆盖策略、C1/C2/C3 分层、城市选择和区域聚合口径仍以 `docs/specs/30-weather-coverage-design.md` 为准；数据来源和现有 GeoJSON 生成链路见 `docs/specs/31-data-flow.md`；地图 hover、点击和 marker 密度见 `docs/specs/41-weather-map-interactions.md`。
+本文定义把现有行政边界发布为静态矢量瓦片的性能优化方案。天气覆盖策略、C1/C2/C3 分层、城市选择和区域聚合口径仍以 `docs/specs/30-weather-coverage-design.md` 为准；数据来源和现有 GeoJSON 生成链路见 `docs/specs/31-data-flow.md`；地图 hover、点击和 marker 密度见 `docs/specs/22-weather-map-interactions.md`。
 
 瓦片化只改变行政边界的发布和加载方式，不改变天气采样粒度，也不替代边界源清洗、GeoNames 对齐、国家分层复核和生成报告。
 

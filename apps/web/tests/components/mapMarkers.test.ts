@@ -1,6 +1,6 @@
 /**
  * 文件说明: 覆盖 WorldWeatherMap 点位避让密度随 zoom 和点数变化的交互规则。
- * 对应文档: docs/specs/41-weather-map-interactions.md
+ * 对应文档: docs/specs/22-weather-map-interactions.md
  */
 import { describe, expect, it } from 'vitest';
 import type { City, DailyForecast } from 'weather-core/types';
@@ -129,5 +129,36 @@ describe('map marker comfort labels', () => {
     });
 
     expect(buildPointGeojson(points).features[0].properties.tooltip).toBe('Sample City, Sierra Leone Sample Region · Sunny');
+  });
+
+  it('uses default city rank as the marker declutter priority', () => {
+    const lowerRankCity: City = {
+      ...city,
+      id: 'major-capital',
+      names: { zh: '首都', en: 'Major Capital' },
+      rank: 1
+    };
+    const higherRankCity: City = {
+      ...city,
+      id: 'large-ordinary-city',
+      names: { zh: '普通大城', en: 'Large Ordinary City' },
+      population: 20_000_000,
+      rank: 200
+    };
+    const points = buildMapPoints({
+      tool: 'weather-map',
+      resultItems: [
+        { tool: 'weather-map', city: lowerRankCity, forecast: { ...forecast, cityId: lowerRankCity.id }, comfortScore: 0.6 },
+        { tool: 'weather-map', city: higherRankCity, forecast: { ...forecast, cityId: higherRankCity.id }, comfortScore: 0.9 }
+      ],
+      layer: 'comfort',
+      locale: 'en',
+      temperatureUnit: 'c',
+      selectedCityId: null,
+      hasRegionLayer: true
+    });
+    const sortKeys = Object.fromEntries(buildPointGeojson(points).features.map((feature) => [feature.properties.cityId, feature.properties.sortKey]));
+
+    expect(sortKeys['major-capital']).toBeGreaterThan(sortKeys['large-ordinary-city']);
   });
 });

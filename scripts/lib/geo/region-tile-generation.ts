@@ -1,6 +1,6 @@
 /**
  * 文件说明: 实现地图区块着色使用的三档静态矢量瓦片生成、manifest 写入和生成报告。
- * 对应文档: docs/specs/42-map-vector-tiles-performance.md
+ * 对应文档: docs/specs/40-map-vector-tiles-performance.md
  */
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';

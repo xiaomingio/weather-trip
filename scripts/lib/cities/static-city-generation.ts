@@ -60,6 +60,8 @@ type SelectedCity = City & {
   selectionReasons: string[];
 };
 
+type DefaultRankCity = Pick<GeoNamesCity, 'featureCode' | 'population' | 'countryCode' | 'id'>;
+
 type CitySelectionCountryReport = {
   countryCode: string;
   name: string;
@@ -136,6 +138,15 @@ const adminRepresentativeFeatureRank: Record<string, number> = {
   PPL: 5
 };
 
+const defaultRankFeatureOrder: Record<string, number> = {
+  PPLC: 1,
+  PPLA: 2,
+  PPLA2: 3,
+  PPLA3: 4,
+  PPLA4: 5,
+  PPL: 6
+};
+
 async function readJson<T>(filePath: string): Promise<T> {
   return JSON.parse(await readFile(filePath, 'utf8')) as T;
 }
@@ -196,6 +207,19 @@ function compareRepresentative(
     (adminRepresentativeFeatureRank[left.featureCode] ?? 9) - (adminRepresentativeFeatureRank[right.featureCode] ?? 9) ||
     right.population - left.population ||
     left.id.localeCompare(right.id)
+  );
+}
+
+export function compareDefaultRank(
+  left: { city: DefaultRankCity; priority: number },
+  right: { city: DefaultRankCity; priority: number }
+): number {
+  return (
+    (defaultRankFeatureOrder[left.city.featureCode] ?? 9) - (defaultRankFeatureOrder[right.city.featureCode] ?? 9) ||
+    right.city.population - left.city.population ||
+    left.priority - right.priority ||
+    left.city.countryCode.localeCompare(right.city.countryCode) ||
+    left.city.id.localeCompare(right.city.id)
   );
 }
 
@@ -338,7 +362,7 @@ function chooseCities(
       priority: Math.min(...reasons.values()),
       reasons: [...reasons.entries()].sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0])).map(([reason]) => reason)
     }))
-    .sort((left, right) => left.priority - right.priority || right.city.population - left.city.population || left.city.countryCode.localeCompare(right.city.countryCode) || left.city.id.localeCompare(right.city.id));
+    .sort(compareDefaultRank);
 
   return { selectedRows, unmatchedSeeds, missingAdmin1Representatives, missingAdmin2Representatives };
 }
@@ -569,54 +593,54 @@ function reportMarkdown(report: CitySelectionReport): string {
 }
 
 export async function runGenerateStaticCities(): Promise<void> {
-const [profilesPayload, seeds, overrideSeed, dataset] = await Promise.all([
-  readJson<CountryProfilesPayload>(cityProfilesPath),
-  readJson<TourismSeed[]>(tourismSeedsPath),
-  loadCoverageOverrides(rootDir),
-  loadGeoNamesDataset(rootDir, { includeAlternateNames: true })
-]);
-const profiles = profilesPayload.profiles;
-const profilesByCountry = new Map(profiles.map((profile) => [profile.countryCode, profile]));
-const admin1ByKey = new Map(dataset.admin1Items.map((admin1) => [`${admin1.countryCode}.${admin1.admin1Code}`, admin1]));
-const admin2ByKey = new Map(dataset.admin2Items.map((admin2) => [`${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`, admin2]));
-const { selectedRows, unmatchedSeeds, missingAdmin1Representatives, missingAdmin2Representatives } = chooseCities(
-  dataset.cities,
-  dataset.admin1Items,
-  dataset.admin2Items,
-  profiles,
-  seeds,
-  overrideSeed
-);
-const scopedGeonameIds = new Set<number>([
-  ...selectedRows.map((row) => row.city.geonameId),
-  ...selectedRows.flatMap((row) => {
-    const city = row.city;
-    return [
-      city.admin1Code ? admin1ByKey.get(`${city.countryCode}.${city.admin1Code}`)?.geonameId : undefined,
-      city.admin1Code && city.admin2Code ? admin2ByKey.get(`${city.countryCode}.${city.admin1Code}.${city.admin2Code}`)?.geonameId : undefined
-    ].filter((value): value is number => typeof value === 'number');
-  })
-]);
-const zhNameByGeonameId = await readAlternateNamesFromZip(dataset.paths.alternateNamesZip, scopedGeonameIds);
-const selectedCities = selectedRows.map((row) => toCity(row, admin1ByKey, admin2ByKey, zhNameByGeonameId));
-const hash = createHash('sha1')
-  .update(JSON.stringify({ profilesVersion: profilesPayload.version, cities: selectedCities.map((city) => [city.id, city.selectionReasons]) }))
-  .digest('hex')
-  .slice(0, 12);
-const version = `cities-${hash}`;
-const payload = buildCitiesPayload(selectedCities, profilesByCountry, version);
-const report = buildReport(selectedCities, dataset.cities.length, profilesPayload, unmatchedSeeds, missingAdmin1Representatives, missingAdmin2Representatives, version);
+  const [profilesPayload, seeds, overrideSeed, dataset] = await Promise.all([
+    readJson<CountryProfilesPayload>(cityProfilesPath),
+    readJson<TourismSeed[]>(tourismSeedsPath),
+    loadCoverageOverrides(rootDir),
+    loadGeoNamesDataset(rootDir, { includeAlternateNames: true })
+  ]);
+  const profiles = profilesPayload.profiles;
+  const profilesByCountry = new Map(profiles.map((profile) => [profile.countryCode, profile]));
+  const admin1ByKey = new Map(dataset.admin1Items.map((admin1) => [`${admin1.countryCode}.${admin1.admin1Code}`, admin1]));
+  const admin2ByKey = new Map(dataset.admin2Items.map((admin2) => [`${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`, admin2]));
+  const { selectedRows, unmatchedSeeds, missingAdmin1Representatives, missingAdmin2Representatives } = chooseCities(
+    dataset.cities,
+    dataset.admin1Items,
+    dataset.admin2Items,
+    profiles,
+    seeds,
+    overrideSeed
+  );
+  const scopedGeonameIds = new Set<number>([
+    ...selectedRows.map((row) => row.city.geonameId),
+    ...selectedRows.flatMap((row) => {
+      const city = row.city;
+      return [
+        city.admin1Code ? admin1ByKey.get(`${city.countryCode}.${city.admin1Code}`)?.geonameId : undefined,
+        city.admin1Code && city.admin2Code ? admin2ByKey.get(`${city.countryCode}.${city.admin1Code}.${city.admin2Code}`)?.geonameId : undefined
+      ].filter((value): value is number => typeof value === 'number');
+    })
+  ]);
+  const zhNameByGeonameId = await readAlternateNamesFromZip(dataset.paths.alternateNamesZip, scopedGeonameIds);
+  const selectedCities = selectedRows.map((row) => toCity(row, admin1ByKey, admin2ByKey, zhNameByGeonameId));
+  const hash = createHash('sha1')
+    .update(JSON.stringify({ profilesVersion: profilesPayload.version, cities: selectedCities.map((city) => [city.id, city.selectionReasons]) }))
+    .digest('hex')
+    .slice(0, 12);
+  const version = `cities-${hash}`;
+  const payload = buildCitiesPayload(selectedCities, profilesByCountry, version);
+  const report = buildReport(selectedCities, dataset.cities.length, profilesPayload, unmatchedSeeds, missingAdmin1Representatives, missingAdmin2Representatives, version);
 
-if (payload.c.length > 5000) {
-  throw new Error(`Selected ${payload.c.length} cities, exceeding the static city data limit of 5000.`);
-}
+  if (payload.c.length > 5000) {
+    throw new Error(`Selected ${payload.c.length} cities, exceeding the static city data limit of 5000.`);
+  }
 
-await mkdir(generatedDir, { recursive: true });
-await mkdir(publicDataDir, { recursive: true });
-await writeFile(path.join(generatedDir, 'cities.json'), `${JSON.stringify(payload, null, 2)}\n`);
-await writeFile(path.join(publicDataDir, 'cities.json'), `${JSON.stringify(payload)}\n`);
-await writeFile(path.join(generatedDir, 'city-selection-report.json'), `${JSON.stringify(report, null, 2)}\n`);
-await writeFile(path.join(generatedDir, 'city-selection-report.md'), reportMarkdown(report));
+  await mkdir(generatedDir, { recursive: true });
+  await mkdir(publicDataDir, { recursive: true });
+  await writeFile(path.join(generatedDir, 'cities.json'), `${JSON.stringify(payload, null, 2)}\n`);
+  await writeFile(path.join(publicDataDir, 'cities.json'), `${JSON.stringify(payload)}\n`);
+  await writeFile(path.join(generatedDir, 'city-selection-report.json'), `${JSON.stringify(report, null, 2)}\n`);
+  await writeFile(path.join(generatedDir, 'city-selection-report.md'), reportMarkdown(report));
 
-console.log(`Generated ${payload.c.length} static cities from ${dataset.cities.length} GeoNames candidates (${version}).`);
+  console.log(`Generated ${payload.c.length} static cities from ${dataset.cities.length} GeoNames candidates (${version}).`);
 }

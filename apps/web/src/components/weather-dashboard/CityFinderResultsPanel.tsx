@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染 City Finder Tab 的城市匹配结果统计、搜索和列表。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

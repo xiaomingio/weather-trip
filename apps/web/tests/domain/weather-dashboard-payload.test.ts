@@ -79,11 +79,11 @@ describe('weather map day payload', () => {
 });
 
 describe('city search payload', () => {
-  it('uses population as the fallback sort when travel scores tie', () => {
+  it('uses default city rank as the fallback sort when travel scores tie', () => {
     const cities = [
-      cityWith({ id: 'small-city', names: { zh: '小城', en: 'Small City' }, population: 1_000_000 }),
-      cityWith({ id: 'large-city', names: { zh: '大城', en: 'Large City' }, population: 8_000_000 }),
-      cityWith({ id: 'regional-hub', names: { zh: '区域中心', en: 'Regional Hub' }, population: 12_000_000 })
+      cityWith({ id: 'small-capital', names: { zh: '小首都', en: 'Small Capital' }, population: 1_000_000, rank: 1 }),
+      cityWith({ id: 'large-city', names: { zh: '大城', en: 'Large City' }, population: 8_000_000, rank: 3 }),
+      cityWith({ id: 'regional-hub', names: { zh: '区域中心', en: 'Regional Hub' }, population: 12_000_000, rank: 2 })
     ];
     const testDates = dates.slice(0, 3);
     const tiedSnapshot: WeatherDataSnapshot = weatherSnapshotFromForecasts({
@@ -97,7 +97,7 @@ describe('city search payload', () => {
       searchParams: new URLSearchParams('region=world')
     });
 
-    expect(payload.resultItems.map((item) => item.city.id)).toEqual(['regional-hub', 'large-city', 'small-city']);
+    expect(payload.resultItems.map((item) => item.city.id)).toEqual(['small-capital', 'regional-hub', 'large-city']);
   });
 
   it('normalizes admin2 URL regions to their admin1 parent for selectable filters', () => {

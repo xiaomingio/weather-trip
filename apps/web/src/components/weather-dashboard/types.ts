@@ -1,12 +1,12 @@
 /**
  * 文件说明: 定义天气工具页 React 面板组件之间共享的展示类型。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 
 import type { MapLayer } from 'weather-core/types';
 import type { DisplayLocale } from '@/domain/format';
 
-export type WeatherMapSortKey = MapLayer | 'population';
+export type WeatherMapSortKey = MapLayer | 'default';
 export type SortDirection = 'asc' | 'desc';
 
 export type WeatherMapSortOption = {

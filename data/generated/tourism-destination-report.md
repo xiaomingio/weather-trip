@@ -1,7 +1,7 @@
 # 旅游目的地报告
 
 版本：`tourism-destinations-7abe20cfd6d7`
-生成时间：`2026-07-24T09:32:07.126Z`
+生成时间：`2026-07-24T09:56:50.144Z`
 raw 目录：`data/raw/tourism-destinations`
 
 ## raw 来源

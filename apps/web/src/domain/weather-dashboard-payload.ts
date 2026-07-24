@@ -1,6 +1,6 @@
 /**
  * 文件说明: 从天气应用快照和二进制天气矩阵组装 City Finder 与 Weather Map 页面展示 payload。
- * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
+ * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/41-weather-matrix-performance.md
  */
 import type { City, DailyForecast, RegionKey, WeatherDataSnapshot, WeatherFilter, WeatherToolId, WeatherType } from 'weather-core/types';
 import { hasForecastDay, readCityForecasts, readForecastsForDate } from 'weather-core/static-data';
@@ -15,7 +15,7 @@ import {
   getRegionLabel,
   getRegionOption
 } from './regions';
-import { buildWeatherMapCityWeather, compareCityPopularity, scoreCityFinderMatch } from './scoring';
+import { buildWeatherMapCityWeather, compareCityDefaultRank, scoreCityFinderMatch } from './scoring';
 import {
   type DashboardWeatherMapResultItem,
   type DashboardResultItem,
@@ -156,7 +156,7 @@ function buildCityFinderItems(cities: City[], forecastsByCity: Map<string, Daily
   return cities
     .filter((city) => cityMatchesRegion(city, filter.region))
     .map((city) => scoreCityFinderMatch(city, forecastsByCity.get(city.id) ?? [], filter))
-    .sort((a, b) => b.score - a.score || b.matchDays - a.matchDays || compareCityPopularity(a.city, b.city))
+    .sort((a, b) => b.score - a.score || b.matchDays - a.matchDays || compareCityDefaultRank(a.city, b.city))
     .map((score) => ({
       tool: 'city-finder',
       city: score.city,

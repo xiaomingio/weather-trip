@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染选中城市十四天预报中的单日天气卡片。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

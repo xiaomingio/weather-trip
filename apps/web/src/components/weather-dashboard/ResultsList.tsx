@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染天气工具页城市结果列表，并按结果类型显示匹配指标或地图图层指标。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

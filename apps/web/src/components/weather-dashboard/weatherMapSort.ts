@@ -11,12 +11,12 @@ import type { SortDirection, WeatherMapSortKey, WeatherMapSortOption } from './t
 import { weatherMapLayers } from './weatherMapLayers';
 
 export const weatherMapSortOptions: WeatherMapSortOption[] = [
-  { id: 'population', labels: { zh: '人口', en: 'Population' } },
+  { id: 'default', labels: { zh: '默认', en: 'Default' } },
   ...weatherMapLayers
 ];
 
 export const weatherMapSortDirections: Record<WeatherMapSortKey, SortDirection> = {
-  population: 'desc',
+  default: 'asc',
   weather: 'asc',
   temperature: 'desc',
   humidity: 'asc',
@@ -40,7 +40,7 @@ const weatherSortRank: Record<WeatherType, number> = {
 };
 
 function weatherMapSortValue(item: DashboardWeatherMapResultItem, sortKey: WeatherMapSortKey): number {
-  if (sortKey === 'population') return item.city.population ?? 0;
+  if (sortKey === 'default') return item.city.rank ?? Number.MAX_SAFE_INTEGER;
   if (sortKey === 'weather') return weatherSortRank[item.forecast.weatherType];
   if (sortKey === 'temperature') return item.forecast.temperatureMeanC;
   if (sortKey === 'humidity') return item.forecast.humidityMeanPercent;
@@ -62,8 +62,8 @@ export function sortWeatherMapItems(
 
     if (rightValue !== leftValue) return direction === 'asc' ? leftValue - rightValue : rightValue - leftValue;
 
-    const populationComparison = (right.city.population ?? 0) - (left.city.population ?? 0);
-    if (populationComparison !== 0) return populationComparison;
+    const rankComparison = (left.city.rank ?? Number.MAX_SAFE_INTEGER) - (right.city.rank ?? Number.MAX_SAFE_INTEGER);
+    if (rankComparison !== 0) return rankComparison;
     return formatCityName(left.city, locale).localeCompare(formatCityName(right.city, locale), locale === 'zh' ? 'zh-CN' : 'en-US');
   });
 }

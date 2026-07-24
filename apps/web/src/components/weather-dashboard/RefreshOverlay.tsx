@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染天气工具页局部数据刷新时的半透明加载遮罩。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

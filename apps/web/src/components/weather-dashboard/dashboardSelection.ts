@@ -8,8 +8,8 @@ import { formatCityName } from '@/domain/format';
 import type { DashboardResultItem } from '@/domain/weather-dashboard-shared';
 
 function compareDefaultSelectedCity(left: DashboardResultItem, right: DashboardResultItem, locale: DisplayLocale): number {
-  const populationComparison = (right.city.population ?? 0) - (left.city.population ?? 0);
-  if (populationComparison !== 0) return populationComparison;
+  const rankComparison = (left.city.rank ?? Number.MAX_SAFE_INTEGER) - (right.city.rank ?? Number.MAX_SAFE_INTEGER);
+  if (rankComparison !== 0) return rankComparison;
   return formatCityName(left.city, locale).localeCompare(formatCityName(right.city, locale), locale === 'zh' ? 'zh-CN' : 'en-US');
 }
 

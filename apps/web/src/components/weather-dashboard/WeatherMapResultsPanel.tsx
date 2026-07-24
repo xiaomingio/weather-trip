@@ -1,6 +1,6 @@
 /**
  * 文件说明: 渲染 Weather Map Tab 的覆盖统计、排序控件、城市搜索和地图结果列表。
- * 对应文档: docs/tool-responsive-layout.md
+ * 对应文档: docs/specs/21-tool-responsive-layout.md
  */
 'use client';
 

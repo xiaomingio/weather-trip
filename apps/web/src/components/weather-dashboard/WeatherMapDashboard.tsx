@@ -17,6 +17,7 @@ import {
   type WeatherLayerDateData,
   getPrimaryRegionId,
   isDashboardCityFinderItem,
+  buildFilterSearch,
   parseWeatherFilterFromSearch,
   readDateFromSearch,
   readLayerFromSearch
@@ -24,12 +25,11 @@ import {
 import { WeatherMapFilterDock } from '../weather-filter-docks/WeatherMapFilterDock';
 import { WorldWeatherMap } from '../WorldWeatherMap/WorldWeatherMap';
 import {
-  readSavedRegion,
+  readInitialToolSearch,
   readSearch,
   replaceToolUrl,
   resultPageSize,
-  saveRegion,
-  saveSearchRegion
+  saveToolSearch
 } from './dashboardApi';
 import { dashboardCopy } from './dashboardCopy';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
@@ -58,6 +58,10 @@ function buildWeatherMapDaysCacheKey(locale: DisplayLocale, region: RegionKey, l
   return `${locale}:${region}:${layer}`;
 }
 
+function initialWeatherMapSortKey(layer: MapLayer): WeatherMapSortKey {
+  return layer;
+}
+
 function buildWeatherMapDashboardPayload(filters: MapDatesPayload, day: WeatherLayerDateData): WeatherToolPayload {
   return {
     tool: 'weather-map',
@@ -78,8 +82,8 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const [weatherFilter, setWeatherFilter] = useState<WeatherFilter>(() => parseWeatherFilterFromSearch(initialSearch));
   const [selectedDate, setSelectedDate] = useState(() => readDateFromSearch(initialSearch, ''));
   const [layer, setLayer] = useState<MapLayer>(() => readLayerFromSearch(initialSearch));
-  const [weatherMapSortKey, setWeatherMapSortKey] = useState<WeatherMapSortKey>(() => readLayerFromSearch(initialSearch));
-  const [weatherMapSortDirection, setWeatherMapSortDirection] = useState<SortDirection>(() => weatherMapSortDirections[readLayerFromSearch(initialSearch)]);
+  const [weatherMapSortKey, setWeatherMapSortKey] = useState<WeatherMapSortKey>(() => initialWeatherMapSortKey(readLayerFromSearch(initialSearch)));
+  const [weatherMapSortDirection, setWeatherMapSortDirection] = useState<SortDirection>(() => weatherMapSortDirections[initialWeatherMapSortKey(readLayerFromSearch(initialSearch))]);
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [cityKeyword, setCityKeyword] = useState('');
   const [dashboardData, setDashboardData] = useState<WeatherToolPayload | null>(null);
@@ -89,6 +93,9 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const [isBrowserReady, setIsBrowserReady] = useState(false);
   const isApplyingPopState = useRef(false);
   const isApplyingPayloadDate = useRef(false);
+  const isRestoringSavedState = useRef(false);
+  const isInitialStorageRestorePending = useRef(false);
+  const shouldSkipNextPayloadDateUrlReplace = useRef(false);
   const weatherMapDaysCache = useRef<WeatherMapDaysCache | null>(null);
   const primaryRegion = getPrimaryRegionId(weatherFilter.region);
   const { primaryRegionOptions, subRegionOptions } = useRegionOptions(locale, primaryRegion, isBrowserReady);
@@ -97,23 +104,27 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const selectedDateIndex = Math.max(0, regionAvailableDates.indexOf(selectedDate));
 
   useEffect(() => {
-    const search = readSearch() || initialSearch;
+    const { search, restoredFromStorage } = readInitialToolSearch('weather-map', initialSearch);
     const nextLayer = readLayerFromSearch(search);
-    saveSearchRegion(search);
-    setWeatherFilter(parseWeatherFilterFromSearch(search, readSavedRegion()));
+    const nextSortKey = initialWeatherMapSortKey(nextLayer);
+    if (!restoredFromStorage) saveToolSearch('weather-map', search);
+    isRestoringSavedState.current = restoredFromStorage;
+    isInitialStorageRestorePending.current = restoredFromStorage;
+    setWeatherFilter(parseWeatherFilterFromSearch(search));
     setSelectedDate(readDateFromSearch(search, ''));
     setLayer(nextLayer);
-    setWeatherMapSortKey(nextLayer);
-    setWeatherMapSortDirection(weatherMapSortDirections[nextLayer]);
+    setWeatherMapSortKey(nextSortKey);
+    setWeatherMapSortDirection(weatherMapSortDirections[nextSortKey]);
     setIsBrowserReady(true);
   }, [initialSearch]);
 
   useEffect(() => {
     const handlePopState = () => {
       isApplyingPopState.current = true;
+      isInitialStorageRestorePending.current = false;
       const search = readSearch();
-      saveSearchRegion(search);
-      setWeatherFilter(parseWeatherFilterFromSearch(search, readSavedRegion()));
+      saveToolSearch('weather-map', search);
+      setWeatherFilter(parseWeatherFilterFromSearch(search));
       setSelectedDate(readDateFromSearch(search, regionAvailableDates[0] ?? ''));
       setLayer(readLayerFromSearch(search));
       setSelectedCityId(null);
@@ -128,7 +139,18 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
       isApplyingPopState.current = false;
       return;
     }
+    if (isRestoringSavedState.current) {
+      isRestoringSavedState.current = false;
+      return;
+    }
+    if (shouldSkipNextPayloadDateUrlReplace.current) {
+      shouldSkipNextPayloadDateUrlReplace.current = false;
+      isInitialStorageRestorePending.current = false;
+      saveToolSearch('weather-map', buildFilterSearch('weather-map', weatherFilter, selectedDate, layer));
+      return;
+    }
     replaceToolUrl(locale, 'weather-map', weatherFilter, selectedDate, layer);
+    isInitialStorageRestorePending.current = false;
   }, [isBrowserReady, layer, locale, selectedDate, weatherFilter]);
 
   useEffect(() => {
@@ -173,10 +195,13 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
         setLoadError(null);
         if (dayData.date && dayData.date !== selectedDate) {
           isApplyingPayloadDate.current = true;
+          shouldSkipNextPayloadDateUrlReplace.current = isInitialStorageRestorePending.current;
           setSelectedDate(dayData.date);
         }
+        isInitialStorageRestorePending.current = false;
       } catch (error) {
         if (controller.signal.aborted) return;
+        isInitialStorageRestorePending.current = false;
         setLoadError(error instanceof Error ? error.message : 'Weather map request failed.');
       } finally {
         if (!controller.signal.aborted) setIsLoadingData(false);
@@ -232,8 +257,9 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   }, [isBrowserReady, layer, locale, selectedDate, weatherFilter]);
 
   useEffect(() => {
-    setWeatherMapSortKey(layer);
-    setWeatherMapSortDirection(weatherMapSortDirections[layer]);
+    const nextSortKey = initialWeatherMapSortKey(layer);
+    setWeatherMapSortKey(nextSortKey);
+    setWeatherMapSortDirection(weatherMapSortDirections[nextSortKey]);
   }, [layer]);
 
   const resultItems = useMemo(() => {
@@ -269,7 +295,6 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
 
   const setRegion = useCallback((region: RegionKey) => {
     setWeatherFilter((current) => ({ ...current, region }));
-    saveRegion(region);
     setSelectedCityId(null);
   }, []);
 

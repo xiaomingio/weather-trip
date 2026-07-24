@@ -24,7 +24,7 @@ Weather Trip 包含一个 Landing page 和两个工具 Tab，支持中文和英�
 | 任务 | 说明 |
 | --- | --- |
 | Landing page | 默认语言入口，无额外 mode path；展示产品定位、数据覆盖证据，并进入两个工具 Tab |
-| 全球天气地图 | 选择某一天，在地图上查看气温、天气、降水、湿度、海拔和舒适度；城市覆盖和区域着色规则见 `docs/specs/30-weather-coverage-design.md`，地图 hover、点位密度和地区控件交互见 `docs/specs/41-weather-map-interactions.md` |
+| 全球天气地图 | 选择某一天，在地图上查看气温、天气、降水、湿度、海拔和舒适度；整体交互见 `docs/specs/20-interaction-logic.md`，城市覆盖和区域着色规则见 `docs/specs/30-weather-coverage-design.md`，地图 hover、点位密度和地区控件交互见 `docs/specs/22-weather-map-interactions.md` |
 | 按天气找城市 | 按未来 3/5/7/10/14 天筛选城市，展示匹配天数和平均温度 |
 | 地区聚焦 | 支持全球、大区、C2/C3 国家，以及国家内一级区域筛选；C3 二级区域用于地图着色和 hover，不进入筛选下拉 |
 | 城市详情 | 选中城市后展示未来 14 天温度、天气、湿度和降水 |
@@ -38,7 +38,7 @@ Weather Trip 包含一个 Landing page 和两个工具 Tab，支持中文和英�
 | 路径 | 写入 / 恢复的 query |
 | --- | --- |
 | `/weather-map`、`/zh/weather-map` | `region`、`date`、`layer` |
-| `/city-finder`、`/zh/city-finder` | `region`、`days`、`temp`、`weather`、`humidity`、`elevation` |
+| `/city-finder`、`/zh/city-finder` | `region`、`days`、`temp`、`weather`、`humidity`、`precipitation`、`wind`、`elevation` |
 
 切换 Tab 时恢复目标 Tab 自己上次使用的条件，不把当前 Tab 的条件带到另一 Tab。
 
@@ -48,7 +48,7 @@ Weather Trip 包含一个 Landing page 和两个工具 Tab，支持中文和英�
 
 地区选择以用户能理解的旅行范围为入口：全球、大区、国家和国家内一级区域。C3 二级区域用于地图表达更细的天气差异，但不作为筛选入口，避免用户在下拉里面对过细的行政层级。
 
-地区覆盖、地图着色粒度和区域点击规则以 `docs/specs/30-weather-coverage-design.md` 为准；地区控件、hover 和 marker 交互见 `docs/specs/41-weather-map-interactions.md`。
+地区筛选、日期、图层、列表排序和默认选中规则见 `docs/specs/20-interaction-logic.md`。地区覆盖、地图着色粒度和区域点击规则以 `docs/specs/30-weather-coverage-design.md` 为准；地区控件、hover 和 marker 交互见 `docs/specs/22-weather-map-interactions.md`。
 
 ## 旅行时间窗口
 

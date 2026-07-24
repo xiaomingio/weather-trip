@@ -1,6 +1,6 @@
 /**
  * 文件说明: 从 Open-Meteo 生成静态公开数据版 14 天天气二进制包和 current 入口。
- * 对应文档: docs/specs/31-data-flow.md, docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
+ * 对应文档: docs/specs/31-data-flow.md, docs/specs/32-public-data-contract.md, docs/specs/41-weather-matrix-performance.md
  */
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';

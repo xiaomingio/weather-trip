@@ -128,11 +128,11 @@ describe('travel scoring', () => {
     expect(calculateBestStreak([true, true, false, true, true, true])).toBe(3);
   });
 
-  it('sorts single-day weather by population instead of weather comfort', () => {
+  it('sorts single-day weather by default city rank instead of weather comfort', () => {
     const cities = [
-      cityWith({ id: 'regional-hub', names: { zh: '区域大城', en: 'Regional Hub' }, population: 12_000_000 }),
-      cityWith({ id: 'mid-sized-city', names: { zh: '中型城市', en: 'Mid-sized City' }, population: 2_000_000 }),
-      cityWith({ id: 'large-city', names: { zh: '大型城市', en: 'Large City' }, population: 8_000_000 })
+      cityWith({ id: 'regional-hub', names: { zh: '区域大城', en: 'Regional Hub' }, population: 12_000_000, rank: 2 }),
+      cityWith({ id: 'mid-sized-city', names: { zh: '中型城市', en: 'Mid-sized City' }, population: 2_000_000, rank: 1 }),
+      cityWith({ id: 'large-city', names: { zh: '大型城市', en: 'Large City' }, population: 8_000_000, rank: 3 })
     ];
     const forecasts = [
       forecast({ cityId: 'regional-hub', weatherType: 'sunny', temperatureMeanC: 24 }),
@@ -141,9 +141,9 @@ describe('travel scoring', () => {
     ];
 
     expect(buildWeatherMapCityWeather(cities, forecasts, '2026-07-21', 'world').map((item) => item.city.id)).toEqual([
+      'mid-sized-city',
       'regional-hub',
-      'large-city',
-      'mid-sized-city'
+      'large-city'
     ]);
   });
 

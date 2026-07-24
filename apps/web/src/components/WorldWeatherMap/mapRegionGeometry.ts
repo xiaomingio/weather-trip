@@ -1,6 +1,6 @@
 /**
  * 文件说明: 提供 WorldWeatherMap 矢量瓦片图层 ID 和相机 bounds 计算工具。
- * 对应文档: docs/specs/41-weather-map-interactions.md
+ * 对应文档: docs/specs/22-weather-map-interactions.md
  */
 
 import maplibregl from 'maplibre-gl';

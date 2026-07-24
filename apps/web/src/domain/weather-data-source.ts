@@ -1,6 +1,6 @@
 /**
  * 文件说明: 实现免费静态版天气数据源，负责读取城市 JSON 和天气二进制包并解码为 UI 可用快照。
- * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
+ * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/41-weather-matrix-performance.md
  */
 import { decodeWeatherDataSnapshot, type CitiesPayloadWire, type WeatherCurrentWire } from 'weather-core/static-data';
 import type { WeatherDataSnapshot } from 'weather-core/types';

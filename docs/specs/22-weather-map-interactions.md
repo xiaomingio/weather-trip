@@ -2,7 +2,7 @@
 
 ## 文档边界
 
-本文定义 Weather Map 的地区控件、zoom 分档、hover、点击反馈、相机行为、刷新状态和 marker 密度。国家分层、城市选择、区域聚合和着色口径见 `docs/specs/30-weather-coverage-design.md`；数据来源和生成链路见 `docs/specs/31-data-flow.md`；公开数据分块、请求顺序和字段结构见 `docs/specs/32-public-data-contract.md`。
+本文定义 Weather Map 的地区控件、zoom 分档、hover、点击反馈、相机行为、刷新状态和 marker 密度。项目整体交互、默认排序和默认选中城市见 `docs/specs/20-interaction-logic.md`；国家分层、城市选择、区域聚合和着色口径见 `docs/specs/30-weather-coverage-design.md`；数据来源和生成链路见 `docs/specs/31-data-flow.md`；公开数据分块、请求顺序和字段结构见 `docs/specs/32-public-data-contract.md`。
 
 ## 地区控件
 
@@ -66,7 +66,7 @@ z6-z8 不生成更细的 MVT 文件，由 MapLibre overzoom z5 瓦片。这样�
 
 | 状态 | 规则 |
 | --- | --- |
-| 全球/大区低 zoom | 使用更大的网格，只保留高权重点位 |
+| 全球/大区低 zoom | 使用更大的网格，优先保留选中城市和 `rank` 更靠前的城市 |
 | 国家详情低 zoom | 点位很多时继续避让，不因为进入国家页就全量显示 |
 | zoom >= 6 或点位很少 | 显示全部 marker |
 

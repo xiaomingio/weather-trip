@@ -2,7 +2,7 @@
 
 ## 文档边界
 
-本文定义 14 天天气数据的 `.bin + ArrayBuffer` 公开格式、矩阵寻址和前端读取规则。公开数据文件、缓存和发布路径见 `docs/specs/32-public-data-contract.md`；数据刷新链路见 `docs/specs/31-data-flow.md`；地图边界性能优化见 `docs/specs/42-map-vector-tiles-performance.md`。
+本文定义 14 天天气数据的 `.bin + ArrayBuffer` 公开格式、矩阵寻址和前端读取规则。公开数据文件、缓存和发布路径见 `docs/specs/32-public-data-contract.md`；数据刷新链路见 `docs/specs/31-data-flow.md`；地图边界性能优化见 `docs/specs/40-map-vector-tiles-performance.md`。
 
 这个方案只改变天气快照的组织和前端读取方式，不改变城市选择、天气来源、评分规则、区域聚合口径和工具页交互。
 

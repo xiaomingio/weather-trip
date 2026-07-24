@@ -12,17 +12,9 @@ apps/web
 
 运行时没有长期 Worker 进程、请求时 API 或数据库。城市和地图边界由 `npm run static:data` 构建并提交到 Git；天气刷新由独立脚本生成 R2 对象，本地需要天气数据时单独运行 `npm run weather:refresh -- --source=open-meteo`。
 
-## URL 与偏好状态
+## 页面运行边界
 
-顶部导航由 Astro 在构建期输出静态 URL。工具 tab 指向对应语言下的工具入口，不携带当前 query；语言切换链接指向另一种语言的同一页面入口，也不携带当前 query。React island 只管理当前工具页自己的筛选 URL，不在运行时改写顶部 tab 或语言入口。
-
-地区筛选的真源顺序为 URL、用户偏好、默认值。工具页初始化或浏览器历史切换时，如果当前 URL 里有合法 `region`，页面使用该地区并写入 `localStorage.weather-trip-region`；如果 URL 没有合法地区，页面读取 `localStorage.weather-trip-region`；两者都没有时使用 `world`。用户在地区下拉里选择地区时，也写入 `localStorage.weather-trip-region`。两个工具页共用这份最近地区，切换工具页后由目标页面自己从 `localStorage` 恢复。
-
-每个工具页只把自己的筛选状态同步到当前 URL。Weather Map 的 URL 包含地区、日期和图层；City Finder 的 URL 包含地区、天数和筛选条件。工具页之间不保存完整 query 历史，工具 tab 也不把某个工具页的 query 带到另一个工具页。
-
-语言的当前真源是静态路由和静态 HTML。英文页面使用 `/weather-map`、`/city-finder` 等入口，中文页面使用 `/zh/weather-map`、`/zh/city-finder` 等入口；页面自身的 `lang` 决定当前界面语言。`localStorage.weather-trip-locale` 只记录最近语言偏好，不决定当前页面语言。点击语言切换链接时，先保存目标语言，再按静态链接跳转到另一语言的同一页面入口。语言链接不携带当前筛选 query，地区由上面的地区偏好规则恢复。
-
-温度单位只保存在 `localStorage.weather-trip-temp-unit`，取值为 `c` 或 `f`，默认 `c`；温度单位不进入 URL query。点击温度按钮时切换本地偏好、更新顶部按钮显示和 `aria-pressed`，并通过 `weather-trip-temp-unit-change` 事件通知 React 地图、列表和预报面板重新按当前单位格式化。跨浏览器标签页修改温度单位时，通过 `storage` 事件同步当前页面。
+顶部导航由 Astro 在构建期输出静态入口；React island 只管理当前工具页自己的筛选 URL 和工作区状态。固定 Tab URL、语言切换、温度单位、本地偏好和工具状态恢复规则见 `docs/specs/20-interaction-logic.md`。
 
 ## 仓库脚本
 

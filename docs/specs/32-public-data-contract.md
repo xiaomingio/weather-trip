@@ -136,11 +136,11 @@ type CityRowWire = [
 
 国家名称默认来自标准地区显示名；`CN` 在本产品里展示为 `China / 中国`。`CN` 的 C3 详情以中国大陆地级区块为主体，并把香港、澳门和台湾作为 companion C3 区块放入中国详情图；香港、澳门和台湾仍作为独立 C1 地区进入城市字典和全球视图。
 
-`cities.c` 的顺序就是默认排序。这个顺序只用于解码时派生 `rank` 和组件渲染时的数组位置，不作为字段保存到业务类型里。稳定身份始终是 `id`；天气、URL、收藏、埋点、本地缓存和跨版本引用都保存 `id`，不保存数组下标。只要城市集合、顺序或字段变化，就必须生成新的 `v`。
+`cities.c` 的顺序就是公开默认排序。生成脚本先按 GeoNames 行政级别排序，再按人口排序：国家首都 `PPLC` 最靠前，首都之间人口高者优先；然后是一级行政中心、二级/三级/四级行政中心和普通人口城市。这个顺序只用于解码时派生 `rank` 和组件渲染时的数组位置，不作为字段保存到业务类型里。稳定身份始终是 `id`；天气、URL、收藏、埋点、本地缓存和跨版本引用都保存 `id`，不保存数组下标。只要城市集合、顺序或字段变化，就必须生成新的 `v`。
 
 `selectionReasons` 不进入公开城市 JSON。它服务导入审计、覆盖复盘和调试，保存在 `city-selection-report.json` / `.md`；前端展示控制使用 country tier、region key、rank 和后续明确新增的公开字段，不复用审计原因。
 
-`countryTier` 放在国家字典里，不在每个城市行重复。`rank` 不传输，`cities.c` 的顺序就是排序真源，解码后用数组位置 + 1 作为 rank。`geonameId`、`timezone`、`population`、城市列表生成时间和覆盖摘要也不进入公开城市 JSON。`geonameId` 用于追溯，放在生成报告；`timezone` 只影响天气源返回的当地日期，天气包已经保存 date-only 结果；排序和 marker prominence 使用解码后的 rank；城市数量和覆盖统计由 `c.length`、字典和报告计算。
+`countryTier` 放在国家字典里，不在每个城市行重复。`rank` 不传输，`cities.c` 的顺序就是排序真源，解码后用数组位置 + 1 作为 rank。`geonameId`、`timezone`、`population`、城市列表生成时间和覆盖摘要也不进入公开城市 JSON。`geonameId` 用于追溯，放在生成报告；`timezone` 只影响天气源返回的当地日期，天气包已经保存 date-only 结果；Weather Map 默认列表、默认选中城市和 marker 避让都使用解码后的 rank；城市数量和覆盖统计由 `c.length`、字典和报告计算。
 
 ```ts
 interface CitiesPayload {
@@ -216,7 +216,7 @@ type WeatherForecastMatrix = {
 
 Open-Meteo Forecast API 在响应顶层返回 `elevation`，并说明这个值用于 statistical downscaling；它不是 `daily` 数组里的逐日变量，但属于天气源本次 forecast 的点位元数据。刷新任务要把它保存到 `sourceElevationMeters`。地图的 elevation layer 优先使用天气源海拔，没有时回退到 `cities.json` 的 `elevationM`。如果后续天气源返回真正逐日变化的海拔或类似地形字段，再把它加入 forecast bin 字段数组。
 
-`weatherType` 和 `comfortScore` 不写入天气包，由前端通过 `weatherCode` 和共享公式计算。`precipitationProbabilityMax` 不进入首版传输字段；页面用 `precipitationSumMm` 表达降水，后续如果明确展示降水概率再加回。单位固定为摄氏度、毫米、公里/小时和百分比，不在每条记录里重复写单位。温度、降水和风速按 0.1 单位整数化，湿度和天气码用 `Uint8`，缺测用 `missing` byte，具体布局见 `docs/specs/43-weather-matrix-performance.md`。
+`weatherType` 和 `comfortScore` 不写入天气包，由前端通过 `weatherCode` 和共享公式计算。`precipitationProbabilityMax` 不进入首版传输字段；页面用 `precipitationSumMm` 表达降水，后续如果明确展示降水概率再加回。单位固定为摄氏度、毫米、公里/小时和百分比，不在每条记录里重复写单位。温度、降水和风速按 0.1 单位整数化，湿度和天气码用 `Uint8`，缺测用 `missing` byte，具体布局见 `docs/specs/41-weather-matrix-performance.md`。
 
 ```ts
 interface WeatherWindow {
@@ -325,7 +325,7 @@ MVT 文件数量通过三档模型控制：`z1-z2` 生成 country，`z3-z4` 生�
 
 `cities.json` 继续使用 compact JSON。城市索引需要名称、国家、行政区和坐标等结构化字段，当前约 0.5 MiB 原始尺寸不构成主要风险；短字段、字典表和 gzip / Brotli 已经能把传输压到几百 KiB。
 
-天气预报使用定长二进制矩阵。天气数据是 `date x city x numeric fields`，字段稳定且多数是数值；forecast bin 先保存 `cityId[]` 和 `date[]` 字典，再把温度、降水、湿度、风速、天气码和缺测标记写进 `ArrayBuffer` / TypedArray。温度、降水和风速按 0.1 单位整数化，湿度和天气码用 `Uint8`，缺测用 byte 或后续 bitmap。这样浏览器不需要为 4 万多条日预报创建大量长期 JS object，解析成本变成 `fetch arrayBuffer + DataView/TypedArray 视图`。具体方案见 `docs/specs/43-weather-matrix-performance.md`。
+天气预报使用定长二进制矩阵。天气数据是 `date x city x numeric fields`，字段稳定且多数是数值；forecast bin 先保存 `cityId[]` 和 `date[]` 字典，再把温度、降水、湿度、风速、天气码和缺测标记写进 `ArrayBuffer` / TypedArray。温度、降水和风速按 0.1 单位整数化，湿度和天气码用 `Uint8`，缺测用 byte 或后续 bitmap。这样浏览器不需要为 4 万多条日预报创建大量长期 JS object，解析成本变成 `fetch arrayBuffer + DataView/TypedArray 视图`。具体方案见 `docs/specs/41-weather-matrix-performance.md`。
 
 MessagePack、CBOR 和 protobuf 可以减少原始文本尺寸，但在浏览器里仍需要解码成对象或数组；对当前 forecast 这种规则矩阵，收益通常不如自定义定长二进制明显。Parquet、SQLite/WASM 更适合分析或本地数据库场景，不适合作为公开工具页首屏默认格式。
 

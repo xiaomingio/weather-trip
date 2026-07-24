@@ -1,6 +1,6 @@
 /**
  * 文件说明: 定义城市、天气、筛选条件和前端展示所需的共享类型。
- * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
+ * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/41-weather-matrix-performance.md
  */
 
 export type WeatherType =
