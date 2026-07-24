@@ -22,7 +22,7 @@ npm run check
 npm run build
 ```
 
-`npm run static:data` 构建低频变化的国家分档、城市索引和地图边界，结果提交到 Git。`npm run static:country-tier-candidates` 从 GeoNames、国家分档规则、旅游目的地和 admin2 input 生成 C2/C3 候选报告；人工复核后维护 `data/input/country-tier-countries.yml`；`npm run static:profiles` 再生成最终国家分档报告和 `data/generated/country-profiles.json`。`npm run static:cities` 会先生成 profiles，再生成 `data/generated/cities.json`、`data/generated/city-selection-report.*` 和 Web 本地公开的 `apps/web/public/data/cities.json`；`npm run static:geo` 生成 `apps/web/public/data/geo/world.geojson`、选中地区轮廓包 `apps/web/public/data/geo/region-outlines.geojson` 和 C3 国家详情包 `apps/web/public/data/geo/countries/<country>.geojson`。地点名称、坐标和行政区字典在 `cities.json`，边界 GeoJSON 只保存 `regionKey` 和 geometry。完整数据目录和脚本流向见 `data/README.md`。
+`npm run static:data` 构建低频变化的国家分档、城市索引和地图边界，结果提交到 Git。`npm run static:country-tier-candidates` 从 GeoNames、国家分档规则、旅游目的地和 admin2 input 生成 C2/C3 候选报告；人工复核后维护 `data/input/country-tier-countries.yml`；`npm run static:profiles` 再生成最终国家分档报告和 `data/generated/country-profiles.json`。`npm run static:cities` 会先生成 profiles，再生成 `data/generated/cities.json`、`data/report/city-selection-report.md` 和 Web 本地公开的 `apps/web/public/data/cities.json`。`npm run static:geo` 从 profiles、GeoNames 行政区、边界 raw 和边界 input 生成 `data/generated/geo/{country,c2_admin1,c3_admin1}.geojson` 与 `data/generated/geo/c3_admin2/*.geojson`；`npm run static:geo:tiles` 再生成前端读取的 `/data/geo/region-tiles/*` MVT。完整数据目录和脚本流向见 `docs/specs/31-data-flow.md`。
 
 天气是每日刷新数据，使用独立脚本。需要为当前城市列表拉取 Open-Meteo 天气时运行：
 

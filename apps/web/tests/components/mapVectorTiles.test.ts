@@ -54,7 +54,7 @@ const sampleAdmin2RegionSummary: RegionWeatherSummary = {
 };
 
 describe('vector region tile styles', () => {
-  it('keeps boundary-only admin2 regions visible with no-data styling', () => {
+  it('keeps all admin2 detail regions visible with no-data styling', () => {
     const map = fakeMap();
 
     applyVectorRegionStyles(map as never, 'admin2', 'country', [], true);
@@ -62,12 +62,12 @@ describe('vector region tile styles', () => {
     expect(map.filters.get(regionFillLayerId('admin2'))).toEqual([
       'any',
       ['==', ['get', 'regionKey'], ''],
-      ['==', ['get', 'level'], 'boundary']
+      ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]]
     ]);
     expect(map.paints.get(`${regionFillLayerId('admin2')}:fill-opacity`)).toBe(0.08);
     expect(map.paints.get(`${regionNoMetricPatternLayerId('admin2')}:fill-opacity`)).toEqual([
       'case',
-      ['==', ['get', 'level'], 'boundary'],
+      ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]],
       0.66,
       0
     ]);
@@ -82,6 +82,22 @@ describe('vector region tile styles', () => {
 
     expect(map.filters.get(regionNoMetricPatternLayerId('admin1'))).toEqual(['==', ['get', 'regionKey'], '']);
     expect(map.paints.get(`${regionLineLayerId('admin1')}:line-opacity`)).toBe(0);
+  });
+
+  it('does not paint no-data hatching over admin2 regions with metric data', () => {
+    const map = fakeMap();
+    const entries = buildVectorRegionStyleEntries([sampleAdmin2RegionSummary], 'country', 'weather-map', 'temperature', 'en', 'c');
+
+    applyVectorRegionStyles(map as never, 'admin2', 'country', entries, true);
+
+    expect(map.paints.get(`${regionNoMetricPatternLayerId('admin2')}:fill-opacity`)).toEqual([
+      'case',
+      ['in', ['get', 'regionKey'], ['literal', ['admin2:US.CA.037', 'country:US', 'admin1:US.CA']]],
+      ['match', ['get', 'regionKey'], 'admin2:US.CA.037', 0, 'country:US', 0, 'admin1:US.CA', 0, 0],
+      ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]],
+      0.66,
+      0
+    ]);
   });
 
   it('formats region hover labels with country context like city markers', () => {

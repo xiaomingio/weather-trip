@@ -1,4 +1,4 @@
-# 地图边界来源补充配置。脚本优先用 Natural Earth 的 GeoNames id 和城市点校验；这里仅记录需要人工维护的边界源口径。
+# 地图边界来源补充配置。脚本优先用边界源字段对齐 GeoNames 行政区；这里记录需要人工维护的边界源口径。
 
 countryDetailSources:
   - countryCode: IT
@@ -17,4 +17,4 @@ naturalEarthCountryAdmin1Units:
     sourceIso3166Codes:
       - UA-40
       - UA-43
-    reason: Natural Earth admin0 把 Crimea 和 Sevastopol 归入 Russia 面，但 GeoNames 城市归属仍有 UA 点位；合并对应 admin1 区块以避免乌克兰详情点位落在未覆盖陆地。
+    reason: Natural Earth admin0 把 Crimea 和 Sevastopol 归入 Russia 面；合并对应 admin1 区块以保持乌克兰国家级轮廓完整。

@@ -10,8 +10,8 @@ import { pipeline } from 'node:stream/promises';
 import { parseZip } from 'shpjs';
 import YAML from 'yaml';
 import type { CountryTier } from 'weather-core/types';
-import { buildSupportedAdmin2KeySet, isSupportedAdmin2ByKey, loadCoverageOverrides, type CoverageOverrideSeed } from '../static-data/coverage-overrides.js';
-import { loadGeoNamesDataset, type CountryInfo, type GeoNamesAdmin1, type GeoNamesAdmin2, type GeoNamesCity } from '../static-data/geonames.js';
+import { isSupportedAdmin2, loadCoverageOverrides, type CoverageOverrideSeed } from '../static-data/coverage-overrides.js';
+import { loadGeoNamesAdminDataset, type CountryInfo, type GeoNamesAdmin1, type GeoNamesAdmin2 } from '../static-data/geonames.js';
 
 type GeoJsonGeometry = {
   type: string;
@@ -39,24 +39,6 @@ type CountryProfile = {
 
 type CountryProfilesPayload = {
   profiles: CountryProfile[];
-};
-
-type CitiesPayloadWire = {
-  d: {
-    co: Array<[code: string, name: unknown, worldRegion: unknown, countryTier: 1 | 2 | 3]>;
-    a1: Array<[countryIndex: number, code: string, name: unknown]>;
-    a2: Array<[countryIndex: number, admin1Index: number, code: string, name: unknown]>;
-  };
-  c: Array<[
-    id: string,
-    name: unknown,
-    countryIndex: number,
-    admin1Index: number | null,
-    admin2Index: number | null,
-    latE5: number,
-    lngE5: number,
-    elevationM: number
-  ]>;
 };
 
 type GeoBoundarySourceLevel = 'ADM1' | 'ADM2' | 'ADM3';
@@ -87,7 +69,6 @@ type GeoBoundaryReport = {
     generatedCountryCount: number;
     expectedRegionCount: number;
     generatedRegionCount: number;
-    geometryCheckedRegionCount: number;
   };
   packages: Array<{
     id: string;
@@ -126,15 +107,9 @@ type Admin1SourceCandidate = {
   source: string;
 };
 
-type RegionPointExpectations = {
-  pointsByWorldKey: Map<string, [number, number][]>;
-  pointsByCountryDetailKey: Map<string, Map<string, [number, number][]>>;
-};
-
 type RegionFeatureMetadata = {
   labelEn: string;
   labelZh: string;
-  hasCity: boolean;
 };
 
 const rootDir = process.cwd();
@@ -143,7 +118,6 @@ const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
 const reportDir = path.join(rootDir, 'data', 'report');
 const profilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.json');
-const citiesPath = path.join(rootDir, 'data', 'generated', 'cities.json');
 const geoBoundarySourcesPath = path.join(rootDir, 'data', 'input', 'geo-boundary-sources.yml');
 const geoCountryPath = 'data/generated/geo/country.geojson';
 const geoC2Admin1Path = 'data/generated/geo/c2_admin1.geojson';
@@ -162,7 +136,6 @@ const naturalEarthAdmin1Path = path.join(rawDir, 'ne_10m_admin_1_states_province
 const naturalEarthAdmin1LowPath = path.join(rawDir, 'ne_50m_admin_1_states_provinces.zip');
 
 const datavChinaUrl = 'https://geo.datav.aliyun.com/areas_v3/bound';
-const supportedFeatureCodes = new Set(['PPLC', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPL']);
 const chinaAmapAdmin1CodeByAdcode = new Map<number, string>([
   [110000, '22'],
   [120000, '28'],
@@ -431,22 +404,10 @@ function pointInGeometry(point: [number, number], geometry: GeoJsonGeometry): bo
   return false;
 }
 
-function cityMatchesAdmin2Name(city: GeoNamesCity, admin2: GeoNamesAdmin2): boolean {
-  const admin2Names = new Set([normalizeName(admin2.name), normalizeName(admin2.asciiName)].filter(Boolean));
-  return [city.name, city.asciiName, ...city.alternateNames].map(normalizeName).some((name) => admin2Names.has(name));
-}
-
-function cityCanRepresentAdmin2(city: GeoNamesCity, admin2: GeoNamesAdmin2): boolean {
-  return city.countryCode === admin2.countryCode &&
-    city.admin1Code === admin2.admin1Code &&
-    (city.admin2Code === admin2.admin2Code || cityMatchesAdmin2Name(city, admin2));
-}
-
-function chinaBoundaryProperties(nameZh: string, nameEn: string, hasCity: boolean): Record<string, unknown> {
+function chinaBoundaryProperties(nameZh: string, nameEn: string): Record<string, unknown> {
   return {
     labelZh: normalizeChineseName(nameZh) || nameZh,
-    labelEn: nameEn || normalizeChineseName(nameZh) || nameZh,
-    hasCity
+    labelEn: nameEn || normalizeChineseName(nameZh) || nameZh
   };
 }
 
@@ -463,16 +424,12 @@ function chinaAdmin2NameFromFeature(feature: GeoJsonFeature): string {
   return typeof feature.properties.name === 'string' ? feature.properties.name : '';
 }
 
-function chinaFeatureNameMatchesAdmin2(featureName: string, admin2: GeoNamesAdmin2, cities: GeoNamesCity[]): boolean {
+function chinaFeatureNameMatchesAdmin2(featureName: string, admin2: GeoNamesAdmin2): boolean {
   const normalizedFeatureName = normalizeChineseName(featureName);
   if (!normalizedFeatureName) return false;
 
   const admin2Names = [admin2.name, admin2.asciiName].map(normalizeChineseName);
-  if (admin2Names.includes(normalizedFeatureName)) return true;
-
-  return cities
-    .filter((city) => cityCanRepresentAdmin2(city, admin2))
-    .some((city) => [city.name, city.asciiName, ...city.alternateNames].map(normalizeChineseName).includes(normalizedFeatureName));
+  return admin2Names.includes(normalizedFeatureName);
 }
 
 function chinaCompanionAdmin1Key(countryCode: string): string {
@@ -482,27 +439,6 @@ function chinaCompanionAdmin1Key(countryCode: string): string {
 function chinaCompanionAdmin2Key(countryCode: string): string | null {
   const region = chinaCompanionRegions.find((item) => item.countryCode === countryCode);
   return region ? `admin2:CN.${region.admin1Code}.${region.admin2Code}` : null;
-}
-
-function compareCityPopulation(left: GeoNamesCity, right: GeoNamesCity): number {
-  return right.population - left.population || left.id.localeCompare(right.id);
-}
-
-function representativePointsForAdmin2(admin2Items: GeoNamesAdmin2[], cities: GeoNamesCity[]): Map<string, [number, number][]> {
-  const result = new Map<string, [number, number][]>();
-  for (const admin2 of admin2Items) {
-    const eligibleCities = cities
-      .filter((city) => city.countryCode === admin2.countryCode && city.admin1Code === admin2.admin1Code)
-      .filter((city) => city.population > 0 && supportedFeatureCodes.has(city.featureCode));
-    const nameMatchedCities = eligibleCities.filter((city) => cityMatchesAdmin2Name(city, admin2));
-    const directCities = eligibleCities.filter((city) => city.admin2Code === admin2.admin2Code);
-    const candidates = (nameMatchedCities.length > 0 ? nameMatchedCities : directCities)
-      .sort(compareCityPopulation)
-      .slice(0, 5)
-      .map((city): [number, number] => [city.longitude, city.latitude]);
-    if (candidates.length > 0) result.set(`${admin2.admin1Code}.${admin2.admin2Code}`, candidates);
-  }
-  return result;
 }
 
 function sortFeatures(features: GeoJsonFeature[]): GeoJsonFeature[] {
@@ -544,6 +480,12 @@ function admin2FeatureAuditByAdmin1(countryCode: string, admin1Items: GeoNamesAd
   });
 
   return rows.filter((row) => row.generated > 0 || row.boundaryOnly > 0).sort((left, right) => left.admin1Code.localeCompare(right.admin1Code));
+}
+
+function boundaryAdmin2ItemsForCountry(countryCode: string, allAdmin2Items: GeoNamesAdmin2[], seed: CoverageOverrideSeed): GeoNamesAdmin2[] {
+  const countryItems = allAdmin2Items.filter((admin2) => admin2.countryCode === countryCode);
+  if (countryCode !== 'CN') return countryItems;
+  return countryItems.filter((admin2) => isSupportedAdmin2(seed, admin2));
 }
 
 function geometryToMultiPolygon(geometry: GeoJsonGeometry): unknown[] {
@@ -603,136 +545,6 @@ function groupedAdmin1FeaturesByAdmin2Id(countryCode: string, sourceFeatures: Ge
     const admin2 = admin2ByGeoNameId.get(Number(feature.properties.gn_id));
     if (!admin2) continue;
     const key = `admin1:${countryCode}.${admin2.admin1Code}`;
-    const list = grouped.get(key) ?? [];
-    list.push(feature);
-    grouped.set(key, list);
-  }
-
-  return sortFeatures([...grouped.entries()].flatMap(([regionKey, features]) => {
-    const feature = groupedMultiPolygonFeature(regionKey, features);
-    return feature ? [feature] : [];
-  }));
-}
-
-function featurePointAssignmentCounts(features: GeoJsonFeature[], cities: GeoNamesCity[]): Map<GeoJsonFeature, Map<string, number>> {
-  const result = new Map<GeoJsonFeature, Map<string, number>>();
-  const cityPoints = cities.flatMap((city): Array<{ admin1Code: string; point: [number, number] }> =>
-    city.admin1Code ? [{ admin1Code: city.admin1Code, point: [city.longitude, city.latitude] }] : []
-  );
-
-  for (const feature of features) {
-    const bbox = geometryBBox(feature.geometry);
-    const counts = new Map<string, number>();
-    for (const city of cityPoints) {
-      if (bbox && !pointInBBox(city.point, bbox, 0.2)) continue;
-      if (!pointInGeometry(city.point, feature.geometry)) continue;
-      counts.set(city.admin1Code, (counts.get(city.admin1Code) ?? 0) + 1);
-    }
-    result.set(feature, counts);
-  }
-
-  return result;
-}
-
-function collectGeometryCandidatePoints(points: [number, number][], coordinates: unknown, maxPoints: number): void {
-  if (points.length >= maxPoints || !Array.isArray(coordinates)) return;
-  if (typeof coordinates[0] === 'number' && typeof coordinates[1] === 'number') {
-    const point: [number, number] = [coordinates[0], coordinates[1]];
-    if (Number.isFinite(point[0]) && Number.isFinite(point[1])) points.push(point);
-    return;
-  }
-  for (const item of coordinates) {
-    collectGeometryCandidatePoints(points, item, maxPoints);
-    if (points.length >= maxPoints) return;
-  }
-}
-
-function geometryCandidatePoints(geometry: GeoJsonGeometry): [number, number][] {
-  const points: [number, number][] = [];
-  const bbox = geometryBBox(geometry);
-  if (bbox) points.push([(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2]);
-  collectGeometryCandidatePoints(points, geometry.coordinates, 64);
-  return points;
-}
-
-function sourceFeatureAdmin1AssignmentsByReference(
-  countryCode: string,
-  sourceFeatures: GeoJsonFeature[],
-  referenceFeatures: GeoJsonFeature[],
-  admin1Items: GeoNamesAdmin1[]
-): Map<GeoJsonFeature, string> {
-  const matchedReferenceFeatures = matchedGeoBoundariesFeatures(
-    { type: 'FeatureCollection', features: referenceFeatures },
-    admin1Items,
-    (item) => `admin1:${countryCode}.${(item as GeoNamesAdmin1).admin1Code}`
-  ).features;
-  const referenceByAdmin1Code = matchedReferenceFeatures.flatMap((feature): Array<{ admin1Code: string; feature: GeoJsonFeature }> => {
-    const regionKey = String(feature.properties.regionKey ?? '');
-    const match = new RegExp(`^admin1:${countryCode}\\.([^.]+)$`).exec(regionKey);
-    return match ? [{ admin1Code: match[1], feature }] : [];
-  });
-  const result = new Map<GeoJsonFeature, string>();
-  if (referenceByAdmin1Code.length === 0) return result;
-
-  for (const sourceFeature of sourceFeatures) {
-    const points = geometryCandidatePoints(sourceFeature.geometry);
-    const matched = referenceByAdmin1Code.find((reference) => points.some((point) => pointInGeometry(point, reference.feature.geometry)));
-    if (matched) result.set(sourceFeature, matched.admin1Code);
-  }
-
-  return result;
-}
-
-function sourceFeatureAdmin1AssignmentsByAdmin2Name(sourceFeatures: GeoJsonFeature[], admin2Items: GeoNamesAdmin2[]): Map<GeoJsonFeature, string> {
-  const admin2Index = buildAdminIndex(admin2Items);
-  const result = new Map<GeoJsonFeature, string>();
-  for (const feature of sourceFeatures) {
-    const shapeName = typeof feature.properties.shapeName === 'string' ? feature.properties.shapeName : '';
-    const admin2 = nameVariants(shapeName).map((variant) => admin2Index.get(variant) as GeoNamesAdmin2 | undefined).find(Boolean);
-    if (admin2) result.set(feature, admin2.admin1Code);
-  }
-  return result;
-}
-
-function nearestAdmin1CodeFromCityPoints(feature: GeoJsonFeature, countryCities: GeoNamesCity[]): string | undefined {
-  const bbox = geometryBBox(feature.geometry);
-  if (!bbox) return undefined;
-  const center: [number, number] = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
-  return countryCities
-    .map((city) => ({
-      admin1Code: city.admin1Code,
-      distance: (city.longitude - center[0]) ** 2 + (city.latitude - center[1]) ** 2
-    }))
-    .filter((item): item is { admin1Code: string; distance: number } => Boolean(item.admin1Code))
-    .sort((left, right) => left.distance - right.distance)[0]?.admin1Code;
-}
-
-function groupedAdmin1FeaturesByCityPoints(
-  countryCode: string,
-  sourceFeatures: GeoJsonFeature[],
-  admin1Items: GeoNamesAdmin1[],
-  cities: GeoNamesCity[],
-  admin2Items: GeoNamesAdmin2[] = [],
-  referenceAdmin1Features: GeoJsonFeature[] = []
-): GeoJsonFeature[] {
-  const admin1Codes = new Set(admin1Items.map((item) => item.admin1Code));
-  const countryCities = cities
-    .filter((city) => city.countryCode === countryCode && city.admin1Code && admin1Codes.has(city.admin1Code))
-    .sort(compareCityPopulation);
-  const countsByFeature = featurePointAssignmentCounts(sourceFeatures, countryCities);
-  const admin2NameAssignments = sourceFeatureAdmin1AssignmentsByAdmin2Name(sourceFeatures, admin2Items);
-  const referenceAssignments = sourceFeatureAdmin1AssignmentsByReference(countryCode, sourceFeatures, referenceAdmin1Features, admin1Items);
-  const grouped = new Map<string, GeoJsonFeature[]>();
-
-  for (const [feature, counts] of countsByFeature) {
-    const best = [...counts.entries()].sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))[0];
-    const admin1Code =
-      admin2NameAssignments.get(feature) ??
-      best?.[0] ??
-      referenceAssignments.get(feature) ??
-      nearestAdmin1CodeFromCityPoints(feature, countryCities);
-    if (!admin1Code) continue;
-    const key = `admin1:${countryCode}.${admin1Code}`;
     const list = grouped.get(key) ?? [];
     list.push(feature);
     grouped.set(key, list);
@@ -830,10 +642,10 @@ function naturalEarthCountryOutlineFeaturesByCode(sources: FeatureCollection[], 
   return featuresByCode;
 }
 
-function detailedCountryOutlineFeatures(citiesPayload: CitiesPayloadWire, countryOutlineFeaturesByCode: Map<string, GeoJsonFeature>): GeoJsonFeature[] {
-  return sortFeatures(citiesPayload.d.co.flatMap((country): GeoJsonFeature[] => {
-    if (countryTierFromWire(country[3]) !== 'C1') {
-      const feature = countryOutlineFeaturesByCode.get(country[0]);
+function detailedCountryOutlineFeatures(profiles: CountryProfile[], countryOutlineFeaturesByCode: Map<string, GeoJsonFeature>): GeoJsonFeature[] {
+  return sortFeatures(profiles.flatMap((profile): GeoJsonFeature[] => {
+    if (profile.countryTier !== 'C1') {
+      const feature = countryOutlineFeaturesByCode.get(profile.countryCode);
       return feature ? [feature] : [];
     }
     return [];
@@ -892,6 +704,37 @@ function matchedGeoBoundariesFeatures(
   };
 }
 
+function matchedGeoBoundariesAdmin2Features(
+  countryCode: string,
+  source: FeatureCollection,
+  admin2Items: GeoNamesAdmin2[]
+): { features: GeoJsonFeature[]; missing: string[] } {
+  const index = buildAdminIndex(admin2Items);
+  const usedGeoNamesKeys = new Set<string>();
+  const features: GeoJsonFeature[] = [];
+
+  for (const feature of source.features) {
+    const shapeName = typeof feature.properties.shapeName === 'string' ? feature.properties.shapeName : '';
+    const matched = nameVariants(shapeName).map((variant) => index.get(variant) as GeoNamesAdmin2 | undefined).find(Boolean);
+    if (!matched) continue;
+
+    const geoNamesKey = admin2Key(countryCode, matched.admin1Code, matched.admin2Code);
+    if (usedGeoNamesKeys.has(geoNamesKey)) continue;
+    usedGeoNamesKeys.add(geoNamesKey);
+
+    features.push(boundaryFeature(`admin2:${geoNamesKey}`, feature.geometry, {
+      labelEn: matched.asciiName || matched.name || shapeName,
+      labelZh: matched.name || matched.asciiName || shapeName
+    }));
+  }
+
+  const expectedKeys = admin2Items.map((admin2) => admin2Key(admin2.countryCode, admin2.admin1Code, admin2.admin2Code));
+  return {
+    features: sortFeatures(features),
+    missing: expectedKeys.filter((key) => !usedGeoNamesKeys.has(key)).map((key) => `admin2:${key}`)
+  };
+}
+
 function admin2MatchesFromGeoBoundaries(countryCode: string, source: FeatureCollection, admin2Items: GeoNamesAdmin2[]): Array<{ admin2: GeoNamesAdmin2; feature: GeoJsonFeature }> {
   const index = buildAdminIndex(admin2Items);
   const used = new Set<string>();
@@ -938,47 +781,16 @@ function admin1SourceCandidate(countryCode: string, admin1Items: GeoNamesAdmin1[
   };
 }
 
-function representativeAdmin1Points(countryCode: string, cities: GeoNamesCity[], admin1Items: GeoNamesAdmin1[]): Map<string, [number, number][]> {
-  const admin1Codes = new Set(admin1Items.map((item) => item.admin1Code));
-  const result = new Map<string, [number, number][]>();
-  for (const city of cities.filter((item) => item.countryCode === countryCode && item.admin1Code && admin1Codes.has(item.admin1Code)).sort(compareCityPopulation)) {
-    const key = `admin1:${countryCode}.${city.admin1Code}`;
-    const points = result.get(key) ?? [];
-    if (points.length >= 8) continue;
-    points.push([city.longitude, city.latitude]);
-    result.set(key, points);
-  }
-  return result;
-}
-
-function countCoveredRegionPointGroups(features: GeoJsonFeature[], pointsByKey: Map<string, [number, number][]>): number {
-  const featuresByKey = new Map(features.map((feature) => [String(feature.properties.regionKey ?? ''), feature]));
-  let covered = 0;
-  for (const [key, points] of pointsByKey) {
-    const feature = featuresByKey.get(key);
-    if (feature && points.some((point) => pointCoveredByGeometry(point, feature.geometry))) covered += 1;
-  }
-  return covered;
-}
-
-function chooseAdmin1SourceCandidate(
-  countryCode: string,
-  admin1Items: GeoNamesAdmin1[],
-  candidates: Admin1SourceCandidate[],
-  cities: GeoNamesCity[]
-): Admin1SourceCandidate {
+function chooseAdmin1SourceCandidate(countryCode: string, admin1Items: GeoNamesAdmin1[], candidates: Admin1SourceCandidate[]): Admin1SourceCandidate {
   const uniqueCandidates = candidates.filter((candidate) => candidate.features.length > 0);
   if (uniqueCandidates.length === 0) return admin1SourceCandidate(countryCode, admin1Items, [], 'none');
 
-  const pointsByKey = representativeAdmin1Points(countryCode, cities, admin1Items);
   const expectedCount = admin1Items.length;
   const scored = uniqueCandidates.map((candidate) => ({
     candidate,
-    generated: expectedCount - candidate.missing.length,
-    covered: countCoveredRegionPointGroups(candidate.features, pointsByKey)
+    generated: expectedCount - candidate.missing.length
   }));
   scored.sort((left, right) =>
-    right.covered - left.covered ||
     right.generated - left.generated ||
     left.candidate.source.localeCompare(right.candidate.source)
   );
@@ -986,10 +798,29 @@ function chooseAdmin1SourceCandidate(
   return scored[0].candidate;
 }
 
-function admin1SourceCandidateIsComplete(candidate: Admin1SourceCandidate, countryCode: string, admin1Items: GeoNamesAdmin1[], cities: GeoNamesCity[]): boolean {
-  if (candidate.missing.length > 0 || candidate.features.length !== admin1Items.length) return false;
-  const pointsByKey = representativeAdmin1Points(countryCode, cities, admin1Items);
-  return countCoveredRegionPointGroups(candidate.features, pointsByKey) === pointsByKey.size;
+function admin1SourceCandidateIsComplete(candidate: Admin1SourceCandidate, admin1Items: GeoNamesAdmin1[]): boolean {
+  return candidate.missing.length === 0 && candidate.features.length === admin1Items.length;
+}
+
+function mergedAdmin1SourceCandidate(countryCode: string, admin1Items: GeoNamesAdmin1[], candidates: Admin1SourceCandidate[]): Admin1SourceCandidate {
+  const best = chooseAdmin1SourceCandidate(countryCode, admin1Items, candidates);
+  const featuresByKey = new Map(best.features.map((feature) => [String(feature.properties.regionKey ?? ''), feature]));
+  const sources = new Set<string>([best.source]);
+
+  for (const key of best.missing) {
+    const filler = candidates.find((candidate) => candidate.features.some((feature) => String(feature.properties.regionKey ?? '') === key));
+    const feature = filler?.features.find((item) => String(item.properties.regionKey ?? '') === key);
+    if (!feature) continue;
+    featuresByKey.set(key, feature);
+    sources.add(filler.source);
+  }
+
+  const features = sortFeatures([...featuresByKey.values()]);
+  return {
+    features,
+    missing: admin1MissingKeys(countryCode, admin1Items, features),
+    source: [...sources].join(' + ')
+  };
 }
 
 function chinaAmapAdmin1Assignments(china: FeatureCollection, admin1Items: GeoNamesAdmin1[]): Array<{ adcode: number; admin1: GeoNamesAdmin1; feature: GeoJsonFeature }> {
@@ -1023,7 +854,7 @@ async function chinaCompanionAdmin1Features(): Promise<GeoJsonFeature[]> {
         ...feature,
         properties: {
           ...feature.properties,
-          ...chinaBoundaryProperties(region.nameZh, region.nameEn, true)
+          ...chinaBoundaryProperties(region.nameZh, region.nameEn)
         }
       });
     }
@@ -1047,12 +878,10 @@ async function chinaAdmin1Features(admin1Items: GeoNamesAdmin1[]): Promise<{ fea
 async function chinaAdmin2Features(
   admin1Items: GeoNamesAdmin1[],
   admin2Items: GeoNamesAdmin2[],
-  cities: GeoNamesCity[],
   boundaryLabelsByKey: Map<string, { zh: string; en: string }>
 ): Promise<{ features: GeoJsonFeature[]; missing: string[] }> {
   const amapAdmin1ByAdcode = await chinaAmapAdmin1Map(admin1Items);
   const admin2ByKey = new Map(admin2Items.map((item) => [`${item.admin1Code}.${item.admin2Code}`, item]));
-  const admin2RepresentativePoints = representativePointsForAdmin2(admin2Items, cities);
   const used = new Set<string>();
   const output: GeoJsonFeature[] = [];
 
@@ -1064,7 +893,7 @@ async function chinaAdmin2Features(
       if (provinceFeature) {
         const featureName = chinaAdmin2NameFromFeature(provinceFeature);
         const key = `admin2:CN.${admin1.admin1Code}.${provinceAdmin2[0].admin2Code}`;
-        output.push(boundaryFeature(key, provinceFeature.geometry, chinaBoundaryProperties(featureName, provinceAdmin2[0].asciiName, true)));
+        output.push(boundaryFeature(key, provinceFeature.geometry, chinaBoundaryProperties(featureName, provinceAdmin2[0].asciiName)));
         used.add(key);
       }
       continue;
@@ -1079,14 +908,10 @@ async function chinaAdmin2Features(
       const boundaryLabel = boundaryLabelsByKey.get(`CN.${admin1.admin1Code}.${adcode}`);
       const admin2 =
         admin2ByKey.get(`${admin1.admin1Code}.${admin2Code}`) ??
-        provinceAdmin2.find((item) => !used.has(`admin2:CN.${item.admin1Code}.${item.admin2Code}`) && chinaFeatureNameMatchesAdmin2(featureName, item, cities)) ??
-        provinceAdmin2.find((item) =>
-          !used.has(`admin2:CN.${item.admin1Code}.${item.admin2Code}`) &&
-          (admin2RepresentativePoints.get(`${item.admin1Code}.${item.admin2Code}`) ?? []).some((point) => pointInGeometry(point, feature.geometry))
-        );
+        provinceAdmin2.find((item) => !used.has(`admin2:CN.${item.admin1Code}.${item.admin2Code}`) && chinaFeatureNameMatchesAdmin2(featureName, item));
       if (!admin2) {
         const boundaryKey = `boundary:CN.${admin1.admin1Code}.${adcode}`;
-        output.push(boundaryFeature(boundaryKey, feature.geometry, chinaBoundaryProperties(boundaryLabel?.zh ?? featureName, boundaryLabel?.en ?? featureName, false)));
+        output.push(boundaryFeature(boundaryKey, feature.geometry, chinaBoundaryProperties(boundaryLabel?.zh ?? featureName, boundaryLabel?.en ?? featureName)));
         continue;
       }
       const key = `admin2:CN.${admin1.admin1Code}.${admin2.admin2Code}`;
@@ -1094,11 +919,11 @@ async function chinaAdmin2Features(
         output.push(boundaryFeature(
           `boundary:CN.${admin1.admin1Code}.${adcode}`,
           feature.geometry,
-          chinaBoundaryProperties(boundaryLabel?.zh ?? featureName, boundaryLabel?.en ?? featureName, false)
+          chinaBoundaryProperties(boundaryLabel?.zh ?? featureName, boundaryLabel?.en ?? featureName)
         ));
         continue;
       }
-      output.push(boundaryFeature(key, feature.geometry, chinaBoundaryProperties(featureName, admin2.asciiName, true)));
+      output.push(boundaryFeature(key, feature.geometry, chinaBoundaryProperties(featureName, admin2.asciiName)));
       used.add(key);
     }
   }
@@ -1125,7 +950,7 @@ async function chinaCompanionRegionFeatures(): Promise<GeoJsonFeature[]> {
         ...parentFeature,
         properties: {
           ...parentFeature.properties,
-          ...chinaBoundaryProperties(region.nameZh, region.nameEn, true)
+          ...chinaBoundaryProperties(region.nameZh, region.nameEn)
         }
       });
     }
@@ -1133,7 +958,7 @@ async function chinaCompanionRegionFeatures(): Promise<GeoJsonFeature[]> {
     const admin2Key = chinaCompanionAdmin2Key(region.countryCode);
     if (!admin2Key) continue;
     for (const feature of source.features) {
-      output.push(boundaryFeature(admin2Key, feature.geometry, chinaBoundaryProperties(region.nameZh, region.nameEn, true)));
+      output.push(boundaryFeature(admin2Key, feature.geometry, chinaBoundaryProperties(region.nameZh, region.nameEn)));
     }
   }
 
@@ -1144,7 +969,6 @@ async function admin1FeaturesForCountry(
   countryCode: string,
   admin1Items: GeoNamesAdmin1[],
   admin2Items: GeoNamesAdmin2[],
-  cities: GeoNamesCity[],
   naturalEarthAdmin1Low: FeatureCollection,
   naturalEarthAdmin1: FeatureCollection,
   iso3ByCountry: Map<string, string>
@@ -1157,12 +981,10 @@ async function admin1FeaturesForCountry(
     admin1SourceCandidate(countryCode, admin1Items, naturalEarthAdmin1FeaturesByGeoNamesAdmin1Id(countryCode, admin1Items, naturalEarthAdmin1), 'Natural Earth 10m admin1 gn_id -> GeoNames admin1'),
     admin1SourceCandidate(countryCode, admin1Items, naturalEarthAdmin1FeaturesByGeoNamesAdmin1Id(countryCode, admin1Items, naturalEarthAdmin1Low), 'Natural Earth 50m admin1 gn_id -> GeoNames admin1'),
     admin1SourceCandidate(countryCode, admin1Items, groupedAdmin1FeaturesByAdmin2Id(countryCode, naturalEarth10mFeatures, admin2Items), 'Natural Earth 10m admin1 gn_id -> GeoNames admin2 grouped to admin1'),
-    admin1SourceCandidate(countryCode, admin1Items, groupedAdmin1FeaturesByAdmin2Id(countryCode, naturalEarth50mFeatures, admin2Items), 'Natural Earth 50m admin1 gn_id -> GeoNames admin2 grouped to admin1'),
-    admin1SourceCandidate(countryCode, admin1Items, groupedAdmin1FeaturesByCityPoints(countryCode, naturalEarth10mFeatures, admin1Items, cities), 'Natural Earth 10m admin1 grouped to GeoNames admin1 by city points'),
-    admin1SourceCandidate(countryCode, admin1Items, groupedAdmin1FeaturesByCityPoints(countryCode, naturalEarth50mFeatures, admin1Items, cities), 'Natural Earth 50m admin1 grouped to GeoNames admin1 by city points')
+    admin1SourceCandidate(countryCode, admin1Items, groupedAdmin1FeaturesByAdmin2Id(countryCode, naturalEarth50mFeatures, admin2Items), 'Natural Earth 50m admin1 gn_id -> GeoNames admin2 grouped to admin1')
   ];
-  const localBest = chooseAdmin1SourceCandidate(countryCode, admin1Items, candidates, cities);
-  if (admin1SourceCandidateIsComplete(localBest, countryCode, admin1Items, cities)) {
+  const localBest = chooseAdmin1SourceCandidate(countryCode, admin1Items, candidates);
+  if (admin1SourceCandidateIsComplete(localBest, admin1Items)) {
     return {
       features: localBest.features,
       missing: localBest.missing,
@@ -1174,7 +996,6 @@ async function admin1FeaturesForCountry(
   if (geoBoundariesAdm1) {
     const matched = matchedGeoBoundariesFeatures(geoBoundariesAdm1, admin1Items, (item) => `admin1:${countryCode}.${(item as GeoNamesAdmin1).admin1Code}`);
     candidates.push(admin1SourceCandidate(countryCode, admin1Items, matched.features, 'geoBoundaries gbOpen ADM1 simplified shapeName -> GeoNames admin1'));
-    candidates.push(admin1SourceCandidate(countryCode, admin1Items, groupedAdmin1FeaturesByCityPoints(countryCode, geoBoundariesAdm1.features, admin1Items, cities), 'geoBoundaries gbOpen ADM1 grouped to GeoNames admin1 by city points'));
   }
 
   const sourceLevel: Extract<GeoBoundarySourceLevel, 'ADM2'> = 'ADM2';
@@ -1182,22 +1003,16 @@ async function admin1FeaturesForCountry(
   if (source) {
     const composite = compositeAdmin1FeaturesFromSource(countryCode, source, admin2Items);
     candidates.push(admin1SourceCandidate(countryCode, admin1Items, composite, `geoBoundaries gbOpen ${sourceLevel} shapeName -> GeoNames admin2 grouped to admin1`));
-    candidates.push(admin1SourceCandidate(
-      countryCode,
-      admin1Items,
-      groupedAdmin1FeaturesByCityPoints(countryCode, source.features, admin1Items, cities, admin2Items, geoBoundariesAdm1?.features ?? []),
-      `geoBoundaries gbOpen ${sourceLevel} grouped to GeoNames admin1 by ADM2 name, city points, ADM1 containment and nearest city fallback`
-    ));
   }
 
   candidates.push(admin1SourceCandidate(countryCode, admin1Items, naturalEarthAdmin1FeaturesByGeoNamesAdmin1Code(countryCode, admin1Items, naturalEarthAdmin1), 'Natural Earth 10m admin1 gn_a1_code fallback'));
   candidates.push(admin1SourceCandidate(countryCode, admin1Items, naturalEarthAdmin1FeaturesByGeoNamesAdmin1Code(countryCode, admin1Items, naturalEarthAdmin1Low), 'Natural Earth 50m admin1 gn_a1_code fallback'));
 
-  const best = chooseAdmin1SourceCandidate(countryCode, admin1Items, candidates, cities);
+  const merged = mergedAdmin1SourceCandidate(countryCode, admin1Items, candidates);
   return {
-    features: best.features,
-    missing: best.missing,
-    sources: [best.source]
+    features: merged.features,
+    missing: merged.missing,
+    sources: [merged.source]
   };
 }
 
@@ -1205,14 +1020,12 @@ async function admin2FeaturesForCountry(
   countryCode: string,
   admin1Items: GeoNamesAdmin1[],
   admin2Items: GeoNamesAdmin2[],
-  naturalEarthAdmin1: FeatureCollection,
-  cities: GeoNamesCity[],
   boundaryLabelsByKey: Map<string, { zh: string; en: string }>,
   seed: GeoBoundarySourceSeed,
   iso3ByCountry: Map<string, string>
 ): Promise<{ features: GeoJsonFeature[]; missing: string[]; sources: string[] }> {
   if (countryCode === 'CN') {
-    const matched = await chinaAdmin2Features(admin1Items, admin2Items, cities, boundaryLabelsByKey);
+    const matched = await chinaAdmin2Features(admin1Items, admin2Items, boundaryLabelsByKey);
     const companionFeatures = await chinaCompanionRegionFeatures();
     return {
       ...matched,
@@ -1231,41 +1044,21 @@ async function admin2FeaturesForCountry(
     };
   }
 
-  const matched = matchedGeoBoundariesFeatures(geoBoundaries, admin2Items, (item) => {
-    const admin2 = item as GeoNamesAdmin2;
-    return `admin2:${countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`;
-  });
-  return { ...matched, sources: [`geoBoundaries gbOpen ${sourceLevel} simplified`] };
+  return { ...matchedGeoBoundariesAdmin2Features(countryCode, geoBoundaries, admin2Items), sources: [`geoBoundaries gbOpen ${sourceLevel} simplified`] };
 }
 
 function featureRegionKeys(features: GeoJsonFeature[]): Set<string> {
   return new Set(features.map((feature) => String(feature.properties.regionKey ?? '')).filter(Boolean));
 }
 
-function localizedNameWire(value: unknown): { en: string; zh: string } | null {
-  if (!Array.isArray(value) || typeof value[0] !== 'string') return null;
-  const zh = typeof value[1] === 'string' && value[1] ? value[1] : value[0];
-  return { en: value[0], zh };
-}
-
-function regionFeatureMetadata(
-  citiesPayload: CitiesPayloadWire,
-  admin1Items: GeoNamesAdmin1[],
-  admin2Items: GeoNamesAdmin2[]
-): Map<string, RegionFeatureMetadata> {
-  const viewExpectations = viewRegionKeyExpectations(citiesPayload);
-  const cityBackedKeys = new Set([
-    ...viewExpectations.worldKeys,
-    ...[...viewExpectations.countryDetailKeysByCountry.values()].flatMap((keys) => [...keys])
-  ]);
+function regionFeatureMetadata(admin1Items: GeoNamesAdmin1[], admin2Items: GeoNamesAdmin2[]): Map<string, RegionFeatureMetadata> {
   const metadata = new Map<string, RegionFeatureMetadata>();
 
   for (const admin1 of admin1Items) {
     const key = `admin1:${admin1.countryCode}.${admin1.admin1Code}`;
     metadata.set(key, {
       labelEn: admin1.asciiName || admin1.name,
-      labelZh: admin1.name || admin1.asciiName,
-      hasCity: cityBackedKeys.has(key)
+      labelZh: admin1.name || admin1.asciiName
     });
   }
 
@@ -1273,26 +1066,8 @@ function regionFeatureMetadata(
     const key = `admin2:${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`;
     metadata.set(key, {
       labelEn: admin2.asciiName || admin2.name,
-      labelZh: admin2.name || admin2.asciiName,
-      hasCity: cityBackedKeys.has(key)
+      labelZh: admin2.name || admin2.asciiName
     });
-  }
-
-  for (const admin1 of citiesPayload.d.a1) {
-    const country = citiesPayload.d.co[admin1[0]];
-    const names = localizedNameWire(admin1[2]);
-    if (!country || !names) continue;
-    const key = `admin1:${country[0]}.${admin1[1]}`;
-    metadata.set(key, { labelEn: names.en, labelZh: names.zh, hasCity: true });
-  }
-
-  for (const admin2 of citiesPayload.d.a2) {
-    const country = citiesPayload.d.co[admin2[0]];
-    const admin1 = citiesPayload.d.a1[admin2[1]];
-    const names = localizedNameWire(admin2[3]);
-    if (!country || !admin1 || !names) continue;
-    const key = `admin2:${country[0]}.${admin1[1]}.${admin2[2]}`;
-    metadata.set(key, { labelEn: names.en, labelZh: names.zh, hasCity: true });
   }
 
   return metadata;
@@ -1309,134 +1084,10 @@ function annotateRegionFeatures(features: GeoJsonFeature[], metadataByKey: Map<s
       properties: {
         ...feature.properties,
         labelEn: typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : metadata.labelEn,
-        labelZh: typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : metadata.labelZh,
-        hasCity: typeof feature.properties.hasCity === 'boolean' ? feature.properties.hasCity : metadata.hasCity
+        labelZh: typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : metadata.labelZh
       }
     };
   });
-}
-
-function countryTierFromWire(value: 1 | 2 | 3): CountryTier {
-  if (value === 3) return 'C3';
-  if (value === 2) return 'C2';
-  return 'C1';
-}
-
-function viewRegionKeyExpectations(citiesPayload: CitiesPayloadWire): { worldKeys: Set<string>; countryDetailKeysByCountry: Map<string, Set<string>> } {
-  const worldKeys = new Set<string>();
-  const countryDetailKeysByCountry = new Map<string, Set<string>>();
-
-  for (const city of citiesPayload.c) {
-    const country = citiesPayload.d.co[city[2]];
-    if (!country) continue;
-    const countryCode = country[0];
-    const countryTier = countryTierFromWire(country[3]);
-    const admin1 = city[3] === null ? null : citiesPayload.d.a1[city[3]];
-    const admin2 = city[4] === null ? null : citiesPayload.d.a2[city[4]];
-
-    if (countryTier === 'C1') {
-      worldKeys.add(`country:${countryCode}`);
-      continue;
-    }
-
-    if (admin1) worldKeys.add(`admin1:${countryCode}.${admin1[1]}`);
-
-    if (countryTier === 'C3' && admin1 && admin2) {
-      const countryKeys = countryDetailKeysByCountry.get(countryCode) ?? new Set<string>();
-      countryKeys.add(`admin2:${countryCode}.${admin1[1]}.${admin2[2]}`);
-      countryDetailKeysByCountry.set(countryCode, countryKeys);
-    }
-
-    const chinaCompanionKey = chinaCompanionAdmin2Key(countryCode);
-    if (chinaCompanionKey) {
-      worldKeys.add(chinaCompanionAdmin1Key(countryCode));
-      const countryKeys = countryDetailKeysByCountry.get('CN') ?? new Set<string>();
-      countryKeys.add(chinaCompanionKey);
-      countryDetailKeysByCountry.set('CN', countryKeys);
-    }
-  }
-
-  return { worldKeys, countryDetailKeysByCountry };
-}
-
-function regionPointExpectations(citiesPayload: CitiesPayloadWire): RegionPointExpectations {
-  const pointsByWorldKey = new Map<string, [number, number][]>();
-  const pointsByCountryDetailKey = new Map<string, Map<string, [number, number][]>>();
-
-  for (const city of citiesPayload.c) {
-    const country = citiesPayload.d.co[city[2]];
-    if (!country) continue;
-    const countryCode = country[0];
-    const countryTier = countryTierFromWire(country[3]);
-    const admin1 = city[3] === null ? null : citiesPayload.d.a1[city[3]];
-    const admin2 = city[4] === null ? null : citiesPayload.d.a2[city[4]];
-    const point: [number, number] = [city[6] / 100000, city[5] / 100000];
-
-    const worldKey = countryTier === 'C1'
-      ? `country:${countryCode}`
-      : admin1
-        ? `admin1:${countryCode}.${admin1[1]}`
-        : null;
-    if (worldKey) {
-      const points = pointsByWorldKey.get(worldKey) ?? [];
-      points.push(point);
-      pointsByWorldKey.set(worldKey, points);
-    }
-
-    if (countryTier === 'C3' && admin1 && admin2) {
-      const countryPoints = pointsByCountryDetailKey.get(countryCode) ?? new Map<string, [number, number][]>();
-      const detailKey = `admin2:${countryCode}.${admin1[1]}.${admin2[2]}`;
-      const points = countryPoints.get(detailKey) ?? [];
-      points.push(point);
-      countryPoints.set(detailKey, points);
-      pointsByCountryDetailKey.set(countryCode, countryPoints);
-    }
-
-    const chinaCompanionKey = chinaCompanionAdmin2Key(countryCode);
-    if (chinaCompanionKey) {
-      const worldKey = chinaCompanionAdmin1Key(countryCode);
-      const worldPoints = pointsByWorldKey.get(worldKey) ?? [];
-      worldPoints.push(point);
-      pointsByWorldKey.set(worldKey, worldPoints);
-
-      const countryPoints = pointsByCountryDetailKey.get('CN') ?? new Map<string, [number, number][]>();
-      const points = countryPoints.get(chinaCompanionKey) ?? [];
-      points.push(point);
-      countryPoints.set(chinaCompanionKey, points);
-      pointsByCountryDetailKey.set('CN', countryPoints);
-    }
-  }
-
-  return { pointsByWorldKey, pointsByCountryDetailKey };
-}
-
-function requiredC3Admin2KeysFromCities(citiesPayload: CitiesPayloadWire): Set<string> {
-  const keys = new Set<string>();
-  for (const city of citiesPayload.c) {
-    const country = citiesPayload.d.co[city[2]];
-    if (!country || countryTierFromWire(country[3]) !== 'C3' || city[3] === null || city[4] === null) continue;
-    const admin1 = citiesPayload.d.a1[city[3]];
-    const admin2 = citiesPayload.d.a2[city[4]];
-    if (admin1 && admin2) keys.add(admin2Key(country[0], admin1[1], admin2[2]));
-  }
-  return keys;
-}
-
-function assertRegionPointCoverage(scope: string, features: GeoJsonFeature[], pointsByKey: Map<string, [number, number][]>, failures: string[]): void {
-  const featuresByKey = new Map<string, GeoJsonFeature[]>();
-  for (const feature of features) {
-    const regionKey = String(feature.properties.regionKey ?? '');
-    const list = featuresByKey.get(regionKey) ?? [];
-    list.push(feature);
-    featuresByKey.set(regionKey, list);
-  }
-  for (const [key, points] of pointsByKey) {
-    const regionFeatures = featuresByKey.get(key) ?? [];
-    if (regionFeatures.length === 0) continue;
-    if (!points.some((point) => regionFeatures.some((feature) => pointCoveredByGeometry(point, feature.geometry)))) {
-      failures.push(`${scope} ${key} has geometry but covers none of its selected cities`);
-    }
-  }
 }
 
 function countryCodeFromRegionKey(regionKey: string): string | null {
@@ -1445,12 +1096,12 @@ function countryCodeFromRegionKey(regionKey: string): string | null {
 }
 
 function worldCoverageSummary(
-  citiesPayload: CitiesPayloadWire,
+  profiles: CountryProfile[],
   countries: GeoBoundaryReport['countries'],
   countryFeatures: GeoJsonFeature[],
   admin1Features: GeoJsonFeature[]
 ): GeoBoundaryReport['worldCoverage'] {
-  const expectedCountryCount = citiesPayload.d.co.length;
+  const expectedCountryCount = profiles.length;
   const expectedRegionCount = expectedCountryCount + countries.reduce((total, country) => total + country.admin1Expected, 0);
   const generatedCountries = new Set(
     countryFeatures
@@ -1462,25 +1113,11 @@ function worldCoverageSummary(
     expectedCountryCount,
     generatedCountryCount: generatedCountries.size,
     expectedRegionCount,
-    generatedRegionCount: countryFeatures.length + admin1Features.length,
-    geometryCheckedRegionCount: regionPointExpectations(citiesPayload).pointsByWorldKey.size
+    generatedRegionCount: countryFeatures.length + admin1Features.length
   };
 }
 
-function c3CitiesMissingAdmin2(citiesPayload: CitiesPayloadWire, c3Admin2Keys: Set<string>): string[] {
-  return citiesPayload.c.flatMap((city): string[] => {
-    const country = citiesPayload.d.co[city[2]];
-    if (!country || countryTierFromWire(country[3]) !== 'C3' || city[3] === null || city[4] !== null) return [];
-    const name = localizedNameWire(city[1]);
-    const admin1 = citiesPayload.d.a1[city[3]];
-    if (!admin1) return [];
-    const admin1HasAdmin2Detail = [...c3Admin2Keys].some((key) => key.startsWith(`admin2:${country[0]}.${admin1[1]}.`));
-    if (!admin1HasAdmin2Detail) return [];
-    return [`${city[0]} ${name?.en ?? 'unknown'} lacks admin2 in C3 country ${country[0]}.${admin1[1]}`];
-  });
-}
-
-function collectRequiredGeoFeatureFailures(report: GeoBoundaryReport, packagesByOutputPath: Map<string, GeoJsonFeature[]>, citiesPayload: CitiesPayloadWire): string[] {
+function collectRequiredGeoFeatureFailures(report: GeoBoundaryReport, packagesByOutputPath: Map<string, GeoJsonFeature[]>, profiles: CountryProfile[]): string[] {
   const failures: string[] = [];
   const countryFeatures = packagesByOutputPath.get(geoCountryPath) ?? [];
   const c2Admin1Features = packagesByOutputPath.get(geoC2Admin1Path) ?? [];
@@ -1492,8 +1129,6 @@ function collectRequiredGeoFeatureFailures(report: GeoBoundaryReport, packagesBy
   const admin1Features = [...c2Admin1Features, ...c3Admin1Features];
   const admin1Keys = featureRegionKeys(admin1Features);
   const c3Admin2Keys = featureRegionKeys(c3Admin2Features);
-  const viewExpectations = viewRegionKeyExpectations(citiesPayload);
-  const pointExpectations = regionPointExpectations(citiesPayload);
 
   if (report.worldCoverage.generatedCountryCount !== report.worldCoverage.expectedCountryCount) {
     failures.push(`world view generated ${report.worldCoverage.generatedCountryCount}/${report.worldCoverage.expectedCountryCount} countries`);
@@ -1501,21 +1136,11 @@ function collectRequiredGeoFeatureFailures(report: GeoBoundaryReport, packagesBy
   if (report.worldCoverage.generatedRegionCount !== report.worldCoverage.expectedRegionCount) {
     failures.push(`world view generated ${report.worldCoverage.generatedRegionCount}/${report.worldCoverage.expectedRegionCount} regionKeys`);
   }
-  failures.push(...c3CitiesMissingAdmin2(citiesPayload, c3Admin2Keys));
 
-  for (const country of citiesPayload.d.co) {
-    const key = `country:${country[0]}`;
+  for (const profile of profiles) {
+    const key = `country:${profile.countryCode}`;
     if (!countryKeys.has(key)) failures.push(`${geoCountryPath} lacks ${key}`);
   }
-
-  for (const key of viewExpectations.worldKeys) {
-    if (key.startsWith('country:')) {
-      if (!countryKeys.has(key)) failures.push(`country view lacks ${key}`);
-      continue;
-    }
-    if (!admin1Keys.has(key)) failures.push(`admin1 view lacks ${key}`);
-  }
-  assertRegionPointCoverage('world view', [...countryFeatures, ...admin1Features], pointExpectations.pointsByWorldKey, failures);
 
   for (const country of report.countries) {
     if (country.missingAdmin1.length > 0 || country.admin1Generated !== country.admin1Expected) {
@@ -1529,10 +1154,6 @@ function collectRequiredGeoFeatureFailures(report: GeoBoundaryReport, packagesBy
     if (country.missingAdmin2.length > 0 || country.admin2Generated !== country.admin2Expected) {
       failures.push(`${country.countryCode} C3 detail view missing admin2: ${country.missingAdmin2.join(', ') || `${country.admin2Generated}/${country.admin2Expected}`}`);
     }
-    for (const key of viewExpectations.countryDetailKeysByCountry.get(country.countryCode) ?? []) {
-      if (!c3Admin2Keys.has(key)) failures.push(`${country.countryCode} detail view lacks ${key}`);
-    }
-    assertRegionPointCoverage(`${country.countryCode} detail view`, c3Admin2Features, pointExpectations.pointsByCountryDetailKey.get(country.countryCode) ?? new Map(), failures);
     for (const key of country.missingAdmin2) {
       if (!c3Admin2Keys.has(key)) failures.push(`${country.countryCode} ${geoC3Admin2Dir}/${country.countryCode}.geojson lacks ${key}`);
     }
@@ -1607,9 +1228,9 @@ function reportMarkdown(report: GeoBoundaryReport): string {
     '',
     '## 全球视图覆盖',
     '',
-    '| 预期国家 | 生成国家 | 预期 regionKey | 生成 regionKey | geometry 点位校验 regionKey |',
-    '| ---: | ---: | ---: | ---: | ---: |',
-    `| ${report.worldCoverage.expectedCountryCount} | ${report.worldCoverage.generatedCountryCount} | ${report.worldCoverage.expectedRegionCount} | ${report.worldCoverage.generatedRegionCount} | ${report.worldCoverage.geometryCheckedRegionCount} |`,
+    '| 预期国家 | 生成国家 | 预期 regionKey | 生成 regionKey |',
+    '| ---: | ---: | ---: | ---: |',
+    `| ${report.worldCoverage.expectedCountryCount} | ${report.worldCoverage.generatedCountryCount} | ${report.worldCoverage.expectedRegionCount} | ${report.worldCoverage.generatedRegionCount} |`,
     '',
     '## 边界包',
     '',
@@ -1635,12 +1256,11 @@ await downloadFile(naturalEarthAdmin0MapUnitsUrl, naturalEarthAdmin0MapUnitsPath
 await downloadFile(naturalEarthAdmin1LowUrl, naturalEarthAdmin1LowPath);
 await downloadFile(naturalEarthAdmin1Url, naturalEarthAdmin1Path);
 
-const [profilesPayload, citiesPayload, overrideSeed, geoBoundarySourceSeed, dataset, naturalEarthAdmin0, naturalEarthAdmin0Detailed, naturalEarthAdmin0MapUnits, naturalEarthAdmin1Low, naturalEarthAdmin1] = await Promise.all([
+const [profilesPayload, overrideSeed, geoBoundarySourceSeed, dataset, naturalEarthAdmin0, naturalEarthAdmin0Detailed, naturalEarthAdmin0MapUnits, naturalEarthAdmin1Low, naturalEarthAdmin1] = await Promise.all([
   readJson<CountryProfilesPayload>(profilesPath),
-  readJson<CitiesPayloadWire>(citiesPath),
   loadCoverageOverrides(rootDir),
   readYaml<GeoBoundarySourceSeed>(geoBoundarySourcesPath),
-  loadGeoNamesDataset(rootDir),
+  loadGeoNamesAdminDataset(rootDir),
   parseShapefileZip(naturalEarthAdmin0Path),
   parseShapefileZip(naturalEarthAdmin0DetailedPath),
   parseShapefileZip(naturalEarthAdmin0MapUnitsPath),
@@ -1655,8 +1275,6 @@ const detailedCountryCodes = new Set(profiles.filter((profile) => profile.detail
 const c3CountryCodes = new Set(profiles.filter((profile) => profile.detailedCoverage === 'admin2').map((profile) => profile.countryCode));
 const admin1ByCountry = new Map<string, GeoNamesAdmin1[]>();
 const allAdmin2ByCountry = new Map<string, GeoNamesAdmin2[]>();
-const admin2ByCountry = new Map<string, GeoNamesAdmin2[]>();
-const admin2ByKey = new Map(dataset.admin2Items.map((item) => [admin2Key(item.countryCode, item.admin1Code, item.admin2Code), item]));
 for (const item of dataset.admin1Items) {
   const list = admin1ByCountry.get(item.countryCode) ?? [];
   list.push(item);
@@ -1667,20 +1285,7 @@ for (const item of dataset.admin2Items) {
   list.push(item);
   allAdmin2ByCountry.set(item.countryCode, list);
 }
-const supportedAdmin2Keys = buildSupportedAdmin2KeySet(overrideSeed, dataset.admin2Items, dataset.cities, supportedFeatureCodes);
 const boundaryLabelsByKey = boundaryLabelOverridesByKey(overrideSeed);
-for (const item of dataset.admin2Items.filter((admin2) => isSupportedAdmin2ByKey(supportedAdmin2Keys, admin2))) {
-  const list = admin2ByCountry.get(item.countryCode) ?? [];
-  list.push(item);
-  admin2ByCountry.set(item.countryCode, list);
-}
-for (const key of requiredC3Admin2KeysFromCities(citiesPayload)) {
-  const item = admin2ByKey.get(key);
-  if (!item) continue;
-  const list = admin2ByCountry.get(item.countryCode) ?? [];
-  if (!list.some((current) => admin2Key(current.countryCode, current.admin1Code, current.admin2Code) === key)) list.push(item);
-  admin2ByCountry.set(item.countryCode, list);
-}
 
 await rm(generatedGeoDir, { recursive: true, force: true });
 
@@ -1694,9 +1299,8 @@ const countryFeaturesByCode = naturalEarthCountryFeaturesByCode([naturalEarthAdm
 const countryOutlineFeaturesByCode = naturalEarthCountryOutlineFeaturesByCode([naturalEarthAdmin0Detailed, naturalEarthAdmin0MapUnits, naturalEarthAdmin0], naturalEarthAdmin0MapUnits, naturalEarthAdmin1, geoBoundarySourceSeed);
 const chinaOutlineFeature = await chinaCountryOutlineFeature();
 if (chinaOutlineFeature) countryOutlineFeaturesByCode.set('CN', chinaOutlineFeature);
-const expectedViewRegions = viewRegionKeyExpectations(citiesPayload);
-const regionMetadataByKey = regionFeatureMetadata(citiesPayload, dataset.admin1Items, dataset.admin2Items);
-countryFeatures.push(...detailedCountryOutlineFeatures(citiesPayload, countryOutlineFeaturesByCode));
+const regionMetadataByKey = regionFeatureMetadata(dataset.admin1Items, dataset.admin2Items);
+countryFeatures.push(...detailedCountryOutlineFeatures(profiles, countryOutlineFeaturesByCode));
 
 async function writeTrackedGeoPackage(relativePath: string, features: GeoJsonFeature[], precision: number): Promise<GeoBoundaryReport['packages'][number]> {
   const annotatedFeatures = annotateRegionFeatures(features, regionMetadataByKey);
@@ -1704,17 +1308,17 @@ async function writeTrackedGeoPackage(relativePath: string, features: GeoJsonFea
   return writeGeoPackage(relativePath, annotatedFeatures, precision);
 }
 
-for (const country of citiesPayload.d.co) {
-  if (countryTierFromWire(country[3]) !== 'C1') continue;
-  const feature = countryFeaturesByCode.get(country[0]);
+for (const profile of profiles) {
+  if (profile.countryTier !== 'C1') continue;
+  const feature = countryFeaturesByCode.get(profile.countryCode);
   if (feature) countryFeatures.push(feature);
 }
 
 for (const countryCode of [...detailedCountryCodes].sort()) {
   const profile = profileByCountry.get(countryCode);
   const admin1Items = admin1ByCountry.get(countryCode) ?? [];
-  const admin2Items = allAdmin2ByCountry.get(countryCode) ?? [];
-  const generated = await admin1FeaturesForCountry(countryCode, admin1Items, admin2Items, dataset.cities, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
+  const admin2Items = boundaryAdmin2ItemsForCountry(countryCode, allAdmin2ByCountry.get(countryCode) ?? [], overrideSeed);
+  const generated = await admin1FeaturesForCountry(countryCode, admin1Items, admin2Items, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
   admin1GeneratedByCountry.set(countryCode, generated);
   if (profile?.detailedCoverage === 'admin2') c3Admin1Features.push(...generated.features);
   else c2Admin1Features.push(...generated.features);
@@ -1728,8 +1332,7 @@ const report: GeoBoundaryReport = {
     expectedCountryCount: 0,
     generatedCountryCount: 0,
     expectedRegionCount: 0,
-    generatedRegionCount: 0,
-    geometryCheckedRegionCount: 0
+    generatedRegionCount: 0
   },
   packages: [
     await writeTrackedGeoPackage(geoCountryPath, countryFeatures, 3),
@@ -1742,10 +1345,9 @@ const report: GeoBoundaryReport = {
 for (const countryCode of [...c3CountryCodes].sort()) {
   const profile = profileByCountry.get(countryCode);
   const admin1Items = admin1ByCountry.get(countryCode) ?? [];
-  const allAdmin2Items = allAdmin2ByCountry.get(countryCode) ?? [];
-  const admin2Items = admin2ByCountry.get(countryCode) ?? [];
-  const admin1Generated = admin1GeneratedByCountry.get(countryCode) ?? await admin1FeaturesForCountry(countryCode, admin1Items, allAdmin2Items, dataset.cities, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
-  const admin2Generated = await admin2FeaturesForCountry(countryCode, admin1Items, admin2Items, naturalEarthAdmin1, dataset.cities, boundaryLabelsByKey, geoBoundarySourceSeed, iso3ByCountry);
+  const admin2Items = boundaryAdmin2ItemsForCountry(countryCode, allAdmin2ByCountry.get(countryCode) ?? [], overrideSeed);
+  const admin1Generated = admin1GeneratedByCountry.get(countryCode) ?? await admin1FeaturesForCountry(countryCode, admin1Items, admin2Items, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
+  const admin2Generated = await admin2FeaturesForCountry(countryCode, admin1Items, admin2Items, boundaryLabelsByKey, geoBoundarySourceSeed, iso3ByCountry);
   const companionRegionExpectedCount = countryCode === 'CN' ? chinaCompanionRegions.length : 0;
   const matchedAdmin2FeatureCount = countUniqueRegionKeysWithPrefix(admin2Generated.features, `admin2:${countryCode}.`);
   const boundaryOnlyFeatureCount = countFeaturesWithRegionKeyPrefix(admin2Generated.features, `boundary:${countryCode}.`);
@@ -1768,8 +1370,8 @@ for (const countryCode of [...c3CountryCodes].sort()) {
 for (const countryCode of [...detailedCountryCodes].filter((countryCode) => !c3CountryCodes.has(countryCode)).sort()) {
   const profile = profileByCountry.get(countryCode);
   const admin1Items = admin1ByCountry.get(countryCode) ?? [];
-  const admin2Items = allAdmin2ByCountry.get(countryCode) ?? [];
-  const admin1Generated = admin1GeneratedByCountry.get(countryCode) ?? await admin1FeaturesForCountry(countryCode, admin1Items, admin2Items, dataset.cities, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
+  const admin2Items = boundaryAdmin2ItemsForCountry(countryCode, allAdmin2ByCountry.get(countryCode) ?? [], overrideSeed);
+  const admin1Generated = admin1GeneratedByCountry.get(countryCode) ?? await admin1FeaturesForCountry(countryCode, admin1Items, admin2Items, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
   countryReports.push({
     countryCode,
     countryTier: profile?.countryTier ?? 'C2',
@@ -1785,8 +1387,8 @@ for (const countryCode of [...detailedCountryCodes].filter((countryCode) => !c3C
 }
 
 report.countries = countryReports.sort((left, right) => left.countryCode.localeCompare(right.countryCode));
-report.worldCoverage = worldCoverageSummary(citiesPayload, report.countries, countryFeatures, [...c2Admin1Features, ...c3Admin1Features]);
-report.validationFailures = collectRequiredGeoFeatureFailures(report, packageFeaturesByOutputPath, citiesPayload);
+report.worldCoverage = worldCoverageSummary(profiles, report.countries, countryFeatures, [...c2Admin1Features, ...c3Admin1Features]);
+report.validationFailures = collectRequiredGeoFeatureFailures(report, packageFeaturesByOutputPath, profiles);
 await mkdir(reportDir, { recursive: true });
 await writeFile(path.join(reportDir, 'geo-boundary-report.md'), reportMarkdown(report));
 

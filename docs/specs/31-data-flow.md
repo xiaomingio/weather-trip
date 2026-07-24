@@ -78,7 +78,7 @@ Open-Meteo 返回的 `daily.time` 表示地点当地自然日，而非 UTC 时�
 
 行政边界回答“地图上哪些块可以被着色、hover 和点击”。它需要低精度世界包、国家详情包、稳定 `regionKey` 和生成报告。边界与天气分开：缺天气数据时区域仍然显示边界，按无数据样式展示。
 
-行政边界使用多源离线生成：[Natural Earth](https://www.naturalearthdata.com/features/) 提供低精度世界国家和非中国一级区域基础包，[geoBoundaries](https://www.geoboundaries.org/api.html) 提供可下载的多级行政边界，[DataV/高德（Amap）](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) 提供中国国家、省级、地级和港澳台详情边界。非中国生成阶段优先使用 Natural Earth `gn_id` 对齐 GeoNames admin1；当边界源实际是下级区域时，先用 ADM2 名称对齐 GeoNames admin2 再聚合成 admin1；遇到行政改革、旧边界源或无城市点分片时，再按 GeoNames 城市点、ADM1 父边界包含和最近城市兜底把同一国家的边界碎片聚合到当前 admin1。`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。最终前端只看到统一 `regionKey`，不看到供应商 adcode、GeoNames code 或名称匹配过程。
+行政边界使用多源离线生成：[Natural Earth](https://www.naturalearthdata.com/features/) 提供低精度世界国家和非中国一级区域基础包，[geoBoundaries](https://www.geoboundaries.org/api.html) 提供可下载的多级行政边界，[DataV/高德（Amap）](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) 提供中国国家、省级、地级和港澳台详情边界。非中国生成阶段优先使用 Natural Earth `gn_id` 对齐 GeoNames admin1；当边界源实际是下级区域时，先用 ADM2 名称对齐 GeoNames admin2 再聚合成 admin1；如果最佳来源缺少少量 admin1，脚本会从其它边界候选源按同一 `regionKey` 补齐。`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。最终前端只看到统一 `regionKey`，不看到供应商 adcode、GeoNames code 或名称匹配过程。
 
 中国边界使用 DataV/高德行政边界接口。`100000.json` 生成 `country:CN` 国家面；`100000_full.json` 生成中国大陆省级 `admin1:CN.*`，并通过稳定 adcode 映射对齐 GeoNames admin1 code；香港、澳门和台湾同时作为 `admin1:CN.HK/MO/TW` 和 companion C3 区块放入 `CN` 详情包。各省 `<adcode>_full.json` 生成地级区块，再对齐到 GeoNames admin2 或保留为 boundary-only 区块。香港和澳门使用 DataV/高德 `_full` 子区块并共享各自天气聚合 key；台湾的 DataV/高德可用边界为整体区块。
 
@@ -208,12 +208,11 @@ flowchart TB
 
 ### 图 5：Geo 区块数据
 
-`static:geo` 使用 profiles、城市主索引、边界 raw 和边界 input 生成按运行时层级拆分的 GeoJSON 中间产物，并在产物写出后检查国家、admin1、C3 admin2 和城市点覆盖。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
+`static:geo` 使用 profiles、GeoNames 行政区、边界 raw 和边界 input 生成按运行时层级拆分的 GeoJSON 中间产物，并在产物写出后检查国家、admin1 和 C3 admin2 覆盖。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
 
 ```mermaid
 flowchart TB
   profilesGenerated["data/generated/country-profiles.json"]
-  citiesGenerated["data/generated/cities.json"]
   rawBoundary["data/raw/geo-boundaries/"]
   rawGeonames["data/raw/geonames/"]
   geoSources["data/input/geo-boundary-sources.yml"]
@@ -222,13 +221,12 @@ flowchart TB
   generateGeo["static:geo<br/>generate-static-geo.ts"]
   publicGeo["data/generated/geo/{country,c2_admin1,c3_admin1}.geojson<br/>data/generated/geo/c3_admin2/*.geojson<br/>边界中间产物"]
   geoTiles["apps/web/public/data/geo/region-tiles/**/*.mvt<br/>前端运行时边界瓦片"]
-  geoReport["data/report/geo-boundary-report.md<br/>覆盖检查、缺口和 geometry 点位校验"]
+  geoReport["data/report/geo-boundary-report.md<br/>覆盖检查和缺口"]
   tileReport["data/report/geo-tile-report.md<br/>瓦片数量、体积和 zoom 分档"]
 
   profilesGenerated -->|C2/C3 详情层级| generateGeo
-  citiesGenerated -->|regionKey 期望和点位校验| generateGeo
   rawBoundary -->|geometry 来源| generateGeo
-  rawGeonames -->|admin 对齐| generateGeo
+  rawGeonames -->|国家 code、ISO3 和行政区目标集合| generateGeo
   geoSources -->|详情源和合并口径| generateGeo
   admin2Support -->|过滤不稳定二级区域| generateGeo
   boundaryLabels -->|boundary-only 展示名| generateGeo
@@ -260,7 +258,7 @@ flowchart TB
 
 边界和天气是两条数据流。MVT 区块即使没有天气样本也必须保留，前端按无数据样式展示；天气缺失只影响颜色和 tooltip 的数据内容，不决定区块是否存在。底图不生成本项目的 `regionKey`，也不能反向影响区域聚合。
 
-Geo 区块数据生成按前端会加载的 zoom 档校验输出。`country` 档需要 `country:*`，`admin1` 档需要 `admin1:*` 和缺少一级区域时的 `country:*` fallback，`admin2` 档需要 `admin2:*`、人工保留的 `boundary:*`，以及缺少二级区域时的 `admin1:*` / `country:*` fallback。`scripts/generate-static-geo.ts` 会从 `data/generated/cities.json` 推导当前前端会产生的 `regionKey`，再检查这些 key 是否存在于对应中间 GeoJSON 包，并确认每个可见 key 的 geometry 至少覆盖一个属于自己的城市点；`scripts/generate-static-geo-tiles.ts` 负责统计三档瓦片数量、体积、最大单瓦片和缺失国家边界。缺失或点位不覆盖时生成任务失败退出，不能只靠人工看报告发现。
+Geo 区块数据生成按前端会加载的 zoom 档校验输出。`country` 档需要 `country:*`，`admin1` 档需要 `admin1:*` 和缺少一级区域时的 `country:*` fallback，`admin2` 档需要 `admin2:*`、人工保留的 `boundary:*`，以及缺少二级区域时的 `admin1:*` / `country:*` fallback。`scripts/generate-static-geo.ts` 根据 profiles 和 GeoNames admin 目标集合检查这些 key 是否存在于对应中间 GeoJSON 包；`scripts/generate-static-geo-tiles.ts` 负责统计三档瓦片数量、最大单瓦片和缺失国家边界。缺失时生成任务失败退出，不能只靠人工看报告发现。
 
 需要人工判断时，只补充 `data/input/*.yml` 或覆盖规则，不直接修改生成产物。
 

@@ -84,6 +84,8 @@ export type GeoNamesDataset = {
   };
 };
 
+export type GeoNamesAdminDataset = Omit<GeoNamesDataset, 'cities'>;
+
 export type LoadGeoNamesDatasetOptions = {
   includeAlternateNames?: boolean;
 };
@@ -335,11 +337,9 @@ export function normalizeChineseAlternateName(value: string): string {
   return convertChineseNameToSimplified(value);
 }
 
-export async function loadGeoNamesDataset(rootDir: string, options: LoadGeoNamesDatasetOptions = {}): Promise<GeoNamesDataset> {
+function geoNamesRawPaths(rootDir: string): GeoNamesDataset['paths'] {
   const rawDir = path.join(rootDir, 'data', 'raw', 'geonames');
-  await mkdir(rawDir, { recursive: true });
-
-  const paths = {
+  return {
     rawDir,
     countryInfo: path.join(rawDir, 'countryInfo.txt'),
     admin1: path.join(rawDir, 'admin1CodesASCII.txt'),
@@ -347,23 +347,36 @@ export async function loadGeoNamesDataset(rootDir: string, options: LoadGeoNames
     citiesZip: path.join(rawDir, `${geonamesCitiesPackage}.zip`),
     alternateNamesZip: path.join(rawDir, 'alternateNamesV2.zip')
   };
+}
+
+export async function loadGeoNamesAdminDataset(rootDir: string): Promise<GeoNamesAdminDataset> {
+  const paths = geoNamesRawPaths(rootDir);
+  await mkdir(paths.rawDir, { recursive: true });
 
   const [countryInfoText, admin1Text, admin2Text] = await Promise.all([
     downloadText(`${geonamesBaseUrl}/countryInfo.txt`, paths.countryInfo),
     downloadText(`${geonamesBaseUrl}/admin1CodesASCII.txt`, paths.admin1),
     downloadText(`${geonamesBaseUrl}/admin2Codes.txt`, paths.admin2)
   ]);
+
+  return {
+    countries: parseCountryInfo(countryInfoText),
+    admin1Items: parseAdmin1Info(admin1Text),
+    admin2Items: parseAdmin2Info(admin2Text),
+    paths
+  };
+}
+
+export async function loadGeoNamesDataset(rootDir: string, options: LoadGeoNamesDatasetOptions = {}): Promise<GeoNamesDataset> {
+  const adminDataset = await loadGeoNamesAdminDataset(rootDir);
+  const { paths, countries } = adminDataset;
   await downloadFile(`${geonamesBaseUrl}/${geonamesCitiesPackage}.zip`, paths.citiesZip);
   if (options.includeAlternateNames) {
     await downloadFile(`${geonamesBaseUrl}/alternateNamesV2.zip`, paths.alternateNamesZip);
   }
 
-  const countries = parseCountryInfo(countryInfoText);
   return {
-    countries,
-    admin1Items: parseAdmin1Info(admin1Text),
-    admin2Items: parseAdmin2Info(admin2Text),
+    ...adminDataset,
     cities: await readCitiesFromZip(paths.citiesZip, countries),
-    paths
   };
 }

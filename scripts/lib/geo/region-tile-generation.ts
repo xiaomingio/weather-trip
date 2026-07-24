@@ -6,6 +6,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { GeoJSONVT, type GeoJSONVTTile } from '@maplibre/geojson-vt';
 import { fromGeojsonVt } from '@maplibre/vt-pbf';
+import { loadGeoNamesAdminDataset } from '../static-data/geonames.js';
 
 type GeoJsonGeometry = {
   type: string;
@@ -29,13 +30,16 @@ type WeatherRegionLevel = 'country' | 'admin1' | 'admin2' | 'boundary';
 type WeatherLevel = 'country' | 'admin1' | 'admin2';
 type TilePackageId = 'country' | 'admin1' | 'admin2';
 
-type CitiesPayloadWire = {
-  d: {
-    co: Array<[code: string, name: [en: string, zh: string] | string, worldRegion: unknown, countryTier: 1 | 2 | 3]>;
-  };
+type CountryProfile = {
+  countryCode: string;
+  countryTier: CountryTier;
 };
 
-type CityCountry = {
+type CountryProfilesPayload = {
+  profiles: CountryProfile[];
+};
+
+type TileCountry = {
   code: string;
   tier: CountryTier;
   labelEn?: string;
@@ -132,7 +136,6 @@ type GeoTileReport = {
     total: number;
     byLevel: Record<WeatherRegionLevel, number>;
     byWeatherLevel: Record<WeatherLevel, number>;
-    hasWeatherRegion: number;
     duplicateRegionKeys: string[];
     skippedRegionKeys: string[];
     countriesWithoutLowZoomBoundary: string[];
@@ -166,7 +169,7 @@ const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
 const generatedC3Admin2GeoDir = path.join(generatedGeoDir, 'c3_admin2');
 const reportDir = path.join(rootDir, 'data', 'report');
-const citiesPath = path.join(generatedDir, 'cities.json');
+const profilesPath = path.join(generatedDir, 'country-profiles.json');
 
 const defaultMapMinZoom = 1;
 const defaultMapZoom = 1.35;
@@ -177,6 +180,16 @@ const detailFitMaxZoom = 5.6;
 const defaultSourceLayer = 'weather_region';
 const defaultTileRootDir = path.join(publicGeoDir, 'region-tiles');
 const manifestFileName = 'manifest.json';
+const countryDisplayNames = {
+  zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
+  en: new Intl.DisplayNames(['en-US'], { type: 'region' })
+};
+const productCountryLabels: Partial<Record<string, { zh: string; en: string }>> = {
+  CN: { zh: '中国', en: 'China' },
+  HK: { zh: '香港', en: 'Hong Kong' },
+  MO: { zh: '澳门', en: 'Macau' },
+  TW: { zh: '台湾', en: 'Taiwan' }
+};
 
 function usage(): string {
   return [
@@ -265,26 +278,19 @@ async function loadSourcePackage(filePath: string): Promise<{ collection: Featur
   };
 }
 
-function countryTierFromWire(value: 1 | 2 | 3): CountryTier {
-  if (value === 3) return 'C3';
-  if (value === 2) return 'C2';
-  return 'C1';
-}
-
-function countryLabels(name: [en: string, zh: string] | string): Pick<CityCountry, 'labelEn' | 'labelZh'> {
-  if (Array.isArray(name)) return { labelEn: name[0], labelZh: name[1] };
-  return { labelEn: name, labelZh: name };
-}
-
-async function cityCountries(): Promise<Map<string, CityCountry>> {
-  const citiesPayload = await readJson<CitiesPayloadWire>(citiesPath);
+async function tileCountries(): Promise<Map<string, TileCountry>> {
+  const [profilesPayload, geoNames] = await Promise.all([
+    readJson<CountryProfilesPayload>(profilesPath),
+    loadGeoNamesAdminDataset(rootDir)
+  ]);
   return new Map(
-    citiesPayload.d.co.map((country) => [
-      country[0],
+    profilesPayload.profiles.map((profile) => [
+      profile.countryCode,
       {
-        code: country[0],
-        tier: countryTierFromWire(country[3]),
-        ...countryLabels(country[1])
+        code: profile.countryCode,
+        tier: profile.countryTier,
+        labelEn: productCountryLabels[profile.countryCode]?.en ?? geoNames.countries.get(profile.countryCode)?.name ?? countryDisplayNames.en.of(profile.countryCode) ?? profile.countryCode,
+        labelZh: productCountryLabels[profile.countryCode]?.zh ?? countryDisplayNames.zh.of(profile.countryCode) ?? profile.countryCode
       }
     ])
   );
@@ -306,7 +312,7 @@ function parseRegionKey(regionKey: string): RegionParseResult | null {
   return null;
 }
 
-function weatherLevelForCountry(countryCode: string, countries: Map<string, CityCountry>): WeatherLevel {
+function weatherLevelForCountry(countryCode: string, countries: Map<string, TileCountry>): WeatherLevel {
   const tier = countries.get(countryCode)?.tier;
   if (tier === 'C3') return 'admin2';
   if (tier === 'C2') return 'admin1';
@@ -319,7 +325,7 @@ function minDisplayZoom(level: WeatherRegionLevel): number {
   return 5;
 }
 
-function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, CityCountry>): GeoJsonFeature | null {
+function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, TileCountry>): GeoJsonFeature | null {
   const regionKey = typeof feature.properties.regionKey === 'string' ? feature.properties.regionKey : '';
   const parsed = parseRegionKey(regionKey);
   if (!parsed) return null;
@@ -327,9 +333,7 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, C
   const country = countries.get(parsed.countryCode);
   const sourceLabelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
   const sourceLabelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
-  const hasCity = typeof feature.properties.hasCity === 'boolean' ? feature.properties.hasCity : true;
   const weatherLevel = weatherLevelForCountry(parsed.countryCode, countries);
-  const hasWeatherRegion = hasCity && parsed.level !== 'boundary';
 
   return {
     type: 'Feature',
@@ -343,9 +347,7 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, C
       ...(sourceLabelZh || country?.labelZh ? { labelZh: sourceLabelZh ?? country?.labelZh } : {}),
       ...(sourceLabelEn || country?.labelEn ? { labelEn: sourceLabelEn ?? country?.labelEn } : {}),
       minDisplayZoom: minDisplayZoom(parsed.level),
-      weatherLevel,
-      hasWeatherRegion,
-      hasCity
+      weatherLevel
     },
     geometry: feature.geometry
   };
@@ -384,7 +386,7 @@ function addFeature(featuresByKey: Map<string, GeoJsonFeature>, feature: GeoJson
   featuresByKey.set(regionKey, feature);
 }
 
-async function buildTileSources(countries: Map<string, CityCountry>): Promise<{
+async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
   reports: SourcePackageReport[];
   allFeatures: GeoJsonFeature[];
   worldLowFeatures: GeoJsonFeature[];
@@ -527,21 +529,17 @@ function featureSummary(
 ): GeoTileReport['features'] {
   const byLevel = emptyLevelCounts();
   const byWeatherLevel = emptyWeatherLevelCounts();
-  let hasWeatherRegion = 0;
-
   for (const feature of features) {
     const level = feature.properties.level as WeatherRegionLevel;
     const weatherLevel = feature.properties.weatherLevel as WeatherLevel;
     byLevel[level] += 1;
     byWeatherLevel[weatherLevel] += 1;
-    if (feature.properties.hasWeatherRegion === true) hasWeatherRegion += 1;
   }
 
   return {
     total: features.length,
     byLevel,
     byWeatherLevel,
-    hasWeatherRegion,
     duplicateRegionKeys,
     skippedRegionKeys,
     countriesWithoutLowZoomBoundary
@@ -765,7 +763,6 @@ function reportMarkdown(report: GeoTileReport): string {
     `- 归一化 feature：${report.features.total}`,
     `- 层级：country ${report.features.byLevel.country}, admin1 ${report.features.byLevel.admin1}, admin2 ${report.features.byLevel.admin2}, boundary ${report.features.byLevel.boundary}`,
     `- 天气粒度：country ${report.features.byWeatherLevel.country}, admin1 ${report.features.byWeatherLevel.admin1}, admin2 ${report.features.byWeatherLevel.admin2}`,
-    `- 可直接匹配天气区域：${report.features.hasWeatherRegion}`,
     `- 去重 regionKey：${report.features.duplicateRegionKeys.length}`,
     `- 跳过非天气 regionKey：${report.features.skippedRegionKeys.length}`,
     `- 缺少低 zoom 国家边界：${report.features.countriesWithoutLowZoomBoundary.length}`,
@@ -835,7 +832,7 @@ export async function runGenerateStaticGeoTiles(args: string[]): Promise<void> {
     await rm(options.outputDir, { recursive: true, force: true });
   }
 
-  const countries = await cityCountries();
+  const countries = await tileCountries();
   const tileSources = await buildTileSources(countries);
   const tierDefinitions = buildTierDefinitions(tileSources);
   const tierReports: TileTierReport[] = [];

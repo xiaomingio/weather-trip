@@ -384,16 +384,21 @@ function matchExpression<T extends string | number | boolean>(entries: VectorReg
   return expression;
 }
 
+function noDataRegionFilter(includeNoDataRegions: boolean): FilterSpecification | null {
+  return includeNoDataRegions ? ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]] : null;
+}
+
 function noMetricPatternOpacityExpression(
   entries: VectorRegionStyleEntry[],
   targetLayer: MapRegionLayer,
   isRegionColoringEnabled: boolean,
-  includeBoundaryRegions: boolean
+  includeNoDataRegions: boolean
 ): number | unknown[] {
-  const boundaryOpacity = includeBoundaryRegions && isRegionColoringEnabled ? noMetricPatternOpacity(targetLayer) : 0;
+  const noDataOpacity = includeNoDataRegions && isRegionColoringEnabled ? noMetricPatternOpacity(targetLayer) : 0;
+  const noDataFilter = noDataRegionFilter(includeNoDataRegions);
   const fallback = 0;
   if (entries.length === 0) {
-    return boundaryOpacity > 0 ? ['case', ['==', ['get', 'level'], 'boundary'], boundaryOpacity, fallback] : fallback;
+    return noDataOpacity > 0 && noDataFilter ? ['case', noDataFilter, noDataOpacity, fallback] : fallback;
   }
 
   const expression: unknown[] = ['match', ['get', 'regionKey']];
@@ -401,16 +406,26 @@ function noMetricPatternOpacityExpression(
     expression.push(entry.regionKey, isRegionColoringEnabled && entry.isNoMetricRegion ? noMetricPatternOpacity(targetLayer) : 0);
   }
   expression.push(fallback);
-  return boundaryOpacity > 0 ? ['case', ['==', ['get', 'level'], 'boundary'], boundaryOpacity, expression] : expression;
+  if (noDataOpacity <= 0 || !noDataFilter) return expression;
+
+  const entryRegionKeys = entries.map((entry) => entry.regionKey);
+  return [
+    'case',
+    ['in', ['get', 'regionKey'], ['literal', entryRegionKeys]],
+    expression,
+    noDataFilter,
+    noDataOpacity,
+    fallback
+  ];
 }
 
-function visibleRegionFilter(entries: VectorRegionStyleEntry[], includeBoundaryRegions: boolean): FilterSpecification {
+function visibleRegionFilter(entries: VectorRegionStyleEntry[], includeNoDataRegions: boolean): FilterSpecification {
   const regionKeys = entries.map((entry) => entry.regionKey);
   const regionKeyFilter = regionKeys.length > 0
     ? (['in', ['get', 'regionKey'], ['literal', regionKeys]] as FilterSpecification)
     : (['==', ['get', 'regionKey'], ''] as FilterSpecification);
-  if (!includeBoundaryRegions) return regionKeyFilter;
-  return ['any', regionKeyFilter, ['==', ['get', 'level'], 'boundary']] as FilterSpecification;
+  const noDataFilter = noDataRegionFilter(includeNoDataRegions);
+  return noDataFilter ? ['any', regionKeyFilter, noDataFilter] as FilterSpecification : regionKeyFilter;
 }
 
 export function addVectorRegionLayers(
@@ -577,29 +592,29 @@ export function applyVectorRegionStyles(
   entries: VectorRegionStyleEntry[],
   isRegionColoringEnabled = true
 ): void {
-  const includeBoundaryRegions = targetLayer === 'admin2';
-  const filter = visibleRegionFilter(entries, includeBoundaryRegions);
-  const boundaryFillOpacity = includeBoundaryRegions && isRegionColoringEnabled ? noMetricFillOpacity(styleLayer) : 0;
-  const boundaryLineOpacity = includeBoundaryRegions ? 0.46 : 0;
-  const boundaryLineWidth = includeBoundaryRegions ? 0.85 : 0;
+  const includeNoDataRegions = targetLayer === 'admin2';
+  const filter = visibleRegionFilter(entries, includeNoDataRegions);
+  const noDataFillOpacity = includeNoDataRegions && isRegionColoringEnabled ? noMetricFillOpacity(styleLayer) : 0;
+  const noDataLineOpacity = includeNoDataRegions ? 0.46 : 0;
+  const noDataLineWidth = includeNoDataRegions ? 0.85 : 0;
   const fillLayerId = regionFillLayerId(targetLayer);
   if (map.getLayer(fillLayerId)) {
     map.setFilter(fillLayerId, filter);
     map.setPaintProperty(fillLayerId, 'fill-color', matchExpression(entries, 'fillColor', noMetricFillColor()));
-    map.setPaintProperty(fillLayerId, 'fill-opacity', isRegionColoringEnabled ? matchExpression(entries, 'fillOpacity', boundaryFillOpacity) : 0);
+    map.setPaintProperty(fillLayerId, 'fill-opacity', isRegionColoringEnabled ? matchExpression(entries, 'fillOpacity', noDataFillOpacity) : 0);
   }
 
   const noMetricLayerId = regionNoMetricPatternLayerId(targetLayer);
   if (map.getLayer(noMetricLayerId)) {
     map.setFilter(noMetricLayerId, filter);
-    map.setPaintProperty(noMetricLayerId, 'fill-opacity', noMetricPatternOpacityExpression(entries, styleLayer, isRegionColoringEnabled, includeBoundaryRegions));
+    map.setPaintProperty(noMetricLayerId, 'fill-opacity', noMetricPatternOpacityExpression(entries, styleLayer, isRegionColoringEnabled, includeNoDataRegions));
   }
 
   const lineLayerId = regionLineLayerId(targetLayer);
   if (map.getLayer(lineLayerId)) {
     map.setFilter(lineLayerId, filter);
-    map.setPaintProperty(lineLayerId, 'line-opacity', matchExpression(entries, 'lineOpacity', boundaryLineOpacity));
-    map.setPaintProperty(lineLayerId, 'line-width', matchExpression(entries, 'lineWidth', boundaryLineWidth));
+    map.setPaintProperty(lineLayerId, 'line-opacity', matchExpression(entries, 'lineOpacity', noDataLineOpacity));
+    map.setPaintProperty(lineLayerId, 'line-width', matchExpression(entries, 'lineWidth', noDataLineWidth));
   }
 }
 

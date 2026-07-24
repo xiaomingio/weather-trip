@@ -206,7 +206,7 @@ GeoJSON 中间包的主要问题不是传输体积，而是不能进入前端运
 
 ## 数据组织
 
-第一阶段生成的是天气区域瓦片，不是全球完整行政区全集。瓦片 feature 应只包含当前产品会展示或需要 hover 的区域。
+瓦片生成当前产品层级需要的完整边界集合：国家、C2/C3 一级区域、C3 二级区域和人工保留的 `boundary:*` 区块。是否有天气数据由前端拿天气 summary 按 `regionKey` 匹配决定，瓦片本身不预判 `hasWeather`。
 
 ```ts
 type WeatherRegionTileFeature = {
@@ -219,11 +219,10 @@ type WeatherRegionTileFeature = {
   labelEn?: string; // 英文展示名
   minDisplayZoom?: number; // 该 feature 建议开始显示的 zoom
   weatherLevel: 'country' | 'admin1' | 'admin2'; // 当前天气聚合可用粒度
-  hasWeatherRegion: boolean; // 是否能直接匹配区域 summary
 }
 ```
 
-`weatherLevel` 表达天气采样能力。瓦片可以包含更细边界，但填色层不能显示超过天气 summary 能支持的粒度。没有二级行政区或没有对应天气 summary 的地方，高 zoom 继续使用一级区域或国家级 fallback，并叠加城市 marker。
+`weatherLevel` 表达当前国家层级下的天气聚合粒度。瓦片可以包含更细边界；没有对应天气 summary 的区域仍显示边界和无数据样式，并叠加城市 marker。
 
 ## 生成链路
 

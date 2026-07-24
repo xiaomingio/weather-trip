@@ -279,8 +279,6 @@ type WeatherRegionTileFeature = {
   labelZh?: string;
   labelEn?: string;
   weatherLevel: 'country' | 'admin1' | 'admin2';
-  hasWeatherRegion: boolean;
-  hasCity: boolean;
 };
 ```
 
@@ -291,11 +289,11 @@ type WeatherRegionTileFeature = {
 | 二级区域瓦片 | `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | 地图 `z5-z8` 且视口覆盖到对应 tile 时读取；实际只生成 z5，z6-z8 overzoom | `admin2:<countryCode>.<admin1Code>.<admin2Code>`；没有二级区域时回退 admin1，再缺失时回退 country |
 | 城市 | `/data/cities.json` | Weather Map 和 City Finder 共用 | 解码城市字典后生成同一套 region key |
 
-边界瓦片必须按 `regionKey` 匹配城市聚合结果。无法匹配的区域使用无数据样式或只展示边界名，并写入城市选择报告、边界生成报告或瓦片报告。marker 和区域着色使用同一批城市。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。
+边界瓦片必须按 `regionKey` 匹配天气区域聚合结果。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。
 
 前端地区选择只暴露大区、C2/C3 国家和国家内一级行政区。`admin2:<countryCode>.<admin1Code>.<admin2Code>` 只用于高 zoom 边界着色和聚合结果；旧链接带有 admin2 时，运行时归一到所属 `admin1`。切换地区时的自动相机只使用当前结果城市点范围，世界视图使用固定默认相机，不再为了 bounds 读取完整行政区 outline。
 
-边界源里的 `adcode`、`shapeName`、`gn_a1_code`、`iso_3166_2` 等字段只在生成阶段使用。发布到前端的 MVT 只保存渲染和 hover 需要的最小属性；国家、一级/二级区域名称优先来自 `cities.json` 和天气 summary，边界自身的 `labelZh` / `labelEn` 只作为无数据区域 hover 兜底。只需要地点名字、搜索或城市选择的场景只读取 `cities.json`，不加载地图瓦片。
+边界源里的 `adcode`、`shapeName`、`gn_a1_code`、`iso_3166_2` 等字段只在生成阶段使用。发布到前端的 MVT 只保存渲染和 hover 需要的最小属性；国家名称从国家 code 查询，一级/二级区域名称来自 GeoNames admin 或边界源 label，天气 summary 的名称优先用于有数据区域。只需要地点名字、搜索或城市选择的场景只读取 `cities.json`，不加载地图瓦片。
 
 ## 文件预算
 
