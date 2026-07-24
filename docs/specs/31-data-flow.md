@@ -208,7 +208,7 @@ flowchart TB
 
 ### 图 5：Geo 区块数据
 
-`static:geo` 使用 profiles、城市主索引、边界 raw 和边界 input 生成标准化 GeoJSON 中间产物，并用报告记录匹配、缺口和体积。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
+`static:geo` 使用 profiles、城市主索引、边界 raw 和边界 input 生成按运行时层级拆分的 GeoJSON 中间产物，并在产物写出后检查国家、admin1、C3 admin2 和城市点覆盖。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
 
 ```mermaid
 flowchart TB
@@ -220,10 +220,10 @@ flowchart TB
   boundaryLabels["data/input/boundary-label-overrides.yml"]
   admin2Support["data/input/admin2-support-overrides.yml"]
   generateGeo["static:geo<br/>generate-static-geo.ts"]
-  publicGeo["data/generated/geo/*.geojson<br/>边界中间产物"]
+  publicGeo["data/generated/geo/{country,c2_admin1,c3_admin1}.geojson<br/>data/generated/geo/c3_admin2/*.geojson<br/>边界中间产物"]
   geoTiles["apps/web/public/data/geo/region-tiles/**/*.mvt<br/>前端运行时边界瓦片"]
-  geoReport["data/generated/geo-boundary-report.*<br/>复核匹配率、缺口、geometry 和体积"]
-  tileReport["data/generated/geo-tile-report.*<br/>瓦片数量、体积和 zoom 分档"]
+  geoReport["data/generated/geo-boundary-report.md<br/>覆盖检查、缺口和 geometry 点位校验"]
+  tileReport["data/generated/geo-tile-report.md<br/>瓦片数量、体积和 zoom 分档"]
 
   profilesGenerated -->|C2/C3 详情层级| generateGeo
   citiesGenerated -->|regionKey 期望和点位校验| generateGeo

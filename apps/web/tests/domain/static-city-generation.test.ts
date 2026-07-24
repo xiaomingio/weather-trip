@@ -3,7 +3,8 @@
  * 对应文档: docs/specs/30-weather-coverage-design.md
  */
 import { describe, expect, it } from 'vitest';
-import { compareDefaultRank } from '../../../../scripts/lib/cities/static-city-generation';
+import { compareDefaultRank, inferSelectedCityAdmin2, mergeSelectedCityGeography } from '../../../../scripts/lib/cities/static-city-generation';
+import type { GeoNamesAdmin2, GeoNamesCity } from '../../../../scripts/lib/static-data/geonames';
 
 type TestCity = {
   id: string;
@@ -49,5 +50,76 @@ describe('static city generation rank order', () => {
       'alpha',
       'beta'
     ]);
+  });
+});
+
+describe('static city generation administrative merge', () => {
+  it('keeps a previously selected city but fills later admin2 representative geography', () => {
+    const baseCity: GeoNamesCity = {
+      geonameId: 1790645,
+      id: 'geonames-1790645',
+      name: 'Xiamen',
+      asciiName: 'Xiamen',
+      alternateNames: ['厦门市'],
+      latitude: 24.47979,
+      longitude: 118.08187,
+      featureCode: 'PPLA2',
+      countryCode: 'CN',
+      admin1Code: '07',
+      population: 4617251,
+      timezone: 'Asia/Shanghai',
+      continentCode: 'AS'
+    };
+
+    expect(mergeSelectedCityGeography(baseCity, { ...baseCity, admin2Code: '3502' })).toMatchObject({
+      id: 'geonames-1790645',
+      admin1Code: '07',
+      admin2Code: '3502'
+    });
+  });
+
+  it('infers missing C3 admin2 from a nearby city in the same admin1', () => {
+    const baoAn: GeoNamesCity = {
+      geonameId: 13308620,
+      id: 'geonames-13308620',
+      name: "Bao'an",
+      asciiName: "Bao'an",
+      alternateNames: [],
+      latitude: 22.55213,
+      longitude: 113.88288,
+      featureCode: 'PPLA3',
+      countryCode: 'CN',
+      admin1Code: '30',
+      population: 4476554,
+      timezone: 'Asia/Shanghai',
+      continentCode: 'AS'
+    };
+    const shenzhenAdmin2: GeoNamesAdmin2 = {
+      code: 'CN.30.4403',
+      countryCode: 'CN',
+      admin1Code: '30',
+      admin2Code: '4403',
+      name: 'Shenzhen',
+      asciiName: 'Shenzhen',
+      geonameId: 1795563
+    };
+    const nearbyCity: GeoNamesCity = {
+      ...baoAn,
+      geonameId: 1,
+      id: 'nearby-shenzhen-city',
+      name: 'Hongfa Centre',
+      asciiName: 'Hongfa Centre',
+      latitude: 22.5501,
+      longitude: 113.889,
+      featureCode: 'PPL',
+      population: 10326,
+      admin2Code: '4403'
+    };
+
+    expect(inferSelectedCityAdmin2(baoAn, [shenzhenAdmin2], [baoAn, nearbyCity], new Set(['CN.30.4403']))).toMatchObject({
+      id: 'geonames-13308620',
+      admin1Code: '30',
+      admin2Code: '4403'
+    });
   });
 });

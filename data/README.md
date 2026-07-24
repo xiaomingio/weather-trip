@@ -28,6 +28,6 @@ data/
 | `npm run static:country-tier-candidates` | 根据 GeoNames、国家分档规则、旅游目的地和 admin2 input 生成 C2/C3 候选复核表 | `data/generated/country-admin-stats.json`、`data/generated/country-tier-candidate-report.*` |
 | `npm run static:profiles` | 读取人工确认的 C2/C3 input，生成最终国家分档 | `data/generated/country-profiles.json`、`data/generated/country-profile-report.*` |
 | `npm run static:cities` | 根据国家分档、旅游目的地、admin2 input 和 GeoNames 生成城市列表 | `data/generated/cities.json`、`data/generated/city-selection-report.*`、`apps/web/public/data/cities.json` |
-| `npm run static:geo` | 根据边界 raw、国家分档、城市列表、边界补名 input、admin2 input 和 GeoNames 生成 GeoJSON 中间产物 | `data/generated/geo/*`、`data/generated/geo-boundary-report.*` |
-| `npm run static:geo:tiles` | 根据 GeoJSON 中间产物生成地图瓦片 | `apps/web/public/data/geo/region-tiles/*`、`data/generated/geo-tile-report.*` |
+| `npm run static:geo` | 根据边界 raw、国家分档、城市列表、边界补名 input、admin2 input 和 GeoNames 生成 GeoJSON 中间产物，并在写出产物后检查国家、admin1、C3 admin2 和城市点覆盖 | `data/generated/geo/{country,c2_admin1,c3_admin1}.geojson`、`data/generated/geo/c3_admin2/*.geojson`、`data/generated/geo-boundary-report.md` |
+| `npm run static:geo:tiles` | 根据 GeoJSON 中间产物生成地图瓦片 | `apps/web/public/data/geo/region-tiles/*`、`data/generated/geo-tile-report.md` |
 | `npm run weather:refresh -- --source=open-meteo` | 根据生成后的城市列表请求 Open-Meteo 天气 | `apps/web/public/data/weather/*`；CI 生成 R2 上传目录 |

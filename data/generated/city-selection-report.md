@@ -1,7 +1,7 @@
 # 城市选择报告
 
-版本：`cities-9e2aa2014b04`
-生成时间：`2026-07-24T09:58:25.003Z`
+版本：`cities-af5f3333076b`
+生成时间：`2026-07-24T11:37:12.806Z`
 国家分层版本：`country-profiles-3d5372799eab`
 来源城市候选：**170485**
 入选城市数：**3841**
@@ -18,12 +18,13 @@
 | 旅游目的地：un-tourism-village | 221 |
 | 旅游目的地：curated | 125 |
 | 旅游目的地：wikivoyage | 71 |
+| 补全：C3 城市 admin2 归属 | 3 |
 
 ## 城市数最多的国家
 
 | 国家 | 名称 | 档位 | 城市数 | admin1 | admin2 |
 | --- | --- | --- | ---: | ---: | ---: |
-| CN | 中国 | C3 | 370 | 31 | 353 |
+| CN | 中国 | C3 | 370 | 31 | 354 |
 | PE | 秘鲁 | C3 | 207 | 26 | 191 |
 | IT | 意大利 | C3 | 113 | 20 | 107 |
 | FR | 法国 | C3 | 112 | 13 | 96 |
@@ -74,5 +75,5 @@
 
 ## 待复核
 
-- 运行 static:geo 后，在 data/generated/geo-boundary-report.* 复核边界匹配结果。
+- 运行 static:geo 后，在 data/generated/geo-boundary-report.md 复核边界匹配结果。
 - 部分 GeoNames admin2 没有人口城市候选，需要人工复核或补映射。

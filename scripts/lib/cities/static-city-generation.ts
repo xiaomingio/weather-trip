@@ -236,6 +236,62 @@ function cityAsAdmin2Representative(city: GeoNamesCity, admin2: GeoNamesAdmin2):
   };
 }
 
+function distanceSquared(left: GeoNamesCity, right: GeoNamesCity): number {
+  return (left.longitude - right.longitude) ** 2 + (left.latitude - right.latitude) ** 2;
+}
+
+function supportedAdmin2Key(admin2: GeoNamesAdmin2): string {
+  return `${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`;
+}
+
+export function inferSelectedCityAdmin2(
+  city: GeoNamesCity,
+  admin2Items: GeoNamesAdmin2[],
+  cities: GeoNamesCity[],
+  supportedAdmin2Keys: Set<string>
+): GeoNamesCity {
+  if (!city.admin1Code || city.admin2Code) return city;
+
+  const scopedAdmin2Items = admin2Items.filter((admin2) =>
+    admin2.countryCode === city.countryCode &&
+    admin2.admin1Code === city.admin1Code &&
+    supportedAdmin2Keys.has(supportedAdmin2Key(admin2))
+  );
+  if (scopedAdmin2Items.length === 0) return city;
+
+  const nameMatched = scopedAdmin2Items.find((admin2) => cityMatchesAdmin2Name(city, admin2));
+  if (nameMatched) return cityAsAdmin2Representative(city, nameMatched);
+  if (scopedAdmin2Items.length === 1) return cityAsAdmin2Representative(city, scopedAdmin2Items[0]);
+
+  const admin2Codes = new Set(scopedAdmin2Items.map((admin2) => admin2.admin2Code));
+  const nearest = cities
+    .filter((candidate) =>
+      candidate.id !== city.id &&
+      candidate.countryCode === city.countryCode &&
+      candidate.admin1Code === city.admin1Code &&
+      typeof candidate.admin2Code === 'string' &&
+      admin2Codes.has(candidate.admin2Code) &&
+      candidate.population > 0 &&
+      supportedFeatureCodes.has(candidate.featureCode)
+    )
+    .map((candidate) => ({ city: candidate, distance: distanceSquared(city, candidate) }))
+    .sort((left, right) => left.distance - right.distance || compareByPopulation(left.city, right.city))[0];
+
+  const nearestAdmin2 = nearest ? scopedAdmin2Items.find((admin2) => admin2.admin2Code === nearest.city.admin2Code) : undefined;
+  return nearest && nearestAdmin2 && nearest.distance <= 0.02 ? cityAsAdmin2Representative(city, nearestAdmin2) : city;
+}
+
+export function mergeSelectedCityGeography(current: GeoNamesCity, incoming: GeoNamesCity): GeoNamesCity {
+  if (current.id !== incoming.id || current.countryCode !== incoming.countryCode) return current;
+
+  const incomingAdmin1Matches = !current.admin1Code || current.admin1Code === incoming.admin1Code;
+  return {
+    ...current,
+    admin1Code: current.admin1Code ?? incoming.admin1Code,
+    admin2Code: current.admin2Code ?? (incomingAdmin1Matches ? incoming.admin2Code : undefined)
+  };
+}
+
 function findTourismSeedMatch(seed: TourismSeed, citiesByCountry: Map<string, GeoNamesCity[]>): GeoNamesCity | null {
   const countryCities = citiesByCountry.get(seed.countryCode) ?? [];
   const targetName = normalizeCityName(seed.name);
@@ -259,6 +315,7 @@ function addSelection(
   priority: number
 ): void {
   const current = selected.get(city.id) ?? { city, reasons: new Map<string, number>() };
+  current.city = mergeSelectedCityGeography(current.city, city);
   const existingPriority = current.reasons.get(reason);
   if (existingPriority === undefined || priority < existingPriority) current.reasons.set(reason, priority);
   selected.set(city.id, current);
@@ -354,6 +411,16 @@ function chooseCities(
     const representative = candidates.sort((left, right) => compareRepresentative(left, right, admin2.asciiName, seedPriorityByGeonameId))[0];
     if (representative) addSelection(selected, representative, '兜底：admin2 代表点', 70);
     else missingAdmin2Representatives.push({ regionKey: `admin2:${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`, reason: 'admin2 没有可用的人口城市候选' });
+  }
+
+  for (const current of selected.values()) {
+    const profile = profilesByCountry.get(current.city.countryCode);
+    if (profile?.detailedCoverage !== 'admin2') continue;
+    const inferred = inferSelectedCityAdmin2(current.city, admin2Items, cities, supportedAdmin2Keys);
+    if (inferred.admin2Code && inferred.admin2Code !== current.city.admin2Code) {
+      current.city = mergeSelectedCityGeography(current.city, inferred);
+      current.reasons.set('补全：C3 城市 admin2 归属', 71);
+    }
   }
 
   const selectedRows = [...selected.values()]
@@ -535,11 +602,11 @@ function buildReport(
     unmatchedGeoBoundaries: [
       {
         regionKey: 'geo-boundaries',
-        reason: '边界匹配由 scripts/generate-static-geo.ts 生成，并在 data/generated/geo-boundary-report.* 复核'
+        reason: '边界匹配由 scripts/generate-static-geo.ts 生成，并在 data/generated/geo-boundary-report.md 复核'
       }
     ],
     checksIncomplete: [
-      '运行 static:geo 后，在 data/generated/geo-boundary-report.* 复核边界匹配结果。',
+      '运行 static:geo 后，在 data/generated/geo-boundary-report.md 复核边界匹配结果。',
       '部分 GeoNames admin2 没有人口城市候选，需要人工复核或补映射。'
     ]
   };

@@ -11,3 +11,10 @@ naturalEarthCountryMapUnits:
       - Puntland
       - Somaliland
     reason: Natural Earth 把 Somaliland 单独拆成非 ISO_A2=SO 的 map unit，全球 C1 索马里需要合并显示。
+
+naturalEarthCountryAdmin1Units:
+  - countryCode: UA
+    sourceIso3166Codes:
+      - UA-40
+      - UA-43
+    reason: Natural Earth admin0 把 Crimea 和 Sevastopol 归入 Russia 面，但 GeoNames 城市归属仍有 UA 点位；合并对应 admin1 区块以避免乌克兰详情点位落在未覆盖陆地。

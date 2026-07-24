@@ -8,28 +8,9 @@
 
 ## 现状基线
 
-瓦片化前的 GeoJSON 模式里，世界包不是纯国家级轮廓。`world.geojson` 已经把 C2/C3 国家展开到一级行政区，用来在世界视图直接显示省州级天气区域。这样能让覆盖粒度更清楚，但世界地图首屏需要一次加载、解析和交给 MapLibre 处理完整世界包，切换天气图层时还会把整包边界重新着色后 `setData`。
+前端运行时只读取 MVT 瓦片，不直接读取离线 GeoJSON 中间产物。GeoJSON 中间产物按运行时层级拆分，供 `static:geo:tiles` 消费：国家轮廓写入 `country.geojson`，C2/C3 一级区域分别写入 `c2_admin1.geojson` 和 `c3_admin1.geojson`，C3 二级区域按国家写入 `c3_admin2/<countryCode>.geojson`。
 
-本地产物观测到的主要边界资源规模：
-
-| 资源 | 原始体积 | 说明 |
-| --- | ---: | --- |
-| `data/generated/geo/world.geojson` | 约 14.8 MB | 世界视图边界中间包，包含国家级和 C2/C3 一级行政区 |
-| `data/generated/geo/region-outlines.geojson` | 约 2.2 MB | 选中区域高亮轮廓中间包 |
-| `data/generated/geo/countries/CN.geojson` | 约 3.5 MB | C3 国家详情中间包 |
-| `data/generated/geo/countries/FR.geojson` | 约 1.7 MB | C3 国家详情中间包 |
-| `data/generated/geo/countries/ES.geojson` | 约 1.6 MB | C3 国家详情中间包 |
-
-同一桌面视口下，世界级和国家级页面都会产生主线程长任务，世界级更重。国家级详情包比世界包小很多，但仍会叠加 `region-outlines.geojson`、MapLibre 初始化、国家边界 `setData` 和相机 fitBounds 等处理。
-
-| 页面 | 主要 GeoJSON | 总 long task | 最大 long task |
-| --- | --- | ---: | ---: |
-| `region=world` | `world.geojson` + `region-outlines.geojson` | 约 1431 ms | 约 270 ms |
-| `region=country:CN` | `countries/CN.geojson` + `region-outlines.geojson` | 约 960 ms | 约 244 ms |
-| `region=country:FR` | `countries/FR.geojson` + `region-outlines.geojson` | 约 1061 ms | 约 235 ms |
-| `region=country:ES` | `countries/ES.geojson` + `region-outlines.geojson` | 约 927 ms | 约 231 ms |
-
-这组现状基线用于衡量瓦片化后的优化收益。天气矩阵二进制优化降低了 forecast 对象和 GC 压力后，交互卡顿主要转移到地图边界资源。瓦片化要优先解决两个问题：世界视图不应为了展示 C2/C3 一级行政区而首屏处理完整世界边界；国家级详情也应只读取当前视口和 zoom 需要的边界片段。
+天气矩阵二进制优化降低了 forecast 对象和 GC 压力后，地图交互压力主要来自边界瓦片数量、单 tile 几何复杂度和 MapLibre 渲染。瓦片化要优先保证两个结果：世界视图不为高 zoom 细节加载完整边界；国家级详情只读取当前视口和 zoom 需要的边界片段。
 
 ## 目标
 
@@ -162,9 +143,9 @@ type GeoTileGenerationTier =
     };
 ```
 
-`country` 档的来源是 `data/generated/geo/world.geojson` 里的 C1 国家面，加上 `data/generated/geo/region-outlines.geojson` 里的 C2/C3 完整国家轮廓；这不是从 admin1 反推 dissolve 出来的。`admin1` 档继续使用中间世界包里的 C2/C3 admin1 边界，并保留 C1 country fallback。`admin2` 档包含 C3 国家二级区域、人工保留的 `boundary:*`，以及没有二级区域时的 admin1 / country fallback。
+`country` 档读取 `data/generated/geo/country.geojson`。`admin1` 档读取 `c2_admin1.geojson`、`c3_admin1.geojson`，并保留 C1 country fallback。`admin2` 档读取 `c3_admin2/*.geojson`，包含 C3 国家二级区域、人工保留的 `boundary:*`，以及没有二级区域时的 admin1 / country fallback。
 
-本地按 `data/generated/geo` 中间产物用 `geojson-vt` 估算逻辑 tile 数。计算方法是：读取 `world.geojson`、`region-outlines.geojson` 和 `countries/*.geojson`，按档位过滤 feature，使用同一套 `extent = 4096`、`buffer = 64` 和对应 `tolerance` 建立 tile index，然后枚举目标 zoom 下所有 `x/y`，只统计 `getTile(z, x, y)` 返回且 `features.length > 0` 的 tile。MVT 字节估算使用 `vt-pbf` 把 tile 编成 `weather_region` source-layer 后统计原始字节。
+本地按 `data/generated/geo` 中间产物用 `geojson-vt` 生成 tile。计算方法是：读取 `country.geojson`、`c2_admin1.geojson`、`c3_admin1.geojson` 和 `c3_admin2/*.geojson`，按档位过滤 feature，使用同一套 `extent = 4096`、`buffer = 64` 和对应 `tolerance` 建立 tile index，然后枚举目标 zoom 下所有 `x/y`，只写入 `getTile(z, x, y)` 返回且 `features.length > 0` 的 tile。MVT 字节使用 `vt-pbf` 把 tile 编成 `weather_region` source-layer 后统计原始字节。
 
 瓦片数量不直接由 admin1 / admin2 的数量决定。某个 zoom 的瓦片网格上限由 `2^z x 2^z` 决定，非空 tile 数主要由行政边界覆盖的地理范围、实际切片 zoom 和是否 overzoom 决定。某个缩放层级下要不要写入 country / admin1 / admin2，只影响每个非空 tile 里的 feature 数、属性字节、几何复杂度和前端解析/渲染成本；同一片地理范围内，行政区越碎，tile 不一定更多，但单个 tile 往往更大、更难解析。
 
@@ -208,16 +189,16 @@ zoom 和瓦片网格关系：
 
 ## 性能取舍
 
-当前 GeoJSON 模式的主要问题不是 Brotli 传输体积，而是解压后的几何解析和 MapLibre source 更新。`world.geojson` Brotli 后体积可控，但解压后仍要处理约 14.8 MB 的几何；进入 `country:CN` 时也会一次读取并处理整个中国详情包，即使用户最终只查看某个省份。
+GeoJSON 中间包的主要问题不是传输体积，而是不能进入前端运行时。它们在离线阶段保持可读结构，供 `static:geo:tiles` 和覆盖报告使用；浏览器只读取当前视口和 zoom 需要的 MVT。
 
 瓦片化后的效果来自两层减少：
 
 | 场景 | 当前 GeoJSON | 分包 MVT |
 | --- | --- | --- |
-| 看整个世界 | 处理完整 world 包，包含 C2/C3 一级行政区 | 只读取当前 zoom 的 country 或 admin1/fallback tile |
-| 看整个 CN | 处理 CN 的 admin1 + admin2 + boundary 全包 | 低 zoom 只显示 country / admin1 粗边界，z5 后才显示 admin2/fallback |
-| 放大看某个省 | 仍然已经处理完整 CN 详情包 | 只补当前视口附近的高精度 tile |
-| 切天气图层 | 重新装饰整包 GeoJSON 并 `setData` | 更新可见瓦片图层样式或 feature-state |
+| 看整个世界 | 离线中间包包含全球国家和 C2/C3 一级行政区 | 只读取当前 zoom 的 country 或 admin1/fallback tile |
+| 看整个 CN | 离线中间包保存 CN 的 admin1、admin2 和 boundary | 低 zoom 只显示 country / admin1 粗边界，z5 后才显示 admin2/fallback |
+| 放大看某个省 | 不把完整国家详情包交给浏览器 | 只补当前视口附近的高精度 tile |
+| 切天气图层 | 不重新 `setData` 大块 GeoJSON | 更新可见瓦片图层样式或 feature-state |
 
 因此，瓦片化不是为了把请求数降到 GeoJSON 以下，而是把一次大解析拆成按视口和 zoom 的小解析。R2 成本通过“几百级 MVT 文件、只在地图页加载、z5 高精度 overzoom、浏览器缓存和边缘缓存”控制；前端性能通过“低 zoom 不携带高精度边界、局部视口只解析局部 tile、避免整包 `setData`”控制。
 
@@ -253,10 +234,10 @@ flowchart TD
   rawBoundary["行政边界 raw<br/>Natural Earth / geoBoundaries / DataV"]
   geonames["GeoNames admin / city"]
   coverage["国家分层和城市覆盖<br/>country profiles / cities"]
-  geojson["现有 GeoJSON 产物<br/>world / region-outlines / countries"]
+  geojson["GeoJSON 中间产物<br/>country / c2_admin1 / c3_admin1 / c3_admin2"]
   regions["统一天气区域中间文件<br/>geo-regions.ndjson"]
   tiles["静态矢量瓦片<br/>region-tiles/**/*.mvt"]
-  report["瓦片报告<br/>geo-tile-report.*"]
+  report["瓦片报告<br/>geo-tile-report.md"]
   browser["MapLibre vector source"]
 
   rawBoundary --> geojson
@@ -269,7 +250,7 @@ flowchart TD
   tiles --> browser
 ```
 
-建议新增中间文件：
+中间检查文件：
 
 ```text
 data/generated/geo-regions.ndjson
@@ -284,14 +265,13 @@ apps/web/public/data/geo/region-tiles/admin1/{z}/{x}/{y}.mvt
 apps/web/public/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt
 ```
 
-建议新增报告：
+生成报告：
 
 ```text
-data/generated/geo-tile-report.json
 data/generated/geo-tile-report.md
 ```
 
-报告至少记录 feature 数、MVT 原始字节、压缩字节、各层级数量、缺失 summary 的 regionKey、每个 zoom 的瓦片数量和最大单瓦片大小。
+报告记录 feature 数、MVT 原始字节、各层级数量、缺失 summary 的 regionKey、每个 zoom 的瓦片数量和最大单瓦片大小。
 
 ## 显示规则
 

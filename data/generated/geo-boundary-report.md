@@ -1,25 +1,30 @@
 # 地图边界报告
 
-生成时间：`2026-07-24T09:35:38.672Z`
+生成时间：`2026-07-24T11:40:33.789Z`
 国家分层版本：`country-profiles-3d5372799eab`
+
+## 生成检查
+
+全部通过。
 
 ## 全球视图覆盖
 
 | 预期国家 | 生成国家 | 预期 regionKey | 生成 regionKey | geometry 点位校验 regionKey |
 | ---: | ---: | ---: | ---: | ---: |
-| 245 | 245 | 1024 | 1024 | 1023 |
+| 245 | 245 | 1049 | 1049 | 1023 |
 
 ## 边界包
 
-| 路径 | feature 数 | 原始字节 | Gzip 字节 | Brotli 字节 | 压缩后小于 1 MiB |
-| --- | ---: | ---: | ---: | ---: | --- |
-| data/generated/geo/world.geojson | 1024 | 14753718 | 793443 | 541837 | 是 |
-| data/generated/geo/region-outlines.geojson | 33 | 2155238 | 361146 | 136854 | 是 |
-| data/generated/geo/countries/CN.geojson | 428 | 3537150 | 937058 | 538456 | 是 |
-| data/generated/geo/countries/ES.geojson | 71 | 1619499 | 332704 | 192074 | 是 |
-| data/generated/geo/countries/FR.geojson | 109 | 1681254 | 420070 | 247300 | 是 |
-| data/generated/geo/countries/IT.geojson | 127 | 1230516 | 297281 | 181057 | 是 |
-| data/generated/geo/countries/PE.geojson | 217 | 1784580 | 416736 | 242148 | 是 |
+| 路径 | feature 数 |
+| --- | ---: |
+| data/generated/geo/country.geojson | 245 |
+| data/generated/geo/c2_admin1.geojson | 695 |
+| data/generated/geo/c3_admin1.geojson | 109 |
+| data/generated/geo/c3_admin2/CN.geojson | 397 |
+| data/generated/geo/c3_admin2/ES.geojson | 52 |
+| data/generated/geo/c3_admin2/FR.geojson | 96 |
+| data/generated/geo/c3_admin2/IT.geojson | 107 |
+| data/generated/geo/c3_admin2/PE.geojson | 191 |
 
 ## 国家
 

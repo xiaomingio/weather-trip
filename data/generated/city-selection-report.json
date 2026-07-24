@@ -1,6 +1,6 @@
 {
-  "version": "cities-9e2aa2014b04",
-  "generatedAt": "2026-07-24T09:58:25.003Z",
+  "version": "cities-af5f3333076b",
+  "generatedAt": "2026-07-24T11:37:12.806Z",
   "cityProfilesVersion": "country-profiles-3d5372799eab",
   "sourceCityCount": 170485,
   "cityCount": 3841,
@@ -16,7 +16,8 @@
     "国家首都：PPLC": 241,
     "旅游目的地：un-tourism-village": 221,
     "旅游目的地：curated": 125,
-    "旅游目的地：wikivoyage": 71
+    "旅游目的地：wikivoyage": 71,
+    "补全：C3 城市 admin2 归属": 3
   },
   "byCountry": [
     {
@@ -431,7 +432,7 @@
       "detailedCoverage": "admin2",
       "cityCount": 370,
       "admin1Count": 31,
-      "admin2Count": 353
+      "admin2Count": 354
     },
     {
       "countryCode": "CO",
@@ -9843,11 +9844,11 @@
   "unmatchedGeoBoundaries": [
     {
       "regionKey": "geo-boundaries",
-      "reason": "边界匹配由 scripts/generate-static-geo.ts 生成，并在 data/generated/geo-boundary-report.* 复核"
+      "reason": "边界匹配由 scripts/generate-static-geo.ts 生成，并在 data/generated/geo-boundary-report.md 复核"
     }
   ],
   "checksIncomplete": [
-    "运行 static:geo 后，在 data/generated/geo-boundary-report.* 复核边界匹配结果。",
+    "运行 static:geo 后，在 data/generated/geo-boundary-report.md 复核边界匹配结果。",
     "部分 GeoNames admin2 没有人口城市候选，需要人工复核或补映射。"
   ]
 }

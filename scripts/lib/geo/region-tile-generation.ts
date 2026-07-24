@@ -4,7 +4,6 @@
  */
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { brotliCompressSync, gzipSync } from 'node:zlib';
 import { GeoJSONVT, type GeoJSONVTTile } from '@maplibre/geojson-vt';
 import { fromGeojsonVt } from '@maplibre/vt-pbf';
 
@@ -47,7 +46,6 @@ type CliOptions = {
   dryRun: boolean;
   outputDir: string;
   ndjsonPath: string;
-  reportJsonPath: string;
   reportMarkdownPath: string;
   sourceLayer: string;
   extent: number;
@@ -64,9 +62,6 @@ type RegionParseResult = {
 type SourcePackageReport = {
   path: string;
   featureCount: number;
-  rawBytes: number;
-  gzipBytes: number;
-  brotliBytes: number;
 };
 
 type TileTierDefinition = {
@@ -84,8 +79,6 @@ type TileZoomReport = {
   zoom: number;
   tileCount: number;
   rawBytes: number;
-  gzipBytes: number;
-  brotliBytes: number;
 };
 
 type TileTierReport = {
@@ -99,8 +92,6 @@ type TileTierReport = {
   featureCount: number;
   tileCount: number;
   rawBytes: number;
-  gzipBytes: number;
-  brotliBytes: number;
   maxTileBytes: number;
   maxTilePath: string | null;
   byZoom: TileZoomReport[];
@@ -114,8 +105,6 @@ type TilePackageReport = {
   maxDisplayZoom: number;
   tileCount: number;
   rawBytes: number;
-  gzipBytes: number;
-  brotliBytes: number;
   fileCount: number;
   maxTileBytes: number;
   maxTilePath: string | null;
@@ -136,7 +125,6 @@ type GeoTileReport = {
     tileRootDir: string;
     manifestPath: string;
     ndjsonPath: string;
-    reportJsonPath: string;
     reportMarkdownPath: string;
   };
   sourcePackages: SourcePackageReport[];
@@ -153,8 +141,6 @@ type GeoTileReport = {
     totalCount: number;
     fileCount: number;
     rawBytes: number;
-    gzipBytes: number;
-    brotliBytes: number;
     maxTileBytes: number;
     maxTilePath: string | null;
     packages: TilePackageReport[];
@@ -178,7 +164,7 @@ const rootDir = process.cwd();
 const publicGeoDir = path.join(rootDir, 'apps', 'web', 'public', 'data', 'geo');
 const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
-const generatedCountryGeoDir = path.join(generatedGeoDir, 'countries');
+const generatedC3Admin2GeoDir = path.join(generatedGeoDir, 'c3_admin2');
 const citiesPath = path.join(generatedDir, 'cities.json');
 
 const defaultMapMinZoom = 1;
@@ -199,7 +185,6 @@ function usage(): string {
     '  --dry-run                   Build report without writing tiles or generated files.',
     '  --output-dir=<path>          Tile output root. Default: apps/web/public/data/geo/region-tiles',
     '  --ndjson=<path>              GeoJSON feature NDJSON output path. Default: data/generated/geo-regions.ndjson',
-    '  --report-json=<path>         JSON report output path. Default: data/generated/geo-tile-report.json',
     '  --report-md=<path>           Markdown report output path. Default: data/generated/geo-tile-report.md',
     '  --source-layer=<name>        Vector tile source-layer name. Default: weather_region',
     '  --extent=<number>            Vector tile extent. Default: 4096',
@@ -228,7 +213,6 @@ function parseArgs(args: string[]): CliOptions {
     dryRun: false,
     outputDir: defaultTileRootDir,
     ndjsonPath: path.join(generatedDir, 'geo-regions.ndjson'),
-    reportJsonPath: path.join(generatedDir, 'geo-tile-report.json'),
     reportMarkdownPath: path.join(generatedDir, 'geo-tile-report.md'),
     sourceLayer: defaultSourceLayer,
     extent: 4096,
@@ -247,7 +231,6 @@ function parseArgs(args: string[]): CliOptions {
     }
     if (flag === '--output-dir') options.outputDir = resolveOutputPath(parseStringOption(flag, value));
     else if (flag === '--ndjson') options.ndjsonPath = resolveOutputPath(parseStringOption(flag, value));
-    else if (flag === '--report-json') options.reportJsonPath = resolveOutputPath(parseStringOption(flag, value));
     else if (flag === '--report-md') options.reportMarkdownPath = resolveOutputPath(parseStringOption(flag, value));
     else if (flag === '--source-layer') options.sourceLayer = parseStringOption(flag, value);
     else if (flag === '--extent') options.extent = parseNumberOption(flag, value);
@@ -269,24 +252,14 @@ function relativePath(filePath: string): string {
   return path.relative(rootDir, filePath);
 }
 
-function compressedByteLength(content: string | Uint8Array): { gzipBytes: number; brotliBytes: number } {
-  return {
-    gzipBytes: gzipSync(content).length,
-    brotliBytes: brotliCompressSync(content).length
-  };
-}
-
 async function loadSourcePackage(filePath: string): Promise<{ collection: FeatureCollection; report: SourcePackageReport }> {
   const content = await readFile(filePath, 'utf8');
   const collection = JSON.parse(content) as FeatureCollection;
-  const compressed = compressedByteLength(content);
   return {
     collection,
     report: {
       path: relativePath(filePath),
-      featureCount: collection.features.length,
-      rawBytes: Buffer.byteLength(content),
-      ...compressed
+      featureCount: collection.features.length
     }
   };
 }
@@ -377,11 +350,11 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, C
   };
 }
 
-async function countryGeojsonPaths(): Promise<string[]> {
-  const countryEntries = await readdir(generatedCountryGeoDir, { withFileTypes: true }).catch(() => []);
+async function c3Admin2GeojsonPaths(): Promise<string[]> {
+  const countryEntries = await readdir(generatedC3Admin2GeoDir, { withFileTypes: true }).catch(() => []);
   return countryEntries
     .filter((entry) => entry.isFile() && entry.name.endsWith('.geojson'))
-    .map((entry) => path.join(generatedCountryGeoDir, entry.name))
+    .map((entry) => path.join(generatedC3Admin2GeoDir, entry.name))
     .sort();
 }
 
@@ -425,39 +398,39 @@ async function buildTileSources(countries: Map<string, CityCountry>): Promise<{
   const duplicateRegionKeys = new Set<string>();
   const allFeaturesByKey = new Map<string, GeoJsonFeature>();
   const lowFeaturesByKey = new Map<string, GeoJsonFeature>();
+  const worldMidFeatures: GeoJsonFeature[] = [];
   const detailParentKeysWithChildren = new Set<string>();
 
-  const worldPackage = await loadSourcePackage(path.join(generatedGeoDir, 'world.geojson'));
-  reports.push(worldPackage.report);
-  const worldMidFeatures: GeoJsonFeature[] = [];
-  for (const sourceFeature of worldPackage.collection.features) {
+  const countryPackage = await loadSourcePackage(path.join(generatedGeoDir, 'country.geojson'));
+  reports.push(countryPackage.report);
+  for (const sourceFeature of countryPackage.collection.features) {
     const normalized = normalizedTileFeature(sourceFeature, countries);
     if (!normalized) {
       skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
       continue;
     }
     addFeature(allFeaturesByKey, normalized, duplicateRegionKeys);
-    worldMidFeatures.push(normalized);
     if (featureLevel(normalized) === 'country' && countries.has(featureCountryCode(normalized))) {
       lowFeaturesByKey.set(featureRegionKey(normalized), normalized);
+      if (normalized.properties.weatherLevel === 'country') worldMidFeatures.push(normalized);
     }
   }
 
-  const outlinesPackage = await loadSourcePackage(path.join(generatedGeoDir, 'region-outlines.geojson'));
-  reports.push(outlinesPackage.report);
-  for (const sourceFeature of outlinesPackage.collection.features) {
-    const normalized = normalizedTileFeature(sourceFeature, countries);
-    if (!normalized) {
-      skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
-      continue;
-    }
-    if (featureLevel(normalized) === 'country' && countries.has(featureCountryCode(normalized))) {
-      lowFeaturesByKey.set(featureRegionKey(normalized), normalized);
+  for (const packageName of ['c2_admin1.geojson', 'c3_admin1.geojson']) {
+    const admin1Package = await loadSourcePackage(path.join(generatedGeoDir, packageName));
+    reports.push(admin1Package.report);
+    for (const sourceFeature of admin1Package.collection.features) {
+      const normalized = normalizedTileFeature(sourceFeature, countries);
+      if (!normalized) {
+        skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
+        continue;
+      }
       addFeature(allFeaturesByKey, normalized, duplicateRegionKeys);
+      worldMidFeatures.push(normalized);
     }
   }
 
-  for (const countryPath of await countryGeojsonPaths()) {
+  for (const countryPath of await c3Admin2GeojsonPaths()) {
     const countryPackage = await loadSourcePackage(countryPath);
     reports.push(countryPackage.report);
 
@@ -601,8 +574,6 @@ async function writeTileIfNeeded(filePath: string, bytes: Uint8Array, dryRun: bo
 function addZoomReport(target: TileZoomReport, source: TileZoomReport): void {
   target.tileCount += source.tileCount;
   target.rawBytes += source.rawBytes;
-  target.gzipBytes += source.gzipBytes;
-  target.brotliBytes += source.brotliBytes;
 }
 
 async function generateTierTiles(tier: TileTierDefinition, options: CliOptions): Promise<TileTierReport> {
@@ -622,13 +593,11 @@ async function generateTierTiles(tier: TileTierDefinition, options: CliOptions):
   const byZoom: TileZoomReport[] = [];
   let tileCount = 0;
   let rawBytes = 0;
-  let gzipBytes = 0;
-  let brotliBytes = 0;
   let maxTileBytes = 0;
   let maxTilePath: string | null = null;
 
   for (let z = tier.tileZoom[0]; z <= tier.tileZoom[1]; z += 1) {
-    const zoomReport: TileZoomReport = { zoom: z, tileCount: 0, rawBytes: 0, gzipBytes: 0, brotliBytes: 0 };
+    const zoomReport: TileZoomReport = { zoom: z, tileCount: 0, rawBytes: 0 };
     const dimension = 2 ** z;
     for (let x = 0; x < dimension; x += 1) {
       for (let y = 0; y < dimension; y += 1) {
@@ -636,13 +605,10 @@ async function generateTierTiles(tier: TileTierDefinition, options: CliOptions):
         if (!tile || tile.features.length === 0) continue;
         const bytes = fromGeojsonVt({ [options.sourceLayer]: tile }, { version: 2, extent: options.extent });
         const outputPath = tilePath(options.outputDir, tier.outputSubdir, z, x, y);
-        const compressed = compressedByteLength(bytes);
 
         await writeTileIfNeeded(outputPath, bytes, options.dryRun);
         zoomReport.tileCount += 1;
         zoomReport.rawBytes += bytes.length;
-        zoomReport.gzipBytes += compressed.gzipBytes;
-        zoomReport.brotliBytes += compressed.brotliBytes;
 
         if (bytes.length > maxTileBytes) {
           maxTileBytes = bytes.length;
@@ -654,8 +620,6 @@ async function generateTierTiles(tier: TileTierDefinition, options: CliOptions):
     byZoom.push(zoomReport);
     tileCount += zoomReport.tileCount;
     rawBytes += zoomReport.rawBytes;
-    gzipBytes += zoomReport.gzipBytes;
-    brotliBytes += zoomReport.brotliBytes;
   }
 
   return {
@@ -669,8 +633,6 @@ async function generateTierTiles(tier: TileTierDefinition, options: CliOptions):
     featureCount: tier.features.length,
     tileCount,
     rawBytes,
-    gzipBytes,
-    brotliBytes,
     maxTileBytes,
     maxTilePath,
     byZoom
@@ -689,8 +651,6 @@ function aggregatePackageReports(tierReports: TileTierReport[]): TilePackageRepo
       maxDisplayZoom: tier.displayZoom[1],
       tileCount: 0,
       rawBytes: 0,
-      gzipBytes: 0,
-      brotliBytes: 0,
       fileCount: 0,
       maxTileBytes: 0,
       maxTilePath: null
@@ -702,8 +662,6 @@ function aggregatePackageReports(tierReports: TileTierReport[]): TilePackageRepo
     current.tileCount += tier.tileCount;
     current.fileCount += tier.tileCount;
     current.rawBytes += tier.rawBytes;
-    current.gzipBytes += tier.gzipBytes;
-    current.brotliBytes += tier.brotliBytes;
     if (tier.maxTileBytes > current.maxTileBytes) {
       current.maxTileBytes = tier.maxTileBytes;
       current.maxTilePath = tier.maxTilePath;
@@ -728,8 +686,6 @@ function aggregateTileTotals(tierReports: TileTierReport[], packageReports: Tile
     totalCount: tierReports.reduce((sum, tier) => sum + tier.tileCount, 0),
     fileCount: packageReports.reduce((sum, item) => sum + item.fileCount, 0),
     rawBytes: tierReports.reduce((sum, tier) => sum + tier.rawBytes, 0),
-    gzipBytes: tierReports.reduce((sum, tier) => sum + tier.gzipBytes, 0),
-    brotliBytes: tierReports.reduce((sum, tier) => sum + tier.brotliBytes, 0),
     maxTileBytes,
     maxTilePath,
     packages: packageReports,
@@ -755,7 +711,7 @@ function combinedZoomReports(tierReports: TileTierReport[]): TileZoomReport[] {
   const byZoom = new Map<number, TileZoomReport>();
   for (const tier of tierReports) {
     for (const zoom of tier.byZoom) {
-      const current = byZoom.get(zoom.zoom) ?? { zoom: zoom.zoom, tileCount: 0, rawBytes: 0, gzipBytes: 0, brotliBytes: 0 };
+      const current = byZoom.get(zoom.zoom) ?? { zoom: zoom.zoom, tileCount: 0, rawBytes: 0 };
       addZoomReport(current, zoom);
       byZoom.set(zoom.zoom, current);
     }
@@ -765,7 +721,7 @@ function combinedZoomReports(tierReports: TileTierReport[]): TileZoomReport[] {
 
 function reportMarkdown(report: GeoTileReport): string {
   const sourceRows = report.sourcePackages.map((item) =>
-    `| ${item.path} | ${item.featureCount} | ${formatBytes(item.rawBytes)} | ${formatBytes(item.gzipBytes)} | ${formatBytes(item.brotliBytes)} |`
+    `| ${item.path} | ${item.featureCount} |`
   ).join('\n');
   const packageRows = report.tiles.packages.map((item) =>
     `| ${packageLabel(item.id)} | z${item.minTileZoom}-z${item.maxTileZoom} | ${item.maxDisplayZoom > item.maxTileZoom ? `z${item.maxTileZoom} overzoom 到 z${item.maxDisplayZoom}` : `到 z${item.maxDisplayZoom}`} | ${item.tileCount} | ${formatBytes(item.rawBytes)} | ${formatBytes(item.maxTileBytes)} |`
@@ -774,7 +730,7 @@ function reportMarkdown(report: GeoTileReport): string {
     `| ${packageLabel(item.packageId)} | ${item.id} | ${item.featureSelector} | ${item.featureCount} | z${item.tileZoom[0]}-z${item.tileZoom[1]} | z${item.displayZoom[0]}-z${item.displayZoom[1]} | ${item.tolerance} | ${item.tileCount} | ${formatBytes(item.rawBytes)} | ${formatBytes(item.maxTileBytes)} |`
   ).join('\n');
   const zoomRows = combinedZoomReports(report.tiles.tiers).map((item) =>
-    `| z${item.zoom} | ${item.tileCount} | ${formatBytes(item.rawBytes)} | ${formatBytes(item.gzipBytes)} | ${formatBytes(item.brotliBytes)} |`
+    `| z${item.zoom} | ${item.tileCount} | ${formatBytes(item.rawBytes)} |`
   ).join('\n');
 
   return [
@@ -795,14 +751,13 @@ function reportMarkdown(report: GeoTileReport): string {
     `- 瓦片目录：\`${report.outputs.tileRootDir}\``,
     `- Manifest：\`${report.outputs.manifestPath}\``,
     `- NDJSON：\`${report.outputs.ndjsonPath}\``,
-    `- JSON 报告：\`${report.outputs.reportJsonPath}\``,
     `- Markdown 报告：\`${report.outputs.reportMarkdownPath}\``,
     '',
     '## 源包',
     '',
-    '| 路径 | feature 数 | 原始体积 | Gzip | Brotli |',
-    '| --- | ---: | ---: | ---: | ---: |',
-    sourceRows || '| - | 0 | 0 B | 0 B | 0 B |',
+    '| 路径 | feature 数 |',
+    '| --- | ---: |',
+    sourceRows || '| - | 0 |',
     '',
     '## Feature',
     '',
@@ -828,9 +783,9 @@ function reportMarkdown(report: GeoTileReport): string {
     '',
     '## Zoom 汇总',
     '',
-    '| Zoom | 瓦片数 | 原始体积 | Gzip | Brotli |',
-    '| ---: | ---: | ---: | ---: | ---: |',
-    zoomRows || '| - | 0 | 0 B | 0 B | 0 B |',
+    '| Zoom | 瓦片数 | 原始体积 |',
+    '| ---: | ---: | ---: |',
+    zoomRows || '| - | 0 | 0 B |',
     '',
     `总瓦片文件：${report.tiles.fileCount}`,
     `总 MVT 原始体积：${formatBytes(report.tiles.rawBytes)}`,
@@ -866,8 +821,6 @@ async function writeOutputs(features: GeoJsonFeature[], report: GeoTileReport, o
   const manifestPath = path.join(options.outputDir, manifestFileName);
   await mkdir(path.dirname(options.ndjsonPath), { recursive: true });
   await writeFile(options.ndjsonPath, ndjsonContent(features));
-  await mkdir(path.dirname(options.reportJsonPath), { recursive: true });
-  await writeFile(options.reportJsonPath, `${JSON.stringify(report, null, 2)}\n`);
   await mkdir(path.dirname(options.reportMarkdownPath), { recursive: true });
   await writeFile(options.reportMarkdownPath, reportMarkdown(report));
   await mkdir(path.dirname(manifestPath), { recursive: true });
@@ -905,7 +858,6 @@ export async function runGenerateStaticGeoTiles(args: string[]): Promise<void> {
       tileRootDir: relativePath(options.outputDir),
       manifestPath: relativePath(path.join(options.outputDir, manifestFileName)),
       ndjsonPath: relativePath(options.ndjsonPath),
-      reportJsonPath: relativePath(options.reportJsonPath),
       reportMarkdownPath: relativePath(options.reportMarkdownPath)
     },
     sourcePackages: tileSources.reports,
