@@ -16,6 +16,8 @@ import {
 import type { WeatherType } from 'weather-core/types';
 import { WeatherTypeIcon } from '@/components/WeatherTypeIcon';
 import { formatCompactTemperatureRange } from '@/domain/format';
+import type { FilterCopyMessages } from '@/i18n';
+import { getMessages } from '@/i18n';
 import {
   allWeatherTypes,
   applyWeatherPreset,
@@ -31,53 +33,63 @@ import {
 import { FilterDock } from './FilterDock';
 import { FilterPanelHeader } from './FilterPanelHeader';
 import { FilterPopoverCard } from './FilterPopoverCard';
-import { filterCopy } from './filterCopy';
 import { formatCompactRange } from './filterFormat';
 import { PresetButton } from './PresetButton';
 import { RegionFields } from './RegionFields';
-import type { CityFinderFilterDockProps, FilterKey, RangePreset, WeatherTypePreset } from './types';
+import type { CityFinderFilterDockProps, FilterKey } from './types';
 
-const temperaturePresets: RangePreset[] = [
-  { id: 'cold', labels: { zh: '偏冷', en: 'Cold' }, values: [-10, 10] },
-  { id: 'cool', labels: { zh: '清凉', en: 'Cool' }, values: [8, 22] },
-  { id: 'mild', labels: { zh: '舒适', en: 'Mild' }, values: [15, 30] },
-  { id: 'warm', labels: { zh: '温暖', en: 'Warm' }, values: [20, 35] },
-  { id: 'hot', labels: { zh: '炎热', en: 'Hot' }, values: [28, 45] }
+type FilterPresetMessages = FilterCopyMessages['presets'];
+type RangePresetGroup = Exclude<keyof FilterPresetMessages, 'weatherType'>;
+type RangePreset<Group extends RangePresetGroup> = {
+  id: keyof FilterPresetMessages[Group] & string;
+  values: [number, number];
+};
+type WeatherTypePreset = {
+  id: keyof FilterPresetMessages['weatherType'] & string;
+  weatherTypes: WeatherType[];
+};
+
+const temperaturePresets: RangePreset<'temperature'>[] = [
+  { id: 'cold', values: [-10, 10] },
+  { id: 'cool', values: [8, 22] },
+  { id: 'mild', values: [15, 30] },
+  { id: 'warm', values: [20, 35] },
+  { id: 'hot', values: [28, 45] }
 ];
 
-const humidityPresets: RangePreset[] = [
-  { id: 'dry', labels: { zh: '干爽', en: 'Dry' }, values: [20, 55] },
-  { id: 'comfortable', labels: { zh: '舒适', en: 'Comfort' }, values: [40, 70] },
-  { id: 'humid', labels: { zh: '湿润', en: 'Humid' }, values: [65, 90] },
-  { id: 'very-humid', labels: { zh: '潮湿', en: 'Very humid' }, values: [80, 100] }
+const humidityPresets: RangePreset<'humidity'>[] = [
+  { id: 'dry', values: [20, 55] },
+  { id: 'comfortable', values: [40, 70] },
+  { id: 'humid', values: [65, 90] },
+  { id: 'very-humid', values: [80, 100] }
 ];
 
-const precipitationPresets: RangePreset[] = [
-  { id: 'none', labels: { zh: '无雨', en: 'Dry' }, values: [0, 0] },
-  { id: 'light', labels: { zh: '小雨', en: 'Light' }, values: [0, 5] },
-  { id: 'moderate', labels: { zh: '中等', en: 'Moderate' }, values: [0, 15] },
-  { id: 'heavy', labels: { zh: '明显降水', en: 'Wet' }, values: [5, precipitationFilterBounds.maxMm] }
+const precipitationPresets: RangePreset<'precipitation'>[] = [
+  { id: 'none', values: [0, 0] },
+  { id: 'light', values: [0, 5] },
+  { id: 'moderate', values: [0, 15] },
+  { id: 'heavy', values: [5, precipitationFilterBounds.maxMm] }
 ];
 
-const windSpeedPresets: RangePreset[] = [
-  { id: 'calm', labels: { zh: '微风', en: 'Calm' }, values: [0, 20] },
-  { id: 'breezy', labels: { zh: '有风', en: 'Breezy' }, values: [10, 35] },
-  { id: 'windy', labels: { zh: '大风', en: 'Windy' }, values: [30, windSpeedFilterBounds.maxKmh] }
+const windSpeedPresets: RangePreset<'wind'>[] = [
+  { id: 'calm', values: [0, 20] },
+  { id: 'breezy', values: [10, 35] },
+  { id: 'windy', values: [30, windSpeedFilterBounds.maxKmh] }
 ];
 
-const elevationPresets: RangePreset[] = [
-  { id: 'lowland', labels: { zh: '低海拔', en: 'Lowland' }, values: [elevationFilterBounds.minMeters, 500] },
-  { id: 'midland', labels: { zh: '中海拔', en: 'Midland' }, values: [500, 1500] },
-  { id: 'highland', labels: { zh: '高海拔', en: 'Highland' }, values: [1500, elevationFilterBounds.maxMeters] },
-  { id: 'mountain', labels: { zh: '山地', en: 'Mountain' }, values: [2500, elevationFilterBounds.maxMeters] }
+const elevationPresets: RangePreset<'elevation'>[] = [
+  { id: 'lowland', values: [elevationFilterBounds.minMeters, 500] },
+  { id: 'midland', values: [500, 1500] },
+  { id: 'highland', values: [1500, elevationFilterBounds.maxMeters] },
+  { id: 'mountain', values: [2500, elevationFilterBounds.maxMeters] }
 ];
 
 const weatherTypePresets: WeatherTypePreset[] = [
-  { id: 'sunny', labels: { zh: '晴朗', en: 'Sunny' }, weatherTypes: ['sunny', 'partly_cloudy'] },
-  { id: 'cloud-fog', labels: { zh: '云雾', en: 'Cloud/fog' }, weatherTypes: ['cloudy', 'overcast', 'fog'] },
-  { id: 'no-rain', labels: { zh: '无雨', en: 'No rain' }, weatherTypes: ['sunny', 'partly_cloudy', 'cloudy', 'overcast', 'fog'] },
-  { id: 'rain', labels: { zh: '下雨', en: 'Rain' }, weatherTypes: ['light_rain', 'rain', 'thunderstorm'] },
-  { id: 'snow', labels: { zh: '下雪', en: 'Snow' }, weatherTypes: ['light_snow', 'snow'] }
+  { id: 'sunny', weatherTypes: ['sunny', 'partly_cloudy'] },
+  { id: 'cloud-fog', weatherTypes: ['cloudy', 'overcast', 'fog'] },
+  { id: 'no-rain', weatherTypes: ['sunny', 'partly_cloudy', 'cloudy', 'overcast', 'fog'] },
+  { id: 'rain', weatherTypes: ['light_rain', 'rain', 'thunderstorm'] },
+  { id: 'snow', weatherTypes: ['light_snow', 'snow'] }
 ];
 
 export function CityFinderFilterDock({
@@ -94,7 +106,7 @@ export function CityFinderFilterDock({
   onPrimaryRegionChange,
   onSubRegionChange
 }: CityFinderFilterDockProps) {
-  const copy = filterCopy[locale];
+  const copy = getMessages(locale).filter;
   const [activeKey, setActiveKey] = useState<FilterKey | null>(null);
   const closePanel = (key?: FilterKey) => {
     setActiveKey((current) => {
@@ -212,7 +224,7 @@ export function CityFinderFilterDock({
               key={preset.id}
               onClick={() => setWeatherFilter((current) => ({ ...current, useWeather: true, weatherTypes: [...preset.weatherTypes] }))}
             >
-              {preset.labels[locale]}
+              {copy.presets.weatherType[preset.id]}
             </PresetButton>
           ))}
         </div>
@@ -254,7 +266,7 @@ export function CityFinderFilterDock({
         <div className="filter-local-presets">
           {temperaturePresets.map((preset) => (
             <PresetButton key={preset.id} onClick={() => setRange('temperature', preset.values)}>
-              {preset.labels[locale]}
+              {copy.presets.temperature[preset.id]}
             </PresetButton>
           ))}
         </div>
@@ -299,7 +311,7 @@ export function CityFinderFilterDock({
         <div className="filter-local-presets">
           {humidityPresets.map((preset) => (
             <PresetButton key={preset.id} onClick={() => setRange('humidity', preset.values)}>
-              {preset.labels[locale]}
+              {copy.presets.humidity[preset.id]}
             </PresetButton>
           ))}
         </div>
@@ -344,7 +356,7 @@ export function CityFinderFilterDock({
         <div className="filter-local-presets">
           {precipitationPresets.map((preset) => (
             <PresetButton key={preset.id} onClick={() => setRange('precipitation', preset.values)}>
-              {preset.labels[locale]}
+              {copy.presets.precipitation[preset.id]}
             </PresetButton>
           ))}
         </div>
@@ -389,7 +401,7 @@ export function CityFinderFilterDock({
         <div className="filter-local-presets">
           {windSpeedPresets.map((preset) => (
             <PresetButton key={preset.id} onClick={() => setRange('wind', preset.values)}>
-              {preset.labels[locale]}
+              {copy.presets.wind[preset.id]}
             </PresetButton>
           ))}
         </div>
@@ -434,7 +446,7 @@ export function CityFinderFilterDock({
         <div className="filter-local-presets">
           {elevationPresets.map((preset) => (
             <PresetButton key={preset.id} onClick={() => setRange('elevation', preset.values)}>
-              {preset.labels[locale]}
+              {copy.presets.elevation[preset.id]}
             </PresetButton>
           ))}
         </div>

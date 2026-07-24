@@ -20,6 +20,7 @@ import {
   type DashboardResultItem,
   isDashboardCityFinderItem
 } from '@/domain/weather-dashboard-shared';
+import { messages } from '@/i18n';
 import type { DashboardPanelCopy } from './types';
 
 type ResultsListProps = {
@@ -60,6 +61,8 @@ export function ResultsList({
   onSelectCity,
   onLoadMore
 }: ResultsListProps) {
+  const listCopy = messages[locale].ui.resultsList;
+
   if (resultItems.length === 0) return <div className="empty-results">{copy.noCityMatches}</div>;
 
   return (
@@ -92,7 +95,7 @@ export function ResultsList({
         {visibleResultItems.length < resultItems.length ? (
           <li className="load-more-results-item">
             <button className="load-more-results" type="button" onClick={onLoadMore}>
-              {locale === 'zh' ? '加载更多' : 'Load more'}
+              {listCopy.loadMore}
             </button>
           </li>
         ) : null}

@@ -5,13 +5,14 @@
 
 import type { MapLayer } from 'weather-core/types';
 import type { DisplayLocale } from '@/domain/format';
+import { messages } from '@/i18n';
 
-export const weatherMapLayers: { id: MapLayer; labels: Record<DisplayLocale, string> }[] = [
-  { id: 'weather', labels: { zh: '天气', en: 'Weather' } },
-  { id: 'temperature', labels: { zh: '气温', en: 'Temperature' } },
-  { id: 'humidity', labels: { zh: '湿度', en: 'Humidity' } },
-  { id: 'precipitation', labels: { zh: '降水', en: 'Rainfall' } },
-  { id: 'wind', labels: { zh: '风速', en: 'Wind' } },
-  { id: 'elevation', labels: { zh: '海拔', en: 'Elevation' } },
-  { id: 'comfort', labels: { zh: '舒适度', en: 'Comfort' } }
-];
+const weatherMapLayerIds = ['weather', 'temperature', 'humidity', 'precipitation', 'wind', 'elevation', 'comfort'] satisfies MapLayer[];
+
+export const weatherMapLayers: { id: MapLayer; labels: Record<DisplayLocale, string> }[] = weatherMapLayerIds.map((id) => ({
+  id,
+  labels: {
+    zh: messages.zh.weatherMap.layer[id],
+    en: messages.en.weatherMap.layer[id]
+  }
+}));

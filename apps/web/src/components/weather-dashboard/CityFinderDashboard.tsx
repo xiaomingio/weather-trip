@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { RegionKey, WeatherFilter } from 'weather-core/types';
 import { cityMatchesKeyword } from '@/domain/city-search';
 import { type DisplayLocale } from '@/domain/format';
+import { getMessages } from '@/i18n';
 import { loadWeatherSnapshot } from '@/domain/weather-data-source';
 import { buildCitySearchPayload } from '@/domain/weather-dashboard-payload';
 import { allWeatherTypes, getWeatherTypeLabel } from '@/domain/weather';
@@ -27,7 +28,6 @@ import {
   resultPageSize,
   saveToolSearch
 } from './dashboardApi';
-import { dashboardCopy } from './dashboardCopy';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
 import { findDefaultSelectedResultItem } from './dashboardSelection';
 import { CityFinderResultsPanel } from './CityFinderResultsPanel';
@@ -39,7 +39,7 @@ type CityFinderDashboardProps = {
 };
 
 export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboardProps) {
-  const copy = dashboardCopy[locale];
+  const copy = getMessages(locale).dashboard;
   const temperatureUnit = useTemperatureUnitPreference(locale);
   const [weatherFilter, setWeatherFilter] = useState<WeatherFilter>(() => parseWeatherFilterFromSearch(initialSearch));
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);

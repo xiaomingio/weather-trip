@@ -6,7 +6,7 @@
 
 import { MapIcon, SlidersHorizontal } from 'lucide-react';
 import type { RegionKey } from 'weather-core/types';
-import { filterCopy } from './filterCopy';
+import { getMessages } from '@/i18n';
 import { regionGroups } from './filterFormat';
 import type { RegionFieldsProps } from './types';
 
@@ -20,6 +20,7 @@ export function RegionFields({
   onPrimaryRegionChange,
   onSubRegionChange
 }: RegionFieldsProps) {
+  const copy = getMessages(locale).filter;
   const subRegionValue = canSelectSubRegion && subRegionOptions.some((region) => region.id === currentRegion) ? currentRegion : primaryRegion;
 
   return (
@@ -27,7 +28,7 @@ export function RegionFields({
       <label className="filter-select-card">
         <span className="filter-summary-label">
           <SlidersHorizontal size={15} />
-          {filterCopy[locale].region}
+          {copy.region}
         </span>
         <select value={primaryRegion} onChange={(event) => onPrimaryRegionChange(event.target.value as RegionKey)}>
           {regionGroups(primaryRegionOptions).map((group) => (
@@ -46,7 +47,7 @@ export function RegionFields({
       <label className={`filter-select-card ${canSelectSubRegion ? '' : 'is-disabled'}`}>
         <span className="filter-summary-label">
           <MapIcon size={15} />
-          {filterCopy[locale].subRegion}
+          {copy.subRegion}
         </span>
         <select
           value={subRegionValue}

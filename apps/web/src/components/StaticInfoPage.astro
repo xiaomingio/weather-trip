@@ -10,6 +10,7 @@ import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, ogImagePath } from '@/domain/seo';
 import { buildStaticInfoPath, getStaticInfoPage, type StaticInfoPageId } from '@/domain/static-info';
+import { getPageShellMessages } from '@/i18n';
 import '@/styles/global.css';
 import '@/styles/static-info.css';
 
@@ -23,27 +24,14 @@ const page = getStaticInfoPage(locale, pageId);
 const otherLocale: DisplayLocale = locale === 'zh' ? 'en' : 'zh';
 const homePath = buildTopTabPath(locale, 'landing');
 const otherPagePath = buildStaticInfoPath(otherLocale, pageId);
-const copy = {
-  zh: {
-    unitToggle: '切换摄氏度与华氏度',
-    languageToggle: 'Switch to English',
-    navLabel: '天气旅行',
-    backHome: '返回首页'
-  },
-  en: {
-    unitToggle: 'Switch Celsius / Fahrenheit',
-    languageToggle: '切换到中文',
-    navLabel: 'Weather Trip',
-    backHome: 'Back home'
-  }
-}[locale];
+const shellCopy = getPageShellMessages(locale);
 ---
 
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{page.title} | Weather Trip</title>
+    <title>{page.title} | {shellCopy.site.brandName}</title>
     <meta name="description" content={page.description} />
     <link rel="canonical" href={buildAbsoluteUrl(page.path)} />
     <link rel="alternate" hreflang="en" href={buildAbsoluteUrl(buildStaticInfoPath('en', pageId))} />
@@ -51,8 +39,8 @@ const copy = {
     <link rel="alternate" hreflang="x-default" href={buildAbsoluteUrl(buildStaticInfoPath('en', pageId))} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Weather Trip" />
-    <meta property="og:title" content={`${page.title} | Weather Trip`} />
+    <meta property="og:site_name" content={shellCopy.site.brandName} />
+    <meta property="og:title" content={`${page.title} | ${shellCopy.site.brandName}`} />
     <meta property="og:description" content={page.description} />
     <meta property="og:url" content={buildAbsoluteUrl(page.path)} />
     <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
@@ -65,16 +53,14 @@ const copy = {
         locale={locale}
         activeTab="landing"
         unitLabel="°C"
-        unitToggleLabel={copy.unitToggle}
         localeHref={otherPagePath}
-        localeLabel={copy.languageToggle}
-        navLabel={copy.navLabel}
+        navLabel={shellCopy.nav.label}
       />
 
       <article class="info-document">
-        <a class="info-back-link" href={homePath}>{copy.backHome}</a>
+        <a class="info-back-link" href={homePath}>{shellCopy.staticInfo.backHome}</a>
         <header class="info-header">
-          <p class="info-kicker">Weather Trip</p>
+          <p class="info-kicker">{shellCopy.site.brandName}</p>
           <h1>{page.title}</h1>
           <p class="info-description">{page.description}</p>
           <p class="info-updated">{page.updatedLabel}</p>

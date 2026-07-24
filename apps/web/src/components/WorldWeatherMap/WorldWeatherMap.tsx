@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl, { GeoJSONSource, type FilterSpecification, type Map as MapLibreMap, type MapLayerMouseEvent } from 'maplibre-gl';
 import { Info, Maximize2, Minimize2 } from 'lucide-react';
 import type { RegionKey } from 'weather-core/types';
+import { messages } from '@/i18n';
 import { legendScale } from './mapLegend';
 import { buildMapPoints, buildPointGeojson, markerCellSize, markerRank } from './mapMarkers';
 import {
@@ -172,20 +173,11 @@ export function WorldWeatherMap({
   const [isRegionColoringEnabled, setIsRegionColoringEnabled] = useState(true);
   const [markerViewport, setMarkerViewport] = useState<MarkerViewport>({ zoom: defaultWorldZoom, width: 0, height: 0 });
   const scale = legendScale(tool, layer, locale);
+  const mapCopy = messages[locale].ui.worldWeatherMap;
   const hasRegionLayer = regionSummaries.length > 0;
-  const regionColoringLabel = locale === 'zh' ? '显示区块' : 'Show regions';
-  const regionColoringHelp =
-    locale === 'zh'
-      ? '显示按区域内城市采样点汇总计算的地图区块；数值图层取平均值，天气图层取出现最多的类型。'
-      : 'Show map regions aggregated from city sample points; numeric layers use averages, while weather uses the most common type.';
-  const fullscreenLabel =
-    locale === 'zh'
-      ? isFullscreen
-        ? '退出地图全屏'
-        : '地图全屏'
-      : isFullscreen
-        ? 'Exit map fullscreen'
-        : 'Fullscreen map';
+  const regionColoringLabel = mapCopy.showRegions;
+  const regionColoringHelp = mapCopy.regionColoringHelp;
+  const fullscreenLabel = isFullscreen ? mapCopy.exitMapFullscreen : mapCopy.fullscreenMap;
 
   useEffect(() => {
     onSelectCityRef.current = onSelectCity;
@@ -249,7 +241,7 @@ export function WorldWeatherMap({
       : vectorEntry
         ? `${vectorFallback || vectorEntry.displayName} ${vectorEntry.valueLabel}`
         : vectorFallback
-          ? `${vectorFallback} ${locale === 'zh' ? '暂无数据' : 'No data'}`
+          ? `${vectorFallback} ${mapCopy.noData}`
           : '';
     const targetLayer = mapTileLayerFromFillLayerId(feature?.layer.id);
     if (typeof label !== 'string' || !label) {
@@ -260,7 +252,7 @@ export function WorldWeatherMap({
     map.getCanvas().style.cursor = 'default';
     setRegionHoverFilter(map, targetLayer, regionKey);
     popup.setLngLat(event.lngLat).setText(label).addTo(map);
-  }, [locale]);
+  }, [locale, mapCopy.noData]);
 
   const handleRegionLeave = useCallback(() => {
     regionPopupRef.current?.remove();
@@ -303,11 +295,11 @@ export function WorldWeatherMap({
 
   const cityCountText = useMemo(() => {
     const cityCount = visiblePoints.length === points.length ? `${points.length}` : `${visiblePoints.length}/${points.length}`;
-    const cityLabel = locale === 'zh' ? '个城市' : 'cities';
+    const cityLabel = mapCopy.cityUnit;
 
     if (!hasRegionLayer) return `${cityCount} ${cityLabel}`;
-    return `${regionSummaries.length} ${locale === 'zh' ? '个区域' : 'regions'} · ${cityCount} ${cityLabel}`;
-  }, [hasRegionLayer, locale, points.length, regionSummaries.length, visiblePoints.length]);
+    return `${regionSummaries.length} ${mapCopy.regionUnit} · ${cityCount} ${cityLabel}`;
+  }, [hasRegionLayer, mapCopy.cityUnit, mapCopy.regionUnit, points.length, regionSummaries.length, visiblePoints.length]);
 
   const pointBounds = useMemo(() => {
     const boundsPoints = resultItems.map((item): BoundsPoint => [item.city.longitude, item.city.latitude]);
@@ -604,7 +596,7 @@ export function WorldWeatherMap({
   return (
     <section
       className={`map-shell${isFullscreen ? ' is-fullscreen' : ''}${statusLabel ? ' has-status' : ''}`}
-      aria-label={locale === 'zh' ? '全球天气地图' : 'Global weather map'}
+      aria-label={mapCopy.mapAriaLabel}
     >
       <button
         className="map-fullscreen-button"
@@ -646,7 +638,7 @@ export function WorldWeatherMap({
               </span>
             </span>
           </div>
-          <div className={`legend-scale${isRegionColoringEnabled ? '' : ' is-disabled'}`} aria-label={locale === 'zh' ? '颜色图例' : 'Color legend'}>
+          <div className={`legend-scale${isRegionColoringEnabled ? '' : ' is-disabled'}`} aria-label={mapCopy.colorLegendAriaLabel}>
             <div className="legend-gradient" style={{ background: scale.gradient }} />
             <div className="legend-labels">
               {scale.labels.map((label) => (

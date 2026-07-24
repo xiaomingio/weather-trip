@@ -15,7 +15,10 @@ import {
   formatTemperatureRange,
   formatWeatherType
 } from '@/domain/format';
+import { messages, type AppMessages } from '@/i18n';
 import type { DashboardPanelCopy } from './types';
+
+type ForecastDayCardTooltipMessages = AppMessages['ui']['forecastDayCardTooltip'];
 
 type ForecastDayCardProps = {
   cityName: string;
@@ -49,28 +52,11 @@ function buildForecastDayTitle(
   cityName: string,
   forecast: DailyForecast,
   locale: DisplayLocale,
-  temperatureUnit: TemperatureUnit
+  temperatureUnit: TemperatureUnit,
+  labels: ForecastDayCardTooltipMessages
 ): string {
   const precipitationProbability = formatPrecipitationProbability(forecast.precipitationProbabilityMax);
   const windSpeed = formatWindSpeed(forecast.windSpeedMaxKmh);
-  const labels =
-    locale === 'zh'
-      ? {
-          temperature: '气温',
-          averageTemperature: '平均气温',
-          humidity: '湿度',
-          precipitation: '雨量',
-          precipitationProbability: '降雨概率',
-          wind: '风力'
-        }
-      : {
-          temperature: 'Temperature',
-          averageTemperature: 'Average temperature',
-          humidity: 'Relative humidity',
-          precipitation: 'Precipitation',
-          precipitationProbability: 'Probability of precipitation',
-          wind: 'Wind speed'
-        };
 
   return [
     cityName,
@@ -89,7 +75,8 @@ function buildForecastDayTitle(
 export function ForecastDayCard({ cityName, forecast, locale, temperatureUnit, copy }: ForecastDayCardProps) {
   const precipitationProbability = formatPrecipitationProbability(forecast.precipitationProbabilityMax);
   const windSpeed = formatWindSpeed(forecast.windSpeedMaxKmh);
-  const forecastTitle = buildForecastDayTitle(cityName, forecast, locale, temperatureUnit);
+  const tooltipCopy = messages[locale].ui.forecastDayCardTooltip;
+  const forecastTitle = buildForecastDayTitle(cityName, forecast, locale, temperatureUnit, tooltipCopy);
 
   return (
     <div className="forecast-day" title={forecastTitle}>

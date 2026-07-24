@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MapLayer, RegionKey, WeatherFilter } from 'weather-core/types';
 import { cityMatchesKeyword } from '@/domain/city-search';
 import { type DisplayLocale } from '@/domain/format';
+import { getMessages } from '@/i18n';
 import { loadWeatherSnapshot } from '@/domain/weather-data-source';
 import { buildMapDatesPayload, buildWeatherLayerPayload } from '@/domain/weather-dashboard-payload';
 import {
@@ -31,7 +32,6 @@ import {
   resultPageSize,
   saveToolSearch
 } from './dashboardApi';
-import { dashboardCopy } from './dashboardCopy';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
 import { findDefaultSelectedResultItem } from './dashboardSelection';
 import { ForecastPanel } from './ForecastPanel';
@@ -77,7 +77,7 @@ function buildWeatherMapDashboardPayload(filters: MapDatesPayload, day: WeatherL
 }
 
 export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboardProps) {
-  const copy = dashboardCopy[locale];
+  const copy = getMessages(locale).dashboard;
   const temperatureUnit = useTemperatureUnitPreference(locale);
   const [weatherFilter, setWeatherFilter] = useState<WeatherFilter>(() => parseWeatherFilterFromSearch(initialSearch));
   const [selectedDate, setSelectedDate] = useState(() => readDateFromSearch(initialSearch, ''));

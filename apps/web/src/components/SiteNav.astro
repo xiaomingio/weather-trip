@@ -5,13 +5,14 @@
  */
 import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath, topTabs, type TopTabId } from '@/domain/navigation';
+import { getPageShellMessages } from '@/i18n';
 
 type Props = {
   locale: DisplayLocale;
   activeTab: TopTabId;
-  unitToggleLabel: string;
+  unitToggleLabel?: string;
   localeHref: string;
-  localeLabel: string;
+  localeLabel?: string;
   class?: string;
   navLabel?: string;
   tabHrefs?: Partial<Record<TopTabId, string>>;
@@ -22,20 +23,21 @@ type Props = {
 const {
   locale,
   activeTab,
-  unitToggleLabel,
   localeHref,
-  localeLabel,
-  navLabel = 'Weather Trip',
   tabHrefs = {},
   unitLabel = '°C',
   unitPressed = false
 } = Astro.props;
 const className = Astro.props.class;
 const otherLocale = locale === 'zh' ? 'en' : 'zh';
+const shellCopy = getPageShellMessages(locale);
+const unitToggleLabel = Astro.props.unitToggleLabel ?? shellCopy.common.unitToggleLabel;
+const localeLabel = Astro.props.localeLabel ?? shellCopy.common.localeToggleLabel;
+const navLabel = Astro.props.navLabel ?? shellCopy.site.brandName;
 ---
 
 <header class:list={['site-nav', className]}>
-  <a class="brand" href={buildTopTabPath(locale, 'landing')}>Weather Trip</a>
+  <a class="brand" href={buildTopTabPath(locale, 'landing')}>{shellCopy.site.brandName}</a>
   <nav class="tabs" aria-label={navLabel}>
     {
       topTabs.map((tab) => (

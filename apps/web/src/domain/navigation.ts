@@ -4,6 +4,7 @@
  */
 
 import type { WeatherToolId } from 'weather-core/types';
+import { getTopTabLabels } from '@/i18n';
 import type { DisplayLocale } from './format';
 
 export type TopTabId = 'landing' | 'weather-map' | 'city-finder';
@@ -14,9 +15,9 @@ export type TopTab = {
 };
 
 export const topTabs: TopTab[] = [
-  { id: 'landing', labels: { zh: '首页', en: 'Home' } },
-  { id: 'weather-map', labels: { zh: '天气地图', en: 'Weather map' } },
-  { id: 'city-finder', labels: { zh: '城市查找', en: 'City finder' } }
+  { id: 'landing', labels: getTopTabLabels('landing') },
+  { id: 'weather-map', labels: getTopTabLabels('weather-map') },
+  { id: 'city-finder', labels: getTopTabLabels('city-finder') }
 ];
 
 export function buildLandingPath(locale: DisplayLocale): string {

@@ -10,6 +10,7 @@ import { WeatherMapDashboard } from '@/components/weather-dashboard/WeatherMapDa
 import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
+import { getPageShellMessages } from '@/i18n';
 import '@/styles/global.css';
 
 interface Props {
@@ -17,33 +18,27 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const title = locale === 'zh' ? 'Weather Trip | 全球天气地图' : 'Weather Trip | World Weather';
-const description =
-  locale === 'zh'
-    ? '按日期查看全球城市气温、降水、湿度、天气类型和舒适度。'
-    : 'View temperature, rainfall, RH, weather type, and comfort across global cities by date.';
 const otherLocale = locale === 'zh' ? 'en' : 'zh';
-const unitToggleLabel = locale === 'zh' ? '切换摄氏度与华氏度' : 'Switch Celsius / Fahrenheit';
-const languageLabel = locale === 'zh' ? 'English' : '中文';
 const seoPage = getPublicPage(locale, 'weather-map');
 const alternateLinks = getAlternateLinks('weather-map');
+const shellCopy = getPageShellMessages(locale);
 ---
 
 <html lang={locale === 'zh' ? 'zh-CN' : 'en'} data-weather-theme="sunny">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{seoPage.title}</title>
+    <meta name="description" content={seoPage.description} />
     <link rel="canonical" href={buildAbsoluteUrl(seoPage.path)} />
     <link rel="alternate" hreflang="en" href={alternateLinks.en} />
     <link rel="alternate" hreflang="zh-Hans" href={alternateLinks['zh-Hans']} />
     <link rel="alternate" hreflang="x-default" href={alternateLinks['x-default']} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Weather Trip" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={shellCopy.site.brandName} />
+    <meta property="og:title" content={seoPage.title} />
+    <meta property="og:description" content={seoPage.description} />
     <meta property="og:url" content={buildAbsoluteUrl(seoPage.path)} />
     <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
     <meta name="twitter:card" content="summary_large_image" />
@@ -54,9 +49,8 @@ const alternateLinks = getAlternateLinks('weather-map');
       <SiteNav
         locale={locale}
         activeTab="weather-map"
-        unitToggleLabel={unitToggleLabel}
         localeHref={buildTopTabPath(otherLocale, 'weather-map')}
-        localeLabel={languageLabel}
+        localeLabel={shellCopy.common.localeShortLabel}
       />
       <WeatherMapDashboard client:load locale={locale} initialSearch={Astro.url.search} />
     </main>

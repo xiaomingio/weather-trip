@@ -7,8 +7,8 @@
 import * as Slider from '@radix-ui/react-slider';
 import { CalendarDays, Info, MapIcon } from 'lucide-react';
 import { formatDateLabel } from '@/domain/format';
+import { getMessages } from '@/i18n';
 import { FilterDock } from './FilterDock';
-import { filterCopy } from './filterCopy';
 import { RegionFields } from './RegionFields';
 import type { WeatherMapFilterDockProps } from './types';
 
@@ -29,7 +29,7 @@ export function WeatherMapFilterDock({
   onDateChange,
   onLayerChange
 }: WeatherMapFilterDockProps) {
-  const copy = filterCopy[locale];
+  const copy = getMessages(locale).filter;
   const selectedDateLabel = selectedDate ? formatDateLabel(selectedDate, locale) : copy.off;
 
   return (

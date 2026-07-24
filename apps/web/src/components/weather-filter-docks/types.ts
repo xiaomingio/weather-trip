@@ -4,7 +4,7 @@
  */
 
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import type { MapLayer, RegionKey, WeatherFilter, WeatherType } from 'weather-core/types';
+import type { MapLayer, RegionKey, WeatherFilter } from 'weather-core/types';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
 import type { WeatherRegionOption } from '@/domain/weather-dashboard-shared';
 
@@ -77,16 +77,4 @@ export type FilterPopoverCardProps = {
   children: ReactNode;
   onOpen: (key: FilterKey) => void;
   onClose: (key?: FilterKey) => void;
-};
-
-export type RangePreset = {
-  id: string;
-  labels: Record<DisplayLocale, string>;
-  values: [number, number];
-};
-
-export type WeatherTypePreset = {
-  id: string;
-  labels: Record<DisplayLocale, string>;
-  weatherTypes: WeatherType[];
 };

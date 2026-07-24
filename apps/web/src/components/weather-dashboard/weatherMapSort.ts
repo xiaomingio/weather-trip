@@ -7,11 +7,12 @@ import type { WeatherType } from 'weather-core/types';
 import type { DisplayLocale } from '@/domain/format';
 import { formatCityName } from '@/domain/format';
 import type { DashboardWeatherMapResultItem } from '@/domain/weather-dashboard-shared';
+import { messages } from '@/i18n';
 import type { SortDirection, WeatherMapSortKey, WeatherMapSortOption } from './types';
 import { weatherMapLayers } from './weatherMapLayers';
 
 export const weatherMapSortOptions: WeatherMapSortOption[] = [
-  { id: 'default', labels: { zh: '默认', en: 'Default' } },
+  { id: 'default', labels: { zh: messages.zh.weatherMap.sort.default, en: messages.en.weatherMap.sort.default } },
   ...weatherMapLayers
 ];
 

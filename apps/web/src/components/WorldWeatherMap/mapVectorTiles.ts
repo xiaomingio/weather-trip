@@ -7,6 +7,7 @@ import type { FilterSpecification, Map as MapLibreMap } from 'maplibre-gl';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
 import type { MapRegionLayer } from '@/domain/regions';
 import { getWeatherTypeLabel } from '@/domain/weather';
+import { messages } from '@/i18n';
 import {
   comfortColor,
   elevationColor,
@@ -137,7 +138,7 @@ function layerColor(summary: RegionWeatherSummary, layer: MapLayer): string {
 }
 
 function noDataLabel(locale: DisplayLocale): string {
-  return locale === 'zh' ? '暂无数据' : 'No data';
+  return messages[locale].ui.worldWeatherMap.noData;
 }
 
 function noMetricFillColor(): string {

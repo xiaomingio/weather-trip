@@ -12,6 +12,7 @@ import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import { getStaticInfoFooterLinks } from '@/domain/static-info';
+import { getPageShellMessages, type LandingSampleWeather } from '@/i18n';
 import '@/styles/global.css';
 import '@/styles/landing.css';
 
@@ -68,149 +69,16 @@ const { countryCount, cityCount, forecastDayCount } = await readLandingStats();
 const citiesLabel = cityCount >= 3500 ? '3500+' : String(cityCount);
 const regionsLabel = countryCount >= 200 ? '200+' : String(countryCount);
 
-type SampleWeather = 'sun' | 'cloud' | 'drizzle' | 'snow';
-
-type CitySample = {
-  id: string;
-  tempC: number;
-  weather: SampleWeather;
-  humidity: number;
-  elevationM: number;
-  names: Record<DisplayLocale, string>;
-  weatherLabels: Record<DisplayLocale, string>;
-};
-
-const citySamples: CitySample[] = [
-  {
-    id: 'shanghai',
-    tempC: 19,
-    weather: 'cloud',
-    humidity: 68,
-    elevationM: 4,
-    names: { zh: '上海', en: 'Shanghai' },
-    weatherLabels: { zh: '多云', en: 'Cloudy' }
-  },
-  {
-    id: 'nyc',
-    tempC: 21,
-    weather: 'sun',
-    humidity: 52,
-    elevationM: 10,
-    names: { zh: '纽约', en: 'New York' },
-    weatherLabels: { zh: '晴天', en: 'Sunny' }
-  },
-  {
-    id: 'hokkaido',
-    tempC: -6,
-    weather: 'snow',
-    humidity: 74,
-    elevationM: 40,
-    names: { zh: '北海道', en: 'Hokkaido' },
-    weatherLabels: { zh: '小雪', en: 'Light snow' }
-  },
-  {
-    id: 'paris',
-    tempC: 12,
-    weather: 'drizzle',
-    humidity: 81,
-    elevationM: 35,
-    names: { zh: '巴黎', en: 'Paris' },
-    weatherLabels: { zh: '小雨', en: 'Light rain' }
-  },
-  {
-    id: 'rio',
-    tempC: 31,
-    weather: 'sun',
-    humidity: 82,
-    elevationM: 11,
-    names: { zh: '里约热内卢', en: 'Rio de Janeiro' },
-    weatherLabels: { zh: '晴天', en: 'Sunny' }
-  },
-  {
-    id: 'sydney',
-    tempC: 24,
-    weather: 'sun',
-    humidity: 55,
-    elevationM: 19,
-    names: { zh: '悉尼', en: 'Sydney' },
-    weatherLabels: { zh: '晴天', en: 'Sunny' }
-  },
-  {
-    id: 'lhasa',
-    tempC: 12,
-    weather: 'sun',
-    humidity: 32,
-    elevationM: 3650,
-    names: { zh: '拉萨', en: 'Lhasa' },
-    weatherLabels: { zh: '晴天', en: 'Sunny' }
-  },
-  {
-    id: 'cairo',
-    tempC: 36,
-    weather: 'sun',
-    humidity: 28,
-    elevationM: 74,
-    names: { zh: '开罗', en: 'Cairo' },
-    weatherLabels: { zh: '晴天', en: 'Sunny' }
-  }
-];
-
-const weatherIconId: Record<SampleWeather, string> = {
+const weatherIconId: Record<LandingSampleWeather, string> = {
   sun: 'icon-sun',
   cloud: 'icon-cloud',
   drizzle: 'icon-drizzle',
   snow: 'icon-snow'
 };
 
-const copy = {
-  zh: {
-    title: '天气旅行 | 用天气决定下一个城市',
-    description: '查看全球城市未来天气，或先选择你想要的天气，再去找刚好适合抵达的地方。',
-    brandZh: '天气旅行',
-    heroTitle: '让天气替你挑一座城市',
-    heroTitleLines: ['让天气替你', '挑一座城市'],
-    heroLead:
-      '出发前先看全球城市接下来几天的温度、晴雨和湿度；也可以先选择你想要的天气，再去找刚好适合抵达的地方。',
-    primaryAction: '查看全球天气',
-    secondaryAction: '寻找匹配城市',
-    unitToggle: '切换摄氏度与华氏度',
-    languageToggle: 'Switch to English',
-    coverageLabel: '数据覆盖',
-    cities: '城市',
-    regions: '国家和地区',
-    days: (n: number) => `未来 ${n} 天预报`,
-    citySamples: '城市天气示例',
-    artAlt: '旅行天气地图、透明气候图层和指南针组成的画册式预览',
-    figBrand: '天气旅行',
-    figLayers: '天气 · 温度 · 湿度 · 海拔',
-    humidity: (v: number) => `湿度 ${v}%`,
-    elevation: (v: number) => `海拔 ${v}m`
-  },
-  en: {
-    title: 'Weather Trip | Choose your next city by weather',
-    description:
-      'Scan future weather across global cities, or first choose the weather you want, then find the right place to land.',
-    brandZh: 'Weather Trip',
-    heroTitle: 'Let weather pick your next city',
-    heroTitleLines: ['Let weather pick', 'your next city'],
-    heroLead:
-      'Before you go, scan temperature, sky, and humidity for cities worldwide—or first choose the weather you want, then find the right place to land.',
-    primaryAction: 'View world weather',
-    secondaryAction: 'Find matching cities',
-    unitToggle: 'Switch Celsius / Fahrenheit',
-    languageToggle: '切换到中文',
-    coverageLabel: 'Coverage',
-    cities: 'cities',
-    regions: 'countries & regions',
-    days: (n: number) => `${n}-day forecast`,
-    citySamples: 'City weather samples',
-    artAlt: 'Travel weather map preview with climate layers and compass',
-    figBrand: 'Weather Trip',
-    figLayers: 'Weather · Temperature · Humidity · Elevation',
-    humidity: (v: number) => `Humidity ${v}%`,
-    elevation: (v: number) => `Elevation ${v}m`
-  }
-}[locale];
+const shellCopy = getPageShellMessages(locale);
+const copy = shellCopy.landing;
+const citySamples = copy.citySamples;
 
 const weatherPath = buildTopTabPath(locale, 'weather-map');
 const comparePath = buildTopTabPath(locale, 'city-finder');
@@ -233,8 +101,8 @@ const snowAtlas = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{copy.title}</title>
-    <meta name="description" content={copy.description} />
+    <title>{seoPage.title}</title>
+    <meta name="description" content={seoPage.description} />
     <link rel="canonical" href={buildAbsoluteUrl(seoPage.path)} />
     <link rel="alternate" hreflang="en" href={alternateLinks.en} />
     <link rel="alternate" hreflang="zh-Hans" href={alternateLinks['zh-Hans']} />
@@ -242,9 +110,9 @@ const snowAtlas = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" as="image" href={sunnyAtlas.webp} type="image/webp" fetchpriority="high" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Weather Trip" />
-    <meta property="og:title" content={copy.title} />
-    <meta property="og:description" content={copy.description} />
+    <meta property="og:site_name" content={shellCopy.site.brandName} />
+    <meta property="og:title" content={seoPage.title} />
+    <meta property="og:description" content={seoPage.description} />
     <meta property="og:url" content={buildAbsoluteUrl(seoPage.path)} />
     <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
     <meta name="twitter:card" content="summary_large_image" />
@@ -256,16 +124,14 @@ const snowAtlas = {
         locale={locale}
         activeTab="landing"
         unitLabel="°C"
-        unitToggleLabel={copy.unitToggle}
         localeHref={otherLandingPath}
-        localeLabel={copy.languageToggle}
-        navLabel={copy.brandZh}
+        navLabel={shellCopy.site.localizedBrandName}
       />
 
-      <section class="hero" aria-label={copy.brandZh}>
+      <section class="hero" aria-label={shellCopy.site.localizedBrandName}>
         <canvas class="climate-canvas" data-climate-canvas aria-hidden="true"></canvas>
         <div class="hero-copy">
-          <p class="kicker">{copy.brandZh}</p>
+          <p class="kicker">{shellCopy.site.localizedBrandName}</p>
           <h1 class={`hero-title hero-title-${locale}`} aria-label={copy.heroTitle}>
             {copy.heroTitleLines.map((line, index) => (
               <span>{line}{locale === 'en' && index < copy.heroTitleLines.length - 1 ? ' ' : ''}</span>
@@ -349,11 +215,11 @@ const snowAtlas = {
             </symbol>
           </svg>
 
-          <ul class="city-samples" aria-label={copy.citySamples}>
+          <ul class="city-samples" aria-label={copy.citySamplesLabel}>
             {
               citySamples.map((sample) => {
-                const name = sample.names[locale];
-                const weatherLabel = sample.weatherLabels[locale];
+                const name = sample.name;
+                const weatherLabel = sample.weatherLabel;
                 const aria = `${name} ${sample.tempC}° ${weatherLabel} ${copy.humidity(sample.humidity)} ${copy.elevation(sample.elevationM)}`;
                 return (
                   <li class={`city-card city-${sample.id}`} data-temp-c={sample.tempC} aria-label={aria}>
@@ -420,13 +286,13 @@ const snowAtlas = {
             </picture>
           </div>
           <figcaption>
-            <span>{copy.figBrand}</span>
-            <strong>{copy.figLayers}</strong>
+            <span>{shellCopy.site.localizedBrandName}</span>
+            <strong>{copy.figureLayers}</strong>
           </figcaption>
         </figure>
       </section>
 
-      <footer class="landing-footer" aria-label="Weather Trip">
+      <footer class="landing-footer" aria-label={shellCopy.site.brandName}>
         {
           footerLinks.map((link) => (
             <a href={link.href}>{link.label}</a>
