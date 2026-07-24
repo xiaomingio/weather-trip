@@ -85,6 +85,12 @@ export const staticInfoMessages = {
           ]
         },
         {
+          heading: '地图边界与地名',
+          paragraphs: [
+            '地图边界、行政区划和地名来自公开数据源及离线处理结果，仅用于天气展示、区域筛选和可视化聚合。相关边界、名称、称谓和区域归属不代表本站或作者对任何国家、地区、边界、主权归属或行政地位的立场、认可或判断。不同数据源对争议地区可能采用不同口径，实际边界和行政区划请以相关官方来源为准。'
+          ]
+        },
+        {
           heading: '不是安全或专业建议',
           paragraphs: [
             '本站内容不构成天气预警、航空、航海、户外安全、医疗、法律或其他专业建议。涉及风险决策时，请以官方机构、当地政府、航空公司和专业服务的信息为准。'
@@ -168,6 +174,12 @@ export const staticInfoMessages = {
           heading: 'Information only',
           paragraphs: [
             'Weather, city, and map information on Weather Trip is provided for general travel reference. Forecasts can change, and data may be incomplete because of delays, coverage gaps, or source errors.'
+          ]
+        },
+        {
+          heading: 'Map boundaries and place names',
+          paragraphs: [
+            'Map boundaries, administrative divisions, and place names are derived from public datasets and offline processing. They are used only for weather display, regional filtering, and visualization. The boundaries, names, designations, and regional assignments shown on this site do not represent the site’s or author’s position, endorsement, or judgment regarding any territorial claim, border, sovereignty, or administrative status. Boundary data may vary across sources, especially for disputed areas. Please refer to relevant official sources for authoritative information.'
           ]
         },
         {
