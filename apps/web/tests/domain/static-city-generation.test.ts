@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { compareDefaultRank, inferSelectedCityAdmin2, mergeSelectedCityGeography } from '../../../../scripts/lib/cities/static-city-generation';
-import type { GeoNamesAdmin2, GeoNamesCity } from '../../../../scripts/lib/static-data/geonames';
+import { normalizeChineseAlternateName, type GeoNamesAdmin2, type GeoNamesCity } from '../../../../scripts/lib/static-data/geonames';
 
 type TestCity = {
   id: string;
@@ -121,5 +121,13 @@ describe('static city generation administrative merge', () => {
       admin1Code: '30',
       admin2Code: '4403'
     });
+  });
+});
+
+describe('GeoNames Chinese alternate names', () => {
+  it('normalizes traditional Chinese names to simplified Chinese during static data generation', () => {
+    expect(normalizeChineseAlternateName('馬德里')).toBe('马德里');
+    expect(normalizeChineseAlternateName('河內市')).toBe('河内市');
+    expect(normalizeChineseAlternateName('首都區')).toBe('首都区');
   });
 });

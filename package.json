@@ -38,5 +38,8 @@
   },
   "overrides": {
     "postcss": "^8.5.10"
+  },
+  "dependencies": {
+    "opencc-js": "^1.4.1"
   }
 }

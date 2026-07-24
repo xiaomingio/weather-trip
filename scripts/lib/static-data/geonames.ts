@@ -10,6 +10,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import OpenCC from 'opencc-js';
 
 export type CountryInfo = {
   code: string;
@@ -89,7 +90,9 @@ export type LoadGeoNamesDatasetOptions = {
 
 const geonamesBaseUrl = 'https://download.geonames.org/export/dump';
 const geonamesCitiesPackage = 'cities1000';
-const chineseLanguageCodes = new Set(['zh-CN', 'zh-Hans', 'zh', 'zh-Hant']);
+const chineseLanguageCodePriority = ['zh-CN', 'zh-Hans', 'zh-SG', 'zh', 'zh-Hant', 'zh-TW', 'zh-HK', 'zh-MO'];
+const chineseLanguageCodes = new Set(chineseLanguageCodePriority);
+const convertChineseNameToSimplified = OpenCC.Converter({ from: 'tw', to: 'cn' });
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -303,7 +306,7 @@ export async function readAlternateNamesFromZip(zipPath: string, scopedGeonameId
     const candidate: AlternateName = {
       geonameId,
       isoLanguage,
-      alternateName: columns[3],
+      alternateName: normalizeChineseAlternateName(columns[3]),
       isPreferredName: columns[4] === '1',
       isShortName: columns[5] === '1',
       isHistoric: columns[7] === '1'
@@ -317,7 +320,7 @@ export async function readAlternateNamesFromZip(zipPath: string, scopedGeonameId
 }
 
 function compareAlternateName(left: AlternateName, right: AlternateName): number {
-  const languageRank = (value: string) => ['zh-CN', 'zh-Hans', 'zh', 'zh-Hant'].indexOf(value);
+  const languageRank = (value: string) => chineseLanguageCodePriority.indexOf(value);
   return (
     languageRank(left.isoLanguage) - languageRank(right.isoLanguage) ||
     Number(right.isPreferredName) - Number(left.isPreferredName) ||
@@ -326,6 +329,10 @@ function compareAlternateName(left: AlternateName, right: AlternateName): number
     left.alternateName.length - right.alternateName.length ||
     left.alternateName.localeCompare(right.alternateName)
   );
+}
+
+export function normalizeChineseAlternateName(value: string): string {
+  return convertChineseNameToSimplified(value);
 }
 
 export async function loadGeoNamesDataset(rootDir: string, options: LoadGeoNamesDatasetOptions = {}): Promise<GeoNamesDataset> {
