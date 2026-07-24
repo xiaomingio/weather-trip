@@ -73,7 +73,7 @@ describe('map marker comfort labels', () => {
       })[0]
     ).toMatchObject({
       markerText: '82%',
-      tooltip: 'Sample City, Sierra Leone Sample Region · 82%',
+      tooltip: 'Sample City, Sample Region, Sierra Leone · 82%',
       size: 34
     });
   });
@@ -106,7 +106,7 @@ describe('map marker comfort labels', () => {
       })[0]
     ).toMatchObject({
       markerText: '75%',
-      tooltip: 'Sample City, Sierra Leone Sample Region · 75%',
+      tooltip: 'Sample City, Sample Region, Sierra Leone · 75%',
       size: 34
     });
   });
@@ -128,7 +128,7 @@ describe('map marker comfort labels', () => {
       hasRegionLayer: true
     });
 
-    expect(buildPointGeojson(points).features[0].properties.tooltip).toBe('Sample City, Sierra Leone Sample Region · Sunny');
+    expect(buildPointGeojson(points).features[0].properties.tooltip).toBe('Sample City, Sample Region, Sierra Leone · Sunny');
   });
 
   it('uses default city rank as the marker declutter priority', () => {

@@ -39,7 +39,7 @@ import {
   applyVectorRegionStyles,
   buildVectorRegionStyleEntries,
   removeVectorRegionLayers,
-  vectorFallbackLabel,
+  vectorRegionTooltipLabel,
   vectorRegionAssetForZoom,
   type VectorRegionStyleEntry
 } from './mapVectorTiles';
@@ -143,6 +143,11 @@ function setPointHoverFilter(map: MapLibreMap, cityId: string): void {
   }
 }
 
+function parentAdmin1RegionKey(regionKey: string): string | null {
+  const match = /^admin2:([A-Z]{2}\.[^.]+)\./.exec(regionKey);
+  return match ? `admin1:${match[1]}` : null;
+}
+
 export function WorldWeatherMap({
   tool,
   locale,
@@ -235,14 +240,11 @@ export function WorldWeatherMap({
     const feature = event.features?.find((item) => typeof item.properties?.regionKey === 'string' && item.properties.regionKey);
     const regionKey = typeof feature?.properties?.regionKey === 'string' ? feature.properties.regionKey : '';
     const vectorEntry = vectorRegionStyleEntriesRef.current.get(regionKey);
-    const vectorFallback = feature?.properties ? vectorFallbackLabel(feature.properties as Record<string, unknown>, locale) : '';
-    const label = typeof feature?.properties?.label === 'string'
-      ? feature.properties.label
-      : vectorEntry
-        ? `${vectorFallback || vectorEntry.displayName} ${vectorEntry.valueLabel}`
-        : vectorFallback
-          ? `${vectorFallback} ${mapCopy.noData}`
-          : '';
+    const parentEntry = parentAdmin1RegionKey(regionKey);
+    const parentAdmin1Name = parentEntry ? vectorRegionStyleEntriesRef.current.get(parentEntry)?.displayName : undefined;
+    const label = feature?.properties
+      ? vectorRegionTooltipLabel(feature.properties as Record<string, unknown>, vectorEntry, locale, mapCopy.noData, parentAdmin1Name)
+      : '';
     const targetLayer = mapTileLayerFromFillLayerId(feature?.layer.id);
     if (typeof label !== 'string' || !label) {
       popup.remove();

@@ -23,6 +23,21 @@ export function formatCityRegionSegments(city: City, locale: DisplayLocale = 'zh
   return [country, admin].filter((part): part is string => Boolean(part));
 }
 
+function uniqueAdjacentSegments(segments: string[]): string[] {
+  return segments.filter((segment, index) => segment && segment !== segments[index - 1]);
+}
+
+export function formatCityLocationPathSegments(city: City, locale: DisplayLocale = 'zh'): string[] {
+  const country = formatCountry(city, locale);
+  const admin1 = locale === 'zh' ? city.admin1LocalName ?? city.admin1 : city.admin1;
+  const admin2 = locale === 'zh' ? city.admin2LocalName ?? city.admin2 : city.admin2;
+  return uniqueAdjacentSegments([formatCityName(city, locale), admin2, admin1, country].filter((part): part is string => Boolean(part)));
+}
+
+export function formatCityLocationPath(city: City, locale: DisplayLocale = 'zh'): string {
+  return formatCityLocationPathSegments(city, locale).join(', ');
+}
+
 export function formatCityLocation(city: City, locale: DisplayLocale = 'zh'): string {
   return [...formatCityRegionSegments(city, locale), formatCityName(city, locale)].filter(Boolean).join(' ');
 }

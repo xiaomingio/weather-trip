@@ -19,6 +19,7 @@ type RegionAccumulator = {
   level: RegionWeatherSummary['level'];
   countryCode: string;
   admin1Code?: string;
+  admin1Name?: string;
   admin2Code?: string;
   name: string;
   cityIds: Set<string>;
@@ -102,6 +103,12 @@ function regionIdForCity(city: City, activeRegion: RegionKey, allCities: City[])
   };
 }
 
+function admin1NameForCity(city: City, region: Pick<RegionAccumulator, 'countryCode' | 'admin1Code'>, locale: DisplayLocale): string | undefined {
+  if (!region.admin1Code) return undefined;
+  if (region.countryCode === 'CN' && region.admin1Code === city.countryCode && city.countryCode !== 'CN') return countryName(city.countryCode ?? '', locale);
+  return locale === 'zh' ? city.admin1LocalName ?? city.admin1 ?? city.admin1GroupCode : city.admin1 ?? city.admin1GroupCode;
+}
+
 function regionNameForCity(city: City, region: Pick<RegionAccumulator, 'level' | 'countryCode' | 'admin1Code'>, locale: DisplayLocale): string {
   if (region.countryCode === 'CN' && region.admin1Code === city.countryCode && city.countryCode !== 'CN') return countryName(city.countryCode ?? '', locale);
   const level = region.level;
@@ -128,6 +135,7 @@ function ensureAccumulator(
     level: region.level,
     countryCode: region.countryCode ?? city.countryCode,
     admin1Code: region.admin1Code,
+    admin1Name: region.level === 'admin2' ? admin1NameForCity(city, region, locale) : undefined,
     admin2Code: region.admin2Code,
     name: regionNameForCity(city, region, locale),
     cityIds: new Set(),
@@ -152,6 +160,7 @@ function summarizeAccumulator(value: RegionAccumulator): RegionWeatherSummary {
     level: value.level,
     countryCode: value.countryCode,
     admin1Code: value.admin1Code,
+    admin1Name: value.admin1Name,
     admin2Code: value.admin2Code,
     name: value.name,
     cityCount,

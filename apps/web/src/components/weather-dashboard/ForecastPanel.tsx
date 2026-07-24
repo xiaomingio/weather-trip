@@ -8,6 +8,7 @@ import type { City, DailyForecast } from 'weather-core/types';
 import {
   type DisplayLocale,
   type TemperatureUnit,
+  formatCityLocationPath,
   formatCityName,
   formatCityRegionSegments,
   formatElevation
@@ -28,6 +29,7 @@ type ForecastPanelProps = {
 
 export function ForecastPanel({ locale, temperatureUnit, copy, city, forecasts, isLoading, isRefreshing }: ForecastPanelProps) {
   const cityName = city ? formatCityName(city, locale) : '';
+  const cityTitle = city ? formatCityLocationPath(city, locale) : '';
 
   return (
     <section className="forecast-column" aria-label={copy.forecastPanel}>
@@ -45,7 +47,7 @@ export function ForecastPanel({ locale, temperatureUnit, copy, city, forecasts, 
             {forecasts.slice(0, 14).map((forecast) => (
               <ForecastDayCard
                 key={`${forecast.cityId}-${forecast.date}`}
-                cityName={cityName}
+                cityName={cityTitle}
                 forecast={forecast}
                 locale={locale}
                 temperatureUnit={temperatureUnit}

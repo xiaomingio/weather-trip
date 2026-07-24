@@ -151,6 +151,7 @@ export type RegionWeatherSummary = {
   level: 'country' | 'admin1' | 'admin2';
   countryCode: string;
   admin1Code?: string;
+  admin1Name?: string;
   admin2Code?: string;
   name: string;
   cityCount: number;

@@ -4,6 +4,7 @@
  */
 import type { MapLayer, RegionWeatherSummary, WeatherToolId } from 'weather-core/types';
 import type { FilterSpecification, Map as MapLibreMap } from 'maplibre-gl';
+import { countryLabel } from '@/domain/country-labels';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
 import type { MapRegionLayer } from '@/domain/regions';
 import { getWeatherTypeLabel } from '@/domain/weather';
@@ -42,6 +43,7 @@ export type VectorRegionAsset = {
 
 export type VectorRegionStyleEntry = {
   regionKey: string;
+  admin1Name?: string;
   fillColor: string;
   fillOpacity: number;
   lineOpacity: number;
@@ -58,6 +60,7 @@ type RegionSummaryAccumulator = {
   level: RegionWeatherSummary['level'];
   countryCode: string;
   admin1Code?: string;
+  admin1Name?: string;
   admin2Code?: string;
   name: string;
   cityCount: number;
@@ -159,6 +162,37 @@ function cleanRegionLabel(name: string): string {
   return name.replace(/省|市|自治区|特别行政区/g, '');
 }
 
+function uniqueAdjacentSegments(segments: string[]): string[] {
+  return segments.filter((segment, index) => segment && segment !== segments[index - 1]);
+}
+
+function regionLocationLabel(
+  name: string,
+  level: RegionWeatherSummary['level'] | 'boundary' | undefined,
+  countryCode: string | undefined,
+  admin1Name: string | undefined,
+  locale: DisplayLocale
+): string {
+  if (!countryCode || level === 'country') return name;
+  const country = countryLabel(countryCode, locale);
+  const segments = level === 'admin2' || level === 'boundary'
+    ? [name, admin1Name, country]
+    : [name, country];
+  return uniqueAdjacentSegments(segments.filter((part): part is string => Boolean(part))).join(', ');
+}
+
+function regionTooltipLabel(
+  name: string,
+  level: RegionWeatherSummary['level'] | 'boundary' | undefined,
+  countryCode: string | undefined,
+  admin1Name: string | undefined,
+  valueLabel: string,
+  locale: DisplayLocale
+): string {
+  const locationLabel = regionLocationLabel(name, level, countryCode, admin1Name, locale);
+  return valueLabel ? `${locationLabel} · ${valueLabel}` : locationLabel;
+}
+
 function layerLabel(
   summary: RegionWeatherSummary,
   tool: WeatherToolId,
@@ -183,6 +217,7 @@ function newAccumulator(summary: RegionWeatherSummary, id: string, level: Region
     level,
     countryCode: summary.countryCode,
     admin1Code: level === 'country' ? undefined : summary.admin1Code,
+    admin1Name: level === 'admin2' ? summary.admin1Name : undefined,
     admin2Code: level === 'admin2' ? summary.admin2Code : undefined,
     name,
     cityCount: 0,
@@ -228,6 +263,7 @@ function summarizeAccumulator(accumulator: RegionSummaryAccumulator): RegionWeat
     level: accumulator.level,
     countryCode: accumulator.countryCode,
     admin1Code: accumulator.admin1Code,
+    admin1Name: accumulator.admin1Name,
     admin2Code: accumulator.admin2Code,
     name: accumulator.name,
     cityCount: accumulator.cityCount,
@@ -255,14 +291,16 @@ function addRollup(
   rollups.set(id, current);
 }
 
-function buildRollupSummaries(summaries: RegionWeatherSummary[]): RegionWeatherSummary[] {
+function buildRollupSummaries(summaries: RegionWeatherSummary[], locale: DisplayLocale): RegionWeatherSummary[] {
   const rollups = new Map<string, RegionSummaryAccumulator>();
   const existingIds = new Set(summaries.map((summary) => summary.id));
 
   for (const summary of summaries) {
-    if (summary.level !== 'country') addRollup(rollups, summary, `country:${summary.countryCode}`, 'country');
+    if (summary.level !== 'country') {
+      addRollup(rollups, { ...summary, name: countryLabel(summary.countryCode, locale) }, `country:${summary.countryCode}`, 'country');
+    }
     if (summary.level === 'admin2' && summary.admin1Code) {
-      addRollup(rollups, summary, `admin1:${summary.countryCode}.${summary.admin1Code}`, 'admin1');
+      addRollup(rollups, { ...summary, name: summary.admin1Name ?? summary.name }, `admin1:${summary.countryCode}.${summary.admin1Code}`, 'admin1');
     }
   }
 
@@ -291,6 +329,7 @@ function styleEntryForSummary(
   const isNoMetricRegion = !hasMetricData;
   return {
     regionKey: summary.id,
+    admin1Name: summary.admin1Name ? cleanRegionLabel(summary.admin1Name) : undefined,
     fillColor,
     fillOpacity: isNoMetricRegion ? noMetricFillOpacity(targetLayer) : metricFillOpacity,
     lineOpacity: targetLayer === 'world' ? 0.66 : 0.7,
@@ -299,7 +338,14 @@ function styleEntryForSummary(
     isNoMetricRegion,
     displayName: cleanRegionLabel(summary.name),
     valueLabel: layerLabel(summary, tool, layer, locale, temperatureUnit),
-    label: `${cleanRegionLabel(summary.name)} ${layerLabel(summary, tool, layer, locale, temperatureUnit)}`
+    label: regionTooltipLabel(
+      cleanRegionLabel(summary.name),
+      summary.level,
+      summary.countryCode,
+      summary.admin1Name ? cleanRegionLabel(summary.admin1Name) : undefined,
+      layerLabel(summary, tool, layer, locale, temperatureUnit),
+      locale
+    )
   };
 }
 
@@ -311,7 +357,7 @@ export function buildVectorRegionStyleEntries(
   locale: DisplayLocale,
   temperatureUnit: TemperatureUnit
 ): VectorRegionStyleEntry[] {
-  const visibleSummaries = [...summaries, ...buildRollupSummaries(summaries)];
+  const visibleSummaries = [...summaries, ...buildRollupSummaries(summaries, locale)];
   const regionMatchDays = visibleSummaries.filter((summary) => summary.totalDays > 0).map((summary) => summary.matchDays);
   const minRegionMatchDays = Math.min(...regionMatchDays, 0);
   const maxRegionMatchDays = Math.max(...regionMatchDays, 0);
@@ -565,4 +611,48 @@ export function vectorFallbackLabel(properties: Record<string, unknown>, locale:
     : typeof fallback === 'string' && fallback
       ? cleanRegionLabel(fallback)
       : '';
+}
+
+function vectorRegionLevel(properties: Record<string, unknown>): RegionWeatherSummary['level'] | 'boundary' | undefined {
+  const level = properties.level;
+  return level === 'country' || level === 'admin1' || level === 'admin2' || level === 'boundary' ? level : undefined;
+}
+
+function vectorRegionCountryCode(properties: Record<string, unknown>, regionKey: string): string | undefined {
+  const countryCode = properties.countryCode;
+  if (typeof countryCode === 'string' && countryCode) return countryCode;
+  return /^(?:country|admin1|admin2|boundary):([A-Z]{2})(?:\.|$)/.exec(regionKey)?.[1];
+}
+
+function vectorRegionAdmin1Name(properties: Record<string, unknown>, locale: DisplayLocale): string | undefined {
+  const localized = locale === 'zh' ? properties.admin1LabelZh : properties.admin1LabelEn;
+  const fallback = properties.admin1LabelZh ?? properties.admin1LabelEn;
+  return typeof localized === 'string' && localized
+    ? cleanRegionLabel(localized)
+    : typeof fallback === 'string' && fallback
+      ? cleanRegionLabel(fallback)
+      : undefined;
+}
+
+export function vectorRegionTooltipLabel(
+  properties: Record<string, unknown>,
+  entry: Pick<VectorRegionStyleEntry, 'admin1Name' | 'displayName' | 'valueLabel'> | undefined,
+  locale: DisplayLocale,
+  noDataLabelText: string,
+  parentAdmin1Name?: string
+): string {
+  const rawLabel = typeof properties.label === 'string' && properties.label ? properties.label : vectorFallbackLabel(properties, locale);
+  const name = rawLabel || entry?.displayName || '';
+  if (!name) return '';
+
+  const regionKey = typeof properties.regionKey === 'string' ? properties.regionKey : '';
+  const valueLabel = entry?.valueLabel ?? noDataLabelText;
+  return regionTooltipLabel(
+    cleanRegionLabel(name),
+    vectorRegionLevel(properties),
+    vectorRegionCountryCode(properties, regionKey),
+    entry?.admin1Name ?? parentAdmin1Name ?? vectorRegionAdmin1Name(properties, locale),
+    valueLabel,
+    locale
+  );
 }

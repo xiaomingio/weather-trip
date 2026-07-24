@@ -3,7 +3,8 @@
  * 对应文档: docs/specs/40-map-vector-tiles-performance.md
  */
 import { describe, expect, it } from 'vitest';
-import { applyVectorRegionStyles } from '@/components/WorldWeatherMap/mapVectorTiles';
+import type { RegionWeatherSummary } from 'weather-core/types';
+import { applyVectorRegionStyles, buildVectorRegionStyleEntries, vectorRegionTooltipLabel } from '@/components/WorldWeatherMap/mapVectorTiles';
 import {
   regionFillLayerId,
   regionLineLayerId,
@@ -23,6 +24,34 @@ function fakeMap() {
     setPaintProperty: (layerId: string, property: string, value: unknown) => paints.set(`${layerId}:${property}`, value)
   };
 }
+
+const sampleRegionSummary: RegionWeatherSummary = {
+  id: 'admin1:US.CA',
+  level: 'admin1',
+  countryCode: 'US',
+  admin1Code: 'CA',
+  name: 'California',
+  cityCount: 2,
+  forecastCount: 2,
+  weatherType: 'sunny',
+  temperatureMeanC: 24,
+  humidityMeanPercent: 55,
+  elevationMeters: 120,
+  precipitationSumMm: 0,
+  windSpeedMaxKmh: 14,
+  comfortScore: 0.82,
+  matchDays: 0,
+  totalDays: 0
+};
+
+const sampleAdmin2RegionSummary: RegionWeatherSummary = {
+  ...sampleRegionSummary,
+  id: 'admin2:US.CA.037',
+  level: 'admin2',
+  admin1Name: 'California',
+  admin2Code: '037',
+  name: 'Los Angeles County'
+};
 
 describe('vector region tile styles', () => {
   it('keeps boundary-only admin2 regions visible with no-data styling', () => {
@@ -53,5 +82,61 @@ describe('vector region tile styles', () => {
 
     expect(map.filters.get(regionNoMetricPatternLayerId('admin1'))).toEqual(['==', ['get', 'regionKey'], '']);
     expect(map.paints.get(`${regionLineLayerId('admin1')}:line-opacity`)).toBe(0);
+  });
+
+  it('formats region hover labels with country context like city markers', () => {
+    const entry = buildVectorRegionStyleEntries([sampleRegionSummary], 'world', 'weather-map', 'temperature', 'en', 'c')[0];
+
+    expect(
+      vectorRegionTooltipLabel(
+        {
+          regionKey: 'admin1:US.CA',
+          level: 'admin1',
+          countryCode: 'US',
+          labelEn: 'California',
+          labelZh: '加利福尼亚'
+        },
+        entry,
+        'en',
+        'No data'
+      )
+    ).toBe('California, United States · 24°C');
+  });
+
+  it('formats admin2 region hover labels with admin1 and country context', () => {
+    const entry = buildVectorRegionStyleEntries([sampleAdmin2RegionSummary], 'country', 'weather-map', 'temperature', 'en', 'c')[0];
+
+    expect(
+      vectorRegionTooltipLabel(
+        {
+          regionKey: 'admin2:US.CA.037',
+          level: 'admin2',
+          countryCode: 'US',
+          labelEn: 'Los Angeles County',
+          labelZh: '洛杉矶县'
+        },
+        entry,
+        'en',
+        'No data'
+      )
+    ).toBe('Los Angeles County, California, United States · 24°C');
+  });
+
+  it('keeps country context on no-data region hover labels', () => {
+    expect(
+      vectorRegionTooltipLabel(
+        {
+          regionKey: 'admin2:US.CA.037',
+          level: 'admin2',
+          countryCode: 'US',
+          labelEn: 'Los Angeles County',
+          labelZh: '洛杉矶县'
+        },
+        undefined,
+        'en',
+        'No data',
+        'California'
+      )
+    ).toBe('Los Angeles County, California, United States · No data');
   });
 });

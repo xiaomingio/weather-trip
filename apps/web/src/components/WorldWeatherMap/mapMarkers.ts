@@ -5,7 +5,7 @@
 
 import type { MapLayer, WeatherToolId } from 'weather-core/types';
 import { weatherTypeMapIconIds } from '@/components/weather-icons';
-import { type DisplayLocale, type TemperatureUnit, formatCityName, formatCityRegion } from '@/domain/format';
+import { type DisplayLocale, type TemperatureUnit, formatCityLocationPath } from '@/domain/format';
 import {
   type DashboardCityFinderResultItem,
   type DashboardResultItem,
@@ -242,7 +242,7 @@ export function buildMapPoints({
       const normalized = normalizeRangeValue(score.matchDays, minMatchDays, maxMatchDays);
       const matchColor = relativeMatchColor(score.matchDays, minMatchDays, maxMatchDays);
       const metric = cityFinderMarkerMetric(score, layer, matchColor, locale, temperatureUnit);
-      const label = `${formatCityName(score.city, locale)}, ${formatCityRegion(score.city, locale)}`;
+      const label = formatCityLocationPath(score.city, locale);
       return {
         cityId: score.city.id,
         label,
@@ -266,7 +266,7 @@ export function buildMapPoints({
 
   return resultItems.filter((item): item is DashboardWeatherMapResultItem => !isDashboardCityFinderItem(item)).map((item) => {
     const metric = weatherMapMarkerMetric(item, layer, locale, temperatureUnit);
-    const label = `${formatCityName(item.city, locale)}, ${formatCityRegion(item.city, locale)}`;
+    const label = formatCityLocationPath(item.city, locale);
 
     return {
       cityId: item.city.id,
