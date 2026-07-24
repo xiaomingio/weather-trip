@@ -8,7 +8,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MapLayer, RegionKey, WeatherFilter } from 'weather-core/types';
 import { cityMatchesKeyword } from '@/domain/city-search';
 import { type DisplayLocale } from '@/domain/format';
-import { getAlternateLocale } from '@/domain/site-prefs';
 import { loadWeatherSnapshot } from '@/domain/weather-data-source';
 import { buildMapDatesPayload, buildWeatherLayerPayload } from '@/domain/weather-dashboard-payload';
 import {
@@ -30,7 +29,7 @@ import {
   replaceToolUrl,
   resultPageSize,
   saveRegion,
-  syncToolNavigationLinks
+  saveSearchRegion
 } from './dashboardApi';
 import { dashboardCopy } from './dashboardCopy';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
@@ -91,7 +90,6 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const isApplyingPopState = useRef(false);
   const isApplyingPayloadDate = useRef(false);
   const weatherMapDaysCache = useRef<WeatherMapDaysCache | null>(null);
-  const otherLocale = getAlternateLocale(locale);
   const primaryRegion = getPrimaryRegionId(weatherFilter.region);
   const { primaryRegionOptions, subRegionOptions } = useRegionOptions(locale, primaryRegion, isBrowserReady);
   const canSelectSubRegion = subRegionOptions.length > 1;
@@ -101,6 +99,7 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   useEffect(() => {
     const search = readSearch() || initialSearch;
     const nextLayer = readLayerFromSearch(search);
+    saveSearchRegion(search);
     setWeatherFilter(parseWeatherFilterFromSearch(search, readSavedRegion()));
     setSelectedDate(readDateFromSearch(search, ''));
     setLayer(nextLayer);
@@ -113,6 +112,7 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
     const handlePopState = () => {
       isApplyingPopState.current = true;
       const search = readSearch();
+      saveSearchRegion(search);
       setWeatherFilter(parseWeatherFilterFromSearch(search, readSavedRegion()));
       setSelectedDate(readDateFromSearch(search, regionAvailableDates[0] ?? ''));
       setLayer(readLayerFromSearch(search));
@@ -130,11 +130,6 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
     }
     replaceToolUrl(locale, 'weather-map', weatherFilter, selectedDate, layer);
   }, [isBrowserReady, layer, locale, selectedDate, weatherFilter]);
-
-  useEffect(() => {
-    if (!isBrowserReady) return;
-    syncToolNavigationLinks(locale, otherLocale, 'weather-map', weatherFilter, selectedDate, layer);
-  }, [isBrowserReady, layer, locale, otherLocale, selectedDate, weatherFilter]);
 
   useEffect(() => {
     if (!isBrowserReady) return;

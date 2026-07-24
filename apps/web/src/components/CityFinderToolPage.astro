@@ -55,9 +55,8 @@ const alternateLinks = getAlternateLinks('city-finder');
         locale={locale}
         activeTab="city-finder"
         unitToggleLabel={unitToggleLabel}
-        localeHref={`${buildTopTabPath(otherLocale, 'city-finder')}${Astro.url.search}`}
+        localeHref={buildTopTabPath(otherLocale, 'city-finder')}
         localeLabel={languageLabel}
-        dynamicToolLinks
       />
       <CityFinderDashboard client:load locale={locale} initialSearch={Astro.url.search} />
     </main>

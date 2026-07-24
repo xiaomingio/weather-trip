@@ -5,7 +5,6 @@
 
 import type { MapLayer, RegionKey, RegionWeatherSummary, WeatherToolId } from 'weather-core/types';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
-import type { MapRegionLayer } from '@/domain/regions';
 import type { DashboardResultItem } from '@/domain/weather-dashboard-shared';
 
 export type MapPoint = {
@@ -15,6 +14,7 @@ export type MapPoint = {
   latitude: number;
   markerText: string;
   markerIcon: string;
+  tooltip: string;
   color: string;
   opacity: number;
   size: number;
@@ -40,20 +40,6 @@ export type WorldWeatherMapProps = {
   refreshLabel?: string;
 };
 
-export type MapGeoJson = {
-  type: 'FeatureCollection';
-  features: Array<{
-    type: 'Feature';
-    properties: Record<string, unknown>;
-    geometry: MapGeoJsonGeometry;
-  }>;
-};
-
-export type MapGeoJsonGeometry = {
-  type: string;
-  coordinates?: unknown;
-};
-
 export type LegendScale = {
   gradient: string;
   labels: [string, string, string];
@@ -61,15 +47,10 @@ export type LegendScale = {
 
 export type BoundsPoint = [number, number];
 
-export type RegionGeojsonAsset = {
-  key: string;
-  url: string;
-  layer: MapRegionLayer;
-};
-
 export type MarkerMetric = {
   markerText: string;
   markerIcon: string;
+  tooltipValue: string;
   color: string;
   sortValue: number;
 };
@@ -89,6 +70,7 @@ export type MapPointGeoJson = {
       label: string;
       markerText: string;
       markerIcon: string;
+      tooltip: string;
       color: string;
       opacity: number;
       size: number;

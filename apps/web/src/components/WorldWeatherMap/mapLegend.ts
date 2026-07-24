@@ -5,30 +5,8 @@
 
 import type { MapLayer, WeatherToolId } from 'weather-core/types';
 import type { DisplayLocale } from '@/domain/format';
-import type { MapRegionLayer } from '@/domain/regions';
 import { elevationGradient, precipitationColor, weatherColor, windGradient } from './mapColors';
 import type { LegendScale } from './types';
-
-export function legendDescription(tool: WeatherToolId, layer: MapLayer, regionLayer: MapRegionLayer, locale: DisplayLocale): string {
-  const areaName =
-    regionLayer === 'world'
-      ? { zh: '全球分块', en: 'world map' }
-      : { zh: '国家分块', en: 'country map' };
-
-  if (locale === 'en') {
-    if (layer === 'elevation') return `${areaName.en} areas are colored by sampled elevation; city markers keep temperature context.`;
-    if (layer === 'humidity') return 'Color shows mean RH; green is the comfortable range.';
-    if (layer === 'wind') return 'Color shows max wind speed; darker purple means windier conditions.';
-    if (tool === 'city-finder' && layer === 'comfort') return 'Color follows the current min/max matching-day distribution.';
-    return `${areaName.en} areas show the selected layer; city markers remain sample points.`;
-  }
-
-  if (layer === 'elevation') return `${areaName.zh}按海拔样本分层着色，城市点位保留温度`;
-  if (layer === 'humidity') return '颜色显示日均相对湿度，绿色约为舒适湿度';
-  if (layer === 'wind') return '颜色显示最大风速，越偏紫表示风越大';
-  if (tool === 'city-finder' && layer === 'comfort') return '颜色按当前结果的最小/最大匹配天数分布';
-  return `${areaName.zh}显示当前图层主指标，城市点位是样本`;
-}
 
 export function legendScale(tool: WeatherToolId, layer: MapLayer, locale: DisplayLocale): LegendScale {
   if (tool === 'city-finder' && layer === 'comfort') {

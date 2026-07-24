@@ -1,0 +1,371 @@
+{
+  "generatedAt": "2026-07-24T09:37:57.714Z",
+  "dryRun": false,
+  "sourceLayer": "weather_region",
+  "mapZoomRange": {
+    "minZoom": 1,
+    "defaultZoom": 1.35,
+    "maxZoom": 8,
+    "countryFitMaxZoom": 4.8,
+    "detailFitMaxZoom": 5.6
+  },
+  "outputs": {
+    "tileRootDir": "apps/web/public/data/geo/region-tiles",
+    "manifestPath": "apps/web/public/data/geo/region-tiles/manifest.json",
+    "ndjsonPath": "data/generated/geo-regions.ndjson",
+    "reportJsonPath": "data/generated/geo-tile-report.json",
+    "reportMarkdownPath": "data/generated/geo-tile-report.md"
+  },
+  "sourcePackages": [
+    {
+      "path": "data/generated/geo/world.geojson",
+      "featureCount": 1024,
+      "rawBytes": 14753718,
+      "gzipBytes": 793443,
+      "brotliBytes": 541837
+    },
+    {
+      "path": "data/generated/geo/region-outlines.geojson",
+      "featureCount": 33,
+      "rawBytes": 2155238,
+      "gzipBytes": 361146,
+      "brotliBytes": 136854
+    },
+    {
+      "path": "data/generated/geo/countries/CN.geojson",
+      "featureCount": 428,
+      "rawBytes": 3537150,
+      "gzipBytes": 937058,
+      "brotliBytes": 538456
+    },
+    {
+      "path": "data/generated/geo/countries/ES.geojson",
+      "featureCount": 71,
+      "rawBytes": 1619499,
+      "gzipBytes": 332704,
+      "brotliBytes": 192074
+    },
+    {
+      "path": "data/generated/geo/countries/FR.geojson",
+      "featureCount": 109,
+      "rawBytes": 1681254,
+      "gzipBytes": 420070,
+      "brotliBytes": 247300
+    },
+    {
+      "path": "data/generated/geo/countries/IT.geojson",
+      "featureCount": 127,
+      "rawBytes": 1230516,
+      "gzipBytes": 297281,
+      "brotliBytes": 181057
+    },
+    {
+      "path": "data/generated/geo/countries/PE.geojson",
+      "featureCount": 217,
+      "rawBytes": 1784580,
+      "gzipBytes": 416736,
+      "brotliBytes": 242148
+    }
+  ],
+  "features": {
+    "total": 1868,
+    "byLevel": {
+      "country": 245,
+      "admin1": 807,
+      "admin2": 803,
+      "boundary": 13
+    },
+    "byWeatherLevel": {
+      "country": 220,
+      "admin1": 715,
+      "admin2": 933
+    },
+    "hasWeatherRegion": 1854,
+    "duplicateRegionKeys": [
+      "admin1:CN.01",
+      "admin1:CN.02",
+      "admin1:CN.03",
+      "admin1:CN.04",
+      "admin1:CN.05",
+      "admin1:CN.06",
+      "admin1:CN.07",
+      "admin1:CN.08",
+      "admin1:CN.09",
+      "admin1:CN.10",
+      "admin1:CN.11",
+      "admin1:CN.12",
+      "admin1:CN.13",
+      "admin1:CN.14",
+      "admin1:CN.15",
+      "admin1:CN.16",
+      "admin1:CN.18",
+      "admin1:CN.19",
+      "admin1:CN.20",
+      "admin1:CN.21",
+      "admin1:CN.22",
+      "admin1:CN.23",
+      "admin1:CN.24",
+      "admin1:CN.25",
+      "admin1:CN.26",
+      "admin1:CN.28",
+      "admin1:CN.29",
+      "admin1:CN.30",
+      "admin1:CN.31",
+      "admin1:CN.32",
+      "admin1:CN.33",
+      "admin1:ES.07",
+      "admin1:ES.27",
+      "admin1:ES.29",
+      "admin1:ES.31",
+      "admin1:ES.32",
+      "admin1:ES.34",
+      "admin1:ES.39",
+      "admin1:ES.51",
+      "admin1:ES.52",
+      "admin1:ES.53",
+      "admin1:ES.54",
+      "admin1:ES.55",
+      "admin1:ES.56",
+      "admin1:ES.57",
+      "admin1:ES.58",
+      "admin1:ES.59",
+      "admin1:ES.60",
+      "admin1:ES.CE",
+      "admin1:ES.ML",
+      "admin1:FR.11",
+      "admin1:FR.24",
+      "admin1:FR.27",
+      "admin1:FR.28",
+      "admin1:FR.32",
+      "admin1:FR.44",
+      "admin1:FR.52",
+      "admin1:FR.53",
+      "admin1:FR.75",
+      "admin1:FR.76",
+      "admin1:FR.84",
+      "admin1:FR.93",
+      "admin1:FR.94",
+      "admin1:IT.01",
+      "admin1:IT.02",
+      "admin1:IT.03",
+      "admin1:IT.04",
+      "admin1:IT.05",
+      "admin1:IT.06",
+      "admin1:IT.07",
+      "admin1:IT.08",
+      "admin1:IT.09",
+      "admin1:IT.10",
+      "admin1:IT.11",
+      "admin1:IT.12",
+      "admin1:IT.13",
+      "admin1:IT.14",
+      "admin1:IT.15",
+      "admin1:IT.16",
+      "admin1:IT.17",
+      "admin1:IT.18",
+      "admin1:IT.19",
+      "admin1:IT.20",
+      "admin1:PE.01",
+      "admin1:PE.02",
+      "admin1:PE.03",
+      "admin1:PE.04",
+      "admin1:PE.05",
+      "admin1:PE.06",
+      "admin1:PE.07",
+      "admin1:PE.08",
+      "admin1:PE.09",
+      "admin1:PE.10",
+      "admin1:PE.11",
+      "admin1:PE.12",
+      "admin1:PE.13",
+      "admin1:PE.14",
+      "admin1:PE.15",
+      "admin1:PE.16",
+      "admin1:PE.17",
+      "admin1:PE.18",
+      "admin1:PE.19",
+      "admin1:PE.20",
+      "admin1:PE.21",
+      "admin1:PE.22",
+      "admin1:PE.23",
+      "admin1:PE.24",
+      "admin1:PE.25",
+      "admin1:PE.LMA",
+      "admin2:CN.HK.810000",
+      "admin2:CN.MO.820000"
+    ],
+    "skippedRegionKeys": [
+      "africa",
+      "asia",
+      "east_asia",
+      "europe",
+      "north_america",
+      "oceania",
+      "south_america",
+      "southeast_asia"
+    ],
+    "countriesWithoutLowZoomBoundary": []
+  },
+  "tiles": {
+    "totalCount": 660,
+    "fileCount": 660,
+    "rawBytes": 7675156,
+    "gzipBytes": 2334262,
+    "brotliBytes": 2026741,
+    "maxTileBytes": 236758,
+    "maxTilePath": "apps/web/public/data/geo/region-tiles/country/2/2/1.mvt",
+    "packages": [
+      {
+        "id": "admin1",
+        "outputSubdir": "admin1",
+        "minTileZoom": 3,
+        "maxTileZoom": 4,
+        "maxDisplayZoom": 4,
+        "tileCount": 190,
+        "rawBytes": 3249543,
+        "gzipBytes": 852323,
+        "brotliBytes": 737259,
+        "fileCount": 190,
+        "maxTileBytes": 234833,
+        "maxTilePath": "apps/web/public/data/geo/region-tiles/admin1/4/13/8.mvt"
+      },
+      {
+        "id": "admin2",
+        "outputSubdir": "admin2",
+        "minTileZoom": 5,
+        "maxTileZoom": 5,
+        "maxDisplayZoom": 8,
+        "tileCount": 454,
+        "rawBytes": 3710555,
+        "gzipBytes": 1262115,
+        "brotliBytes": 1099184,
+        "fileCount": 454,
+        "maxTileBytes": 198858,
+        "maxTilePath": "apps/web/public/data/geo/region-tiles/admin2/5/16/11.mvt"
+      },
+      {
+        "id": "country",
+        "outputSubdir": "country",
+        "minTileZoom": 1,
+        "maxTileZoom": 2,
+        "maxDisplayZoom": 2,
+        "tileCount": 16,
+        "rawBytes": 715058,
+        "gzipBytes": 219824,
+        "brotliBytes": 190298,
+        "fileCount": 16,
+        "maxTileBytes": 236758,
+        "maxTilePath": "apps/web/public/data/geo/region-tiles/country/2/2/1.mvt"
+      }
+    ],
+    "tiers": [
+      {
+        "id": "country",
+        "packageId": "country",
+        "outputSubdir": "country",
+        "displayZoom": [
+          1,
+          2
+        ],
+        "tileZoom": [
+          1,
+          2
+        ],
+        "tolerance": 8,
+        "featureSelector": "country",
+        "featureCount": 245,
+        "tileCount": 16,
+        "rawBytes": 715058,
+        "gzipBytes": 219824,
+        "brotliBytes": 190298,
+        "maxTileBytes": 236758,
+        "maxTilePath": "apps/web/public/data/geo/region-tiles/country/2/2/1.mvt",
+        "byZoom": [
+          {
+            "zoom": 1,
+            "tileCount": 4,
+            "rawBytes": 41856,
+            "gzipBytes": 30304,
+            "brotliBytes": 27558
+          },
+          {
+            "zoom": 2,
+            "tileCount": 12,
+            "rawBytes": 673202,
+            "gzipBytes": 189520,
+            "brotliBytes": 162740
+          }
+        ]
+      },
+      {
+        "id": "admin1",
+        "packageId": "admin1",
+        "outputSubdir": "admin1",
+        "displayZoom": [
+          3,
+          4
+        ],
+        "tileZoom": [
+          3,
+          4
+        ],
+        "tolerance": 4,
+        "featureSelector": "admin1+country-fallback",
+        "featureCount": 1024,
+        "tileCount": 190,
+        "rawBytes": 3249543,
+        "gzipBytes": 852323,
+        "brotliBytes": 737259,
+        "maxTileBytes": 234833,
+        "maxTilePath": "apps/web/public/data/geo/region-tiles/admin1/4/13/8.mvt",
+        "byZoom": [
+          {
+            "zoom": 3,
+            "tileCount": 44,
+            "rawBytes": 528328,
+            "gzipBytes": 264305,
+            "brotliBytes": 233016
+          },
+          {
+            "zoom": 4,
+            "tileCount": 146,
+            "rawBytes": 2721215,
+            "gzipBytes": 588018,
+            "brotliBytes": 504243
+          }
+        ]
+      },
+      {
+        "id": "admin2",
+        "packageId": "admin2",
+        "outputSubdir": "admin2",
+        "displayZoom": [
+          5,
+          8
+        ],
+        "tileZoom": [
+          5,
+          5
+        ],
+        "tolerance": 3,
+        "featureSelector": "admin2+boundary+admin1/country-fallback",
+        "featureCount": 1732,
+        "tileCount": 454,
+        "rawBytes": 3710555,
+        "gzipBytes": 1262115,
+        "brotliBytes": 1099184,
+        "maxTileBytes": 198858,
+        "maxTilePath": "apps/web/public/data/geo/region-tiles/admin2/5/16/11.mvt",
+        "byZoom": [
+          {
+            "zoom": 5,
+            "tileCount": 454,
+            "rawBytes": 3710555,
+            "gzipBytes": 1262115,
+            "brotliBytes": 1099184
+          }
+        ]
+      }
+    ]
+  }
+}

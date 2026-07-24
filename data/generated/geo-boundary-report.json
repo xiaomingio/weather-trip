@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T18:14:49.809Z",
+  "generatedAt": "2026-07-24T09:35:38.672Z",
   "profileVersion": "country-profiles-3d5372799eab",
   "worldCoverage": {
     "expectedCountryCount": 245,
@@ -11,7 +11,7 @@
   "packages": [
     {
       "id": "world",
-      "outputPath": "apps/web/public/data/geo/world.geojson",
+      "outputPath": "data/generated/geo/world.geojson",
       "featureCount": 1024,
       "rawBytes": 14753718,
       "gzipBytes": 793443,
@@ -20,7 +20,7 @@
     },
     {
       "id": "region-outlines",
-      "outputPath": "apps/web/public/data/geo/region-outlines.geojson",
+      "outputPath": "data/generated/geo/region-outlines.geojson",
       "featureCount": 33,
       "rawBytes": 2155238,
       "gzipBytes": 361146,
@@ -29,7 +29,7 @@
     },
     {
       "id": "CN",
-      "outputPath": "apps/web/public/data/geo/countries/CN.geojson",
+      "outputPath": "data/generated/geo/countries/CN.geojson",
       "featureCount": 428,
       "rawBytes": 3537150,
       "gzipBytes": 937058,
@@ -38,7 +38,7 @@
     },
     {
       "id": "ES",
-      "outputPath": "apps/web/public/data/geo/countries/ES.geojson",
+      "outputPath": "data/generated/geo/countries/ES.geojson",
       "featureCount": 71,
       "rawBytes": 1619499,
       "gzipBytes": 332704,
@@ -47,7 +47,7 @@
     },
     {
       "id": "FR",
-      "outputPath": "apps/web/public/data/geo/countries/FR.geojson",
+      "outputPath": "data/generated/geo/countries/FR.geojson",
       "featureCount": 109,
       "rawBytes": 1681254,
       "gzipBytes": 420070,
@@ -56,7 +56,7 @@
     },
     {
       "id": "IT",
-      "outputPath": "apps/web/public/data/geo/countries/IT.geojson",
+      "outputPath": "data/generated/geo/countries/IT.geojson",
       "featureCount": 127,
       "rawBytes": 1230516,
       "gzipBytes": 297281,
@@ -65,7 +65,7 @@
     },
     {
       "id": "PE",
-      "outputPath": "apps/web/public/data/geo/countries/PE.geojson",
+      "outputPath": "data/generated/geo/countries/PE.geojson",
       "featureCount": 217,
       "rawBytes": 1784580,
       "gzipBytes": 416736,

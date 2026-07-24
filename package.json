@@ -22,9 +22,10 @@
     "static:profiles": "npm run static:tourism && tsx scripts/generate-country-profiles.ts",
     "static:cities": "npm run build --workspace weather-core && npm run static:profiles && tsx scripts/generate-static-cities.ts",
     "static:geo": "tsx scripts/generate-static-geo.ts",
-    "static:data": "npm run static:cities && npm run static:geo",
+    "static:geo:tiles": "tsx scripts/generate-static-geo-tiles.ts",
+    "static:data": "npm run static:cities && npm run static:geo && npm run static:geo:tiles",
     "weather:refresh": "tsx scripts/generate-static-weather.ts",
-    "tourism:raw": "tsx scripts/extract-tourism-destinations.ts"
+    "tourism:raw": "tsx scripts/generate-tourism-raw.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

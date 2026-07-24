@@ -4,7 +4,7 @@
 
 天气覆盖策略、C1/C2/C3 分层、城市选择和区域着色口径见 `docs/specs/30-weather-coverage-design.md`。公开数据如何分块、Wire 字段如何组织、浏览器如何请求和缓存见 `docs/specs/32-public-data-contract.md`。本文只定义数据从哪里来、经过哪些生成步骤、产出到哪里，以及哪些判断必须留在离线生成阶段。
 
-Weather Trip 使用静态公开数据运行。用户请求读取 Pages 和 R2 上的 JSON / GeoJSON，不连接数据库，不调用请求时 API，也不通过 Pages Functions 或 Workers 代理公开数据。
+Weather Trip 使用静态公开数据运行。用户请求读取 Pages 和 R2 上的 JSON / MVT / `.bin`，不连接数据库，不调用请求时 API，也不通过 Pages Functions 或 Workers 代理公开数据。
 
 ## 五类数据源
 
@@ -111,7 +111,7 @@ flowchart TD
   input["人工输入<br/>coverage / tier / tourism / admin2 / boundary labels"]
   offline["离线生成<br/>对齐地点、筛选城市、标准化边界、刷新天气"]
   generated["生成产物与报告<br/>data/generated/*"]
-  publicData["公开数据<br/>cities.json / geo/*.geojson / weather/*"]
+  publicData["公开数据<br/>cities.json / geo/region-tiles/*.mvt / weather/*"]
   browser["Browser<br/>本地筛选、排序、地图聚合和展示"]
 
   design --> input
@@ -122,16 +122,16 @@ flowchart TD
   publicData --> browser
 ```
 
-上图只表达概念边界：外部来源保持 raw 语义，人工判断进入 `data/input/*.yml`，离线生成产物进入 `data/generated/*` 和公开数据目录，浏览器只读取公开 JSON / GeoJSON。脚本级生成流程按关键数据拆开，7 个生成脚本都在图里出现，但不要求一脚本一张图。
+上图只表达概念边界：外部来源保持 raw 语义，人工判断进入 `data/input/*.yml`，离线生成产物进入 `data/generated/*` 和公开数据目录，浏览器只读取公开 JSON / MVT / `.bin`。脚本级生成流程按关键数据拆开，7 个生成脚本都在图里出现，但不要求一脚本一张图。
 
 ### 图 2：旅行目的地
 
-旅行目的地生成包含 raw 抽取和静态目的地生成。人工复核 raw 目的地后，只写回 `data/input/tourism-destination-overrides.yml`。
+旅行目的地生成包含 raw 快照生成和静态目的地生成。人工复核 raw 目的地后，只写回 `data/input/tourism-destination-overrides.yml`。
 
 ```mermaid
 flowchart TB
   externalTourism["旅行目的地外部来源"]
-  extractTourism["tourism:raw<br/>extract-tourism-destinations.ts"]
+  generateTourismRaw["tourism:raw<br/>generate-tourism-raw.ts"]
   rawTourism["data/raw/tourism-destinations/"]
   tourismReview["人工复核 raw 目的地"]
   tourismInput["data/input/tourism-destination-overrides.yml"]
@@ -140,7 +140,7 @@ flowchart TB
   tourismData["data/generated/tourism-destinations.json<br/>后续分档和城市选择输入"]
   tourismReport["data/generated/tourism-destination-report.*<br/>复核匹配、歧义和未命中"]
 
-  externalTourism -->|抓取 / 抽取| extractTourism --> rawTourism
+  externalTourism -->|抓取 / 生成 raw 快照| generateTourismRaw --> rawTourism
   rawTourism -->|人工确认、合并、映射| tourismReview --> tourismInput
   rawTourism -->|候选目的地来源| generateTourism
   tourismInput -->|确认结果和保留权重| generateTourism
@@ -208,7 +208,7 @@ flowchart TB
 
 ### 图 5：Geo 区块数据
 
-`static:geo` 使用 profiles、城市主索引、边界 raw 和边界 input 生成前端可 hover、着色和定位的 GeoJSON 区块，并用报告记录匹配、缺口和体积。
+`static:geo` 使用 profiles、城市主索引、边界 raw 和边界 input 生成标准化 GeoJSON 中间产物，并用报告记录匹配、缺口和体积。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
 
 ```mermaid
 flowchart TB
@@ -220,8 +220,10 @@ flowchart TB
   boundaryLabels["data/input/boundary-label-overrides.yml"]
   admin2Support["data/input/admin2-support-overrides.yml"]
   generateGeo["static:geo<br/>generate-static-geo.ts"]
-  publicGeo["apps/web/public/data/geo/*<br/>前端区块、轮廓和 C3 详情包"]
+  publicGeo["data/generated/geo/*.geojson<br/>边界中间产物"]
+  geoTiles["apps/web/public/data/geo/region-tiles/**/*.mvt<br/>前端运行时边界瓦片"]
   geoReport["data/generated/geo-boundary-report.*<br/>复核匹配率、缺口、geometry 和体积"]
+  tileReport["data/generated/geo-tile-report.*<br/>瓦片数量、体积和 zoom 分档"]
 
   profilesGenerated -->|C2/C3 详情层级| generateGeo
   citiesGenerated -->|regionKey 期望和点位校验| generateGeo
@@ -232,6 +234,8 @@ flowchart TB
   boundaryLabels -->|boundary-only 展示名| generateGeo
   generateGeo --> publicGeo
   generateGeo --> geoReport
+  publicGeo --> geoTiles
+  geoTiles --> tileReport
 ```
 
 ### 图 6：天气刷新
@@ -254,9 +258,9 @@ flowchart TB
 
 `data/generated/tourism-destinations.json` 和 `data/generated/country-profiles.json` 都是生成产物，不手工维护。覆盖规则、raw 旅行清单和人工输入进入固定生成链路后，从 GeoNames raw 到最终城市、边界和天气 JSON 都可重复运行。
 
-边界和天气是两条数据流。GeoJSON 区块即使没有天气样本也必须保留，前端按无数据样式展示；天气缺失只影响颜色和 tooltip 的数据内容，不决定区块是否存在。底图和天气瓦片不生成本项目的 `regionKey`，也不能反向影响区域聚合。
+边界和天气是两条数据流。MVT 区块即使没有天气样本也必须保留，前端按无数据样式展示；天气缺失只影响颜色和 tooltip 的数据内容，不决定区块是否存在。底图不生成本项目的 `regionKey`，也不能反向影响区域聚合。
 
-Geo 区块数据生成按前端会加载的视图校验输出。全球视图读取 `world.geojson`，其中 C1 城市聚合需要 `country:*`，C2/C3 城市聚合需要 `admin1:*`；选中地区高亮和地图定位读取 `region-outlines.geojson`，需要六大洲、东亚、东南亚和 C2/C3 国家这些可选项的完整轮廓；C3 国家详情读取 `countries/<country>.geojson`，需要对应 `admin2:*` 和人工保留的 `boundary:*`。`scripts/generate-static-geo.ts` 会从 `data/generated/cities.json` 推导当前前端会产生的 `regionKey`，再检查这些 key 是否存在于对应 GeoJSON 包，并确认每个可见 key 的 geometry 至少覆盖一个属于自己的城市点；同时 C2/C3 国家必须完整匹配 GeoNames admin1/admin2 目标集合。缺失或点位不覆盖时生成任务失败退出，不能只靠人工看报告发现。
+Geo 区块数据生成按前端会加载的 zoom 档校验输出。`country` 档需要 `country:*`，`admin1` 档需要 `admin1:*` 和缺少一级区域时的 `country:*` fallback，`admin2` 档需要 `admin2:*`、人工保留的 `boundary:*`，以及缺少二级区域时的 `admin1:*` / `country:*` fallback。`scripts/generate-static-geo.ts` 会从 `data/generated/cities.json` 推导当前前端会产生的 `regionKey`，再检查这些 key 是否存在于对应中间 GeoJSON 包，并确认每个可见 key 的 geometry 至少覆盖一个属于自己的城市点；`scripts/generate-static-geo-tiles.ts` 负责统计三档瓦片数量、体积、最大单瓦片和缺失国家边界。缺失或点位不覆盖时生成任务失败退出，不能只靠人工看报告发现。
 
 需要人工判断时，只补充 `data/input/*.yml` 或覆盖规则，不直接修改生成产物。
 

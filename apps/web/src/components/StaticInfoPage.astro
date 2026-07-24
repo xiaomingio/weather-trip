@@ -1,0 +1,99 @@
+---
+/**
+ * 文件说明: 渲染关于、隐私声明和 Disclaimer 的中英文静态正文页，并复用站点顶部导航。
+ * 对应文档: docs/specs/32-public-data-contract.md
+ */
+import Analytics from '@/components/Analytics.astro';
+import SiteNav from '@/components/SiteNav.astro';
+import SitePreferences from '@/components/SitePreferences.astro';
+import type { DisplayLocale } from '@/domain/format';
+import { buildTopTabPath } from '@/domain/navigation';
+import { buildAbsoluteUrl, ogImagePath } from '@/domain/seo';
+import { buildStaticInfoPath, getStaticInfoPage, type StaticInfoPageId } from '@/domain/static-info';
+import '@/styles/global.css';
+import '@/styles/static-info.css';
+
+type Props = {
+  locale: DisplayLocale;
+  pageId: StaticInfoPageId;
+};
+
+const { locale, pageId } = Astro.props;
+const page = getStaticInfoPage(locale, pageId);
+const otherLocale: DisplayLocale = locale === 'zh' ? 'en' : 'zh';
+const homePath = buildTopTabPath(locale, 'landing');
+const otherPagePath = buildStaticInfoPath(otherLocale, pageId);
+const copy = {
+  zh: {
+    unitToggle: '切换摄氏度与华氏度',
+    languageToggle: 'Switch to English',
+    navLabel: '天气旅行',
+    backHome: '返回首页'
+  },
+  en: {
+    unitToggle: 'Switch Celsius / Fahrenheit',
+    languageToggle: '切换到中文',
+    navLabel: 'Weather Trip',
+    backHome: 'Back home'
+  }
+}[locale];
+---
+
+<html lang={locale === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{page.title} | Weather Trip</title>
+    <meta name="description" content={page.description} />
+    <link rel="canonical" href={buildAbsoluteUrl(page.path)} />
+    <link rel="alternate" hreflang="en" href={buildAbsoluteUrl(buildStaticInfoPath('en', pageId))} />
+    <link rel="alternate" hreflang="zh-Hans" href={buildAbsoluteUrl(buildStaticInfoPath('zh', pageId))} />
+    <link rel="alternate" hreflang="x-default" href={buildAbsoluteUrl(buildStaticInfoPath('en', pageId))} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Weather Trip" />
+    <meta property="og:title" content={`${page.title} | Weather Trip`} />
+    <meta property="og:description" content={page.description} />
+    <meta property="og:url" content={buildAbsoluteUrl(page.path)} />
+    <meta property="og:image" content={buildAbsoluteUrl(ogImagePath)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <Analytics />
+  </head>
+  <body class="info-page">
+    <main class="info-shell">
+      <SiteNav
+        locale={locale}
+        activeTab="landing"
+        unitLabel="°C"
+        unitToggleLabel={copy.unitToggle}
+        localeHref={otherPagePath}
+        localeLabel={copy.languageToggle}
+        navLabel={copy.navLabel}
+      />
+
+      <article class="info-document">
+        <a class="info-back-link" href={homePath}>{copy.backHome}</a>
+        <header class="info-header">
+          <p class="info-kicker">Weather Trip</p>
+          <h1>{page.title}</h1>
+          <p class="info-description">{page.description}</p>
+          <p class="info-updated">{page.updatedLabel}</p>
+        </header>
+
+        <div class="info-sections">
+          {
+            page.sections.map((section) => (
+              <section class="info-section">
+                <h2>{section.heading}</h2>
+                {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+              </section>
+            ))
+          }
+        </div>
+      </article>
+    </main>
+
+    <SitePreferences />
+    <script is:inline src="/landing/nav-prefs.js"></script>
+  </body>
+</html>

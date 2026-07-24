@@ -55,9 +55,8 @@ const alternateLinks = getAlternateLinks('weather-map');
         locale={locale}
         activeTab="weather-map"
         unitToggleLabel={unitToggleLabel}
-        localeHref={`${buildTopTabPath(otherLocale, 'weather-map')}${Astro.url.search}`}
+        localeHref={buildTopTabPath(otherLocale, 'weather-map')}
         localeLabel={languageLabel}
-        dynamicToolLinks
       />
       <WeatherMapDashboard client:load locale={locale} initialSearch={Astro.url.search} />
     </main>

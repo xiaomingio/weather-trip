@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-07-24T09:37:57.714Z",
+  "sourceLayer": "weather_region",
+  "renderMode": "vector",
+  "packages": {
+    "admin1": {
+      "tiles": [
+        "/data/geo/region-tiles/admin1/{z}/{x}/{y}.mvt"
+      ],
+      "minzoom": 3,
+      "maxzoom": 4,
+      "displayMaxZoom": 4
+    },
+    "admin2": {
+      "tiles": [
+        "/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt"
+      ],
+      "minzoom": 5,
+      "maxzoom": 5,
+      "displayMaxZoom": 8
+    },
+    "country": {
+      "tiles": [
+        "/data/geo/region-tiles/country/{z}/{x}/{y}.mvt"
+      ],
+      "minzoom": 1,
+      "maxzoom": 2,
+      "displayMaxZoom": 2
+    }
+  }
+}

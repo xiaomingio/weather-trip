@@ -13,7 +13,6 @@ type Props = {
   localeHref: string;
   localeLabel: string;
   class?: string;
-  dynamicToolLinks?: boolean;
   navLabel?: string;
   tabHrefs?: Partial<Record<TopTabId, string>>;
   unitLabel?: string;
@@ -26,7 +25,6 @@ const {
   unitToggleLabel,
   localeHref,
   localeLabel,
-  dynamicToolLinks = false,
   navLabel = 'Weather Trip',
   tabHrefs = {},
   unitLabel = '°C',
@@ -66,7 +64,6 @@ const otherLocale = locale === 'zh' ? 'en' : 'zh';
       class="nav-icon-btn"
       href={localeHref}
       data-locale-link={otherLocale}
-      data-dashboard-locale-link={dynamicToolLinks ? 'true' : undefined}
       aria-label={localeLabel}
       title={localeLabel}
     >

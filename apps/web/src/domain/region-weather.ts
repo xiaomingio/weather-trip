@@ -71,11 +71,10 @@ function regionIdForCity(city: City, activeRegion: RegionKey, allCities: City[])
   const chinaCompanionRegion = chinaCompanionRegionForCity(city, activeRegion);
   if (chinaCompanionRegion) return chinaCompanionRegion;
 
-  const selectedAdmin1 = parseAdmin1Region(activeRegion);
   const activeCountryCode = primaryCountryCodeForRegion(activeRegion);
-  const countryTier = countryTierForCountry(allCities, activeCountryCode ?? city.countryCode);
+  const countryTier = activeCountryCode ? countryTierForCountry(allCities, activeCountryCode) : city.countryTier ?? 'C1';
 
-  if ((selectedAdmin1 || activeCountryCode) && countryTier === 'C3') {
+  if (countryTier === 'C3') {
     if (!city.admin1GroupCode || !city.admin2Code) return null;
     return {
       id: `admin2:${city.countryCode}.${city.admin1GroupCode}.${city.admin2Code}`,
@@ -86,8 +85,7 @@ function regionIdForCity(city: City, activeRegion: RegionKey, allCities: City[])
     };
   }
 
-  const cityCountryTier = city.countryTier ?? 'C1';
-  if ((activeCountryCode && countryTier !== 'C1') || (!activeCountryCode && cityCountryTier !== 'C1')) {
+  if (countryTier !== 'C1') {
     if (!city.admin1GroupCode) return null;
     return {
       id: `admin1:${city.countryCode}.${city.admin1GroupCode}`,

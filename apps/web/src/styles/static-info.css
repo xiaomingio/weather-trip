@@ -1,0 +1,141 @@
+/**
+ * 文件说明: 定义关于、隐私声明和 Disclaimer 静态正文页的背景、导航承接和阅读排版。
+ * 对应文档: docs/specs/32-public-data-contract.md
+ */
+
+html:has(body.info-page),
+body.info-page {
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+}
+
+body.info-page {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(220, 235, 234, 0.85), transparent 32%),
+    radial-gradient(circle at 88% 10%, rgba(216, 173, 87, 0.22), transparent 30%),
+    linear-gradient(180deg, #fbfaf4 0%, #f4f1e8 100%);
+  background-color: #f4f1e8;
+  color: var(--ink);
+  margin: 0;
+}
+
+body.info-page .info-shell {
+  align-content: start;
+  display: grid;
+  gap: clamp(22px, 4vw, 48px);
+  margin: 0 auto;
+  max-width: var(--app-shell-max-width);
+  min-height: 100svh;
+  padding: var(--page-pad);
+  width: 100%;
+}
+
+body.info-page .info-document {
+  align-content: start;
+  display: grid;
+  gap: clamp(28px, 4vw, 52px);
+  padding: clamp(36px, 6vw, 84px) clamp(18px, 5vw, 80px) clamp(48px, 8vw, 96px);
+  position: relative;
+  width: 100%;
+}
+
+body.info-page .info-back-link {
+  color: rgba(68, 84, 79, 0.72);
+  font-size: 13px;
+  font-weight: 760;
+  justify-self: start;
+  line-height: 1;
+  text-decoration: none;
+}
+
+body.info-page .info-back-link:hover {
+  color: var(--ink);
+}
+
+body.info-page .info-back-link:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+body.info-page .info-header {
+  display: grid;
+  gap: 16px;
+}
+
+body.info-page .info-kicker,
+body.info-page .info-updated {
+  color: var(--sage, #587b67);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+body.info-page h1 {
+  color: var(--ink);
+  font-family: "Songti SC", "STSong", "Noto Serif SC", "Noto Serif CJK SC", Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 7vw, 86px);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.04;
+  margin: 0;
+}
+
+body.info-page .info-description {
+  color: var(--soft-ink);
+  font-size: clamp(18px, 2.1vw, 24px);
+  line-height: 1.65;
+  margin: 0;
+}
+
+body.info-page .info-sections {
+  display: grid;
+  gap: clamp(28px, 4vw, 44px);
+  width: 100%;
+}
+
+body.info-page .info-section {
+  border-top: 1px solid rgba(23, 35, 31, 0.14);
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+body.info-page h2 {
+  color: var(--ink);
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 820;
+  letter-spacing: 0;
+  line-height: 1.18;
+  margin: 0;
+}
+
+body.info-page .info-section p {
+  color: var(--soft-ink);
+  font-size: 17px;
+  line-height: 1.82;
+  margin: 0;
+}
+
+@media (max-width: 620px) {
+  body.info-page .info-shell {
+    gap: 20px;
+  }
+
+  body.info-page .info-document {
+    gap: 30px;
+    padding: 24px 4px 48px;
+  }
+
+  body.info-page h1 {
+    font-size: 38px;
+  }
+
+  body.info-page .info-description,
+  body.info-page .info-section p {
+    font-size: 16px;
+  }
+}

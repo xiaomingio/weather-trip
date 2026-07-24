@@ -82,7 +82,7 @@ body.landing-page .secondary-link:focus-visible {
 body.landing-page .page {
   display: grid;
   gap: 14px;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
   margin: 0 auto;
   max-width: var(--app-shell-max-width);
   min-height: 100svh;
@@ -545,6 +545,32 @@ body.landing-page .hero-art figcaption strong {
   white-space: nowrap;
 }
 
+body.landing-page .landing-footer {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: center;
+  min-height: 22px;
+}
+
+body.landing-page .landing-footer a {
+  color: rgba(68, 84, 79, 0.58);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+body.landing-page .landing-footer a:hover {
+  color: rgba(23, 35, 31, 0.82);
+}
+
+body.landing-page .landing-footer a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
 /* 宽屏：整页锁在视口内，Hero 吃满剩余高度 */
 @media (min-width: 1101px) {
   html:has(body.landing-page),
@@ -570,7 +596,7 @@ body.landing-page .hero-art figcaption strong {
   }
 
   body.landing-page .hero {
-    --hero-art-max-height: min(620px, max(170px, calc(100svh - 142px)));
+    --hero-art-max-height: min(620px, max(170px, calc(100svh - 164px)));
     column-gap: clamp(32px, 6vw, 72px);
     padding: clamp(16px, 3vh, 28px) min(3vw, 48px);
   }
@@ -659,7 +685,7 @@ body.landing-page .hero-art figcaption strong {
 
 @media (min-width: 1101px) and (max-height: 520px) {
   body.landing-page .hero {
-    --hero-art-max-height: min(500px, max(150px, calc(100svh - 124px)));
+    --hero-art-max-height: min(500px, max(150px, calc(100svh - 146px)));
     grid-template-columns: minmax(0, var(--hero-text-width)) minmax(0, 1fr);
     padding-block: 12px;
   }
@@ -733,7 +759,7 @@ body.landing-page .hero-art figcaption strong {
 
   body.landing-page .page {
     gap: 12px;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
     height: auto;
     max-height: none;
     min-height: 100svh;
@@ -772,16 +798,18 @@ body.landing-page .hero-art figcaption strong {
     grid-row: 2;
     max-width: none;
     text-align: center;
+    width: 100%;
   }
 
   body.landing-page h1 {
     justify-content: center;
-    max-width: var(--hero-text-width);
+    max-width: none;
     width: 100%;
   }
 
   body.landing-page .lede {
-    max-width: var(--hero-text-width);
+    max-width: none;
+    width: 100%;
   }
 
   body.landing-page .actions,
@@ -807,7 +835,6 @@ body.landing-page .hero-art figcaption strong {
 
   body.landing-page h1 {
     font-size: 38px;
-    max-width: var(--hero-text-width);
     width: 100%;
   }
 

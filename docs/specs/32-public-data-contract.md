@@ -4,7 +4,7 @@
 
 数据来源和生成链路见 `docs/specs/31-data-flow.md`。本文定义浏览器会请求哪些公开数据文件、这些文件如何分块、城市 Wire JSON 和天气二进制包如何组织、缓存怎么设置，以及何时需要调整分片策略。
 
-公开数据按 5,000 个以内 `city` 设计。用户请求读取静态 JSON / GeoJSON / `.bin`，本地完成地图、筛选、排序和城市详情展示。
+公开数据按 5,000 个以内 `city` 设计。用户请求读取静态 JSON / MVT / `.bin`，本地完成地图、筛选、排序和城市详情展示。
 
 ## 请求路径
 
@@ -17,9 +17,9 @@
   -> 建立 cityById、forecast matrix indexes、region indexes
 
 打开 Weather Map
-  -> 全球、大洲、C2 国家视图读取 /data/geo/world.geojson
-  -> 选中大洲、区域和国家时读取 /data/geo/region-outlines.geojson 做完整轮廓和地图定位
-  -> C3 国家或 C3 一级区域视图读取 /data/geo/countries/<country>.geojson
+  -> MapLibre 按当前 viewport / zoom 请求 /data/geo/region-tiles/{country,admin1,admin2}/{z}/{x}/{y}.mvt
+  -> z1-z2 显示 country，z3-z4 显示 admin1/fallback，z5-z8 显示 admin2/fallback
+  -> 按 regionKey 匹配天气 summary 并更新可见瓦片样式
 
 打开 City Finder
   -> 不加载 GeoJSON
@@ -34,8 +34,8 @@ World = 全部支持城市
 切 date = 从 weather/forecast-14d/<date>.bin 取 dateIndex
 切 layer = 换展示字段，不请求新天气数据
 选中城市 = 用 cityId 从 weather/forecast-14d/<date>.bin 取 14 天数组
-选中地区轮廓 = 大区/洲和 C2/C3 国家使用 region-outlines.geojson 里的同名完整 feature；国家内子地区使用当前边界包里同一 regionKey 的完整 feature；缺少自身 feature 时不拼下级分片
-切国家详情 = C2 继续使用 world.geojson 的一级区域边界；C3 加载 countries/<country>.geojson 并按二级区域着色
+切地图缩放 = 只按 zoom 档切换边界瓦片，不按选中地区切换边界包
+切地区 = 自动相机只使用当前结果城市点范围；不为 bounds 读取完整行政区 outline
 ```
 
 City Finder：
@@ -52,9 +52,10 @@ City Finder：
 | 文件 | 位置 | 作用 |
 | --- | --- | --- |
 | `/data/cities.json` | Cloudflare Pages | 城市主索引；保存城市 ID、中英文名、坐标、海拔、国家/一级/二级区域字典和默认排序 |
-| `/data/geo/world.geojson` | Cloudflare Pages | 全球混合边界；C1 国家面，C2/C3 一级区域面 |
-| `/data/geo/region-outlines.geojson` | Cloudflare Pages | 选中地区高亮和地图定位使用的可选项轮廓包 |
-| `/data/geo/countries/<country>.geojson` | Cloudflare Pages | C3 国家详情包；包含该国一级和二级区域面 |
+| `/data/geo/region-tiles/manifest.json` | Cloudflare Pages | 地图边界瓦片 manifest；记录 source-layer、分包和 zoom 范围 |
+| `/data/geo/region-tiles/country/{z}/{x}/{y}.mvt` | Cloudflare Pages | `z1-z2` 国家级边界瓦片 |
+| `/data/geo/region-tiles/admin1/{z}/{x}/{y}.mvt` | Cloudflare Pages | `z3-z4` 一级行政区边界瓦片 |
+| `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | Cloudflare Pages | `z5` 高精度边界瓦片，`z6-z8` overzoom，缺少二级行政区时回退到上一层 |
 | `weather/current.json` | Cloudflare R2 | 活跃天气入口；保存天气版本、生成时间、日期窗口、默认日期、forecast bin 路径、字节数和 sha256 |
 | `weather/forecast-14d/<date>.bin` | Cloudflare R2 | 14 天预报二进制包；保存 `cityId[]`、`date[]`、天气源海拔和每日数值矩阵 |
 
@@ -64,21 +65,23 @@ City Finder：
 apps/web/public/data/
 ├── cities.json
 ├── geo/
-│   ├── world.geojson
-│   ├── region-outlines.geojson
-│   └── countries/
-│       └── <C3-country>.geojson
+│   └── region-tiles/
+│       ├── manifest.json
+│       ├── country/{z}/{x}/{y}.mvt
+│       ├── admin1/{z}/{x}/{y}.mvt
+│       └── admin2/{z}/{x}/{y}.mvt
 └── weather/
     ├── current.json
     └── forecast-14d/
         └── local.bin
 ```
 
-前端数据 base URL 由环境变量或构建配置决定。`PUBLIC_STATIC_DATA_BASE_URL` 用于 `cities.json`，天气入口优先使用 `PUBLIC_R2_DATA_BASE_URL`；GeoJSON 边界当前随 Pages 发布在 `/data/geo/*`：
+前端数据 base URL 由环境变量或构建配置决定。`PUBLIC_STATIC_DATA_BASE_URL` 用于 `cities.json`，天气入口优先使用 `PUBLIC_R2_DATA_BASE_URL`，地图瓦片默认随 Pages 发布在 `/data/geo/region-tiles`：
 
 ```text
 PUBLIC_STATIC_DATA_BASE_URL=/data
 PUBLIC_R2_DATA_BASE_URL=https://static.weather-trip.example.com
+PUBLIC_GEO_VECTOR_BASE_URL=/data/geo/region-tiles
 ```
 
 `PUBLIC_R2_DATA_BASE_URL` 为空时，天气 current 和 forecast 从 `PUBLIC_STATIC_DATA_BASE_URL/weather/*` 读取；本地默认就是 `/data/weather/*`。
@@ -129,7 +132,7 @@ type CityRowWire = [
 
 城市 JSON 使用短字段名和数组行是为了减小传输体积，并让 gzip / Brotli 更容易压缩。重复值放进 `d` 字典：国家、一级区域和二级区域都用下标引用。城市自己的中英文名只出现一次；天气包不保存城市名、国家名、行政区名和坐标。
 
-`WorldRegionCode` 只表达城市所属的六大洲。Weather Map 的固定地区选项还包含 `east_asia` 和 `southeast_asia`，它们由前端按国家集合匹配城市，并由 `region-outlines.geojson` 提供完整轮廓，不写入国家字典的 `worldRegion` 字段。
+`WorldRegionCode` 只表达城市所属的六大洲。Weather Map 的固定地区选项还包含 `east_asia` 和 `southeast_asia`，它们由前端按国家集合匹配城市，不写入国家字典的 `worldRegion` 字段。
 
 国家名称默认来自标准地区显示名；`CN` 在本产品里展示为 `China / 中国`。`CN` 的 C3 详情以中国大陆地级区块为主体，并把香港、澳门和台湾作为 companion C3 区块放入中国详情图；香港、澳门和台湾仍作为独立 C1 地区进入城市字典和全球视图。
 
@@ -261,55 +264,62 @@ Open-Meteo Forecast API 支持最多 16 天预报；本项目使用未来 14 天
 
 ## 地图边界数据
 
-代表点进入 `cities.json` 只解决天气数据。地图按国家、一级区域和二级区域着色还需要 GeoJSON 边界。
+代表点进入 `cities.json` 只解决天气数据。地图按国家、一级区域和二级区域着色使用静态 MVT 边界瓦片。
 
 ```ts
-type RegionGeoFeatureProperties = {
-  regionKey: string;
+type WeatherRegionTileFeature = {
+  regionKey: string; // country:FR / admin1:CN.13 / admin2:ES.51.01
+  level: 'country' | 'admin1' | 'admin2' | 'boundary';
+  countryCode: string;
+  admin1Code?: string;
+  admin2Code?: string;
+  labelZh?: string;
+  labelEn?: string;
+  weatherLevel: 'country' | 'admin1' | 'admin2';
+  hasWeatherRegion: boolean;
+  hasCity: boolean;
 };
 ```
 
 | 图层 | 文件 | 读取时机 | 匹配方式 |
 | --- | --- | --- | --- |
-| 全球混合边界 | `/data/geo/world.geojson` | 全球、大洲、区域和 C2 国家视图读取 | C1 国家使用 `country:<countryCode>`；C2/C3 国家一级区域使用 `admin1:<countryCode>.<admin1Code>` |
-| 选中地区轮廓 | `/data/geo/region-outlines.geojson` | Weather Map 初始化后读取，用于国家和大区的完整边框与地图定位 | 固定大区使用 `asia`、`east_asia`、`southeast_asia`、`europe` 等同名 feature；C2/C3 国家使用 `country:<countryCode>` 完整国家面；国家内子地区使用当前边界包中同一 `regionKey` 的完整 feature |
-| C3 国家详情边界 | `/data/geo/countries/<country>.geojson` | 进入 C3 国家或 C3 一级区域时懒加载 | 同时包含 `admin1:<countryCode>.<admin1Code>` 和 `admin2:<countryCode>.<admin1Code>.<admin2Code>` |
+| 国家级瓦片 | `/data/geo/region-tiles/country/{z}/{x}/{y}.mvt` | 地图 `z1-z2` 且视口覆盖到对应 tile 时读取 | `country:<countryCode>` |
+| 一级区域瓦片 | `/data/geo/region-tiles/admin1/{z}/{x}/{y}.mvt` | 地图 `z3-z4` 且视口覆盖到对应 tile 时读取 | `admin1:<countryCode>.<admin1Code>`；没有一级区域时回退 `country:<countryCode>` |
+| 二级区域瓦片 | `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | 地图 `z5-z8` 且视口覆盖到对应 tile 时读取；实际只生成 z5，z6-z8 overzoom | `admin2:<countryCode>.<admin1Code>.<admin2Code>`；没有二级区域时回退 admin1，再缺失时回退 country |
 | 城市 | `/data/cities.json` | Weather Map 和 City Finder 共用 | 解码城市字典后生成同一套 region key |
 
-边界文件必须按 `regionKey` 匹配城市聚合结果。无法匹配的区域不着色，并写入城市选择报告或边界生成报告。marker 和区域着色使用同一批城市。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 展示样本数、代表城市和聚合方式。
+边界瓦片必须按 `regionKey` 匹配城市聚合结果。无法匹配的区域使用无数据样式或只展示边界名，并写入城市选择报告、边界生成报告或瓦片报告。marker 和区域着色使用同一批城市。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。
 
-前端地区选择只暴露大区、C2/C3 国家和国家内一级行政区。`admin2:<countryCode>.<admin1Code>.<admin2Code>` 只用于 C3 国家详情图的边界着色和聚合结果；旧链接带有 admin2 时，运行时归一到所属 `admin1`。选中地区的地图定位和高亮边框使用同一份轮廓 GeoJSON：大区/洲有同名完整 feature，C2/C3 国家有完整国家面，国家内一级行政区使用自身完整 feature。
+前端地区选择只暴露大区、C2/C3 国家和国家内一级行政区。`admin2:<countryCode>.<admin1Code>.<admin2Code>` 只用于高 zoom 边界着色和聚合结果；旧链接带有 admin2 时，运行时归一到所属 `admin1`。切换地区时的自动相机只使用当前结果城市点范围，世界视图使用固定默认相机，不再为了 bounds 读取完整行政区 outline。
 
-边界源里的 `adcode`、`shapeName`、`gn_a1_code`、`iso_3166_2` 等字段只在生成阶段使用。发布到前端的 GeoJSON 只保存 `regionKey` 和 geometry，不保存展示名；国家、一级/二级区域名称来自 `cities.json`。只需要地点名字、搜索或城市选择的场景只读取 `cities.json`，不加载 geo 分块。
+边界源里的 `adcode`、`shapeName`、`gn_a1_code`、`iso_3166_2` 等字段只在生成阶段使用。发布到前端的 MVT 只保存渲染和 hover 需要的最小属性；国家、一级/二级区域名称优先来自 `cities.json` 和天气 summary，边界自身的 `labelZh` / `labelEn` 只作为无数据区域 hover 兜底。只需要地点名字、搜索或城市选择的场景只读取 `cities.json`，不加载地图瓦片。
 
 ## 文件预算
 
-估算口径是 5,000 个以内城市、14 天预报窗口、国家/一级区域边界，以及覆盖设计要求的 C3 二级区域边界。尺寸按当前 3,841 个城市、5 个 C3 国家详情包校准，指生产 minified JSON / GeoJSON；gzip 和 Brotli 为本地压缩估算，线上必须确认实际响应压缩。
+估算口径是 5,000 个以内城市、14 天预报窗口、国家/一级区域边界，以及覆盖设计要求的 C3 二级区域边界。尺寸按当前 3,841 个城市和三档 MVT 产物校准；gzip 和 Brotli 为本地压缩估算，线上必须确认实际响应压缩。
 
 | 文件 | 用途 | 何时读取 | 数量 | 原始尺寸 | gzip | Brotli |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
 | `/data/cities.json` | 城市主索引 | Weather Map 和 City Finder 都会读取 | 1 | 0.5-0.8 MiB | 180-300 KiB | 140-240 KiB |
 | `weather/current.json` | 活跃天气入口 | 进入工具页后读取；短缓存，用来发现天气是否更新 | 1 | < 2 KiB | < 1 KiB | < 1 KiB |
 | `weather/forecast-14d/<date>.bin` | 14 天预报包 | 读取 current 后加载；City Finder 用它筛选天气，Weather Map 用它按日期和图层着色 | 1 个活跃 forecast | 0.7-1.0 MiB | 350-550 KiB | 300-450 KiB |
-| `/data/geo/world.geojson` | 全球混合边界 | 全球、大洲、区域和 C2 国家视图读取 | 1 | 10-15 MiB | 700 KiB-1.0 MiB | 500-800 KiB |
-| `/data/geo/region-outlines.geojson` | 选中地区完整轮廓 | Weather Map 初始化后读取 | 1 | 2-3 MiB | 300-450 KiB | 130-250 KiB |
-| `/data/geo/countries/<C3-country>.geojson` | C3 国家详情包 | 进入对应 C3 国家或 C3 一级区域时懒加载 | 当前 5 个：CN、ES、FR、IT、PE | 1-4 MiB | 300-950 KiB | 180-550 KiB |
+| `/data/geo/region-tiles/manifest.json` | 边界瓦片 manifest | Weather Map 初始化时读取或由前端内置路径约定替代 | 1 | < 5 KiB | < 2 KiB | < 2 KiB |
+| `/data/geo/region-tiles/**/*.mvt` | 三档边界瓦片 | MapLibre 按 viewport / zoom 按需读取 | 当前 660 个 MVT | 7.32 MiB 总原始体积 | 约 2.25 MiB 总 gzip | 约 1.96 MiB 总 Brotli |
 
 一个活跃快照约 10 个公开数据文件：Pages 侧 8 个，R2 侧 2 个。R2 如果保留 30 天历史预报包，会额外增加 30 个 `weather/forecast-14d/<date>.bin`，但用户默认只读取 `weather/current.json` 指向的一个 forecast 文件。
 
-City Finder 只需要 `cities.json`、`weather/current.json` 和 `weather/forecast-14d/<date>.bin`，压缩后通常在 0.5-0.9 MiB。Weather Map 全球视图再加 `world.geojson` 和 `region-outlines.geojson`，压缩后通常在 1.5-2.2 MiB，浏览器解压后需要解析十几 MiB JSON / GeoJSON。进入 C3 国家详情时再懒加载一个国家详情包，最重路径通常在 2-3 MiB gzip 内；同一会话如果访问全部 C3 国家详情包，累计下载和内存占用会继续上升。
+City Finder 只需要 `cities.json`、`weather/current.json` 和 `weather/forecast-14d/<date>.bin`，压缩后通常在 0.5-0.9 MiB。Weather Map 不再下载完整 GeoJSON 边界包，地图首屏只读取当前视口覆盖到的少量 MVT；拖动或缩放只补新进入视口和新 zoom 档需要的 tile，已读 tile 由浏览器和 CDN 缓存复用。
 
-当前卡顿风险主要来自解压后的主线程工作，而不是压缩传输体积。`world.geojson` 是最大风险点，原始尺寸已经达到十几 MiB，JSON.parse、MapLibre 建 source/layer 和区域着色都会占用主线程。工具页还会在客户端解码城市、创建天气 `TypedArray` view、构建地区选项和组装地图 payload；低端移动设备上，地图初始化、14 天预热和地区选项构建都可能出现可感知卡顿。
+当前卡顿风险主要来自地图初始化、可见 tile 解析、城市/天气矩阵解码和图层样式更新。MVT 把边界解析限制在当前视口和 zoom 档，避免浏览器一次 `JSON.parse` 十几 MiB 行政区几何。工具页仍会在客户端解码城市、创建天气 `TypedArray` view、构建地区选项和组装地图 payload；低端移动设备上，地图初始化、14 天预热和地区选项构建仍需观察。
 
 | 文件 | 上限 |
 | --- | ---: |
 | `weather/forecast-14d/<date>.bin` | 原始尺寸 < 2 MiB，压缩尺寸 < 1 MiB |
 | `cities.json` | 原始尺寸 < 1.5 MiB，压缩尺寸 < 500 KiB |
-| `world.geojson` | 原始尺寸目标 < 8 MiB，gzip 和 Brotli 压缩尺寸 < 1 MiB |
-| 任一国家详情 GeoJSON | gzip 和 Brotli 压缩尺寸 < 1 MiB |
+| `region-tiles/**/*.mvt` | 文件数量保持在千级以内，最大单 tile 原始体积低于 300 KiB |
 | Pages 单文件硬边界 | 25 MiB |
 
-`world.geojson` 当前已经超过 8 MiB 原始尺寸目标。优先生成更轻的世界概览边界，降低坐标精度、提高 simplify tolerance，或把一级区域边界按大洲/国家分片；C3 详情继续按国家懒加载。`region-outlines.geojson` 不应作为 Weather Map 全球首屏的硬依赖，只有选择具体地区、需要完整轮廓或地图定位时再读取。如果 `weather/forecast-14d/<date>.bin` 接近 2 MiB，先评估字段裁剪、bitmap 缺测、按默认日期拆出 Weather Map 轻包和 Web Worker 解析，不直接改成请求时数据库查询。
+MVT 文件数量通过三档模型控制：`z1-z2` 生成 country，`z3-z4` 生成 admin1/fallback，`z5` 生成 admin2/fallback，`z6-z8` overzoom z5。高 zoom 不继续逐级切片，避免 R2 对象数和地图请求数按四叉树膨胀。如果 `weather/forecast-14d/<date>.bin` 接近 2 MiB，先评估字段裁剪、bitmap 缺测、按默认日期拆出 Weather Map 轻包和 Web Worker 解析，不直接改成请求时数据库查询。
 
 ## 数据格式选择
 
@@ -321,7 +331,7 @@ MessagePack、CBOR 和 protobuf 可以减少原始文本尺寸，但在浏览器
 
 CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时天气格式。手写 CSV 解析必须处理转义、换行、空值、类型转换和列版本；即使用严格 TSV 避开大部分转义，浏览器仍要先把整段文本拆行、拆列、转数字，再组装索引。对天气这种固定字段矩阵，CSV 比 compact JSON 少不了多少传输体积，解析可靠性和 CPU 成本都不如 TypedArray 二进制。
 
-地图边界不适合继续无限扩大 GeoJSON。全球和详情边界优先考虑两条路：小规模时继续简化 GeoJSON 并按地区懒加载；边界复杂度继续增加时改为 vector tiles / PMTiles，让 MapLibre 按视口和缩放级别读取瓦片。TopoJSON 可以减少共享边界的重复坐标，但 MapLibre 不能直接消费 TopoJSON，前端转换仍会产生 CPU 成本；如果地图渲染是主要路径，vector tiles 更贴近最终消费形态。
+地图边界使用 MVT。GeoJSON 仍可作为离线生成中间产物和审计输入，但前端运行时不再把 GeoJSON 作为地图边界渲染格式。PMTiles 可以作为后续对象数量优化层评估；确认 R2 Range Request、CDN 缓存和 MapLibre protocol 链路前，当前发布形态保持普通静态 `.mvt` 文件。
 
 ## 拆分与缓存
 
@@ -333,7 +343,7 @@ CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时�
 | 日期 | 不拆 | 切日期无需请求，减少状态复杂度 |
 | 图层 | 不拆天气 | 图层只是 UI 展示字段，不是天气存储维度 |
 | 地区 | 不拆天气 | World 展示全部城市，国家/大区由前端过滤 |
-| 地图边界 | `world.geojson` + `region-outlines.geojson` + C3 国家详情包 | GeoJSON 是主要体积风险；着色边界按视图分包，选中地区轮廓只保存可选大区/洲和 C2/C3 国家，C3 国家按需加载 |
+| 地图边界 | 三档 MVT：country / admin1 / admin2 | 按 viewport 和 zoom 档加载；z5 高精度 overzoom 到 z8，减少小文件和请求数 |
 | 搜索索引 | 先不单独拆 | 城市数不大；移动端卡顿后再生成轻量 search index |
 
 当 `weather/forecast-14d/<date>.bin` 下载、解析或筛选影响移动端体验时，先引入 Web Worker 或按地区生成搜索/筛选索引；不要直接把请求时数据库查询作为第一选择。
@@ -343,7 +353,7 @@ CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时�
 | `/data/cities.json` | 随 Pages 发布，可长缓存；文件名或构建 hash 变化时更新 |
 | `weather/current.json` | 短缓存，5-15 分钟，或使用 ETag |
 | `weather/forecast-14d/<date>.bin` | 长缓存，`public, max-age=31536000, immutable` |
-| `geo/*.geojson` | 随 Pages 发布，可长缓存；文件名或构建 hash 变化时更新 |
+| `geo/region-tiles/**/*.mvt` | 随 Pages 发布，可长缓存；文件名或构建 hash 变化时更新 |
 
 每天只上传新的 forecast 文件，并在校验通过后更新 `weather/current.json` 指向新文件。
 
@@ -353,7 +363,8 @@ CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时�
 | --- | --- |
 | 城市数接近 10,000 | 评估 `weather/forecast-14d/<date>.bin` 下载、解析和筛选耗时 |
 | City Finder 在移动端筛选卡顿 | 引入 Web Worker、轻量搜索索引或按地区懒加载 |
-| GeoJSON 文件接近 Pages 单文件限制或地图首屏慢 | 简化边界、按国家拆包，必要时放 R2 |
+| MVT 最大单 tile 接近 300 KiB 或低端设备解析慢 | 提高该档实际切片 zoom 或加强 simplify |
+| MVT 请求数接近 R2 Class B 额度 | 降低高 zoom 实际切片层级、加强 CDN 缓存或评估 PMTiles |
 | R2 Class B 读请求接近额度 | 增加 Cloudflare Cache、合并请求、调整缓存和热门路径预取 |
 | Open-Meteo public API 不符合用途或 SLA | 评估 Open-Meteo customer API、商业许可或替代天气源 |
 | 需要用户收藏、个性化、权限或保存筛选 | 引入后端 API 和数据库 |
@@ -367,7 +378,7 @@ CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时�
 | 天气关联 | 城市和天气只通过 `cityId` 关联，`cv` 只用于版本识别 |
 | 天气格式 | forecast bin 先保存 `cityId[]` 和 `date[]`，天气字段按 `dateIndex * cityCount + cityIndex` 读取 |
 | 日期语义 | 天气日期按地点当地自然日处理，不做 UTC 日期截断 |
-| 边界字段 | GeoJSON 发布字段只保留 `regionKey` 和 geometry |
-| 前端请求 | City Finder 不加载 GeoJSON；Weather Map 按视图懒加载边界包 |
+| 边界字段 | MVT 发布字段只保留 `regionKey`、层级、国家/行政区 code、天气粒度和 hover 兜底名 |
+| 前端请求 | City Finder 不加载地图边界；Weather Map 只按 viewport / zoom 读取 MVT |
 | 缓存 | current 短缓存，forecast 和边界长缓存 |
-| 尺寸报告 | 构建或生成脚本输出每个公开 JSON / GeoJSON / `.bin` 的原始尺寸和压缩尺寸，并检查是否超过预算 |
+| 尺寸报告 | 构建或生成脚本输出每个公开 JSON / MVT / `.bin` 的原始尺寸和压缩尺寸，并检查是否超过预算 |

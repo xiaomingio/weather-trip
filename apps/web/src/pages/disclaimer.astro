@@ -1,0 +1,11 @@
+---
+/**
+ * 文件说明: 渲染英文 Disclaimer 静态页面入口，正文由 StaticInfoPage 统一维护。
+ * 对应文档: docs/specs/32-public-data-contract.md
+ */
+import StaticInfoPage from '@/components/StaticInfoPage.astro';
+
+export const prerender = true;
+---
+
+<StaticInfoPage locale="en" pageId="disclaimer" />

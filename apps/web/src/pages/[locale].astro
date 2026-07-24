@@ -11,6 +11,7 @@ import SitePreferences from '@/components/SitePreferences.astro';
 import type { DisplayLocale } from '@/domain/format';
 import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
+import { getStaticInfoFooterLinks } from '@/domain/static-info';
 import '@/styles/global.css';
 import '@/styles/landing.css';
 
@@ -214,6 +215,7 @@ const copy = {
 const weatherPath = buildTopTabPath(locale, 'weather-map');
 const comparePath = buildTopTabPath(locale, 'city-finder');
 const otherLandingPath = buildTopTabPath(otherLocale, 'landing');
+const footerLinks = getStaticInfoFooterLinks(locale);
 const seoPage = getPublicPage(locale, 'landing');
 const alternateLinks = getAlternateLinks('landing');
 const sunnyAtlas = {
@@ -423,6 +425,14 @@ const snowAtlas = {
           </figcaption>
         </figure>
       </section>
+
+      <footer class="landing-footer" aria-label="Weather Trip">
+        {
+          footerLinks.map((link) => (
+            <a href={link.href}>{link.label}</a>
+          ))
+        }
+      </footer>
     </main>
 
     <SitePreferences />

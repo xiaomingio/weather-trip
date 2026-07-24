@@ -1,0 +1,23 @@
+---
+/**
+ * 文件说明: 渲染中文关于、隐私声明和 Disclaimer 静态页面入口。
+ * 对应文档: docs/specs/32-public-data-contract.md
+ */
+import StaticInfoPage from '@/components/StaticInfoPage.astro';
+import { staticInfoPageIds, type StaticInfoPageId } from '@/domain/static-info';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return staticInfoPageIds.map((infoPage) => ({
+    params: {
+      locale: 'zh',
+      infoPage
+    }
+  }));
+}
+
+const pageId = Astro.params.infoPage as StaticInfoPageId;
+---
+
+<StaticInfoPage locale="zh" pageId={pageId} />

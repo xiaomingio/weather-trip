@@ -7,6 +7,9 @@ import { defineConfig } from 'astro/config';
 import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+  devToolbar: {
+    enabled: false
+  },
   output: 'static',
   integrations: [react()],
   vite: {

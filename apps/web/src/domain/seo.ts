@@ -4,12 +4,15 @@
  */
 import type { DisplayLocale } from './format';
 import { buildTopTabPath, topTabs, type TopTabId } from './navigation';
+import { getStaticInfoPage, staticInfoPageIds, type StaticInfoPageId } from './static-info';
 
 export const siteOrigin = (process.env.SITE_URL ?? 'https://weather-trip.aicake.io').replace(/\/$/, '');
 export const ogImagePath = '/landing/climate-atlas-sunny.webp';
 
 export type PublicPage = {
-  tabId: TopTabId;
+  id: TopTabId | StaticInfoPageId;
+  group: 'tool' | 'info';
+  tabId?: TopTabId;
   locale: DisplayLocale;
   path: string;
   title: string;
@@ -55,6 +58,8 @@ export function buildAbsoluteUrl(path: string): string {
 
 export function getPublicPage(locale: DisplayLocale, tabId: TopTabId): PublicPage {
   return {
+    id: tabId,
+    group: 'tool',
     locale,
     tabId,
     path: buildTopTabPath(locale, tabId),
@@ -63,7 +68,21 @@ export function getPublicPage(locale: DisplayLocale, tabId: TopTabId): PublicPag
 }
 
 export function getPublicPages(): PublicPage[] {
-  return topTabs.flatMap((tab) => [getPublicPage('en', tab.id), getPublicPage('zh', tab.id)]);
+  const toolPages = topTabs.flatMap((tab) => [getPublicPage('en', tab.id), getPublicPage('zh', tab.id)]);
+  const infoPages = staticInfoPageIds.flatMap((pageId) =>
+    (['en', 'zh'] as const).map((locale) => {
+      const page = getStaticInfoPage(locale, pageId);
+      return {
+        id: page.id,
+        group: 'info',
+        locale,
+        path: page.path,
+        title: page.title,
+        description: page.description
+      } satisfies PublicPage;
+    })
+  );
+  return [...toolPages, ...infoPages];
 }
 
 export function getAlternateLinks(tabId: TopTabId): Record<'en' | 'zh-Hans' | 'x-default', string> {
@@ -87,7 +106,14 @@ export function getRobotsTxt(): string {
 export function getSitemapXml(): string {
   const urls = getPublicPages()
     .map((page) => {
-      const alternates = getAlternateLinks(page.tabId);
+      const alternates =
+        page.group === 'tool' && page.tabId
+          ? getAlternateLinks(page.tabId)
+          : {
+              en: buildAbsoluteUrl(getStaticInfoPage('en', page.id as StaticInfoPageId).path),
+              'zh-Hans': buildAbsoluteUrl(getStaticInfoPage('zh', page.id as StaticInfoPageId).path),
+              'x-default': buildAbsoluteUrl(getStaticInfoPage('en', page.id as StaticInfoPageId).path)
+            };
       const links = Object.entries(alternates)
         .map(
           ([hreflang, href]) =>
@@ -124,6 +150,9 @@ export function getLlmsTxt(): string {
     `- Home: ${buildAbsoluteUrl('/')}`,
     `- World weather map: ${buildAbsoluteUrl('/weather-map')}`,
     `- City finder by weather: ${buildAbsoluteUrl('/city-finder')}`,
+    `- About: ${buildAbsoluteUrl('/about')}`,
+    `- Privacy statement: ${buildAbsoluteUrl('/privacy')}`,
+    `- Disclaimer: ${buildAbsoluteUrl('/disclaimer')}`,
     `- Chinese home: ${buildAbsoluteUrl('/zh')}`,
     '',
     '## Data',

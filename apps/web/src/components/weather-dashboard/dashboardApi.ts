@@ -1,12 +1,12 @@
 /**
- * 文件说明: 封装天气工具 React 组件使用的页面 URL、分页大小和跨 Tab 查询记忆。
+ * 文件说明: 封装天气工具 React 组件使用的页面 URL、分页大小和地区偏好同步。
  * 对应文档: docs/plans/free-static-data-plan.md
  */
 
 import type { MapLayer, RegionKey, WeatherFilter, WeatherToolId } from 'weather-core/types';
 import type { DisplayLocale } from '@/domain/format';
-import { buildToolPath, buildTopTabPath, getToolPathSegment } from '@/domain/navigation';
-import { buildFilterSearch, isSupportedRegion } from '@/domain/weather-dashboard-shared';
+import { buildToolPath } from '@/domain/navigation';
+import { buildFilterSearch, isSupportedRegion, normalizeSelectableRegion } from '@/domain/weather-dashboard-shared';
 
 const regionStorageKey = 'weather-trip-region';
 
@@ -27,37 +27,18 @@ export function saveRegion(region: RegionKey): void {
   window.localStorage.setItem(regionStorageKey, region);
 }
 
-const toolQueryStorageKey = (tool: WeatherToolId) => `weather-trip-query-${getToolPathSegment(tool)}`;
+export function readRegionFromSearch(search: string | URLSearchParams): RegionKey | null {
+  const params = typeof search === 'string' ? new URLSearchParams(search) : search;
+  const requestedRegion = params.get('region');
+  if (!requestedRegion) return null;
 
-export function saveToolQuery(tool: WeatherToolId, search: string): void {
-  if (typeof window === 'undefined') return;
-  window.sessionStorage.setItem(toolQueryStorageKey(tool), search);
+  const region = normalizeSelectableRegion(requestedRegion as RegionKey);
+  return isSupportedRegion(region) ? region : null;
 }
 
-export function readSavedToolQuery(tool: WeatherToolId): string {
-  if (typeof window === 'undefined') return '';
-  return window.sessionStorage.getItem(toolQueryStorageKey(tool)) ?? '';
-}
-
-export function buildToolUrl(
-  locale: DisplayLocale,
-  tool: WeatherToolId,
-  weatherFilter: WeatherFilter,
-  selectedDate: string,
-  layer: MapLayer
-): string {
-  const search = buildFilterSearch(tool, weatherFilter, selectedDate, layer);
-  return `${buildToolPath(locale, tool)}${search ? `?${search}` : ''}`;
-}
-
-function buildToolTabUrl(locale: DisplayLocale, targetTool: WeatherToolId, activeTool: WeatherToolId): string {
-  if (targetTool === activeTool) {
-    if (typeof window === 'undefined') return buildToolPath(locale, targetTool);
-    return `${window.location.pathname}${window.location.search}`;
-  }
-
-  const saved = readSavedToolQuery(targetTool);
-  return `${buildToolPath(locale, targetTool)}${saved ? `?${saved}` : ''}`;
+export function saveSearchRegion(search: string | URLSearchParams): void {
+  const region = readRegionFromSearch(search);
+  if (region) saveRegion(region);
 }
 
 export function replaceToolUrl(
@@ -69,34 +50,8 @@ export function replaceToolUrl(
 ): void {
   const url = new URL(window.location.href);
   const search = buildFilterSearch(tool, weatherFilter, selectedDate, layer);
-  saveToolQuery(tool, search);
   const nextUrl = `${buildToolPath(locale, tool)}${search ? `?${search}` : ''}${url.hash}`;
   if (`${url.pathname}${url.search}${url.hash}` === nextUrl) return;
 
   window.history.replaceState(null, '', nextUrl);
-}
-
-export function syncToolNavigationLinks(
-  locale: DisplayLocale,
-  otherLocale: DisplayLocale,
-  activeTool: WeatherToolId,
-  weatherFilter: WeatherFilter,
-  selectedDate: string,
-  layer: MapLayer
-): void {
-  const localeLink = document.querySelector<HTMLAnchorElement>('[data-dashboard-locale-link]');
-  if (localeLink) localeLink.href = buildToolUrl(otherLocale, activeTool, weatherFilter, selectedDate, layer);
-
-  const activeTabId = getToolPathSegment(activeTool);
-  for (const tabLink of document.querySelectorAll<HTMLAnchorElement>('[data-top-tab-id]')) {
-    const tabId = tabLink.dataset.topTabId;
-    tabLink.classList.toggle('is-active', tabId === activeTabId);
-    if (tabId === 'landing') {
-      tabLink.href = buildTopTabPath(locale, 'landing');
-    } else if (tabId === 'weather-map') {
-      tabLink.href = buildToolTabUrl(locale, 'weather-map', activeTool);
-    } else if (tabId === 'city-finder') {
-      tabLink.href = buildToolTabUrl(locale, 'city-finder', activeTool);
-    }
-  }
 }

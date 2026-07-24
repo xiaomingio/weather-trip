@@ -9,6 +9,7 @@ import type { MapPointGeoJson } from './types';
 
 export const pointSourceId = 'weather-points';
 export const pointCircleLayerId = 'weather-point-circle';
+export const pointHoverLayerId = 'weather-point-hover';
 export const pointIconLayerId = 'weather-point-icon';
 export const pointLabelLayerId = 'weather-point-label';
 export const defaultWorldCenter: [number, number] = [18, 23];
@@ -53,9 +54,15 @@ export function createWorldMap(container: HTMLElement): MapLibreMap {
     container,
     center: defaultWorldCenter,
     zoom: defaultWorldZoom,
+    bearing: 0,
+    pitch: 0,
+    maxPitch: 0,
     minZoom: 1,
     maxZoom: 8,
     attributionControl: false,
+    dragRotate: false,
+    pitchWithRotate: false,
+    touchPitch: false,
     style: {
       version: 8,
       sources: {
@@ -82,6 +89,9 @@ export function createWorldMap(container: HTMLElement): MapLibreMap {
     }
   });
 
+  map.dragRotate.disable();
+  map.touchZoomRotate.disableRotation();
+  map.keyboard.disableRotation();
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
   map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left');
   return map;
@@ -126,6 +136,23 @@ export function addPointLayers(map: MapLibreMap): void {
       'circle-stroke-color': ['case', ['boolean', ['get', 'selected'], false], '#ffffff', 'rgba(255,255,255,0.72)'],
       'circle-stroke-opacity': ['case', ['boolean', ['get', 'isZero'], false], 0.42, 0.92],
       'circle-stroke-width': ['case', ['boolean', ['get', 'selected'], false], 2.6, 1]
+    }
+  });
+  map.addLayer({
+    id: pointHoverLayerId,
+    type: 'circle',
+    source: pointSourceId,
+    filter: ['==', ['get', 'cityId'], ''],
+    layout: {
+      'circle-sort-key': ['to-number', ['get', 'sortKey'], 0]
+    },
+    paint: {
+      'circle-color': 'rgba(255,255,255,0.18)',
+      'circle-opacity': 1,
+      'circle-radius': ['+', ['/', ['to-number', ['get', 'size'], 28], 2], 4],
+      'circle-stroke-color': '#ffffff',
+      'circle-stroke-opacity': 0.96,
+      'circle-stroke-width': 2.4
     }
   });
   map.addLayer({

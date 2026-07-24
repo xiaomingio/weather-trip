@@ -23,11 +23,11 @@ data/
 
 | 命令 | 处理 | 输出 |
 | --- | --- | --- |
-| `npm run tourism:raw` | 从旅行目的地外部来源抽取 raw 数据 | `data/raw/tourism-destinations/` |
+| `npm run tourism:raw` | 从旅行目的地外部来源生成 raw 快照 | `data/raw/tourism-destinations/` |
 | `npm run static:tourism` | 混合 raw 旅行快照、旅游目的地 input 和 GeoNames | `data/generated/tourism-destinations.json`、`data/generated/tourism-destination-report.*` |
 | `npm run static:country-tier-candidates` | 根据 GeoNames、国家分档规则、旅游目的地和 admin2 input 生成 C2/C3 候选复核表 | `data/generated/country-admin-stats.json`、`data/generated/country-tier-candidate-report.*` |
 | `npm run static:profiles` | 读取人工确认的 C2/C3 input，生成最终国家分档 | `data/generated/country-profiles.json`、`data/generated/country-profile-report.*` |
 | `npm run static:cities` | 根据国家分档、旅游目的地、admin2 input 和 GeoNames 生成城市列表 | `data/generated/cities.json`、`data/generated/city-selection-report.*`、`apps/web/public/data/cities.json` |
-| `npm run static:geo` | 根据边界 raw、国家分档、城市列表、边界补名 input、admin2 input 和 GeoNames 生成 Geo 区块数据 | `apps/web/public/data/geo/*`、`data/generated/geo-boundary-report.*` |
+| `npm run static:geo` | 根据边界 raw、国家分档、城市列表、边界补名 input、admin2 input 和 GeoNames 生成 GeoJSON 中间产物 | `data/generated/geo/*`、`data/generated/geo-boundary-report.*` |
 | `npm run static:data` | 依次运行城市列表和 Geo 区块数据生成 | 城市列表、国家分档、Geo 区块数据和对应报告 |
 | `npm run weather:refresh -- --source=open-meteo` | 根据生成后的城市列表请求 Open-Meteo 天气 | `apps/web/public/data/weather/*`；CI 生成 R2 上传目录 |

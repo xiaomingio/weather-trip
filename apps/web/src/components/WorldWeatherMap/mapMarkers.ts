@@ -12,6 +12,7 @@ import {
   type DashboardWeatherMapResultItem,
   isDashboardCityFinderItem
 } from '@/domain/weather-dashboard-shared';
+import { getWeatherTypeLabel } from '@/domain/weather';
 import {
   comfortColor,
   elevationColor,
@@ -65,11 +66,27 @@ function windMarkerText(value: number): string {
   return String(Math.round(value));
 }
 
-function cityFinderMarkerMetric(score: DashboardCityFinderResultItem, layer: MapLayer, matchColor: string, temperatureUnit: TemperatureUnit): MarkerMetric {
+function percentageMarkerText(value: number): string {
+  return `${Math.round(value * 100)}%`;
+}
+
+function markerTooltip(label: string, metric: MarkerMetric): string {
+  return metric.tooltipValue ? `${label} · ${metric.tooltipValue}` : label;
+}
+
+function cityFinderMarkerMetric(
+  score: DashboardCityFinderResultItem,
+  layer: MapLayer,
+  matchColor: string,
+  locale: DisplayLocale,
+  temperatureUnit: TemperatureUnit
+): MarkerMetric {
   if (layer === 'temperature') {
+    const markerText = temperatureMarkerText(score.averageTemperatureC, temperatureUnit);
     return {
-      markerText: temperatureMarkerText(score.averageTemperatureC, temperatureUnit),
+      markerText,
       markerIcon: '',
+      tooltipValue: markerText,
       color: temperatureColor(score.averageTemperatureC),
       sortValue: score.averageTemperatureC
     };
@@ -78,56 +95,69 @@ function cityFinderMarkerMetric(score: DashboardCityFinderResultItem, layer: Map
     return {
       markerText: '',
       markerIcon: weatherTypeMapIconIds[score.weatherType],
+      tooltipValue: getWeatherTypeLabel(score.weatherType, locale),
       color: weatherColor(score.weatherType),
       sortValue: score.score
     };
   }
   if (layer === 'precipitation') {
+    const markerText = precipitationMarkerText(score.averagePrecipitationMm);
     return {
-      markerText: precipitationMarkerText(score.averagePrecipitationMm),
+      markerText,
       markerIcon: '',
+      tooltipValue: `${markerText} mm`,
       color: precipitationColor(score.averagePrecipitationMm),
       sortValue: score.averagePrecipitationMm
     };
   }
   if (layer === 'wind') {
+    const markerText = windMarkerText(score.averageWindSpeedKmh);
     return {
-      markerText: windMarkerText(score.averageWindSpeedKmh),
+      markerText,
       markerIcon: '',
+      tooltipValue: `${markerText} km/h`,
       color: windColor(score.averageWindSpeedKmh),
       sortValue: score.averageWindSpeedKmh
     };
   }
   if (layer === 'humidity') {
+    const markerText = `${Math.round(score.averageHumidityPercent)}%`;
     return {
-      markerText: `${Math.round(score.averageHumidityPercent)}%`,
+      markerText,
       markerIcon: '',
+      tooltipValue: markerText,
       color: humidityColor(score.averageHumidityPercent),
       sortValue: score.averageHumidityPercent
     };
   }
   if (layer === 'elevation') {
+    const markerText = elevationMarkerText(score.city.elevationMeters);
     return {
-      markerText: elevationMarkerText(score.city.elevationMeters),
+      markerText,
       markerIcon: '',
+      tooltipValue: `${markerText} m`,
       color: elevationColor(score.city.elevationMeters),
       sortValue: score.city.elevationMeters
     };
   }
 
+  const markerText = percentageMarkerText(score.score);
   return {
-    markerText: '',
+    markerText,
     markerIcon: '',
+    tooltipValue: markerText,
     color: matchColor,
     sortValue: score.matchDays
   };
 }
 
-function weatherMapMarkerMetric(item: DashboardWeatherMapResultItem, layer: MapLayer, temperatureUnit: TemperatureUnit): MarkerMetric {
+function weatherMapMarkerMetric(item: DashboardWeatherMapResultItem, layer: MapLayer, locale: DisplayLocale, temperatureUnit: TemperatureUnit): MarkerMetric {
   if (layer === 'temperature') {
+    const markerText = temperatureMarkerText(item.forecast.temperatureMeanC, temperatureUnit);
     return {
-      markerText: temperatureMarkerText(item.forecast.temperatureMeanC, temperatureUnit),
+      markerText,
       markerIcon: '',
+      tooltipValue: markerText,
       color: temperatureColor(item.forecast.temperatureMeanC),
       sortValue: item.forecast.temperatureMeanC
     };
@@ -136,47 +166,58 @@ function weatherMapMarkerMetric(item: DashboardWeatherMapResultItem, layer: MapL
     return {
       markerText: '',
       markerIcon: weatherTypeMapIconIds[item.forecast.weatherType],
+      tooltipValue: getWeatherTypeLabel(item.forecast.weatherType, locale),
       color: weatherColor(item.forecast.weatherType),
       sortValue: item.comfortScore
     };
   }
   if (layer === 'precipitation') {
+    const markerText = precipitationMarkerText(item.forecast.precipitationSumMm);
     return {
-      markerText: precipitationMarkerText(item.forecast.precipitationSumMm),
+      markerText,
       markerIcon: '',
+      tooltipValue: `${markerText} mm`,
       color: precipitationColor(item.forecast.precipitationSumMm),
       sortValue: item.forecast.precipitationSumMm
     };
   }
   if (layer === 'wind') {
     const windSpeed = item.forecast.windSpeedMaxKmh ?? 0;
+    const markerText = windMarkerText(windSpeed);
     return {
-      markerText: windMarkerText(windSpeed),
+      markerText,
       markerIcon: '',
+      tooltipValue: `${markerText} km/h`,
       color: windColor(windSpeed),
       sortValue: windSpeed
     };
   }
   if (layer === 'humidity') {
+    const markerText = `${Math.round(item.forecast.humidityMeanPercent)}%`;
     return {
-      markerText: `${Math.round(item.forecast.humidityMeanPercent)}%`,
+      markerText,
       markerIcon: '',
+      tooltipValue: markerText,
       color: humidityColor(item.forecast.humidityMeanPercent),
       sortValue: item.forecast.humidityMeanPercent
     };
   }
   if (layer === 'elevation') {
+    const markerText = elevationMarkerText(item.city.elevationMeters);
     return {
-      markerText: elevationMarkerText(item.city.elevationMeters),
+      markerText,
       markerIcon: '',
+      tooltipValue: `${markerText} m`,
       color: elevationColor(item.city.elevationMeters),
       sortValue: item.city.elevationMeters
     };
   }
 
+  const markerText = percentageMarkerText(item.comfortScore);
   return {
-    markerText: '',
+    markerText,
     markerIcon: '',
+    tooltipValue: markerText,
     color: comfortColor(item.comfortScore),
     sortValue: item.comfortScore
   };
@@ -200,17 +241,19 @@ export function buildMapPoints({
     return cityFinderItems.map((score) => {
       const normalized = normalizeRangeValue(score.matchDays, minMatchDays, maxMatchDays);
       const matchColor = relativeMatchColor(score.matchDays, minMatchDays, maxMatchDays);
-      const metric = cityFinderMarkerMetric(score, layer, matchColor, temperatureUnit);
+      const metric = cityFinderMarkerMetric(score, layer, matchColor, locale, temperatureUnit);
+      const label = `${formatCityName(score.city, locale)}, ${formatCityRegion(score.city, locale)}`;
       return {
         cityId: score.city.id,
-        label: `${formatCityName(score.city, locale)}, ${formatCityRegion(score.city, locale)}`,
+        label,
         longitude: score.city.longitude,
         latitude: score.city.latitude,
         markerText: metric.markerText,
         markerIcon: metric.markerIcon,
+        tooltip: markerTooltip(label, metric),
         color: metric.color,
         opacity: score.matchDays === 0 ? 0.22 : Math.max(0.48, Math.min(1, 0.5 + normalized * 0.5)),
-        size: layer === 'comfort' ? 24 : 34,
+        size: 34,
         sortValue: metric.sortValue,
         prominence: score.city.population ?? 0,
         selected: selectedCityId === score.city.id
@@ -222,18 +265,20 @@ export function buildMapPoints({
   }
 
   return resultItems.filter((item): item is DashboardWeatherMapResultItem => !isDashboardCityFinderItem(item)).map((item) => {
-    const metric = weatherMapMarkerMetric(item, layer, temperatureUnit);
+    const metric = weatherMapMarkerMetric(item, layer, locale, temperatureUnit);
+    const label = `${formatCityName(item.city, locale)}, ${formatCityRegion(item.city, locale)}`;
 
     return {
       cityId: item.city.id,
-      label: `${formatCityName(item.city, locale)}, ${formatCityRegion(item.city, locale)}`,
+      label,
       longitude: item.city.longitude,
       latitude: item.city.latitude,
       markerText: metric.markerText,
       markerIcon: metric.markerIcon,
+      tooltip: markerTooltip(label, metric),
       color: metric.color,
       opacity: hasRegionLayer ? 0.72 : 0.86,
-      size: layer === 'comfort' ? 24 : hasRegionLayer ? 28 : 34,
+      size: layer === 'comfort' ? 34 : hasRegionLayer ? 28 : 34,
       sortValue: metric.sortValue,
       prominence: item.city.population ?? 0,
       selected: selectedCityId === item.city.id
@@ -254,6 +299,7 @@ export function buildPointGeojson(points: MapPoint[]): MapPointGeoJson {
         label: point.label,
         markerText: point.markerText,
         markerIcon: point.markerIcon,
+        tooltip: point.tooltip,
         color: point.color,
         opacity: point.opacity,
         size: point.size,

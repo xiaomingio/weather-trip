@@ -1,6 +1,6 @@
 # 地图边界报告
 
-生成时间：`2026-07-23T18:14:49.809Z`
+生成时间：`2026-07-24T09:35:38.672Z`
 国家分层版本：`country-profiles-3d5372799eab`
 
 ## 全球视图覆盖
@@ -13,13 +13,13 @@
 
 | 路径 | feature 数 | 原始字节 | Gzip 字节 | Brotli 字节 | 压缩后小于 1 MiB |
 | --- | ---: | ---: | ---: | ---: | --- |
-| apps/web/public/data/geo/world.geojson | 1024 | 14753718 | 793443 | 541837 | 是 |
-| apps/web/public/data/geo/region-outlines.geojson | 33 | 2155238 | 361146 | 136854 | 是 |
-| apps/web/public/data/geo/countries/CN.geojson | 428 | 3537150 | 937058 | 538456 | 是 |
-| apps/web/public/data/geo/countries/ES.geojson | 71 | 1619499 | 332704 | 192074 | 是 |
-| apps/web/public/data/geo/countries/FR.geojson | 109 | 1681254 | 420070 | 247300 | 是 |
-| apps/web/public/data/geo/countries/IT.geojson | 127 | 1230516 | 297281 | 181057 | 是 |
-| apps/web/public/data/geo/countries/PE.geojson | 217 | 1784580 | 416736 | 242148 | 是 |
+| data/generated/geo/world.geojson | 1024 | 14753718 | 793443 | 541837 | 是 |
+| data/generated/geo/region-outlines.geojson | 33 | 2155238 | 361146 | 136854 | 是 |
+| data/generated/geo/countries/CN.geojson | 428 | 3537150 | 937058 | 538456 | 是 |
+| data/generated/geo/countries/ES.geojson | 71 | 1619499 | 332704 | 192074 | 是 |
+| data/generated/geo/countries/FR.geojson | 109 | 1681254 | 420070 | 247300 | 是 |
+| data/generated/geo/countries/IT.geojson | 127 | 1230516 | 297281 | 181057 | 是 |
+| data/generated/geo/countries/PE.geojson | 217 | 1784580 | 416736 | 242148 | 是 |
 
 ## 国家
 
