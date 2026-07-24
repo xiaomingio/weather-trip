@@ -429,9 +429,9 @@ C3 国家每个二级区域至少选一个代表城市。二级区域代表点�
 | 区域可信度   | tooltip 和图例说明颜色来自样本聚合                              |
 | 国家详情     | seed 选为 C2 的国家按一级区域，seed 选为 C3 的国家按二级区域聚合着色 |
 | 覆盖复核     | 能发现缺失区域、异常二级区域、边界无法匹配区域和代表点过弱区域 |
-| 边界完整性   | `static:geo` 从 profiles 和 GeoNames admin 目标集合推导边界 `regionKey`，缺任意国家、C2/C3 admin1 或 C3 admin2 时直接失败 |
+| 边界完整性   | `static:geo` 从 profiles 和边界源原生行政区生成边界 `regionKey`，缺国家、详情区块为空或 admin1 面积覆盖过低时直接失败 |
 
-地图边界来源分三层：全球 C1 国家优先用 Natural Earth admin0 countries，小国和属地用 Natural Earth admin0 map units 补齐；非中国 C2/C3 一级行政区优先用 Natural Earth admin1 的 GeoNames id，对齐到 GeoNames admin1，或先对齐 GeoNames admin2 后聚合成 admin1；如果最佳来源缺少少量 admin1，再从其它边界候选源按同一 `regionKey` 补齐。`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。geoBoundaries 下载用的 ISO3 来自 GeoNames countryInfo。中国 `country:CN`、大陆省级、地级、`admin1:CN.HK/MO/TW` 和港澳台 companion C3 区块都用 DataV/高德边界，香港、澳门和台湾同时仍作为独立 C1 地区进入城市和全球视图。`data/input/geo-boundary-sources.yml` 只记录需要人工维护的详情层级和 Natural Earth map unit 合并口径，脚本里不写国家专属 fallback 列表。
+地图边界来源分三层：全球 C1 国家优先用 Natural Earth admin0 countries，小国和属地用 Natural Earth admin0 map units 补齐；非中国 C2/C3 详情层优先用 geoBoundaries 原生 ADM1/ADM2/ADM3，Natural Earth admin1 只做兜底；中国 `country:CN`、大陆省级、地级、`admin1:CN.HK/MO/TW` 和港澳台 companion C3 区块都用 DataV/高德边界，香港、澳门和台湾同时仍作为独立 C1 地区进入城市和全球视图。边界 `regionKey` 表示可渲染区块，`weatherRegionKey` 只在可以可靠关联天气聚合时写入。`data/input/geo-boundary-sources.yml` 只记录需要人工维护的详情层级和 Natural Earth map unit 合并口径，脚本里不写国家专属 fallback 列表。
 
 ## 后续改进
 

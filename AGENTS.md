@@ -34,7 +34,7 @@ npm run build
 | 国家分档候选 | `npm run static:country-tier-candidates` | GeoNames、`data/input/coverage-rules.yml`、admin2 input、旅游目的地 | `data/generated/country-admin-stats.json`、`data/report/country-tier-candidate-report.md` | 只生成候选和复核报告；人工确认写入 `data/input/country-tier-countries.yml` |
 | 国家分档 | `npm run static:profiles` | `data/input/country-tier-countries.yml`、旅游目的地 | `data/generated/country-profiles.json`、`data/report/country-profile-report.md` | 城市覆盖等级真源 |
 | 城市索引 | `npm run static:cities` | country profiles、旅游目的地、GeoNames、admin2 input | `data/generated/cities.json`、`apps/web/public/data/cities.json`、`data/report/city-selection-report.md` | 前端地区选项、城市列表和天气 join 的城市真源 |
-| Geo 边界中间产物 | `npm run static:geo` | 边界 raw、country profiles、GeoNames admin、边界补名 input、admin2 input | `data/generated/geo/{country,c2_admin1,c3_admin1}.geojson`、`data/generated/geo/c3_admin2/*.geojson`、`data/report/geo-boundary-report.md` | 只处理地图边界；不读取城市索引；生成后做覆盖检查，失败时仍先写出产物和报告 |
+| Geo 边界中间产物 | `npm run static:geo` | 边界 raw、country profiles、边界补充 input | `data/generated/geo/{country,c2_admin1,c3_admin1}.geojson`、`data/generated/geo/c3_admin2/*.geojson`、`data/report/geo-boundary-report.md` | 只处理地图边界；不读取 GeoNames 或城市索引；非中国使用边界源原生行政区，中国大陆和港澳台使用 DataV/高德；生成后做覆盖检查，失败时仍先写出产物和报告 |
 | Geo 瓦片 | `npm run static:geo:tiles` | `data/generated/geo/{country,c2_admin1,c3_admin1}.geojson`、`data/generated/geo/c3_admin2/*.geojson` | `apps/web/public/data/geo/region-tiles/{country,admin1,admin2}/{z}/{x}/{y}.mvt`、`data/report/geo-tile-report.md` | Weather Map 运行时读取的 MVT |
 | 天气包 | `npm run weather:refresh -- --source=open-meteo` | `apps/web/public/data/cities.json`、Open-Meteo | `apps/web/public/data/weather/current.json`、`apps/web/public/data/weather/forecast-14d/*.bin`；CI 生成 R2 上传目录 | 每日刷新；不生成城市和 Geo |
 

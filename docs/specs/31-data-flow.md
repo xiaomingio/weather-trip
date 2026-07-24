@@ -78,15 +78,15 @@ Open-Meteo 返回的 `daily.time` 表示地点当地自然日，而非 UTC 时�
 
 行政边界回答“地图上哪些块可以被着色、hover 和点击”。它需要低精度世界包、国家详情包、稳定 `regionKey` 和生成报告。边界与天气分开：缺天气数据时区域仍然显示边界，按无数据样式展示。
 
-行政边界使用多源离线生成：[Natural Earth](https://www.naturalearthdata.com/features/) 提供低精度世界国家和非中国一级区域基础包，[geoBoundaries](https://www.geoboundaries.org/api.html) 提供可下载的多级行政边界，[DataV/高德（Amap）](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) 提供中国国家、省级、地级和港澳台详情边界。非中国生成阶段优先使用 Natural Earth `gn_id` 对齐 GeoNames admin1；当边界源实际是下级区域时，先用 ADM2 名称对齐 GeoNames admin2 再聚合成 admin1；如果最佳来源缺少少量 admin1，脚本会从其它边界候选源按同一 `regionKey` 补齐。`gn_a1_code` 只作为低优先级兜底，不作为完整匹配依据。最终前端只看到统一 `regionKey`，不看到供应商 adcode、GeoNames code 或名称匹配过程。
+行政边界使用多源离线生成：[Natural Earth](https://www.naturalearthdata.com/features/) 提供低精度世界国家包和非中国一级区域兜底，[geoBoundaries](https://www.geoboundaries.org/api.html) 提供可下载的多级行政边界，[DataV/高德（Amap）](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) 提供中国国家、省级、地级和港澳台详情边界。非中国 C2/C3 详情层优先使用 geoBoundaries 原生 ADM1/ADM2/ADM3，不再把边界强行改造成 GeoNames 行政树；`regionKey` 表示边界源自身的稳定区块，`weatherRegionKey` 只在边界源自带编码能可靠关联天气聚合时写入。没有天气关联的区块仍保留边界，并由前端显示无数据样式。
 
-中国边界使用 DataV/高德行政边界接口。`100000.json` 生成 `country:CN` 国家面；`100000_full.json` 生成中国大陆省级 `admin1:CN.*`，并通过稳定 adcode 映射对齐 GeoNames admin1 code；香港、澳门和台湾同时作为 `admin1:CN.HK/MO/TW` 和 companion C3 区块放入 `CN` 详情包。各省 `<adcode>_full.json` 生成地级区块，再对齐到 GeoNames admin2 或保留为 boundary-only 区块。香港和澳门使用 DataV/高德 `_full` 子区块并共享各自天气聚合 key；台湾的 DataV/高德可用边界为整体区块。
+中国边界使用 DataV/高德行政边界接口。`100000.json` 生成 `country:CN` 国家面；`100000_full.json` 生成中国大陆省级 `admin1:CN.*`，并通过稳定 adcode 映射写入对应 `weatherRegionKey`；香港、澳门和台湾同时作为 `admin1:CN.HK/MO/TW` 和 companion C3 区块放入 `CN` 详情包。各省 `<adcode>_full.json` 生成地级区块，地级 adcode 派生为中国详情层的天气关联 key。香港和澳门使用 DataV/高德 `_full` 子区块并共享各自天气聚合 key；台湾的 DataV/高德可用边界为整体区块。
 
 | 方案 | 优点 | 限制 | 适合度 |
 | --- | --- | --- | --- |
 | [Natural Earth](https://www.naturalearthdata.com/features/) | 免费，提供多精度，世界级包很适合压缩 | 行政层级有限，不覆盖全球 admin2 | 世界包基础源 |
 | [geoBoundaries](https://www.geoboundaries.org/api.html) | API 支持 ADM0-ADM5，适合离线下载，元数据包含来源、许可证和统计 | 国家质量和口径随来源变化，需要脚本审计 | 详情包基础源 |
-| [DataV/高德中国边界](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) | 中国国家、省级和地级区块完整度好，也能提供香港、澳门子区块和台湾整体边界 | 高德 adcode 和 GeoNames admin1/admin2 不是同一编码体系；自治区直辖县级市、兵团城市和 companion C3 口径需审计 | 中国边界源 |
+| [DataV/高德中国边界](https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json) | 中国国家、省级和地级区块完整度好，也能提供香港、澳门子区块和台湾整体边界 | 高德 adcode 与天气聚合 key 需要稳定映射；自治区直辖县级市、兵团城市和 companion C3 口径需审计 | 中国边界源 |
 | [Mapbox Boundaries](https://docs.mapbox.com/data/boundaries/) | 商业边界产品成熟，可和 Mapbox 地图生态结合 | 商业授权，静态导出和长期 Git 提交需要按合同确认 | 后续评估 |
 | [MapTiler Countries](https://www.maptiler.com/countries/) | 提供国家、领土、邮编等边界产品，可用于 choropleth | 商业平台，不提供天气 | 后续评估 |
 | [Geoapify Boundaries API](https://www.geoapify.com/boundaries-api/) | 能取国家、省州、城市等 polygon，GeoJSON 友好 | API 计费/限额，不提供天气 | 后续评估 |
@@ -208,16 +208,14 @@ flowchart TB
 
 ### 图 5：Geo 区块数据
 
-`static:geo` 使用 profiles、GeoNames 行政区、边界 raw 和边界 input 生成按运行时层级拆分的 GeoJSON 中间产物，并在产物写出后检查国家、admin1 和 C3 admin2 覆盖。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
+`static:geo` 使用 profiles、边界 raw 和边界 input 生成按运行时层级拆分的 geo-native GeoJSON 中间产物，并在产物写出后检查国家、详情层 feature 和 admin1 面积覆盖。`static:geo:tiles` 再把这些中间产物切成前端运行时读取的三档 MVT 瓦片。
 
 ```mermaid
 flowchart TB
   profilesGenerated["data/generated/country-profiles.json"]
   rawBoundary["data/raw/geo-boundaries/"]
-  rawGeonames["data/raw/geonames/"]
   geoSources["data/input/geo-boundary-sources.yml"]
   boundaryLabels["data/input/boundary-label-overrides.yml"]
-  admin2Support["data/input/admin2-support-overrides.yml"]
   generateGeo["static:geo<br/>generate-static-geo.ts"]
   publicGeo["data/generated/geo/{country,c2_admin1,c3_admin1}.geojson<br/>data/generated/geo/c3_admin2/*.geojson<br/>边界中间产物"]
   geoTiles["apps/web/public/data/geo/region-tiles/**/*.mvt<br/>前端运行时边界瓦片"]
@@ -226,10 +224,8 @@ flowchart TB
 
   profilesGenerated -->|C2/C3 详情层级| generateGeo
   rawBoundary -->|geometry 来源| generateGeo
-  rawGeonames -->|国家 code、ISO3 和行政区目标集合| generateGeo
   geoSources -->|详情源和合并口径| generateGeo
-  admin2Support -->|过滤不稳定二级区域| generateGeo
-  boundaryLabels -->|boundary-only 展示名| generateGeo
+  boundaryLabels -->|中国高德边界展示名| generateGeo
   generateGeo --> publicGeo
   generateGeo --> geoReport
   publicGeo --> geoTiles
@@ -258,7 +254,7 @@ flowchart TB
 
 边界和天气是两条数据流。MVT 区块即使没有天气样本也必须保留，前端按无数据样式展示；天气缺失只影响颜色和 tooltip 的数据内容，不决定区块是否存在。底图不生成本项目的 `regionKey`，也不能反向影响区域聚合。
 
-Geo 区块数据生成按前端会加载的 zoom 档校验输出。`country` 档需要 `country:*`，`admin1` 档需要 `admin1:*` 和缺少一级区域时的 `country:*` fallback，`admin2` 档需要 `admin2:*`、人工保留的 `boundary:*`，以及缺少二级区域时的 `admin1:*` / `country:*` fallback。`scripts/generate-static-geo.ts` 根据 profiles 和 GeoNames admin 目标集合检查这些 key 是否存在于对应中间 GeoJSON 包；`scripts/generate-static-geo-tiles.ts` 负责统计三档瓦片数量、最大单瓦片和缺失国家边界。缺失时生成任务失败退出，不能只靠人工看报告发现。
+Geo 区块数据生成按前端会加载的 zoom 档校验输出。`country` 档需要 `country:*`，`admin1` 档需要边界源原生 `admin1:*`，`admin2` 档需要边界源原生 `admin2:*` / `boundary:*`。`scripts/generate-static-geo.ts` 根据 profiles 检查每个 C2/C3 国家是否生成详情区块，并用 admin1 面积与国家轮廓面积的比例捕捉“数量存在但空间缺块”的问题；`scripts/generate-static-geo-tiles.ts` 负责统计三档瓦片数量、最大单瓦片和缺失国家边界。缺失时生成任务失败退出，不能只靠人工看报告发现。
 
 需要人工判断时，只补充 `data/input/*.yml` 或覆盖规则，不直接修改生成产物。
 
@@ -283,7 +279,7 @@ Cloudflare 和 Open-Meteo 的额度以官方文档为准。执行部署前重新
 | 人工判断 | 人工或 AI 判断只进入 `data/input/*.yml` 或覆盖规则，不直接写生成产物 |
 | 覆盖规则 | 本文不定义与 `docs/specs/30-weather-coverage-design.md` 冲突的城市选择规则 |
 | 生成链路 | 城市、边界和天气能分别复跑，并输出可审计报告 |
-| 区域对齐 | 前端只消费统一 `regionKey`，不读取供应商 adcode、GeoNames code 或名称匹配过程 |
+| 区域对齐 | 前端用 `regionKey` 标识边界 feature，用可选 `weatherRegionKey` 匹配天气 summary，不读取供应商 adcode 或名称匹配过程 |
 | 运行边界 | 用户请求不经过 Pages Functions / Workers 代理 JSON，不连接运行时数据库 |
 
 ## 官方参考

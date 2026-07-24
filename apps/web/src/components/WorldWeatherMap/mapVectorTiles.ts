@@ -373,10 +373,14 @@ export function buildVectorRegionStyleEntries(
   return [...entriesById.values()];
 }
 
+function styleLookupExpression(): unknown[] {
+  return ['coalesce', ['get', 'weatherRegionKey'], ['get', 'regionKey']];
+}
+
 function matchExpression<T extends string | number | boolean>(entries: VectorRegionStyleEntry[], field: keyof VectorRegionStyleEntry, fallback: T): T | unknown[] {
   if (entries.length === 0) return fallback;
 
-  const expression: unknown[] = ['match', ['get', 'regionKey']];
+  const expression: unknown[] = ['match', styleLookupExpression()];
   for (const entry of entries) {
     expression.push(entry.regionKey, entry[field]);
   }
@@ -384,24 +388,27 @@ function matchExpression<T extends string | number | boolean>(entries: VectorReg
   return expression;
 }
 
-function noDataRegionFilter(includeNoDataRegions: boolean): FilterSpecification | null {
-  return includeNoDataRegions ? ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]] : null;
+function noDataRegionFilter(targetLayer: MapTileRegionLayer, includeNoDataRegions: boolean): FilterSpecification | null {
+  if (!includeNoDataRegions) return null;
+  const levels = targetLayer === 'admin1' ? ['admin1'] : ['admin2', 'boundary'];
+  return ['in', ['get', 'level'], ['literal', levels]];
 }
 
 function noMetricPatternOpacityExpression(
   entries: VectorRegionStyleEntry[],
   targetLayer: MapRegionLayer,
+  tileLayer: MapTileRegionLayer,
   isRegionColoringEnabled: boolean,
   includeNoDataRegions: boolean
 ): number | unknown[] {
   const noDataOpacity = includeNoDataRegions && isRegionColoringEnabled ? noMetricPatternOpacity(targetLayer) : 0;
-  const noDataFilter = noDataRegionFilter(includeNoDataRegions);
+  const noDataFilter = noDataRegionFilter(tileLayer, includeNoDataRegions);
   const fallback = 0;
   if (entries.length === 0) {
     return noDataOpacity > 0 && noDataFilter ? ['case', noDataFilter, noDataOpacity, fallback] : fallback;
   }
 
-  const expression: unknown[] = ['match', ['get', 'regionKey']];
+  const expression: unknown[] = ['match', styleLookupExpression()];
   for (const entry of entries) {
     expression.push(entry.regionKey, isRegionColoringEnabled && entry.isNoMetricRegion ? noMetricPatternOpacity(targetLayer) : 0);
   }
@@ -411,7 +418,7 @@ function noMetricPatternOpacityExpression(
   const entryRegionKeys = entries.map((entry) => entry.regionKey);
   return [
     'case',
-    ['in', ['get', 'regionKey'], ['literal', entryRegionKeys]],
+    ['in', styleLookupExpression(), ['literal', entryRegionKeys]],
     expression,
     noDataFilter,
     noDataOpacity,
@@ -419,12 +426,12 @@ function noMetricPatternOpacityExpression(
   ];
 }
 
-function visibleRegionFilter(entries: VectorRegionStyleEntry[], includeNoDataRegions: boolean): FilterSpecification {
+function visibleRegionFilter(entries: VectorRegionStyleEntry[], targetLayer: MapTileRegionLayer, includeNoDataRegions: boolean): FilterSpecification {
   const regionKeys = entries.map((entry) => entry.regionKey);
   const regionKeyFilter = regionKeys.length > 0
-    ? (['in', ['get', 'regionKey'], ['literal', regionKeys]] as FilterSpecification)
-    : (['==', ['get', 'regionKey'], ''] as FilterSpecification);
-  const noDataFilter = noDataRegionFilter(includeNoDataRegions);
+    ? (['in', styleLookupExpression(), ['literal', regionKeys]] as FilterSpecification)
+    : (['==', styleLookupExpression(), ''] as unknown as FilterSpecification);
+  const noDataFilter = noDataRegionFilter(targetLayer, includeNoDataRegions);
   return noDataFilter ? ['any', regionKeyFilter, noDataFilter] as FilterSpecification : regionKeyFilter;
 }
 
@@ -592,8 +599,8 @@ export function applyVectorRegionStyles(
   entries: VectorRegionStyleEntry[],
   isRegionColoringEnabled = true
 ): void {
-  const includeNoDataRegions = targetLayer === 'admin2';
-  const filter = visibleRegionFilter(entries, includeNoDataRegions);
+  const includeNoDataRegions = targetLayer === 'admin1' || targetLayer === 'admin2';
+  const filter = visibleRegionFilter(entries, targetLayer, includeNoDataRegions);
   const noDataFillOpacity = includeNoDataRegions && isRegionColoringEnabled ? noMetricFillOpacity(styleLayer) : 0;
   const noDataLineOpacity = includeNoDataRegions ? 0.46 : 0;
   const noDataLineWidth = includeNoDataRegions ? 0.85 : 0;
@@ -607,7 +614,7 @@ export function applyVectorRegionStyles(
   const noMetricLayerId = regionNoMetricPatternLayerId(targetLayer);
   if (map.getLayer(noMetricLayerId)) {
     map.setFilter(noMetricLayerId, filter);
-    map.setPaintProperty(noMetricLayerId, 'fill-opacity', noMetricPatternOpacityExpression(entries, styleLayer, isRegionColoringEnabled, includeNoDataRegions));
+    map.setPaintProperty(noMetricLayerId, 'fill-opacity', noMetricPatternOpacityExpression(entries, styleLayer, targetLayer, isRegionColoringEnabled, includeNoDataRegions));
   }
 
   const lineLayerId = regionLineLayerId(targetLayer);

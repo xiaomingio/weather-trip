@@ -4,7 +4,7 @@
 
 本文定义把现有行政边界发布为静态矢量瓦片的性能优化方案。天气覆盖策略、C1/C2/C3 分层、城市选择和区域聚合口径仍以 `docs/specs/30-weather-coverage-design.md` 为准；数据来源和现有 GeoJSON 生成链路见 `docs/specs/31-data-flow.md`；地图 hover、点击和 marker 密度见 `docs/specs/22-weather-map-interactions.md`。
 
-瓦片化只改变行政边界的发布和加载方式，不改变天气采样粒度，也不替代边界源清洗、GeoNames 对齐、国家分层复核和生成报告。
+瓦片化只改变行政边界的发布和加载方式，不改变天气采样粒度，也不替代边界源清洗、国家分层复核和生成报告。
 
 ## 现状基线
 
@@ -22,7 +22,7 @@
 | --- | --- |
 | 降低单次访问加载量 | 用户只读取当前视口和 zoom 需要的瓦片，不一次下载完整世界包或国家详情包 |
 | 保持静态部署 | 瓦片在构建期生成，部署为静态文件，不引入请求时 API、数据库或动态瓦片服务 |
-| 复用现有覆盖口径 | 继续使用现有 `regionKey`、C1/C2/C3 天气采样粒度和区域 summary |
+| 复用现有覆盖口径 | 继续使用 C1/C2/C3 天气采样粒度和区域 summary；边界 feature 通过可选 `weatherRegionKey` 关联天气 |
 | 简化运行时资产选择 | 地图按当前视图挂载少量 vector source，通过 layer、filter 和 zoom 控制显示范围 |
 | 收敛运行路径 | 前端运行时只使用 MVT 边界瓦片；GeoJSON 保留为离线生成中间产物和迁移基线 |
 
@@ -31,7 +31,7 @@
 | 概念 | 含义 |
 | --- | --- |
 | 行政边界源 | Natural Earth、geoBoundaries、DataV/高德等 raw 边界来源 |
-| 天气区域 | 当前有天气聚合意义的 `regionKey` 区域，可以是 `country:*`、`admin1:*`、`admin2:*` 或 `boundary:*` |
+| 天气区域 | 当前有天气聚合意义的 key，可以是 `country:*`、`admin1:*` 或 `admin2:*`；边界 feature 可通过 `weatherRegionKey` 指向它 |
 | 矢量瓦片 | 按 `z/x/y` 切分的二进制地图数据，内部保存 polygon feature 和属性 |
 | PMTiles | 可选打包格式，把大量矢量瓦片放进一个静态文件，浏览器通过 Range Request 按需读取 |
 | source-layer | 瓦片内部的图层，例如 `weather_region`、`country`、`admin1`、`admin2` |
@@ -62,7 +62,7 @@
 MapLibre 当前 center / zoom / viewport
   -> 计算屏幕覆盖到的 z/x/y
   -> 从 region-tiles/{country,admin1,admin2} 读取对应 .mvt
-  -> 按 feature.regionKey 匹配天气 summary
+  -> 按 feature.weatherRegionKey / feature.regionKey 匹配天气 summary
   -> 按当前 zoom 档和样式表达式渲染填色与边界
 ```
 
@@ -206,11 +206,12 @@ GeoJSON 中间包的主要问题不是传输体积，而是不能进入前端运
 
 ## 数据组织
 
-瓦片生成当前产品层级需要的完整边界集合：国家、C2/C3 一级区域、C3 二级区域和人工保留的 `boundary:*` 区块。是否有天气数据由前端拿天气 summary 按 `regionKey` 匹配决定，瓦片本身不预判 `hasWeather`。
+瓦片生成当前产品层级需要的完整边界集合：国家、C2/C3 一级区域和 C3 二级区域。是否有天气数据由前端拿天气 summary 按 `weatherRegionKey ?? regionKey` 匹配决定，瓦片本身不预判 `hasWeather`。
 
 ```ts
 type WeatherRegionTileFeature = {
-  regionKey: string; // 例如 country:FR、admin1:CN.13、admin2:ES.51.01
+  regionKey: string; // 边界 feature key，例如 country:FR、admin1:VN.VN-03、admin2:CN.10.1301
+  weatherRegionKey?: string; // 可选天气聚合 key，例如 admin1:CN.10
   level: 'country' | 'admin1' | 'admin2' | 'boundary'; // feature 自身层级
   countryCode: string; // ISO A2
   admin1Code?: string; // 一级区域 code
@@ -231,8 +232,7 @@ type WeatherRegionTileFeature = {
 ```mermaid
 flowchart TD
   rawBoundary["行政边界 raw<br/>Natural Earth / geoBoundaries / DataV"]
-  geonames["GeoNames admin / city"]
-  coverage["国家分层和城市覆盖<br/>country profiles / cities"]
+  profiles["国家分层<br/>country profiles"]
   geojson["GeoJSON 中间产物<br/>country / c2_admin1 / c3_admin1 / c3_admin2"]
   regions["统一天气区域中间文件<br/>geo-regions.ndjson"]
   tiles["静态矢量瓦片<br/>region-tiles/**/*.mvt"]
@@ -240,10 +240,8 @@ flowchart TD
   browser["MapLibre vector source"]
 
   rawBoundary --> geojson
-  geonames --> geojson
-  coverage --> geojson
+  profiles --> geojson
   geojson --> regions
-  coverage --> regions
   regions --> tiles
   tiles --> report
   tiles --> browser
@@ -299,7 +297,7 @@ apps/web/src/components/WorldWeatherMap/mapVectorTiles.ts   # 矢量瓦片路径
 apps/web/src/components/WorldWeatherMap/mapRegionGeometry.ts # 图层 ID 和城市点 bounds
 ```
 
-颜色接入使用 `match` expression，把 `regionKey -> color` 写入图层样式。若后续改用 MapLibre `feature-state`，瓦片 feature 必须有稳定 id，且跨瓦片切片后的同一区域碎片共享同一状态键。
+颜色接入使用 `match` expression，把 `weatherRegionKey ?? regionKey -> color` 写入图层样式。若后续改用 MapLibre `feature-state`，瓦片 feature 必须有稳定 id，且跨瓦片切片后的同一区域碎片共享同一状态键。
 
 ## 适用性判断
 
@@ -319,7 +317,7 @@ apps/web/src/components/WorldWeatherMap/mapRegionGeometry.ts # 图层 ID 和城�
 - `region-tiles/` 下的 MVT 只包含现有天气覆盖能支撑的填色区域，不强行生成全球完整 admin2
 - 低 zoom 世界视图不首屏处理完整 C2/C3 一级行政区边界，只读取当前视口和 zoom 档需要的瓦片
 - 进入 C3 国家后不一次处理完整国家详情 GeoJSON 和全量 outline，边界按视口和 zoom 分片读取
-- 每个可填色 feature 都有稳定 `regionKey`，并能匹配当前区域 summary 或明确进入无数据样式
+- 每个可填色 feature 都有稳定 `regionKey`，并通过可选 `weatherRegionKey` 匹配当前区域 summary 或明确进入无数据样式
 - z3-z4 有 admin1 / country fallback，z5-z8 有 admin2 / admin1 / country fallback
 - C1/C2/C3 仍然只表达天气覆盖能力，瓦片模式不绕过城市采样和区域聚合规则
 - `region-tiles/**/*.mvt` 支持静态托管，线上缓存头与公开数据刷新频率一致

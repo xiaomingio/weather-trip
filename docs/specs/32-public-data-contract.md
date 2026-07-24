@@ -19,7 +19,7 @@
 打开 Weather Map
   -> MapLibre 按当前 viewport / zoom 请求 /data/geo/region-tiles/{country,admin1,admin2}/{z}/{x}/{y}.mvt
   -> z1-z2 显示 country，z3-z4 显示 admin1/fallback，z5-z8 显示 admin2/fallback
-  -> 按 regionKey 匹配天气 summary 并更新可见瓦片样式
+  -> 按 weatherRegionKey / regionKey 匹配天气 summary 并更新可见瓦片样式
 
 打开 City Finder
   -> 不加载 GeoJSON
@@ -285,15 +285,15 @@ type WeatherRegionTileFeature = {
 | 图层 | 文件 | 读取时机 | 匹配方式 |
 | --- | --- | --- | --- |
 | 国家级瓦片 | `/data/geo/region-tiles/country/{z}/{x}/{y}.mvt` | 地图 `z1-z2` 且视口覆盖到对应 tile 时读取 | `country:<countryCode>` |
-| 一级区域瓦片 | `/data/geo/region-tiles/admin1/{z}/{x}/{y}.mvt` | 地图 `z3-z4` 且视口覆盖到对应 tile 时读取 | `admin1:<countryCode>.<admin1Code>`；没有一级区域时回退 `country:<countryCode>` |
-| 二级区域瓦片 | `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | 地图 `z5-z8` 且视口覆盖到对应 tile 时读取；实际只生成 z5，z6-z8 overzoom | `admin2:<countryCode>.<admin1Code>.<admin2Code>`；没有二级区域时回退 admin1，再缺失时回退 country |
+| 一级区域瓦片 | `/data/geo/region-tiles/admin1/{z}/{x}/{y}.mvt` | 地图 `z3-z4` 且视口覆盖到对应 tile 时读取 | geo-native `admin1:<countryCode>.<sourceId>`；可带 `weatherRegionKey` |
+| 二级区域瓦片 | `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | 地图 `z5-z8` 且视口覆盖到对应 tile 时读取；实际只生成 z5，z6-z8 overzoom | geo-native `admin2:<countryCode>.<sourceId>` 或中国高德 `admin2:CN.<admin1Code>.<admin2Code>`；可带 `weatherRegionKey` |
 | 城市 | `/data/cities.json` | Weather Map 和 City Finder 共用 | 解码城市字典后生成同一套 region key |
 
-边界瓦片必须按 `regionKey` 匹配天气区域聚合结果。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。
+边界瓦片以 `regionKey` 标识可渲染区块；填色优先按 `weatherRegionKey` 匹配天气区域聚合结果，没有该字段时再尝试 `regionKey`。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。
 
 前端地区选择只暴露大区、C2/C3 国家和国家内一级行政区。`admin2:<countryCode>.<admin1Code>.<admin2Code>` 只用于高 zoom 边界着色和聚合结果；旧链接带有 admin2 时，运行时归一到所属 `admin1`。切换地区时的自动相机只使用当前结果城市点范围，世界视图使用固定默认相机，不再为了 bounds 读取完整行政区 outline。
 
-边界源里的 `adcode`、`shapeName`、`gn_a1_code`、`iso_3166_2` 等字段只在生成阶段使用。发布到前端的 MVT 只保存渲染和 hover 需要的最小属性；国家名称从国家 code 查询，一级/二级区域名称来自 GeoNames admin 或边界源 label，天气 summary 的名称优先用于有数据区域。只需要地点名字、搜索或城市选择的场景只读取 `cities.json`，不加载地图瓦片。
+边界源里的 `adcode`、`shapeName`、`gn_a1_code`、`iso_3166_2` 等字段只在生成阶段使用。发布到前端的 MVT 只保存渲染、hover 和可选天气关联需要的最小属性：`regionKey`、`weatherRegionKey`、层级、国家 code 和 label。国家名称从国家 code 查询，一级/二级区域名称来自边界源 label，天气 summary 的名称优先用于有数据区域。只需要地点名字、搜索或城市选择的场景只读取 `cities.json`，不加载地图瓦片。
 
 ## 文件预算
 
@@ -379,7 +379,7 @@ CSV / TSV 只适合离线交换和人工检查，不适合作为前端运行时�
 | 天气关联 | 城市和天气只通过 `cityId` 关联，`cv` 只用于版本识别 |
 | 天气格式 | forecast bin 先保存 `cityId[]` 和 `date[]`，天气字段按 `dateIndex * cityCount + cityIndex` 读取 |
 | 日期语义 | 天气日期按地点当地自然日处理，不做 UTC 日期截断 |
-| 边界字段 | MVT 发布字段只保留 `regionKey`、层级、国家/行政区 code、天气粒度和 hover 兜底名 |
+| 边界字段 | MVT 发布字段只保留 `regionKey`、可选 `weatherRegionKey`、层级、国家 code、天气粒度和 hover 兜底名 |
 | 前端请求 | City Finder 不加载地图边界；Weather Map 只按 viewport / zoom 读取 MVT |
 | 缓存 | current 短缓存，forecast 和边界长缓存 |
 | 尺寸报告 | 构建或生成脚本输出每个公开 JSON / MVT / `.bin` 的原始尺寸和压缩尺寸，并检查是否超过预算 |

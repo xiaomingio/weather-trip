@@ -239,7 +239,8 @@ export function WorldWeatherMap({
     }
     const feature = event.features?.find((item) => typeof item.properties?.regionKey === 'string' && item.properties.regionKey);
     const regionKey = typeof feature?.properties?.regionKey === 'string' ? feature.properties.regionKey : '';
-    const vectorEntry = vectorRegionStyleEntriesRef.current.get(regionKey);
+    const weatherRegionKey = typeof feature?.properties?.weatherRegionKey === 'string' ? feature.properties.weatherRegionKey : '';
+    const vectorEntry = vectorRegionStyleEntriesRef.current.get(weatherRegionKey || regionKey);
     const parentEntry = parentAdmin1RegionKey(regionKey);
     const parentAdmin1Name = parentEntry ? vectorRegionStyleEntriesRef.current.get(parentEntry)?.displayName : undefined;
     const label = feature?.properties

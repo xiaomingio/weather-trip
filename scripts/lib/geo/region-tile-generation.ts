@@ -6,7 +6,6 @@ import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { GeoJSONVT, type GeoJSONVTTile } from '@maplibre/geojson-vt';
 import { fromGeojsonVt } from '@maplibre/vt-pbf';
-import { loadGeoNamesAdminDataset } from '../static-data/geonames.js';
 
 type GeoJsonGeometry = {
   type: string;
@@ -279,17 +278,14 @@ async function loadSourcePackage(filePath: string): Promise<{ collection: Featur
 }
 
 async function tileCountries(): Promise<Map<string, TileCountry>> {
-  const [profilesPayload, geoNames] = await Promise.all([
-    readJson<CountryProfilesPayload>(profilesPath),
-    loadGeoNamesAdminDataset(rootDir)
-  ]);
+  const profilesPayload = await readJson<CountryProfilesPayload>(profilesPath);
   return new Map(
     profilesPayload.profiles.map((profile) => [
       profile.countryCode,
       {
         code: profile.countryCode,
         tier: profile.countryTier,
-        labelEn: productCountryLabels[profile.countryCode]?.en ?? geoNames.countries.get(profile.countryCode)?.name ?? countryDisplayNames.en.of(profile.countryCode) ?? profile.countryCode,
+        labelEn: productCountryLabels[profile.countryCode]?.en ?? countryDisplayNames.en.of(profile.countryCode) ?? profile.countryCode,
         labelZh: productCountryLabels[profile.countryCode]?.zh ?? countryDisplayNames.zh.of(profile.countryCode) ?? profile.countryCode
       }
     ])
@@ -303,11 +299,21 @@ function parseRegionKey(regionKey: string): RegionParseResult | null {
   const admin1Match = /^admin1:([A-Z]{2})\.([^.]+)$/.exec(regionKey);
   if (admin1Match) return { level: 'admin1', countryCode: admin1Match[1], admin1Code: admin1Match[2] };
 
-  const admin2Match = /^admin2:([A-Z]{2})\.([^.]+)\.(.+)$/.exec(regionKey);
-  if (admin2Match) return { level: 'admin2', countryCode: admin2Match[1], admin1Code: admin2Match[2], admin2Code: admin2Match[3] };
+  const admin2Match = /^admin2:([A-Z]{2})\.(.+)$/.exec(regionKey);
+  if (admin2Match) {
+    const [admin1Code, ...admin2CodeParts] = admin2Match[2].split('.');
+    return admin2CodeParts.length > 0
+      ? { level: 'admin2', countryCode: admin2Match[1], admin1Code, admin2Code: admin2CodeParts.join('.') }
+      : { level: 'admin2', countryCode: admin2Match[1], admin2Code: admin2Match[2] };
+  }
 
-  const boundaryMatch = /^boundary:([A-Z]{2})\.([^.]+)\.(.+)$/.exec(regionKey);
-  if (boundaryMatch) return { level: 'boundary', countryCode: boundaryMatch[1], admin1Code: boundaryMatch[2], admin2Code: boundaryMatch[3] };
+  const boundaryMatch = /^boundary:([A-Z]{2})\.(.+)$/.exec(regionKey);
+  if (boundaryMatch) {
+    const [admin1Code, ...admin2CodeParts] = boundaryMatch[2].split('.');
+    return admin2CodeParts.length > 0
+      ? { level: 'boundary', countryCode: boundaryMatch[1], admin1Code, admin2Code: admin2CodeParts.join('.') }
+      : { level: 'boundary', countryCode: boundaryMatch[1], admin2Code: boundaryMatch[2] };
+  }
 
   return null;
 }
@@ -333,6 +339,7 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, T
   const country = countries.get(parsed.countryCode);
   const sourceLabelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
   const sourceLabelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
+  const weatherRegionKey = typeof feature.properties.weatherRegionKey === 'string' ? feature.properties.weatherRegionKey : undefined;
   const weatherLevel = weatherLevelForCountry(parsed.countryCode, countries);
 
   return {
@@ -346,6 +353,7 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, T
       ...(parsed.admin2Code ? { admin2Code: parsed.admin2Code } : {}),
       ...(sourceLabelZh || country?.labelZh ? { labelZh: sourceLabelZh ?? country?.labelZh } : {}),
       ...(sourceLabelEn || country?.labelEn ? { labelEn: sourceLabelEn ?? country?.labelEn } : {}),
+      ...(weatherRegionKey ? { weatherRegionKey } : {}),
       minDisplayZoom: minDisplayZoom(parsed.level),
       weatherLevel
     },
@@ -403,6 +411,7 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
   const lowFeaturesByKey = new Map<string, GeoJsonFeature>();
   const worldMidFeatures: GeoJsonFeature[] = [];
   const detailParentKeysWithChildren = new Set<string>();
+  const detailCountriesWithChildren = new Set<string>();
 
   const countryPackage = await loadSourcePackage(path.join(generatedGeoDir, 'country.geojson'));
   reports.push(countryPackage.report);
@@ -447,6 +456,7 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
       if (['admin2', 'boundary'].includes(featureLevel(normalized)) && typeof normalized.properties.admin1Code === 'string') {
         detailParentKeysWithChildren.add(`admin1:${featureCountryCode(normalized)}.${normalized.properties.admin1Code}`);
       }
+      if (['admin2', 'boundary'].includes(featureLevel(normalized))) detailCountriesWithChildren.add(featureCountryCode(normalized));
     }
   }
 
@@ -456,7 +466,7 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
     if (weatherLevel === 'country') return level === 'country';
     if (weatherLevel === 'admin1') return level === 'admin1';
     if (['admin2', 'boundary'].includes(level)) return true;
-    return level === 'admin1' && !detailParentKeysWithChildren.has(featureRegionKey(feature));
+    return level === 'admin1' && !detailCountriesWithChildren.has(featureCountryCode(feature)) && !detailParentKeysWithChildren.has(featureRegionKey(feature));
   });
 
   const countriesWithoutLowZoomBoundary = [...countries.keys()]

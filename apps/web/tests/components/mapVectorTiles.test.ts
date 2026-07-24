@@ -13,6 +13,8 @@ import {
 
 type PaintKey = `${string}:${string}`;
 
+const styleLookupExpression = ['coalesce', ['get', 'weatherRegionKey'], ['get', 'regionKey']];
+
 function fakeMap() {
   const filters = new Map<string, unknown>();
   const paints = new Map<PaintKey, unknown>();
@@ -61,7 +63,7 @@ describe('vector region tile styles', () => {
 
     expect(map.filters.get(regionFillLayerId('admin2'))).toEqual([
       'any',
-      ['==', ['get', 'regionKey'], ''],
+      ['==', styleLookupExpression, ''],
       ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]]
     ]);
     expect(map.paints.get(`${regionFillLayerId('admin2')}:fill-opacity`)).toBe(0.08);
@@ -75,13 +77,17 @@ describe('vector region tile styles', () => {
     expect(map.paints.get(`${regionLineLayerId('admin2')}:line-width`)).toBe(0.85);
   });
 
-  it('does not include boundary-only regions in lower zoom packages', () => {
+  it('keeps admin1 native boundaries visible at admin1 zoom', () => {
     const map = fakeMap();
 
     applyVectorRegionStyles(map as never, 'admin1', 'world', [], true);
 
-    expect(map.filters.get(regionNoMetricPatternLayerId('admin1'))).toEqual(['==', ['get', 'regionKey'], '']);
-    expect(map.paints.get(`${regionLineLayerId('admin1')}:line-opacity`)).toBe(0);
+    expect(map.filters.get(regionNoMetricPatternLayerId('admin1'))).toEqual([
+      'any',
+      ['==', styleLookupExpression, ''],
+      ['in', ['get', 'level'], ['literal', ['admin1']]]
+    ]);
+    expect(map.paints.get(`${regionLineLayerId('admin1')}:line-opacity`)).toBe(0.46);
   });
 
   it('does not paint no-data hatching over admin2 regions with metric data', () => {
@@ -92,8 +98,8 @@ describe('vector region tile styles', () => {
 
     expect(map.paints.get(`${regionNoMetricPatternLayerId('admin2')}:fill-opacity`)).toEqual([
       'case',
-      ['in', ['get', 'regionKey'], ['literal', ['admin2:US.CA.037', 'country:US', 'admin1:US.CA']]],
-      ['match', ['get', 'regionKey'], 'admin2:US.CA.037', 0, 'country:US', 0, 'admin1:US.CA', 0, 0],
+      ['in', styleLookupExpression, ['literal', ['admin2:US.CA.037', 'country:US', 'admin1:US.CA']]],
+      ['match', styleLookupExpression, 'admin2:US.CA.037', 0, 'country:US', 0, 'admin1:US.CA', 0, 0],
       ['in', ['get', 'level'], ['literal', ['admin2', 'boundary']]],
       0.66,
       0
