@@ -1,15 +1,17 @@
 /**
- * 文件说明: 从 Open-Meteo 生成静态公开数据版 14 天天气 Wire JSON 和本地开发 current 入口。
- * 对应文档: docs/specs/31-data-flow.md, docs/specs/32-public-data-contract.md
+ * 文件说明: 从 Open-Meteo 生成静态公开数据版 14 天天气二进制包和 current 入口。
+ * 对应文档: docs/specs/31-data-flow.md, docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
  */
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type {
   CitiesPayloadWire,
   DayWeatherRowWire,
   WeatherCurrentWire,
-  WeatherForecast14dWire
+  WeatherForecastBinInputRow
 } from 'weather-core/static-data';
+import { encodeWeatherForecastBin } from 'weather-core/static-data';
 
 const rootDir = process.cwd();
 const generatedCitiesPath = path.join(rootDir, 'data', 'generated', 'cities.json');
@@ -39,7 +41,7 @@ function readCliOptions(): CliOptions {
   const options: CliOptions = {
     source: 'open-meteo',
     outputDir: defaultOutputDir,
-    forecastName: 'local.json',
+    forecastName: 'local.bin',
     versionPrefix: 'local',
     batchSize: 40,
     requestDelayMs: 2500,
@@ -195,7 +197,7 @@ async function fetchOpenMeteoBatch(
 async function buildForecastFromOpenMeteo(
   citiesPayload: CitiesPayloadWire,
   options: Pick<CliOptions, 'batchSize' | 'requestDelayMs' | 'maxRetries'>
-): Promise<{ dates: string[]; weatherRows: WeatherForecast14dWire['w'] }> {
+): Promise<{ dates: string[]; weatherRows: WeatherForecastBinInputRow[] }> {
   const openMeteoRows: OpenMeteoCityForecast[] = [];
   const cityBatches = chunk(citiesPayload.c, options.batchSize);
   for (const [index, cityBatch] of cityBatches.entries()) {
@@ -209,19 +211,19 @@ async function buildForecastFromOpenMeteo(
 
   return {
     dates,
-    weatherRows: openMeteoRows.map((row) => [
-      row.cityId,
-      row.sourceElevationM,
-      dates.map((date) => row.daysByDate.get(date) ?? null)
-    ])
+    weatherRows: openMeteoRows.map((row) => ({
+      cityId: row.cityId,
+      sourceElevationM: row.sourceElevationM,
+      days: dates.map((date) => row.daysByDate.get(date) ?? null)
+    }))
   };
 }
 
-function defaultDateByCoverage(dates: string[], weatherRows: WeatherForecast14dWire['w']): string {
+function defaultDateByCoverage(dates: string[], weatherRows: WeatherForecastBinInputRow[]): string {
   const [bestDate] = dates
     .map((date, index) => ({
       date,
-      count: weatherRows.filter((row) => row[2][index]).length
+      count: weatherRows.filter((row) => row.days[index]).length
     }))
     .sort((left, right) => right.count - left.count || left.date.localeCompare(right.date));
   if (!bestDate) throw new Error('Cannot choose default forecast date from an empty date list.');
@@ -232,8 +234,10 @@ const options = readCliOptions();
 const citiesPayload = await readJson<CitiesPayloadWire>(generatedCitiesPath);
 const { dates, weatherRows } = await buildForecastFromOpenMeteo(citiesPayload, options);
 
-const matchedWeatherRows = weatherRows.filter((row) => row[2].some(Boolean)).length;
+const matchedWeatherRows = weatherRows.filter((row) => row.days.some(Boolean)).length;
 const defaultDate = defaultDateByCoverage(dates, weatherRows);
+const forecastBin = encodeWeatherForecastBin(dates, weatherRows);
+const forecastHash = createHash('sha256').update(forecastBin).digest('hex');
 
 const version = `${options.versionPrefix}-${defaultDate}`;
 const forecastPath = `weather/forecast-14d/${options.forecastName}`;
@@ -243,18 +247,14 @@ const current: WeatherCurrentWire = {
   dd: defaultDate,
   ds: dates,
   cv: citiesPayload.v,
-  f: forecastPath
-};
-
-const forecastPayload: WeatherForecast14dWire = {
-  v: version,
-  cv: citiesPayload.v,
-  w: weatherRows
+  f: forecastPath,
+  fb: forecastBin.byteLength,
+  fh: forecastHash
 };
 
 const forecastDir = path.join(options.outputDir, 'forecast-14d');
 await mkdir(forecastDir, { recursive: true });
 await writeFile(path.join(options.outputDir, 'current.json'), `${JSON.stringify(current)}\n`);
-await writeFile(path.join(forecastDir, options.forecastName), `${JSON.stringify(forecastPayload)}\n`);
+await writeFile(path.join(forecastDir, options.forecastName), forecastBin);
 
-console.log(`Generated ${forecastPayload.w.length} city weather rows for ${dates.length} dates (${version}); ${matchedWeatherRows} cities have weather.`);
+console.log(`Generated ${weatherRows.length} city weather rows for ${dates.length} dates (${version}); ${matchedWeatherRows} cities have weather.`);

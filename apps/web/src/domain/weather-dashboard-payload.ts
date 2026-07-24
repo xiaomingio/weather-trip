@@ -1,8 +1,9 @@
 /**
- * 文件说明: 从天气应用快照组装 City Finder 和 Weather Map 页面所需的展示 payload。
- * 对应文档: docs/plans/free-static-data-plan.md
+ * 文件说明: 从天气应用快照和二进制天气矩阵组装 City Finder 与 Weather Map 页面展示 payload。
+ * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
  */
 import type { City, DailyForecast, RegionKey, WeatherDataSnapshot, WeatherFilter, WeatherToolId, WeatherType } from 'weather-core/types';
+import { hasForecastDay, readCityForecasts, readForecastsForDate } from 'weather-core/static-data';
 import type { DisplayLocale } from './format';
 import { buildWeatherMapRegionSummaries, buildCityFinderRegionSummaries } from './region-weather';
 import {
@@ -38,39 +39,34 @@ type WeatherToolDataParams = {
   searchParams: URLSearchParams;
 };
 
-function groupForecastsByCity(forecasts: DailyForecast[]): Map<string, DailyForecast[]> {
+function groupForecastsByCity(cities: City[], snapshot: WeatherDataSnapshot, dateWindowDays = snapshot.availableDates.length): Map<string, DailyForecast[]> {
   const grouped = new Map<string, DailyForecast[]>();
 
-  for (const forecast of forecasts) {
-    const list = grouped.get(forecast.cityId) ?? [];
-    list.push(forecast);
-    grouped.set(forecast.cityId, list);
-  }
-
-  for (const list of grouped.values()) {
-    list.sort((a, b) => a.date.localeCompare(b.date));
+  for (const city of cities) {
+    const forecasts = readCityForecasts(snapshot.forecastMatrix, city.id, dateWindowDays);
+    if (forecasts.length > 0) grouped.set(city.id, forecasts);
   }
 
   return grouped;
 }
 
-function buildRegionAvailableDates(cities: City[], forecasts: DailyForecast[], region: RegionKey): string[] {
-  const cityIds = new Set(cities.filter((city) => cityMatchesRegion(city, region)).map((city) => city.id));
-  if (cityIds.size === 0) return [];
+function buildRegionAvailableDates(cities: City[], snapshot: WeatherDataSnapshot, region: RegionKey): string[] {
+  const matchingCities = cities.filter((city) => cityMatchesRegion(city, region));
+  if (matchingCities.length === 0) return [];
 
-  const dateCounts = new Map<string, number>();
-  for (const forecast of forecasts) {
-    if (!cityIds.has(forecast.cityId)) continue;
-    dateCounts.set(forecast.date, (dateCounts.get(forecast.date) ?? 0) + 1);
+  const completeDates: string[] = [];
+  const partialDates: string[] = [];
+  for (const date of snapshot.availableDates) {
+    let count = 0;
+    for (const city of matchingCities) {
+      if (hasForecastDay(snapshot.forecastMatrix, city.id, date)) count += 1;
+    }
+    if (count === matchingCities.length) completeDates.push(date);
+    else if (count > 0) partialDates.push(date);
   }
 
-  const completeDates = [...dateCounts.entries()]
-    .filter(([, count]) => count === cityIds.size)
-    .map(([date]) => date)
-    .sort();
   if (completeDates.length > 0) return completeDates;
-
-  return [...dateCounts.keys()].sort();
+  return partialDates;
 }
 
 function buildSubRegionOptions(
@@ -192,20 +188,22 @@ function buildWeatherToolPayload(
   { locale, searchParams }: WeatherToolDataParams
 ): WeatherToolPayload {
   const weatherFilter = parseWeatherFilterFromSearch(searchParams);
-  const forecastsByCity = groupForecastsByCity(snapshot.forecasts);
-  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, weatherFilter.region);
+  const scopedCities = snapshot.cities.filter((city) => cityMatchesRegion(city, weatherFilter.region));
+  const forecastsByCity = groupForecastsByCity(scopedCities, snapshot, weatherFilter.dateWindowDays);
+  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot, weatherFilter.region);
   const requestedDate = readDateFromSearch(searchParams, regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '');
   const selectedDate = regionAvailableDates.includes(requestedDate)
     ? requestedDate
     : regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '';
+  const selectedDateForecasts = readForecastsForDate(snapshot.forecastMatrix, selectedDate);
   const resultItems =
     tool === 'city-finder'
       ? buildCityFinderItems(snapshot.cities, forecastsByCity, weatherFilter)
-      : buildWeatherMapItems(snapshot.cities, snapshot.forecasts, selectedDate, weatherFilter.region);
+      : buildWeatherMapItems(snapshot.cities, selectedDateForecasts, selectedDate, weatherFilter.region);
   const regionSummaries =
     tool === 'city-finder'
       ? buildCityFinderRegionSummaries(snapshot.cities, forecastsByCity, weatherFilter, locale)
-      : buildWeatherMapRegionSummaries(snapshot.cities, snapshot.forecasts, selectedDate, weatherFilter.region, locale);
+      : buildWeatherMapRegionSummaries(snapshot.cities, selectedDateForecasts, selectedDate, weatherFilter.region, locale);
 
   return {
     tool: tool,
@@ -265,7 +263,7 @@ export function buildWeatherLayerPayload(
   { locale, searchParams }: WeatherToolDataParams
 ): WeatherLayerPayload {
   const weatherFilter = parseWeatherFilterFromSearch(searchParams);
-  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, weatherFilter.region);
+  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot, weatherFilter.region);
   const requestedDate = readDateFromSearch(searchParams, regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '');
   const selectedDate = regionAvailableDates.includes(requestedDate)
     ? requestedDate
@@ -277,11 +275,14 @@ export function buildWeatherLayerPayload(
     region: weatherFilter.region,
     selectedDate,
     layer: readLayerFromSearch(searchParams),
-    days: responseDates.map((date) => ({
-      date,
-      resultItems: buildWeatherMapItems(snapshot.cities, snapshot.forecasts, date, weatherFilter.region),
-      regionSummaries: buildWeatherMapRegionSummaries(snapshot.cities, snapshot.forecasts, date, weatherFilter.region, locale)
-    }))
+    days: responseDates.map((date) => {
+      const forecasts = readForecastsForDate(snapshot.forecastMatrix, date);
+      return {
+        date,
+        resultItems: buildWeatherMapItems(snapshot.cities, forecasts, date, weatherFilter.region),
+        regionSummaries: buildWeatherMapRegionSummaries(snapshot.cities, forecasts, date, weatherFilter.region, locale)
+      };
+    })
   };
 }
 
@@ -290,7 +291,7 @@ export function buildMapDatesPayload(
   { searchParams }: WeatherToolDataParams
 ): MapDatesPayload {
   const weatherFilter = parseWeatherFilterFromSearch(searchParams);
-  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot.forecasts, weatherFilter.region);
+  const regionAvailableDates = buildRegionAvailableDates(snapshot.cities, snapshot, weatherFilter.region);
   const requestedDate = readDateFromSearch(searchParams, regionAvailableDates[0] ?? snapshot.availableDates[0] ?? '');
   const selectedDate = regionAvailableDates.includes(requestedDate)
     ? requestedDate
@@ -310,10 +311,9 @@ export function buildCityForecastPayload(
   { searchParams }: WeatherToolDataParams
 ): CityForecastPayload {
   const cityId = searchParams.get('cityId') ?? null;
-  const forecastsByCity = groupForecastsByCity(snapshot.forecasts);
 
   return {
     cityId,
-    selectedCityForecasts: cityId ? (forecastsByCity.get(cityId) ?? []).slice(0, 14) : []
+    selectedCityForecasts: cityId ? readCityForecasts(snapshot.forecastMatrix, cityId, 14) : []
   };
 }

@@ -1,6 +1,6 @@
 /**
  * 文件说明: 定义城市、天气、筛选条件和前端展示所需的共享类型。
- * 对应文档: docs/product-design.md
+ * 对应文档: docs/specs/32-public-data-contract.md, docs/specs/43-weather-matrix-performance.md
  */
 
 export type WeatherType =
@@ -77,6 +77,25 @@ export type DailyForecast = {
   windSpeedMaxKmh?: number;
 };
 
+export type WeatherForecastMatrix = {
+  cityIds: string[]; // cityIndex -> cityId
+  dates: string[]; // dateIndex -> date-only key
+  indexByCityId: Map<string, number>;
+  indexByDate: Map<string, number>;
+  sourceElevationMeters: Int16Array; // cityIndex -> source elevation meters，-32768 表示缺失
+  fields: {
+    // 所有天气字段都是 date-major 矩阵：offset = dateIndex * cityIds.length + cityIndex
+    weatherCode: Uint8Array;
+    temperatureMinC10: Int16Array;
+    temperatureMaxC10: Int16Array;
+    temperatureMeanC10: Int16Array;
+    humidityMeanPercent: Uint8Array;
+    precipitationSumMm10: Uint16Array;
+    windSpeedMaxKmh10: Uint16Array;
+    missing: Uint8Array;
+  };
+};
+
 export type WeatherDataSnapshot = {
   version: string;
   generatedAt: string;
@@ -84,7 +103,7 @@ export type WeatherDataSnapshot = {
   defaultDate: string;
   availableDates: string[];
   cities: City[];
-  forecasts: DailyForecast[];
+  forecastMatrix: WeatherForecastMatrix;
 };
 
 export type WeatherFilter = {

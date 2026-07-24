@@ -7,6 +7,7 @@ import type { City, DailyForecast, WeatherDataSnapshot, WeatherFilter } from 'we
 import { buildWeatherMapCityWeather, calculateBestStreak, dayMatchesFilter, scoreCityFinderMatch } from '@/domain/scoring';
 import { getRegionGroup, getSortedRegionOptions } from '@/domain/regions';
 import { buildRegionsPayload } from '@/domain/weather-dashboard-payload';
+import { weatherSnapshotFromForecasts } from './weatherSnapshotTestFixture';
 
 const city: City = {
   id: 'test',
@@ -190,15 +191,12 @@ describe('region sorting', () => {
       cityWith({ id: 'fr-city', country: 'France', countryCode: 'FR', region: 'europe', countryTier: 'C3' }),
       cityWith({ id: 'cn-city', country: 'China', countryCode: 'CN', region: 'asia', countryTier: 'C3' })
     ];
-    const snapshot: WeatherDataSnapshot = {
-      version: 'test-weather',
-      generatedAt: '2026-07-21T00:00:00.000Z',
-      cityListVersion: 'test-cities',
-      defaultDate: '2026-07-21',
-      availableDates: ['2026-07-21'],
+    const snapshot: WeatherDataSnapshot = weatherSnapshotFromForecasts({
       cities: countryCities,
-      forecasts: countryCities.map((item) => forecast({ cityId: item.id }))
-    };
+      dates: ['2026-07-21'],
+      forecasts: countryCities.map((item) => forecast({ cityId: item.id })),
+      defaultDate: '2026-07-21'
+    });
     const zhCountries = buildRegionsPayload(snapshot, { locale: 'zh', searchParams: new URLSearchParams() })
       .regions.filter((option) => option.group === '地区/国家')
       .map((option) => option.label);

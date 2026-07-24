@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import type { City, DailyForecast, WeatherDataSnapshot } from 'weather-core/types';
 import { buildCitySearchPayload, buildWeatherLayerPayload } from '@/domain/weather-dashboard-payload';
+import { weatherSnapshotFromForecasts } from './weatherSnapshotTestFixture';
 
 const city: City = {
   id: 'test-city',
@@ -49,15 +50,11 @@ function forecast(date: string, cityId = city.id, overrides: Partial<DailyForeca
 }
 
 const dates = Array.from({ length: 15 }, (_, index) => `2026-07-${String(index + 1).padStart(2, '0')}`);
-const snapshot: WeatherDataSnapshot = {
-  version: 'test-weather',
-  generatedAt: '2026-07-01T00:00:00.000Z',
-  cityListVersion: 'test-cities',
-  defaultDate: dates[0],
+const snapshot: WeatherDataSnapshot = weatherSnapshotFromForecasts({
   cities: [city],
-  forecasts: dates.map((date) => forecast(date)),
-  availableDates: dates
-};
+  dates,
+  forecasts: dates.map((date) => forecast(date))
+});
 
 describe('weather map day payload', () => {
   it('returns only the requested date when date is provided', () => {
@@ -89,15 +86,11 @@ describe('city search payload', () => {
       cityWith({ id: 'regional-hub', names: { zh: '区域中心', en: 'Regional Hub' }, population: 12_000_000 })
     ];
     const testDates = dates.slice(0, 3);
-    const tiedSnapshot: WeatherDataSnapshot = {
-      version: 'test-weather',
-      generatedAt: '2026-07-01T00:00:00.000Z',
-      cityListVersion: 'test-cities',
-      defaultDate: testDates[0],
+    const tiedSnapshot: WeatherDataSnapshot = weatherSnapshotFromForecasts({
       cities,
-      forecasts: cities.flatMap((item) => testDates.map((date) => forecast(date, item.id))),
-      availableDates: testDates
-    };
+      dates: testDates,
+      forecasts: cities.flatMap((item) => testDates.map((date) => forecast(date, item.id)))
+    });
 
     const payload = buildCitySearchPayload(tiedSnapshot, {
       locale: 'en',
@@ -134,15 +127,11 @@ describe('city search payload', () => {
         region: 'asia'
       })
     ];
-    const yunnanSnapshot: WeatherDataSnapshot = {
-      version: 'test-weather',
-      generatedAt: '2026-07-01T00:00:00.000Z',
-      cityListVersion: 'test-cities',
-      defaultDate: dates[0],
+    const yunnanSnapshot: WeatherDataSnapshot = weatherSnapshotFromForecasts({
       cities,
-      forecasts: cities.map((item) => forecast(dates[0], item.id)),
-      availableDates: [dates[0]]
-    };
+      dates: [dates[0]],
+      forecasts: cities.map((item) => forecast(dates[0], item.id))
+    });
 
     const payload = buildCitySearchPayload(yunnanSnapshot, {
       locale: 'en',

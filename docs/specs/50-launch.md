@@ -28,7 +28,7 @@ daily refresh -> GitHub Actions
 | 集成 | 配置 |
 | --- | --- |
 | Cloudflare Pages | 托管 `apps/web/dist` 静态产物 |
-| Cloudflare R2 | 保存 `weather/current.json` 和 `weather/forecast-14d/<date>.json` |
+| Cloudflare R2 | 保存 `weather/current.json` 和 `weather/forecast-14d/<date>.bin` |
 | GitHub Actions | 每日刷新 Open-Meteo 天气包并上传 R2 |
 | Umami | 公开页面在设置 `UMAMI_WEBSITE_ID` 后加载统计脚本 |
 | Search Console | 通过 `sitemap.xml` 验证公开页面 |
@@ -52,6 +52,6 @@ R2_SECRET_ACCESS_KEY
 
 1. 首页、中文首页、两个工具页能打开。
 2. CSS、JS、`/data/cities.json` 和 GeoJSON MIME type 正确。
-3. R2 `weather/current.json` 可读，并且 `current.f` 指向的 forecast 可读。
+3. R2 `weather/current.json` 可读，并且 `current.f` 指向的 forecast bin 可读。
 4. City Finder 和 Weather Map 能完成地区切换、筛选、城市搜索、日期切换和城市详情展示。
 5. `robots.txt`、`sitemap.xml` 和 `llms.txt` 输出正确。
