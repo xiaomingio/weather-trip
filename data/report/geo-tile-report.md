@@ -1,6 +1,6 @@
 # 地图瓦片报告
 
-生成时间：`2026-07-24T12:17:20.079Z`
+生成时间：`2026-07-24T12:24:00.799Z`
 Dry run：`false`
 Source layer：`weather_region`
 
@@ -44,30 +44,30 @@ Source layer：`weather_region`
 
 | 包 | 实际 tile zoom | 显示 zoom | 瓦片文件数 | MVT 原始体积 | 最大单 tile |
 | --- | --- | --- | ---: | ---: | ---: |
-| admin1 | z3-z4 | 到 z4 | 190 | 3.10 MB | 229.3 KB |
-| admin2 | z5-z5 | z5 overzoom 到 z8 | 454 | 3.54 MB | 194.2 KB |
-| country | z1-z2 | 到 z2 | 16 | 1.14 MB | 273.2 KB |
+| admin1 | z3-z4 | 到 z4 | 190 | 2.97 MB | 229.4 KB |
+| admin2 | z5-z5 | z5 overzoom 到 z8 | 453 | 3.52 MB | 194.2 KB |
+| country | z1-z2 | 到 z2 | 16 | 1.14 MB | 272.8 KB |
 
 ## 分档
 
 | 包 | 档位 | feature | feature 数 | 实际 tile zoom | 显示 zoom | tolerance | 瓦片数 | MVT 原始体积 | 最大单 tile |
 | --- | --- | --- | ---: | --- | --- | ---: | ---: | ---: | ---: |
-| country | country | country | 245 | z1-z2 | z1-z2 | 8 | 16 | 1.14 MB | 273.2 KB |
-| admin1 | admin1 | admin1+country-fallback | 1024 | z3-z4 | z3-z4 | 4 | 190 | 3.10 MB | 229.3 KB |
-| admin2 | admin2 | admin2+boundary+admin1/country-fallback | 1732 | z5-z5 | z5-z8 | 3 | 454 | 3.54 MB | 194.2 KB |
+| country | country | country | 245 | z1-z2 | z1-z2 | 8 | 16 | 1.14 MB | 272.8 KB |
+| admin1 | admin1 | admin1+country-fallback | 1024 | z3-z4 | z3-z4 | 4 | 190 | 2.97 MB | 229.4 KB |
+| admin2 | admin2 | admin2+boundary+admin1/country-fallback | 1732 | z5-z5 | z5-z8 | 3 | 453 | 3.52 MB | 194.2 KB |
 
 ## Zoom 汇总
 
 | Zoom | 瓦片数 | 原始体积 |
 | ---: | ---: | ---: |
-| z1 | 4 | 44.8 KB |
+| z1 | 4 | 41.7 KB |
 | z2 | 12 | 1.10 MB |
-| z3 | 44 | 516.2 KB |
+| z3 | 44 | 387.4 KB |
 | z4 | 146 | 2.60 MB |
-| z5 | 454 | 3.54 MB |
+| z5 | 453 | 3.52 MB |
 
-总瓦片文件：660
-总 MVT 原始体积：7.78 MB
-最大单瓦片：`apps/web/public/data/geo/region-tiles/country/2/2/1.mvt` (273.2 KB)
+总瓦片文件：659
+总 MVT 原始体积：7.63 MB
+最大单瓦片：`apps/web/public/data/geo/region-tiles/country/2/2/1.mvt` (272.8 KB)
 
 z6-z8 不生成新高精度文件，由 MapLibre 对 z5 高精度瓦片 overzoom。文件数量下降主要来自高精度档停止继续切到 z6/z7/z8。

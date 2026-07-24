@@ -153,20 +153,20 @@ type GeoTileGenerationTier =
 
 | 包 | 档位 | feature 数 | 实际切片 zoom | 逻辑 tile 数 | MVT 原始字节估算 | 最大单 tile |
 | --- | --- | ---: | --- | ---: | ---: | ---: |
-| `country/` | country | 245 | z1-z2 | 16 | 约 698.3 KB | 约 231.2 KB |
-| `admin1/` | admin1+country-fallback | 1024 | z3-z4 | 190 | 约 3.10 MB | 约 229.3 KB |
-| `admin2/` | admin2+boundary+admin1/country-fallback | 1732 | z5 | 454 | 约 3.54 MB | 约 194.2 KB |
+| `country/` | country | 245 | z1-z2 | 16 | 约 1.14 MB | 约 272.8 KB |
+| `admin1/` | admin1+country-fallback | 1024 | z3-z4 | 190 | 约 2.97 MB | 约 229.4 KB |
+| `admin2/` | admin2+boundary+admin1/country-fallback | 1732 | z5 | 453 | 约 3.52 MB | 约 194.2 KB |
 
-按当前三档模型生成，总 MVT 文件数为 660。对比把现有全部边界直接切 z1-z8 的试算结果，后者约 23,220 个非空 tile。这个下降主要不是打包格式带来的，而是高精度档停止生成 z6-z8 细碎 tile 带来的。
+按当前三档模型生成，总 MVT 文件数为 659。对比把现有全部边界直接切 z1-z8 的试算结果，后者约 23,220 个非空 tile。这个下降主要不是打包格式带来的，而是高精度档停止生成 z6-z8 细碎 tile 带来的。
 
-逐级切到 z8 时，tile 数会在高 zoom 快速膨胀。本地试算里，仅 z8 就有约 16,576 个非空 tile；z6 有约 1,375 个非空 tile。三档模型把高精度真实切片停在 z5，并让 z6-z8 overzoom z5，所以高精度部分不会继续按四叉树膨胀。当前 z5 高精度档只有 454 个 tile；这就是从 2 万多降到几百级的主要来源。
+逐级切到 z8 时，tile 数会在高 zoom 快速膨胀。本地试算里，仅 z8 就有约 16,576 个非空 tile；z6 有约 1,375 个非空 tile。三档模型把高精度真实切片停在 z5，并让 z6-z8 overzoom z5，所以高精度部分不会继续按四叉树膨胀。当前 z5 高精度档只有 453 个 tile；这就是从 2 万多降到几百级的主要来源。
 
 tile 数拆解：
 
 | 模型 | 统计范围 | z1-z2 | z3-z4 | z5 | z6 | z7 | z8 | 合计 |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 直接逐级切片 | 全部现有边界，z1-z8 都生成 | 16 | 190 | 438 | 1,375 | 4,627 | 16,576 | 23,220 |
-| 三档模型 | country + admin1/fallback + admin2/fallback | 16 | 190 | 454 | overzoom | overzoom | overzoom | 660 |
+| 三档模型 | country + admin1/fallback + admin2/fallback | 16 | 190 | 453 | overzoom | overzoom | overzoom | 659 |
 
 直接逐级切片的 z6-z8 数量来自所有现有边界在高 zoom 下继续细分；三档模型的 z6-z8 不生成新 tile，只复用 z5 的高精度 tile。这样 R2 对象数控制在几百级，地图交互请求数由较大的 z5 tile 控制在较低水平。
 
