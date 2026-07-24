@@ -136,7 +136,7 @@ C2 和 C3 分别对应标准化后的一级区域和二级区域。不同国家�
 
 国家层级复核名单是人工复核后的 input，不由脚本按预算自动增减。候选报告负责把候选国家排好序，并列出每个国家升 C2 或 C3 的收益和成本；人工读完报告后，把决定写入 `data/input/country-tier-countries.yml`，再生成 `data/generated/country-profiles.json`。`countryTier: C1` 表示候选已复核但不升档；`reason` 只作为人工复核备注，生成脚本不把它写入 profiles 或报告。
 
-`data/generated/country-tier-candidate-report.md` 由 `scripts/generate-country-tier-candidates.ts` 根据 GeoNames、旅游目的地输入、覆盖规则和 admin2 输入生成。候选报告只输出候选命中、分数、升档城市增量、代表点重合、空间/旅行/行政指标和缺口，不输出 C2/C3 理由；字段口径见 `docs/specs/31-data-flow.md`。C3 是比 C2 更细的国家层级，命中 C3 候选的国家也会自动进入 C2 复核队列。人工判断写在 `country-tier-countries.yml` 的 `reason` 备注里，后续生成产物只用 `countryCode` 和 `countryTier`；其中 C1 行不会产生详细区域覆盖。
+`data/report/country-tier-candidate-report.md` 由 `scripts/generate-country-tier-candidates.ts` 根据 GeoNames、旅游目的地输入、覆盖规则和 admin2 输入生成。候选报告只输出候选命中、分数、升档城市增量、代表点重合、空间/旅行/行政指标和缺口，不输出 C2/C3 理由；字段口径见 `docs/specs/31-data-flow.md`。C3 是比 C2 更细的国家层级，命中 C3 候选的国家也会自动进入 C2 复核队列。人工判断写在 `country-tier-countries.yml` 的 `reason` 备注里，后续生成产物只用 `countryCode` 和 `countryTier`；其中 C1 行不会产生详细区域覆盖。
 
 ### C1 国家
 

@@ -39,7 +39,7 @@ weather map tiles provider
   -> 未来可选天气视觉层
 ```
 
-可自动抽取的旅行目的地原始清单进入 `data/raw/tourism-destinations/`。人工或 AI 判断进入 `data/input/*.yml`。生成任务把 raw、input 和 GeoNames 混合成 `data/generated/*` 与 `data/generated/*-report.*`，前端运行时只使用统一的 `regionKey`、`city` 和天气快照。
+可自动抽取的旅行目的地原始清单进入 `data/raw/tourism-destinations/`。人工或 AI 判断进入 `data/input/*.yml`。生成任务把 raw、input 和 GeoNames 混合成 `data/generated/*` 机器产物，并把人工复核材料写入 `data/report/*.md`。前端运行时只使用统一的 `regionKey`、`city` 和天气快照。
 
 ## 城市来源
 
@@ -138,7 +138,7 @@ flowchart TB
   rawGeonames["data/raw/geonames/"]
   generateTourism["static:tourism<br/>generate-tourism-destinations.ts"]
   tourismData["data/generated/tourism-destinations.json<br/>后续分档和城市选择输入"]
-  tourismReport["data/generated/tourism-destination-report.*<br/>复核匹配、歧义和未命中"]
+  tourismReport["data/report/tourism-destination-report.md<br/>复核匹配、歧义和未命中"]
 
   externalTourism -->|抓取 / 生成 raw 快照| generateTourismRaw --> rawTourism
   rawTourism -->|人工确认、合并、映射| tourismReview --> tourismInput
@@ -161,12 +161,12 @@ flowchart TB
   tourismGenerated["data/generated/tourism-destinations.json"]
   generateCoverageCandidates["static:country-tier-candidates<br/>generate-country-tier-candidates.ts"]
   countryAdminStats["data/generated/country-admin-stats.json<br/>国家行政区和候选城市统计"]
-  coverageCandidateReport["data/generated/country-tier-candidate-report.*<br/>复核升档收益和缺口"]
+  coverageCandidateReport["data/report/country-tier-candidate-report.md<br/>复核升档收益和缺口"]
   tierReview["人工复核候选报告"]
   coverageTierInput["data/input/country-tier-countries.yml"]
   generateProfiles["static:profiles<br/>generate-country-profiles.ts"]
   profilesData["data/generated/country-profiles.json<br/>国家 C1/C2/C3 和覆盖层级"]
-  profilesReport["data/generated/country-profile-report.*<br/>复盘最终分档和代表点数量"]
+  profilesReport["data/report/country-profile-report.md<br/>复盘最终分档和代表点数量"]
 
   coverageRules -->|候选阈值和预算| generateCoverageCandidates
   admin2Support -->|可用 admin2 口径| generateCoverageCandidates
@@ -195,7 +195,7 @@ flowchart TB
   rawGeonames["data/raw/geonames/"]
   generateCities["static:cities<br/>generate-static-cities.ts"]
   citiesData["data/generated/cities.json<br/>源码产物，供复核和复制"]
-  cityReport["data/generated/city-selection-report.*<br/>复核覆盖缺口、弱代表点和旅游种子未命中"]
+  cityReport["data/report/city-selection-report.md<br/>复核覆盖缺口、弱代表点和旅游种子未命中"]
   publicCities["apps/web/public/data/cities.json<br/>前端公开城市包"]
 
   profilesGenerated -->|覆盖深度和人口兜底| generateCities
@@ -222,8 +222,8 @@ flowchart TB
   generateGeo["static:geo<br/>generate-static-geo.ts"]
   publicGeo["data/generated/geo/{country,c2_admin1,c3_admin1}.geojson<br/>data/generated/geo/c3_admin2/*.geojson<br/>边界中间产物"]
   geoTiles["apps/web/public/data/geo/region-tiles/**/*.mvt<br/>前端运行时边界瓦片"]
-  geoReport["data/generated/geo-boundary-report.md<br/>覆盖检查、缺口和 geometry 点位校验"]
-  tileReport["data/generated/geo-tile-report.md<br/>瓦片数量、体积和 zoom 分档"]
+  geoReport["data/report/geo-boundary-report.md<br/>覆盖检查、缺口和 geometry 点位校验"]
+  tileReport["data/report/geo-tile-report.md<br/>瓦片数量、体积和 zoom 分档"]
 
   profilesGenerated -->|C2/C3 详情层级| generateGeo
   citiesGenerated -->|regionKey 期望和点位校验| generateGeo

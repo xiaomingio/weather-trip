@@ -13,6 +13,7 @@ import { buildTopTabPath } from '@/domain/navigation';
 import { buildAbsoluteUrl, getAlternateLinks, getPublicPage, ogImagePath } from '@/domain/seo';
 import { getStaticInfoFooterLinks } from '@/domain/static-info';
 import { getPageShellMessages, type LandingSampleWeather } from '@/i18n';
+import type { CitiesPayloadWire } from 'weather-core/static-data';
 import '@/styles/global.css';
 import '@/styles/landing.css';
 
@@ -40,12 +41,12 @@ const fallbackStats: LandingStats = {
 
 async function readLandingStats(): Promise<LandingStats> {
   try {
-    const report = JSON.parse(
-      await readFile(path.resolve(process.cwd(), '..', '..', 'data', 'generated', 'city-selection-report.json'), 'utf8')
-    ) as { cityCount: number; byCountry: unknown[] };
+    const cities = JSON.parse(
+      await readFile(path.resolve(process.cwd(), 'public', 'data', 'cities.json'), 'utf8')
+    ) as CitiesPayloadWire;
     return {
-      countryCount: report.byCountry.length,
-      cityCount: report.cityCount,
+      countryCount: cities.d.co.length,
+      cityCount: cities.c.length,
       forecastDayCount: 14
     };
   } catch (error) {

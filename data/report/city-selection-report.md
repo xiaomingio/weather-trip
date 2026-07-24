@@ -1,7 +1,7 @@
 # 城市选择报告
 
 版本：`cities-af5f3333076b`
-生成时间：`2026-07-24T11:37:12.806Z`
+生成时间：`2026-07-24T12:14:23.683Z`
 国家分层版本：`country-profiles-3d5372799eab`
 来源城市候选：**170485**
 入选城市数：**3841**
@@ -75,5 +75,5 @@
 
 ## 待复核
 
-- 运行 static:geo 后，在 data/generated/geo-boundary-report.md 复核边界匹配结果。
+- 运行 static:geo 后，在 data/report/geo-boundary-report.md 复核边界匹配结果。
 - 部分 GeoNames admin2 没有人口城市候选，需要人工复核或补映射。

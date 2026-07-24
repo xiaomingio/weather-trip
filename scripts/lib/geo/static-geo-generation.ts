@@ -141,6 +141,7 @@ const rootDir = process.cwd();
 const rawDir = path.join(rootDir, 'data', 'raw', 'geo-boundaries');
 const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
+const reportDir = path.join(rootDir, 'data', 'report');
 const profilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.json');
 const citiesPath = path.join(rootDir, 'data', 'generated', 'cities.json');
 const geoBoundarySourcesPath = path.join(rootDir, 'data', 'input', 'geo-boundary-sources.yml');
@@ -1665,9 +1666,9 @@ const report: GeoBoundaryReport = {
     geometryCheckedRegionCount: 0
   },
   packages: [
-    await writeTrackedGeoPackage(geoCountryPath, countryFeatures, 1),
-    await writeTrackedGeoPackage(geoC2Admin1Path, c2Admin1Features, 1),
-    await writeTrackedGeoPackage(geoC3Admin1Path, c3Admin1Features, 1)
+    await writeTrackedGeoPackage(geoCountryPath, countryFeatures, 3),
+    await writeTrackedGeoPackage(geoC2Admin1Path, c2Admin1Features, 3),
+    await writeTrackedGeoPackage(geoC3Admin1Path, c3Admin1Features, 3)
   ],
   countries: []
 };
@@ -1722,8 +1723,8 @@ for (const countryCode of [...detailedCountryCodes].filter((countryCode) => !c3C
 report.countries = countryReports.sort((left, right) => left.countryCode.localeCompare(right.countryCode));
 report.worldCoverage = worldCoverageSummary(citiesPayload, report.countries, countryFeatures, [...c2Admin1Features, ...c3Admin1Features]);
 report.validationFailures = collectRequiredGeoFeatureFailures(report, packageFeaturesByOutputPath, citiesPayload);
-await mkdir(generatedDir, { recursive: true });
-await writeFile(path.join(generatedDir, 'geo-boundary-report.md'), reportMarkdown(report));
+await mkdir(reportDir, { recursive: true });
+await writeFile(path.join(reportDir, 'geo-boundary-report.md'), reportMarkdown(report));
 
 console.log(`Generated geo boundaries: ${report.packages.map((item) => `${item.outputPath}=${item.featureCount}`).join(', ')}.`);
 if (report.validationFailures.length > 0) {

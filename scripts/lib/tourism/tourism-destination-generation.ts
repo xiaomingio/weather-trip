@@ -108,9 +108,9 @@ const rootDir = process.cwd();
 const rawTourismDir = path.join(rootDir, 'data', 'raw', 'tourism-destinations');
 const overridesPath = path.join(rootDir, 'data', 'input', 'tourism-destination-overrides.yml');
 const generatedDir = path.join(rootDir, 'data', 'generated');
+const reportDir = path.join(rootDir, 'data', 'report');
 const outputPath = path.join(generatedDir, 'tourism-destinations.json');
-const reportJsonPath = path.join(generatedDir, 'tourism-destination-report.json');
-const reportMarkdownPath = path.join(generatedDir, 'tourism-destination-report.md');
+const reportMarkdownPath = path.join(reportDir, 'tourism-destination-report.md');
 
 async function readJson<T>(filePath: string): Promise<T> {
   return JSON.parse(await readFile(filePath, 'utf8')) as T;
@@ -713,8 +713,8 @@ const report: TourismDestinationReport = {
 };
 
 await mkdir(generatedDir, { recursive: true });
+await mkdir(reportDir, { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(destinations, null, 2)}\n`);
-await writeFile(reportJsonPath, `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(reportMarkdownPath, reportMarkdown(report));
 
 console.log(`Generated ${destinations.length} tourism destinations from ${rawResult.destinations.length} raw promotions, ${overrides.length} overrides and ${rawDestinations.length} raw destinations (${version}).`);

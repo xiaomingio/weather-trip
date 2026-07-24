@@ -237,7 +237,7 @@ flowchart TD
   geojson["GeoJSON 中间产物<br/>country / c2_admin1 / c3_admin1 / c3_admin2"]
   regions["统一天气区域中间文件<br/>geo-regions.ndjson"]
   tiles["静态矢量瓦片<br/>region-tiles/**/*.mvt"]
-  report["瓦片报告<br/>geo-tile-report.md"]
+  report["瓦片报告<br/>data/report/geo-tile-report.md"]
   browser["MapLibre vector source"]
 
   rawBoundary --> geojson
@@ -268,7 +268,7 @@ apps/web/public/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt
 生成报告：
 
 ```text
-data/generated/geo-tile-report.md
+data/report/geo-tile-report.md
 ```
 
 报告记录 feature 数、MVT 原始字节、各层级数量、缺失 summary 的 regionKey、每个 zoom 的瓦片数量和最大单瓦片大小。

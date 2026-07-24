@@ -761,6 +761,7 @@ async function loadCountryProfileInputs(rootDir: string, includeFinalCountryTier
 
 export async function generateCountryTierCandidateReport(rootDir = process.cwd()): Promise<CountryTierCandidateReport> {
   const generatedDir = path.join(rootDir, 'data', 'generated');
+  const reportDir = path.join(rootDir, 'data', 'report');
   const { rules, seeds, dataset, supportedAdmin2Keys, statsRows } = await loadCountryProfileInputs(rootDir, false);
   const hash = createHash('sha1').update(JSON.stringify({ rules, statsRows })).digest('hex').slice(0, 12);
   const version = `country-tier-candidates-${hash}`;
@@ -769,14 +770,15 @@ export async function generateCountryTierCandidateReport(rootDir = process.cwd()
   const candidateReport = buildCountryTierCandidateReport(version, generatedAt, rules, statsRows, seeds, countryTierCandidates);
 
   await mkdir(generatedDir, { recursive: true });
+  await mkdir(reportDir, { recursive: true });
   await writeFile(path.join(generatedDir, 'country-admin-stats.json'), `${JSON.stringify({ version, generatedAt, stats: statsRows }, null, 2)}\n`);
-  await writeFile(path.join(generatedDir, 'country-tier-candidate-report.json'), `${JSON.stringify(candidateReport, null, 2)}\n`);
-  await writeFile(path.join(generatedDir, 'country-tier-candidate-report.md'), countryTierCandidateReportMarkdown(candidateReport));
+  await writeFile(path.join(reportDir, 'country-tier-candidate-report.md'), countryTierCandidateReportMarkdown(candidateReport));
   return candidateReport;
 }
 
 export async function generateCountryProfiles(rootDir = process.cwd()): Promise<CountryProfileReport> {
   const generatedDir = path.join(rootDir, 'data', 'generated');
+  const reportDir = path.join(rootDir, 'data', 'report');
   const { rules, overrideSeed, seeds, dataset, supportedAdmin2Keys, statsRows } = await loadCountryProfileInputs(rootDir, true);
   const detailedCountries = selectDetailedCountries(statsRows, overrideSeed);
   const profiles = statsRows
@@ -792,9 +794,9 @@ export async function generateCountryProfiles(rootDir = process.cwd()): Promise<
   const report = buildReport(version, generatedAt, rules, statsRows, profiles, seeds, countryTierCandidates);
 
   await mkdir(generatedDir, { recursive: true });
+  await mkdir(reportDir, { recursive: true });
   await writeFile(path.join(generatedDir, 'country-admin-stats.json'), `${JSON.stringify({ version, generatedAt: report.generatedAt, stats: statsRows }, null, 2)}\n`);
   await writeFile(path.join(generatedDir, 'country-profiles.json'), `${JSON.stringify({ version, generatedAt: report.generatedAt, profiles }, null, 2)}\n`);
-  await writeFile(path.join(generatedDir, 'country-profile-report.json'), `${JSON.stringify(report, null, 2)}\n`);
-  await writeFile(path.join(generatedDir, 'country-profile-report.md'), reportMarkdown(report));
+  await writeFile(path.join(reportDir, 'country-profile-report.md'), reportMarkdown(report));
   return report;
 }

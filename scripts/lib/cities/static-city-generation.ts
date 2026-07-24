@@ -111,6 +111,7 @@ const rootDir = process.cwd();
 const cityProfilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.json');
 const tourismSeedsPath = path.join(rootDir, 'data', 'generated', 'tourism-destinations.json');
 const generatedDir = path.join(rootDir, 'data', 'generated');
+const reportDir = path.join(rootDir, 'data', 'report');
 const publicDataDir = path.join(rootDir, 'apps', 'web', 'public', 'data');
 const supportedFeatureCodes = new Set(['PPLC', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPL']);
 const populationFeatureCodes = new Set(['PPLC', 'PPLA', 'PPLA2', 'PPLA3', 'PPL']);
@@ -602,11 +603,11 @@ function buildReport(
     unmatchedGeoBoundaries: [
       {
         regionKey: 'geo-boundaries',
-        reason: '边界匹配由 scripts/generate-static-geo.ts 生成，并在 data/generated/geo-boundary-report.md 复核'
+        reason: '边界匹配由 scripts/generate-static-geo.ts 生成，并在 data/report/geo-boundary-report.md 复核'
       }
     ],
     checksIncomplete: [
-      '运行 static:geo 后，在 data/generated/geo-boundary-report.md 复核边界匹配结果。',
+      '运行 static:geo 后，在 data/report/geo-boundary-report.md 复核边界匹配结果。',
       '部分 GeoNames admin2 没有人口城市候选，需要人工复核或补映射。'
     ]
   };
@@ -703,11 +704,11 @@ export async function runGenerateStaticCities(): Promise<void> {
   }
 
   await mkdir(generatedDir, { recursive: true });
+  await mkdir(reportDir, { recursive: true });
   await mkdir(publicDataDir, { recursive: true });
   await writeFile(path.join(generatedDir, 'cities.json'), `${JSON.stringify(payload, null, 2)}\n`);
   await writeFile(path.join(publicDataDir, 'cities.json'), `${JSON.stringify(payload)}\n`);
-  await writeFile(path.join(generatedDir, 'city-selection-report.json'), `${JSON.stringify(report, null, 2)}\n`);
-  await writeFile(path.join(generatedDir, 'city-selection-report.md'), reportMarkdown(report));
+  await writeFile(path.join(reportDir, 'city-selection-report.md'), reportMarkdown(report));
 
   console.log(`Generated ${payload.c.length} static cities from ${dataset.cities.length} GeoNames candidates (${version}).`);
 }

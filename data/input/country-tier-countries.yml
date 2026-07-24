@@ -1,5 +1,5 @@
 # 国家层级人工复核名单真源。
-# 先复核 data/generated/country-tier-candidate-report.md，再把人工决定写到这里。
+# 先复核 data/report/country-tier-candidate-report.md，再把人工决定写到这里。
 # countryTier 可写 C1、C2 或 C3；C1 表示候选已复核但不升档，只保留 reason 作为人工备注。
 
 - countryCode: CN

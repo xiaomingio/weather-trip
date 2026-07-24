@@ -14,7 +14,7 @@
     "dev:web": "npm run dev --workspace web",
     "start:web": "npm run start --workspace web",
     "typecheck": "npm run build --workspace weather-core && npm run typecheck --workspace web",
-    "arch:check": "depcruise --config .dependency-cruiser.cjs apps/*/src packages/*/src",
+    "arch:check": "depcruise --config .dependency-cruiser.cjs apps/*/src packages/*/src && tsx scripts/check-public-data-boundary.ts",
     "test": "npm --workspaces --include-workspace-root=false --if-present run test",
     "check": "npm run typecheck && npm run arch:check && npm test",
     "static:tourism:raw": "tsx scripts/generate-tourism-raw.ts",

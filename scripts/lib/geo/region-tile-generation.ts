@@ -165,6 +165,7 @@ const publicGeoDir = path.join(rootDir, 'apps', 'web', 'public', 'data', 'geo');
 const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
 const generatedC3Admin2GeoDir = path.join(generatedGeoDir, 'c3_admin2');
+const reportDir = path.join(rootDir, 'data', 'report');
 const citiesPath = path.join(generatedDir, 'cities.json');
 
 const defaultMapMinZoom = 1;
@@ -185,7 +186,7 @@ function usage(): string {
     '  --dry-run                   Build report without writing tiles or generated files.',
     '  --output-dir=<path>          Tile output root. Default: apps/web/public/data/geo/region-tiles',
     '  --ndjson=<path>              GeoJSON feature NDJSON output path. Default: data/generated/geo-regions.ndjson',
-    '  --report-md=<path>           Markdown report output path. Default: data/generated/geo-tile-report.md',
+    '  --report-md=<path>           Markdown report output path. Default: data/report/geo-tile-report.md',
     '  --source-layer=<name>        Vector tile source-layer name. Default: weather_region',
     '  --extent=<number>            Vector tile extent. Default: 4096',
     '  --buffer=<number>            Vector tile buffer. Default: 64',
@@ -213,7 +214,7 @@ function parseArgs(args: string[]): CliOptions {
     dryRun: false,
     outputDir: defaultTileRootDir,
     ndjsonPath: path.join(generatedDir, 'geo-regions.ndjson'),
-    reportMarkdownPath: path.join(generatedDir, 'geo-tile-report.md'),
+    reportMarkdownPath: path.join(reportDir, 'geo-tile-report.md'),
     sourceLayer: defaultSourceLayer,
     extent: 4096,
     buffer: 64

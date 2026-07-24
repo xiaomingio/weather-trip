@@ -1,6 +1,6 @@
 # 地图瓦片报告
 
-生成时间：`2026-07-24T11:40:42.719Z`
+生成时间：`2026-07-24T12:17:20.079Z`
 Dry run：`false`
 Source layer：`weather_region`
 
@@ -15,7 +15,7 @@ Source layer：`weather_region`
 - 瓦片目录：`apps/web/public/data/geo/region-tiles`
 - Manifest：`apps/web/public/data/geo/region-tiles/manifest.json`
 - NDJSON：`data/generated/geo-regions.ndjson`
-- Markdown 报告：`data/generated/geo-tile-report.md`
+- Markdown 报告：`data/report/geo-tile-report.md`
 
 ## 源包
 

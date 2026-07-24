@@ -17,7 +17,7 @@ daily refresh -> GitHub Actions
 | 对象 | 真源 |
 | --- | --- |
 | Web 静态构建 | `apps/web/astro.config.mjs`、`npm run build` |
-| 城市静态数据 | `scripts/generate-static-cities.ts`、`data/generated/city-selection-report.*` |
+| 城市静态数据 | `scripts/generate-static-cities.ts`、`data/report/city-selection-report.md` |
 | 天气刷新 | `.github/workflows/refresh-weather.yml`、`scripts/generate-static-weather.ts` |
 | Web env 模板 | `apps/web/.env.example` |
 | 数据流 | `docs/specs/31-data-flow.md` |

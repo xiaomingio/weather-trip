@@ -138,7 +138,7 @@ type CityRowWire = [
 
 `cities.c` 的顺序就是公开默认排序。生成脚本先按 GeoNames 行政级别排序，再按人口排序：国家首都 `PPLC` 最靠前，首都之间人口高者优先；然后是一级行政中心、二级/三级/四级行政中心和普通人口城市。这个顺序只用于解码时派生 `rank` 和组件渲染时的数组位置，不作为字段保存到业务类型里。稳定身份始终是 `id`；天气、URL、收藏、埋点、本地缓存和跨版本引用都保存 `id`，不保存数组下标。只要城市集合、顺序或字段变化，就必须生成新的 `v`。
 
-`selectionReasons` 不进入公开城市 JSON。它服务导入审计、覆盖复盘和调试，保存在 `city-selection-report.json` / `.md`；前端展示控制使用 country tier、region key、rank 和后续明确新增的公开字段，不复用审计原因。
+`selectionReasons` 不进入公开城市 JSON。它服务导入审计、覆盖复盘和调试，保存在 `data/report/city-selection-report.md`；前端展示控制使用 country tier、region key、rank 和后续明确新增的公开字段，不复用审计原因。
 
 `countryTier` 放在国家字典里，不在每个城市行重复。`rank` 不传输，`cities.c` 的顺序就是排序真源，解码后用数组位置 + 1 作为 rank。`geonameId`、`timezone`、`population`、城市列表生成时间和覆盖摘要也不进入公开城市 JSON。`geonameId` 用于追溯，放在生成报告；`timezone` 只影响天气源返回的当地日期，天气包已经保存 date-only 结果；Weather Map 默认列表、默认选中城市和 marker 避让都使用解码后的 rank；城市数量和覆盖统计由 `c.length`、字典和报告计算。
 
