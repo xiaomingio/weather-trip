@@ -1,6 +1,6 @@
 # Weather Trip
 
-Weather Trip 用天气、温度、降雨、湿度和海拔帮助用户寻找旅行目的地。Web 是 Astro static build + React islands：公开页面读取静态 JSON，不在用户请求时连接数据库或调用 Worker API。
+Weather Trip 是一个用未来天气筛选旅行目的地的双语工具站。Web 使用 Astro static build + React islands，公开页面读取静态 JSON、forecast package 和地图瓦片；用户请求不连接数据库，也不调用运行时 Worker API。
 
 ## 目录结构
 
@@ -12,17 +12,29 @@ scripts/        # 旅行目的地、国家分档、城市列表、地图边界�
 docs/           # 产品、数据流、运行和发布文档
 ```
 
-## 常用命令
+## 快速开始
 
 ```bash
 npm install
-npm run static:data
 npm run dev
-npm run check
-npm run build
 ```
 
-`npm run static:data` 构建低频变化的国家分档、城市索引和地图边界，结果提交到 Git。`npm run static:country-tier-candidates` 从 GeoNames、国家分档规则、旅游目的地和 admin2 input 生成 C2/C3 候选报告；人工复核后维护 `data/input/country-tier-countries.yml`；`npm run static:profiles` 再生成最终国家分档报告和 `data/generated/country-profiles.json`。`npm run static:cities` 会先生成 profiles，再生成 `data/generated/cities.json`、`data/report/city-selection-report.md` 和 Web 本地公开的 `apps/web/public/data/cities.json`。`npm run static:geo` 从 profiles、边界 raw 和边界 input 生成 geo-native 的 `data/generated/geo/{country,c2_admin1,c3_admin1}.geojson` 与 `data/generated/geo/c3_admin2/*.geojson`；中国大陆和港澳台边界使用 DataV/高德。`npm run static:geo:tiles` 再生成前端读取的 `/data/geo/region-tiles/*` MVT。完整数据目录和脚本流向见 `docs/specs/31-data-flow.md`。
+本地开发会读取已提交的公开数据。真实 `.env.development` 和 `.env.production` 不提交，配置模板见 `.env.example` 和 `apps/web/.env.example`。
+
+## 常用命令
+
+```bash
+npm run check
+npm run build
+npm run static:tourism
+npm run static:country-tier-candidates
+npm run static:profiles
+npm run static:cities
+npm run static:geo
+npm run static:geo:tiles
+```
+
+低频变化的国家分档、城市索引和地图边界由对应 `static:*` 脚本生成，结果提交到 Git。完整数据目录和脚本流向见 `docs/specs/31-data-flow.md`。
 
 天气是每日刷新数据，使用独立脚本。需要为当前城市列表拉取 Open-Meteo 天气时运行：
 
@@ -30,4 +42,10 @@ npm run build
 npm run weather:refresh -- --source=open-meteo
 ```
 
-生产发布和回滚说明见 `docs/specs/50-launch.md`。
+生产形态是 Cloudflare Pages 托管 `apps/web/dist`，GitHub Actions 每日刷新天气包并上传 Cloudflare R2。发布和回滚说明见 `docs/specs/50-launch.md`。
+
+## License
+
+项目代码采用 [GPL-3.0](./LICENSE) 开源。
+
+`Weather Trip` 的名称、Logo 和域名不随代码授权。如果基于本项目 fork 或二次开发成自己的产品，请使用自己的名称、Logo 和域名，并注明项目来源，避免和本站混淆。

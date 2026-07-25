@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
     "dev": "astro dev --host ${WEB_HOST:-127.0.0.1} --port ${WEB_PORT:-3000}",
