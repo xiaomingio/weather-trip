@@ -48,7 +48,7 @@ Weather Trip 包含一个 Landing page 和两个工具 Tab，支持中文和英�
 
 地区选择以用户能理解的旅行范围为入口：全球、大区、国家和国家内一级区域。C3 二级区域用于地图表达更细的天气差异，但不作为筛选入口，避免用户在下拉里面对过细的行政层级。
 
-地区筛选、日期、图层、列表排序和默认选中规则见 `docs/specs/20-interaction-logic.md`。地区覆盖、地图着色粒度和区域点击规则以 `docs/specs/30-weather-coverage-design.md` 为准；地区控件、hover 和 marker 交互见 `docs/specs/22-weather-map-interactions.md`。
+地区筛选、日期、图层、列表排序和选中城市规则见 `docs/specs/20-interaction-logic.md`。地区覆盖、地图着色粒度和区域点击规则以 `docs/specs/30-weather-coverage-design.md` 为准；地区控件、hover、marker 和城市列表联动见 `docs/specs/22-weather-map-interactions.md`。
 
 ## 旅行时间窗口
 

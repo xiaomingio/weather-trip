@@ -28,7 +28,7 @@ export function RegionFields({
       <label className="filter-select-card">
         <span className="filter-summary-label">
           <SlidersHorizontal size={15} />
-          {copy.region}
+          <span>{copy.region}</span>
         </span>
         <select value={primaryRegion} onChange={(event) => onPrimaryRegionChange(event.target.value as RegionKey)}>
           {regionGroups(primaryRegionOptions).map((group) => (
@@ -47,7 +47,7 @@ export function RegionFields({
       <label className={`filter-select-card ${canSelectSubRegion ? '' : 'is-disabled'}`}>
         <span className="filter-summary-label">
           <MapIcon size={15} />
-          {copy.subRegion}
+          <span>{copy.subRegion}</span>
         </span>
         <select
           value={subRegionValue}

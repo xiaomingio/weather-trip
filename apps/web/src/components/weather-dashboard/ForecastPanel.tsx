@@ -22,12 +22,24 @@ type ForecastPanelProps = {
   temperatureUnit: TemperatureUnit;
   copy: DashboardPanelCopy;
   city: City | undefined;
+  matchSummary?: string;
+  getForecastMatchState?: (forecast: DailyForecast, forecastIndex: number) => boolean;
   forecasts: DailyForecast[];
   isLoading: boolean;
   isRefreshing: boolean;
 };
 
-export function ForecastPanel({ locale, temperatureUnit, copy, city, forecasts, isLoading, isRefreshing }: ForecastPanelProps) {
+export function ForecastPanel({
+  locale,
+  temperatureUnit,
+  copy,
+  city,
+  matchSummary,
+  getForecastMatchState,
+  forecasts,
+  isLoading,
+  isRefreshing
+}: ForecastPanelProps) {
   const cityName = city ? formatCityName(city, locale) : '';
   const cityTitle = city ? formatCityLocationPath(city, locale) : '';
 
@@ -37,18 +49,20 @@ export function ForecastPanel({ locale, temperatureUnit, copy, city, forecasts, 
         {city ? (
           <div className="map-forecast-heading">
             <strong>{cityName}</strong>
-            <span>{[...formatCityRegionSegments(city, locale), formatElevation(city.elevationMeters, locale)].join(' · ')}</span>
+            <span className="map-forecast-location">{[...formatCityRegionSegments(city, locale), formatElevation(city.elevationMeters, locale)].join(' · ')}</span>
+            {matchSummary ? <span className="map-forecast-match-summary">{matchSummary}</span> : null}
           </div>
         ) : null}
         {isLoading ? (
           <div className="panel-loading-state forecast-panel-state" role="status">{copy.loadingWeatherData}</div>
         ) : city && forecasts.length > 0 ? (
           <div className="forecast-strip">
-            {forecasts.slice(0, 14).map((forecast) => (
+            {forecasts.slice(0, 14).map((forecast, forecastIndex) => (
               <ForecastDayCard
                 key={`${forecast.cityId}-${forecast.date}`}
                 cityName={cityTitle}
                 forecast={forecast}
+                filterMatch={getForecastMatchState?.(forecast, forecastIndex)}
                 locale={locale}
                 temperatureUnit={temperatureUnit}
                 copy={copy}

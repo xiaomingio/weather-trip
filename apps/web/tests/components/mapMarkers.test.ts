@@ -78,7 +78,7 @@ describe('map marker comfort labels', () => {
     });
   });
 
-  it('shows city finder match ratios as percentages on comfort markers', () => {
+  it('shows city finder matching days on comfort markers', () => {
     const item: DashboardCityFinderResultItem = {
       tool: 'city-finder',
       city,
@@ -105,8 +105,8 @@ describe('map marker comfort labels', () => {
         hasRegionLayer: true
       })[0]
     ).toMatchObject({
-      markerText: '75%',
-      tooltip: 'Sample City, Sample Region, Sierra Leone · 75%',
+      markerText: '3/4',
+      tooltip: 'Sample City, Sample Region, Sierra Leone · 3/4 days match your filters',
       size: 34
     });
   });

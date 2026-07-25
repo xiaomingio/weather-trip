@@ -23,7 +23,7 @@
 
 打开 City Finder
   -> 不加载 GeoJSON
-  -> 基于 cities.json 和 forecast 包做搜索、筛选、排序和分页
+  -> 基于 cities.json 和 forecast 包做搜索、筛选、排序和虚拟滚动
 ```
 
 Weather Map：
@@ -44,7 +44,7 @@ City Finder：
 搜索 = 基于 cities.json 本地搜索
 天气筛选 = 基于 weather/forecast-14d/<date>.bin 本地计算 matchDays / score / bestStreakDays
 地区筛选 = 基于 cities.json 的 region key 本地过滤
-结果列表 = 前端排序后分页展示
+结果列表 = 前端排序后虚拟滚动展示
 ```
 
 ## 公开文件
@@ -150,7 +150,7 @@ type CityRowWire = [
 
 `selectionReasons` 不进入公开城市 JSON。它服务导入审计、覆盖复盘和调试，保存在 `data/report/city-selection-report.md`；前端展示控制使用 country tier、region key、rank 和后续明确新增的公开字段，不复用审计原因。
 
-`countryTier` 放在国家字典里，不在每个城市行重复。`rank` 不传输，`cities.c` 的顺序就是排序真源，解码后用数组位置 + 1 作为 rank。`geonameId`、`timezone`、`population`、城市列表生成时间和覆盖摘要也不进入公开城市 JSON。`geonameId` 用于追溯，放在生成报告；`timezone` 只影响天气源返回的当地日期，天气包已经保存 date-only 结果；Weather Map 默认列表、默认选中城市和 marker 避让都使用解码后的 rank；城市数量和覆盖统计由 `c.length`、字典和报告计算。
+`countryTier` 放在国家字典里，不在每个城市行重复。`rank` 不传输，`cities.c` 的顺序就是排序真源，解码后用数组位置 + 1 作为 rank。`geonameId`、`timezone`、`population`、城市列表生成时间和覆盖摘要也不进入公开城市 JSON。`geonameId` 用于追溯，放在生成报告；`timezone` 只影响天气源返回的当地日期，天气包已经保存 date-only 结果；Weather Map 默认列表和 marker 避让都使用解码后的 rank；城市数量和覆盖统计由 `c.length`、字典和报告计算。
 
 城市和边界区块的空间校准不作为前端单独数据包发布。离线 point-in-polygon 或人工校准结果应折叠进城市 region key、MVT `weatherRegionKey` 或生成报告；浏览器只读取 `cities.json`、MVT 和天气包。
 
@@ -302,7 +302,7 @@ type WeatherRegionTileFeature = {
 | 二级区域瓦片 | `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | 地图 `z5-z8` 且视口覆盖到对应 tile 时读取；实际只生成 z5，z6-z8 overzoom | geo-native `admin2:<countryCode>.<sourceId>` 或中国高德 `admin2:CN.<admin1Code>.<admin2Code>`；可带 `weatherRegionKey` |
 | 城市 | `/data/cities.json` | Weather Map 和 City Finder 共用 | 解码城市字典后生成同一套 region key |
 
-边界瓦片以 `regionKey` 标识可渲染区块；填色优先按 `weatherRegionKey` 匹配天气区域聚合结果，没有该字段时再尝试 `regionKey`。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。区块层级不能比城市天气样本代表范围更细：中国北京、上海、天津、重庆在高 zoom 仍发布为 `admin1:CN.*`，不发布区县级 MVT 天气区块；其他国家如出现同类代表范围错位，MVT 保留边界但不把粗范围城市天气继承给更细区块。
+边界瓦片以 `regionKey` 标识可渲染区块；填色优先按 `weatherRegionKey` 匹配天气区域聚合结果，没有该字段时再尝试 `regionKey`。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。Weather Map 和 City Finder 共用同一套城市到天气区块归属规则，差异只在指标贡献口径；完整着色规则见 `docs/specs/30-weather-coverage-design.md#地图着色规则`。区块层级不能比城市天气样本代表范围更细：中国北京、上海、天津、重庆在高 zoom 仍发布为 `admin1:CN.*`，不发布区县级 MVT 天气区块；其他国家如出现同类代表范围错位，MVT 保留边界但不把粗范围城市天气继承给更细区块。
 
 前端地区选择只暴露大区、C2/C3 国家和国家内一级行政区。`admin2:<countryCode>.<admin1Code>.<admin2Code>` 只用于高 zoom 边界着色和聚合结果；旧链接带有 admin2 时，运行时归一到所属 `admin1`。切换地区时的自动相机只使用当前结果城市点范围，世界视图使用固定默认相机，不再为了 bounds 读取完整行政区 outline。
 

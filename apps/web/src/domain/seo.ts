@@ -23,11 +23,11 @@ const pageCopy: Record<TopTabId, Record<DisplayLocale, Pick<PublicPage, 'title' 
   landing: {
     zh: {
       title: '天气旅行 | 用天气决定下一个城市',
-      description: '查看全球城市未来天气，或先选择你想要的天气，再去找刚好适合抵达的地方。'
+      description: '查看全球城市未来天气，或选择你喜欢的天气，查看适合的城市。'
     },
     en: {
       title: 'Weather Trip | Choose your next city by weather',
-      description: 'Scan future weather across global cities, or first choose the weather you want, then find the right place to land.'
+      description: 'Scan future weather across global cities, or choose weather you like, and find suitable cities.'
     }
   },
   'weather-map': {

@@ -457,14 +457,13 @@ body.landing-page .hero-art {
   --weather-transition-duration: 2000ms;
   align-self: center;
   aspect-ratio: 3 / 2;
-  background: rgba(251, 250, 244, 0.52);
-  border: 1px solid rgba(255, 253, 245, 0.72);
+  background: transparent;
+  border: 0;
   border-radius: 8px;
   box-shadow:
     0 18px 48px rgba(48, 58, 51, 0.1),
     -12px 10px 36px rgba(109, 155, 179, 0.05),
-    12px -8px 32px rgba(216, 173, 87, 0.06),
-    inset 0 1px 0 rgba(255, 253, 245, 0.66);
+    12px -8px 32px rgba(216, 173, 87, 0.06);
   cursor: url('/landing/cursors/sunny.webp') 16 16, pointer;
   grid-column: 2;
   grid-row: 1;
@@ -480,8 +479,7 @@ body.landing-page .hero-art {
 
 body.landing-page .hero-art::after {
   background:
-    linear-gradient(180deg, rgba(255, 253, 245, 0) 50%, rgba(23, 35, 31, 0.38)),
-    radial-gradient(circle at 18% 10%, rgba(255, 253, 245, 0.42), transparent 34%);
+    linear-gradient(180deg, rgba(255, 253, 245, 0) 50%, rgba(23, 35, 31, 0.38));
   content: "";
   inset: 0;
   pointer-events: none;

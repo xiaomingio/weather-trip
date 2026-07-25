@@ -104,7 +104,7 @@ export function FilterPopoverCard({ filterKey, activeKey, label, value, icon, ch
       >
         <span className="filter-summary-label">
           {icon}
-          {label}
+          <span>{label}</span>
         </span>
         <span className="filter-summary-value">
           <span>{value}</span>

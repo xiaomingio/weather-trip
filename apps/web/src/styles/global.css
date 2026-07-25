@@ -112,6 +112,7 @@ body.landing-page {
 }
 
 .app-shell {
+  border-radius: 0;
   display: grid;
   gap: 10px;
   grid-template-rows: auto minmax(0, 1fr);
@@ -714,7 +715,7 @@ select {
   box-shadow: var(--shadow);
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 }
 
@@ -732,6 +733,9 @@ select {
 }
 
 .filter-dock {
+  --filter-control-font-weight: 400;
+  --filter-summary-content-offset: 0px;
+  --filter-value-font-weight: 720;
   display: grid;
   gap: 6px;
   min-width: 0;
@@ -745,6 +749,16 @@ select {
   gap: 8px;
   grid-template-columns: repeat(9, minmax(0, 1fr));
   min-width: 0;
+}
+
+.filter-dock-intro {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+  grid-column: 1 / -1;
+  line-height: 1.25;
+  margin: 0;
+  text-align: left;
 }
 
 .filter-dock[data-variant='weather-map'] .filter-dock-main {
@@ -825,11 +839,24 @@ select {
   color: var(--muted);
   display: flex;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--filter-control-font-weight);
   gap: 6px;
   line-height: 1;
   min-height: 14px;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-summary-label svg {
+  flex: 0 0 auto;
+}
+
+.filter-summary-label > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -837,7 +864,7 @@ select {
   align-items: center;
   display: flex;
   font-size: 13px;
-  font-weight: 720;
+  font-weight: var(--filter-value-font-weight);
   gap: 4px;
   justify-content: space-between;
   line-height: 1;
@@ -859,7 +886,7 @@ select {
   box-shadow: none;
   color: var(--ink);
   font-size: 13px;
-  font-weight: 720;
+  font-weight: var(--filter-value-font-weight);
   line-height: 1;
   min-height: 24px;
   min-width: 0;
@@ -912,7 +939,7 @@ select {
   border-radius: 6px;
   color: rgba(24, 32, 31, 0.76);
   font-size: 11px;
-  font-weight: 760;
+  font-weight: var(--filter-control-font-weight);
   justify-content: center;
   line-height: 1;
   min-height: 22px;
@@ -924,6 +951,7 @@ select {
   container-type: inline-size;
   display: flex;
   font-size: 12px;
+  font-weight: var(--filter-value-font-weight);
   gap: 4px;
   min-height: 32px;
   min-width: 0;
@@ -960,7 +988,7 @@ select {
   color: #fff;
   display: none;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: var(--filter-control-font-weight);
   line-height: 1.45;
   max-width: min(280px, calc(100vw - 32px));
   padding: 8px 10px;
@@ -1055,7 +1083,11 @@ select {
 }
 
 .filter-panel-title-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 15px;
+  font-weight: var(--filter-control-font-weight);
   line-height: 1;
   white-space: nowrap;
 }
@@ -1063,7 +1095,7 @@ select {
 .filter-panel-value-row {
   color: var(--muted);
   font-size: 12px;
-  font-weight: 750;
+  font-weight: var(--filter-control-font-weight);
   line-height: 1;
   min-height: 13px;
   min-width: 0;
@@ -1079,7 +1111,7 @@ select {
   border-radius: 6px;
   color: var(--sea);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: var(--filter-control-font-weight);
   line-height: 1;
   padding: 3px 0;
   white-space: nowrap;
@@ -1090,7 +1122,7 @@ select {
   color: var(--muted);
   display: flex;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: var(--filter-control-font-weight);
   gap: 7px;
   line-height: 1;
   min-height: 18px;
@@ -1122,7 +1154,7 @@ select {
   border-radius: 7px;
   color: rgba(24, 32, 31, 0.86);
   font-size: 12px;
-  font-weight: 720;
+  font-weight: var(--filter-control-font-weight);
   min-height: 28px;
   padding: 4px 7px;
 }
@@ -1133,14 +1165,19 @@ select {
 }
 
 .filter-dock-presets {
+  --filter-preset-row-gap: 0px;
+  --filter-preset-row-height: 22px;
   align-items: center;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   column-gap: 7px;
-  row-gap: 2px;
+  row-gap: var(--filter-preset-row-gap);
   min-width: 0;
-  overflow: visible;
-  padding-left: 0;
+  max-height: var(--filter-preset-row-height);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-left: var(--filter-summary-content-offset);
+  scrollbar-width: none;
   width: 100%;
 }
 
@@ -1148,19 +1185,31 @@ select {
   color: rgba(104, 113, 109, 0.82);
   flex: 0 0 auto;
   font-size: 11px;
-  font-weight: 700;
-  line-height: 24px;
+  font-weight: var(--filter-control-font-weight);
+  line-height: var(--filter-preset-row-height);
 }
 
 .filter-presets-label::after {
   content: ":";
 }
 
+.filter-presets-toggle {
+  background: transparent;
+  border: 0;
+  color: var(--sea);
+  display: none;
+  font-size: 11px;
+  font-weight: var(--filter-control-font-weight);
+  line-height: var(--filter-preset-row-height);
+  min-height: var(--filter-preset-row-height);
+  padding: 0 5px 0 0;
+  white-space: nowrap;
+}
+
 .filter-dock-presets .filter-preset-row {
   display: contents;
   flex: 0 1 auto;
   min-width: 0;
-  overflow: visible;
   scrollbar-width: none;
 }
 
@@ -1172,9 +1221,9 @@ select {
   background: transparent;
   border: 0;
   color: rgba(24, 32, 31, 0.82);
-  font-weight: 650;
-  min-height: 24px;
-  padding: 3px 5px;
+  font-weight: var(--filter-control-font-weight);
+  min-height: var(--filter-preset-row-height);
+  padding: 2px 5px 2px 0;
   white-space: nowrap;
 }
 
@@ -1250,17 +1299,17 @@ select {
   grid-template-rows: minmax(0, 1fr);
   min-height: 0;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .map-shell {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(24, 32, 31, 0.12);
   border-radius: 10px;
-  box-shadow: 0 14px 32px rgba(35, 45, 42, 0.08);
+  box-shadow: none;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 }
 
@@ -1359,10 +1408,16 @@ select {
 }
 
 .weather-map {
+  border-radius: 9px 9px 0 0;
   height: 100%;
   min-height: 0;
+  overflow: hidden;
   position: relative;
   z-index: 0;
+}
+
+.map-shell.is-fullscreen .weather-map {
+  border-radius: 0;
 }
 
 .weather-map .maplibregl-ctrl-attrib.maplibregl-compact {
@@ -1488,7 +1543,6 @@ select {
 
 .region-color-info {
   align-items: center;
-  border: 1px solid rgba(24, 32, 31, 0.2);
   border-radius: 999px;
   color: var(--soft-ink);
   display: inline-flex;
@@ -1506,14 +1560,14 @@ select {
   box-shadow: 0 10px 26px rgba(24, 32, 31, 0.14);
   color: var(--ink);
   font-size: 12px;
-  right: -4px;
+  left: 50%;
   line-height: 1.35;
   max-width: min(260px, 72vw);
   opacity: 0;
   padding: 7px 9px;
   pointer-events: none;
   position: absolute;
-  transform: translateY(4px);
+  transform: translate(-50%, 4px);
   transition:
     opacity 0.15s ease,
     transform 0.15s ease;
@@ -1528,16 +1582,16 @@ select {
   bottom: -5px;
   content: "";
   height: 8px;
-  right: 8px;
+  left: 50%;
   position: absolute;
-  transform: rotate(45deg);
+  transform: translateX(-50%) rotate(45deg);
   width: 8px;
 }
 
 .region-color-info:hover .region-color-tooltip,
 .region-color-info:focus-visible .region-color-tooltip {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(-50%, 0);
 }
 
 .legend-scale {
@@ -1573,7 +1627,7 @@ select {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(24, 32, 31, 0.12);
   border-radius: 10px;
-  box-shadow: 0 14px 32px rgba(35, 45, 42, 0.08);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1608,12 +1662,12 @@ select {
   display: grid;
   background: transparent;
   gap: 0;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding-bottom: 3px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-bottom: 1px;
 }
 
 .summary-grid-weather-map {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .summary-grid > div,
@@ -1626,9 +1680,11 @@ select {
   display: grid;
   gap: 4px;
   justify-items: center;
-  padding: 2px 10px 3px;
+  min-width: 0;
+  padding: 7px 10px 8px;
   position: relative;
   text-align: center;
+  width: 100%;
 }
 
 .summary-grid > div + div::before,
@@ -1659,6 +1715,20 @@ select {
 .ranking-list small,
 .forecast-day small {
   color: var(--muted);
+}
+
+.summary-grid > div > span {
+  color: var(--ink);
+  font-family:
+    "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .summary-sort-direction {
@@ -1700,16 +1770,16 @@ select {
   align-items: center;
   color: #18201f;
   display: flex;
-  font-size: 16px;
-  font-size: clamp(13px, 15cqw, 17px);
-  font-weight: 800;
+  font-size: 17px;
+  font-weight: 850;
   justify-content: center;
   line-height: 1.1;
-  min-height: 28px;
+  min-height: 26px;
   overflow: hidden;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 }
 
 .summary-sort-select-shell select {
@@ -1741,7 +1811,8 @@ select {
 .summary-grid strong {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 28px;
-  line-height: 1;
+  font-weight: 800;
+  line-height: 1.05;
 }
 
 .city-search-field {
@@ -1753,10 +1824,10 @@ select {
   color: var(--muted);
   display: flex;
   flex: 0 0 auto;
-  gap: 8px;
-  min-height: 40px;
+  gap: 7px;
+  min-height: 34px;
   min-width: 0;
-  padding: 0 10px;
+  padding: 0 12px;
 }
 
 .city-search-field:focus-within {
@@ -1769,6 +1840,7 @@ select {
   background: transparent;
   border: 0;
   color: var(--ink);
+  font-size: 13px;
   min-width: 0;
   outline: 0;
   padding: 0;
@@ -1804,7 +1876,6 @@ select {
   padding: 0;
 }
 
-.load-more-results,
 .data-status {
   background: rgba(246, 244, 238, 0.5);
   border: 1px solid rgba(24, 32, 31, 0.08);
@@ -1814,10 +1885,6 @@ select {
   min-height: 38px;
   padding: 8px 10px;
   text-align: center;
-}
-
-.load-more-results:hover {
-  border-color: var(--sea);
 }
 
 .data-status {
@@ -1842,16 +1909,31 @@ select {
   align-items: center;
   background: transparent;
   border: 0;
-  border-radius: 6px;
+  border-radius: 0;
   box-shadow: none;
   color: var(--ink);
   display: grid;
   column-gap: 8px;
-  grid-template-columns: max-content minmax(0, 1fr) max-content max-content;
-  min-height: 42px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 50px;
   padding: 8px 10px;
   text-align: left;
   width: 100%;
+}
+
+.virtual-ranking-list-row {
+  min-height: var(--virtual-row-height);
+}
+
+.virtual-ranking-list-row > button {
+  height: calc(var(--virtual-row-height) - 1px);
+}
+
+.virtual-ranking-list-spacer {
+  border: 0;
+  display: block;
+  flex: 0 0 auto;
+  pointer-events: none;
 }
 
 .ranking-list li + li {
@@ -1862,23 +1944,6 @@ select {
 .ranking-list button:hover {
   background: rgba(47, 127, 116, 0.08);
   color: #122b27;
-}
-
-.load-more-results-item {
-  display: block;
-}
-
-.ranking-list .load-more-results {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.2;
-  min-height: 40px;
-  text-align: center;
-}
-
-.ranking-list .load-more-results:hover {
-  background: rgba(47, 127, 116, 0.08);
 }
 
 .ranking-list span {
@@ -1895,6 +1960,7 @@ select {
   font-size: 14px;
   font-weight: 500;
   grid-column: 1;
+  grid-row: 1;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1912,8 +1978,11 @@ select {
 
 .city-region-label {
   display: block;
-  grid-column: 2;
-  justify-self: stretch;
+  font-size: 12px;
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  line-height: 1.15;
   max-width: 100%;
   min-width: 0;
   overflow: hidden;
@@ -1923,17 +1992,19 @@ select {
 }
 
 .city-weather-label {
-  grid-column: 3;
-  justify-self: start;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
 
 .city-result-meta b {
   font-size: 13px;
-  grid-column: 4;
+  grid-column: 2;
+  grid-row: 1 / span 2;
   justify-self: end;
+  min-width: max-content;
+  overflow: visible;
+  text-align: right;
+  text-overflow: clip;
+  white-space: nowrap;
 }
 
 .forecast-strip {
@@ -1946,14 +2017,14 @@ select {
   background: #fff;
   border: 1px solid rgba(24, 32, 31, 0.12);
   border-radius: 10px;
-  box-shadow: 0 14px 32px rgba(35, 45, 42, 0.08);
+  box-shadow: none;
   container-type: inline-size;
   display: grid;
   gap: 0;
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
-  padding: 0;
+  padding: 8px;
   position: relative;
   width: 100%;
 }
@@ -1968,11 +2039,12 @@ select {
   display: grid;
   gap: 2px;
   min-width: 0;
-  padding: 8px 8px 8px;
+  padding: 4px 4px 10px;
 }
 
 .map-forecast-heading strong {
   font-size: 17px;
+  line-height: 20px;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1982,17 +2054,46 @@ select {
 .map-forecast-heading span {
   color: var(--muted);
   font-size: 12px;
+  line-height: 15px;
   max-width: 100%;
   min-width: 0;
   overflow-wrap: anywhere;
   white-space: normal;
 }
 
+.map-forecast-heading .map-forecast-match-summary {
+  color: var(--soft-ink);
+  font-weight: 700;
+}
+
 .map-forecast-panel .forecast-strip {
   align-content: start;
+  gap: 0;
   grid-template-columns: minmax(0, 1fr);
+  margin-right: -5px;
   overflow: auto;
+  padding-right: 5px;
+  scrollbar-color: rgba(24, 32, 31, 0.24) transparent;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.map-forecast-panel .forecast-strip::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+.map-forecast-panel .forecast-strip::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.map-forecast-panel .forecast-strip::-webkit-scrollbar-thumb {
+  background: rgba(24, 32, 31, 0.24);
+  border-radius: 999px;
+}
+
+.map-forecast-panel .forecast-strip:hover::-webkit-scrollbar-thumb {
+  background: rgba(24, 32, 31, 0.34);
 }
 
 .forecast-panel-state {
@@ -2011,19 +2112,28 @@ select {
 
 .map-forecast-panel .forecast-day {
   min-width: 0;
-  padding: 9px 16px 9px 10px;
+  padding: 9px 8px;
   width: 100%;
 }
 
 .forecast-day {
   align-content: start;
   background: transparent;
+  background-clip: padding-box;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   display: grid;
   gap: 8px;
   padding: 8px 6px 5px 8px;
+}
+
+.forecast-day.is-filter-match {
+  background: rgba(126, 198, 143, 0.14);
+}
+
+.forecast-day.is-filter-miss {
+  background: rgba(245, 172, 103, 0.13);
 }
 
 .map-forecast-panel .forecast-day + .forecast-day {
@@ -2165,6 +2275,7 @@ select {
   }
 
   .app-shell {
+    border-radius: 0;
     height: auto;
     min-height: 100dvh;
     overflow: visible;
@@ -2207,8 +2318,12 @@ select {
   }
 
   .filter-dock-presets {
+    flex-wrap: wrap;
+    max-height: calc((var(--filter-preset-row-height) * 2) + var(--filter-preset-row-gap));
     min-width: 0;
-    padding-left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: var(--filter-summary-content-offset);
   }
 
   .filter-dock-presets .filter-preset-row {
@@ -2225,6 +2340,115 @@ select {
     grid-template-rows: auto minmax(340px, 1fr);
     overflow: visible;
     padding-right: 2px;
+  }
+
+  .map-first-workspace-body {
+    grid-template-areas:
+      "map map"
+      "results forecast";
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  .map-first-workspace-body .map-column {
+    aspect-ratio: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .map-first-workspace-body .map-shell:not(.is-fullscreen) {
+    grid-template-rows: auto auto;
+  }
+
+  .map-first-workspace-body .weather-map {
+    aspect-ratio: 3 / 2;
+    height: auto;
+    width: 100%;
+  }
+
+  .map-first-workspace-body .map-shell.is-fullscreen .weather-map {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+
+  .map-first-workspace-body .map-legend {
+    align-items: center;
+    display: block;
+    padding: 9px 10px;
+  }
+
+  .map-first-workspace-body .map-legend-main {
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .map-first-workspace-body .region-color-control,
+  .map-first-workspace-body .region-color-checkbox {
+    min-width: max-content;
+  }
+
+  .map-first-workspace-body .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .map-first-workspace-body .summary-grid > div,
+  .map-first-workspace-body .summary-sort-field {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    min-height: 28px;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .map-first-workspace-body .summary-grid > div > span {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .map-first-workspace-body .summary-grid strong {
+    flex: 0 0 auto;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .map-first-workspace-body .summary-sort-direction {
+    flex: 0 0 auto;
+    height: 20px;
+  }
+
+  .map-first-workspace-body .summary-sort-select-shell {
+    flex: 0 1 auto;
+    width: auto;
+  }
+
+  .map-first-workspace-body .summary-sort-value {
+    display: block;
+    font-size: clamp(11px, 9cqw, 13px);
+    line-height: 1.1;
+    min-height: 0;
+  }
+
+  .map-first-workspace-body .results-panel,
+  .map-first-workspace-body .forecast-column {
+    max-height: min(44vh, 430px);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .map-first-workspace-body .map-forecast-panel {
+    height: 100%;
+  }
+
+  .map-first-workspace-body .map-forecast-heading strong {
+    overflow: visible;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    white-space: normal;
   }
 
   .results-panel,
@@ -2318,7 +2542,31 @@ select {
   }
 
   .filter-dock-presets {
-    padding-left: 0;
+    padding-left: var(--filter-summary-content-offset);
+  }
+
+  .filter-dock-presets {
+    max-height: calc((var(--filter-preset-row-height) * 2) + var(--filter-preset-row-gap));
+    overflow: hidden;
+  }
+
+  .filter-dock-presets.is-expanded {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .filter-presets-label {
+    order: 0;
+  }
+
+  .filter-presets-toggle {
+    align-items: center;
+    display: inline-flex;
+    order: 1;
+  }
+
+  .filter-dock-presets .filter-preset-button {
+    order: 2;
   }
 
   .filter-popover {
@@ -2337,6 +2585,14 @@ select {
     padding-right: 0;
   }
 
+  .map-first-workspace-body {
+    gap: 10px;
+    grid-template-areas:
+      "map map"
+      "results forecast";
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
   .results-panel {
     max-height: min(52vh, 430px);
   }
@@ -2347,8 +2603,116 @@ select {
     width: auto;
   }
 
+  .map-first-workspace-body .results-panel,
+  .map-first-workspace-body .forecast-column {
+    max-height: min(58vh, 430px);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .map-first-workspace-body .results-panel {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .map-first-workspace-body .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-bottom: 1px;
+  }
+
+  .map-first-workspace-body .summary-grid > div,
+  .map-first-workspace-body .summary-sort-field {
+    gap: 3px;
+    min-height: 26px;
+    padding: 1px 5px;
+  }
+
+  .map-first-workspace-body .summary-grid > div > span,
+  .map-first-workspace-body .summary-sort-direction {
+    font-size: 10px;
+  }
+
+  .map-first-workspace-body .summary-grid strong {
+    font-size: 15px;
+  }
+
+  .map-first-workspace-body .summary-sort-direction {
+    height: 16px;
+  }
+
+  .map-first-workspace-body .summary-sort-value {
+    font-size: clamp(10px, 10cqw, 12px);
+    line-height: 1.1;
+  }
+
+  .map-first-workspace-body .city-search-field {
+    min-height: 32px;
+    padding: 0 10px;
+  }
+
+  .map-first-workspace-body .ranking-list-frame {
+    margin-top: 0;
+  }
+
+  .map-first-workspace-body .ranking-list button {
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 50px;
+    padding: 8px;
+    row-gap: 3px;
+  }
+
+  .map-first-workspace-body .city-name-line {
+    font-size: 13px;
+    line-height: 1.18;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .map-first-workspace-body .city-result-meta {
+    display: contents;
+    min-width: 0;
+  }
+
+  .map-first-workspace-body .city-weather-label {
+    display: none;
+  }
+
+  .map-first-workspace-body .city-region-label {
+    display: block;
+    font-size: 11px;
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .map-first-workspace-body .city-result-meta b {
+    font-size: 12px;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: end;
+    line-height: 1.15;
+    min-width: max-content;
+    overflow: visible;
+    text-align: right;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+
   .map-forecast-panel {
     overflow: visible;
+  }
+
+  .map-first-workspace-body .map-forecast-panel {
+    height: 100%;
+    overflow: hidden;
+    padding: 6px;
   }
 
   .map-forecast-panel .forecast-strip {
@@ -2357,8 +2721,40 @@ select {
     overflow: visible;
   }
 
+  .map-first-workspace-body .map-forecast-panel .forecast-strip {
+    grid-template-columns: minmax(0, 1fr);
+    overflow: auto;
+  }
+
   .map-forecast-panel .forecast-day {
-    padding: 9px 10px;
+    padding: 8px 7px;
+  }
+
+  .map-first-workspace-body .map-forecast-heading {
+    padding: 2px 2px 7px;
+  }
+
+  .map-first-workspace-body .map-forecast-heading strong {
+    font-size: 14px;
+    line-height: 16px;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .map-first-workspace-body .map-forecast-heading .map-forecast-location {
+    display: block;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .map-first-workspace-body .map-forecast-heading .map-forecast-match-summary {
+    display: block;
+  }
+
+  .map-first-workspace-body .map-forecast-panel .forecast-day {
+    gap: 5px;
+    padding: 7px 2px;
   }
 
   .map-forecast-panel .forecast-day + .forecast-day {
@@ -2371,6 +2767,64 @@ select {
 
   .map-forecast-panel .forecast-day:nth-child(2n) {
     border-left: 1px solid rgba(24, 32, 31, 0.08);
+  }
+
+  .map-first-workspace-body .map-forecast-panel .forecast-day + .forecast-day {
+    border-top: 1px solid rgba(24, 32, 31, 0.08);
+  }
+
+  .map-first-workspace-body .map-forecast-panel .forecast-day:nth-child(n + 3) {
+    border-top: 1px solid rgba(24, 32, 31, 0.08);
+  }
+
+  .map-first-workspace-body .map-forecast-panel .forecast-day:nth-child(2n) {
+    border-left: 0;
+  }
+
+  .map-first-workspace-body .forecast-day-heading {
+    column-gap: 6px;
+  }
+
+  .map-first-workspace-body .forecast-date,
+  .map-first-workspace-body .forecast-day .forecast-temperature {
+    font-size: 12px;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .map-first-workspace-body .forecast-icon {
+    height: 24px;
+  }
+
+  .map-first-workspace-body .forecast-icon svg {
+    height: 22px;
+    width: 22px;
+  }
+
+  .map-first-workspace-body .forecast-day-metrics {
+    gap: 3px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .map-first-workspace-body .forecast-day-metrics .forecast-metric {
+    flex-wrap: wrap;
+  }
+
+  .map-first-workspace-body .forecast-day-metrics dt,
+  .map-first-workspace-body .forecast-day-metrics dd {
+    line-height: 1.1;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .map-first-workspace-body .forecast-day-metrics dt {
+    font-size: 9px;
+  }
+
+  .map-first-workspace-body .forecast-day-metrics dd {
+    font-size: 11px;
   }
 
   .map-column {
@@ -2391,4 +2845,28 @@ select {
   .map-legend-main {
     width: 100%;
   }
+
+  .map-first-workspace-body .map-legend {
+    align-items: center;
+    display: block;
+    gap: 7px;
+    padding: 9px 10px;
+  }
+
+  .map-first-workspace-body .map-legend-main {
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .map-first-workspace-body .region-color-control {
+    min-width: max-content;
+  }
+
+  .map-first-workspace-body .region-color-checkbox {
+    white-space: nowrap;
+  }
+
 }

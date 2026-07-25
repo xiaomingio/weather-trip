@@ -2,7 +2,7 @@
 
 ## 文档边界
 
-本文定义 Weather Trip 整个项目的交互逻辑：入口导航、语言和温度单位、URL 状态、Landing 到工具页的流转、工具页筛选、结果列表、默认选中城市、地图 marker 与预报面板联动。城市覆盖、行政分层和 `rank` 生成规则见 `docs/specs/30-weather-coverage-design.md`；公开数据如何用 `cities.c` 顺序传输 `rank` 见 `docs/specs/32-public-data-contract.md`；地图 hover、点击、相机和 marker 密度细节见 `docs/specs/22-weather-map-interactions.md`；响应式布局见 `docs/specs/21-tool-responsive-layout.md`。
+本文定义 Weather Trip 整个项目的交互逻辑：入口导航、语言和温度单位、URL 状态、Landing 到工具页的流转、工具页筛选、结果列表、选中城市、地图 marker 与预报面板联动。城市覆盖、行政分层和 `rank` 生成规则见 `docs/specs/30-weather-coverage-design.md`；公开数据如何用 `cities.c` 顺序传输 `rank` 见 `docs/specs/32-public-data-contract.md`；地图 hover、点击、相机、城市列表联动和 marker 密度细节见 `docs/specs/22-weather-map-interactions.md`；响应式布局见 `docs/specs/21-tool-responsive-layout.md`。
 
 ## 全局导航
 
@@ -33,13 +33,13 @@ Landing 的温度单位切换会写入本地偏好；进入工具页后继续使
 | Weather Map | `region`、`date`、`layer` |
 | City Finder | `region`、`days`、`temp`、`weather`、`humidity`、`precipitation`、`wind`、`elevation` |
 
-URL 只保存当前页面自己需要分享的业务状态。工具 Tab、语言切换和 Landing 入口不携带这些 query；每个工具页把自己的 query 另存到 `localStorage`，下次从固定入口进入同一工具时恢复。城市选中态、地图相机、结果列表加载更多数量和刷新遮罩不写入 URL；其中地图相机只保存到本次浏览会话。
+URL 只保存当前页面自己需要分享的业务状态。工具 Tab、语言切换和 Landing 入口不携带这些 query；每个工具页把自己的 query 另存到 `localStorage`，下次从固定入口进入同一工具时恢复。城市选中态、地图相机、结果列表滚动位置和刷新遮罩不写入 URL；其中地图相机只保存到本次浏览会话。
 
 ## 地区交互
 
 地区入口包含全球、大区、C2/C3 国家，以及国家内一级区域。C3 二级区域只用于地图着色和 hover，不进入筛选下拉；旧 URL 或本地状态里出现 `admin2:*` 时，恢复到所属 `admin1:*`。
 
-切换地区后，城市列表、地图 marker、区域聚合和日期可用范围都按新地区重算。Weather Map 会清空用户显式选中城市，并在新结果集里选择默认城市。
+切换地区后，城市列表、地图 marker、区域聚合和日期可用范围都按新地区重算。地区变化不覆盖已有选中城市；如果当前没有选中城市且新结果非空，工具页选中当前列表第一项。
 
 ## 日期与图层
 
@@ -49,7 +49,7 @@ Weather Map 的日期滑块使用当前地区可用日期。切换地区时，�
 
 ## 默认城市顺序
 
-前端把解码后的 `city.rank` 作为默认城市顺序。`rank` 越小，城市在默认列表、默认选中和低 zoom marker 避让里的优先级越高。
+前端把解码后的 `city.rank` 作为默认城市顺序。`rank` 越小，城市在默认列表和低 zoom marker 避让里的优先级越高。
 
 默认顺序不是天气指标排序，也不是运行时人口排序。天气、温度、湿度、降水、风、海拔和舒适度只影响用户主动选择对应排序项后的列表顺序；默认体验先展示地图阅读锚点。
 
@@ -67,11 +67,11 @@ City Finder 主排序使用匹配分数和匹配天数。分数和匹配天数�
 
 City Finder 的筛选条件变化后，匹配分数、结果列表、地图 marker 和区域聚合都按新的天气窗口重算。结果为空时展示空状态，不保留上一轮结果假装可用。
 
-## 默认选中城市
+## 选中城市
 
-工具页没有显式选中城市时，默认选中当前结果范围内 `rank` 最靠前的城市。用户点击列表项或地图 marker 后，选中城市以用户选择为准；切换地区或结果集后重新按当前结果范围计算默认选中。
+工具页没有任何选中城市且当前结果非空时，选中当前城市列表第一项，让 forecast 面板有可展示对象。用户点击列表项或地图 marker 后，选中城市以用户选择为准；筛选、搜索、排序、日期、图层和地区变化都不覆盖已有选中城市。
 
-选中城市只影响预报面板和对应 marker 的选中态，不改变地区、日期、图层、排序或地图相机。
+选中城市影响预报面板、对应 marker 的选中态和列表行选中态，不改变地区、日期、图层或排序。列表点击可以请求地图把对应 marker 移到舒适可视区域；地图 marker 点击可以请求虚拟列表瞬时滚动到对应行。具体联动见 `docs/specs/22-weather-map-interactions.md`。
 
 ## 城市 Marker 优先级
 

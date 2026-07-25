@@ -80,7 +80,7 @@ export const pageShellMessages = {
       heroTitle: '让天气替你挑一座城市',
       heroTitleLines: ['让天气替你', '挑一座城市'],
       heroLead:
-        '出发前先看全球城市接下来几天的温度、晴雨和湿度；也可以先选择你想要的天气，再去找刚好适合抵达的地方。',
+        '出发前先看全球城市接下来几天的温度、晴雨和湿度；也可以选择你喜欢的天气，查看适合的城市。',
       primaryAction: '查看全球天气',
       secondaryAction: '寻找匹配城市',
       coverageLabel: '数据覆盖',
@@ -118,8 +118,8 @@ export const pageShellMessages = {
       label: 'Weather Trip',
       tabs: {
         landing: 'Home',
-        'weather-map': 'Weather map',
-        'city-finder': 'City finder'
+        'weather-map': 'Weather Map',
+        'city-finder': 'City Finder'
       }
     },
     staticInfo: {
@@ -129,7 +129,7 @@ export const pageShellMessages = {
       heroTitle: 'Let weather pick your next city',
       heroTitleLines: ['Let weather pick', 'your next city'],
       heroLead:
-        'Before you go, scan temperature, sky, and humidity for cities worldwide—or first choose the weather you want, then find the right place to land.',
+        'Before you go, scan temperature, sky, and humidity for cities worldwide—or choose weather you like, and find suitable cities.',
       primaryAction: 'View world weather',
       secondaryAction: 'Find matching cities',
       coverageLabel: 'Coverage',

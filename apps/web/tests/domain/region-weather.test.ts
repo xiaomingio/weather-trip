@@ -160,6 +160,38 @@ describe('map region weather summaries', () => {
     });
   });
 
+  it('uses the same C3 city to region mapping for City Finder and Weather Map coloring', () => {
+    const dali = city({
+      id: 'dali',
+      country: 'China',
+      countryCode: 'CN',
+      admin1: 'Yunnan',
+      admin1GroupCode: '29',
+      admin2: 'Dali Baizu Zizhizhou',
+      admin2Code: '5329',
+      countryTier: 'C3',
+      region: 'asia',
+      selectionReasons: ['coverage-override:admin2']
+    });
+    const daliForecast = forecast({ cityId: dali.id });
+    const weatherMapSummaries = buildWeatherMapRegionSummaries([dali], [daliForecast], '2026-07-21', 'country:CN', 'zh');
+    const cityFinderSummaries = buildCityFinderRegionSummaries(
+      [dali],
+      new Map([[dali.id, [daliForecast]]]),
+      { ...filter, region: 'country:CN' },
+      'zh'
+    );
+
+    expect(cityFinderSummaries.map((summary) => summary.id)).toEqual(weatherMapSummaries.map((summary) => summary.id));
+    expect(cityFinderSummaries[0]).toMatchObject({
+      id: 'admin2:CN.29.5329',
+      level: 'admin2',
+      countryCode: 'CN',
+      admin1Code: '29',
+      admin2Code: '5329'
+    });
+  });
+
   it('groups China direct municipalities by admin1 because their city sample represents the whole municipality', () => {
     const shanghai = city({
       id: 'shanghai',

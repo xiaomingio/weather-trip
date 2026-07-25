@@ -48,7 +48,7 @@ export function WeatherMapFilterDock({
       <div className="filter-select-card filter-inline-card filter-date-card">
         <span className="filter-summary-label">
           <CalendarDays size={15} />
-          {copy.date}
+          <span>{copy.date}</span>
         </span>
         <span className="filter-summary-value">
           <span>{selectedDateLabel}</span>
@@ -72,7 +72,7 @@ export function WeatherMapFilterDock({
       <div className="filter-select-card filter-inline-card filter-layer-card">
         <span className="filter-summary-label">
           <MapIcon size={15} />
-          {copy.layer}
+          <span>{copy.layer}</span>
         </span>
         <div className="layer-button-row compact" aria-label={copy.layer}>
           {layers.map((item) => (

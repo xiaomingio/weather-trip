@@ -4,6 +4,7 @@
  */
 'use client';
 
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import type { MapLayer } from 'weather-core/types';
 import {
   type DisplayLocale,
@@ -20,8 +21,11 @@ import {
   type DashboardResultItem,
   isDashboardCityFinderItem
 } from '@/domain/weather-dashboard-shared';
-import { messages } from '@/i18n';
+import type { CityFocusRequest } from '../WorldWeatherMap/types';
 import type { DashboardPanelCopy } from './types';
+
+const virtualRowHeight = 51;
+const virtualListOverscan = 8;
 
 type ResultsListProps = {
   locale: DisplayLocale;
@@ -29,10 +33,9 @@ type ResultsListProps = {
   temperatureUnit: TemperatureUnit;
   copy: DashboardPanelCopy;
   resultItems: DashboardResultItem[];
-  visibleResultItems: DashboardResultItem[];
   selectedCityId: string | null;
+  cityFocusRequest: CityFocusRequest | null;
   onSelectCity: (cityId: string) => void;
-  onLoadMore: () => void;
 };
 
 function formatWeatherMapLayerMetric(
@@ -56,22 +59,73 @@ export function ResultsList({
   temperatureUnit,
   copy,
   resultItems,
-  visibleResultItems,
   selectedCityId,
-  onSelectCity,
-  onLoadMore
+  cityFocusRequest,
+  onSelectCity
 }: ResultsListProps) {
-  const listCopy = messages[locale].ui.resultsList;
+  const listRef = useRef<HTMLOListElement | null>(null);
+  const handledCityFocusRequestIdRef = useRef<number | null>(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const visibleRange = useMemo(() => {
+    if (resultItems.length === 0) return { start: 0, end: 0 };
+
+    const viewportRows = Math.ceil(viewportHeight / virtualRowHeight);
+    const start = Math.max(0, Math.floor(scrollTop / virtualRowHeight) - virtualListOverscan);
+    const end = Math.min(resultItems.length, start + viewportRows + virtualListOverscan * 2 + 1);
+    return { start, end };
+  }, [resultItems.length, scrollTop, viewportHeight]);
+  const virtualItems = resultItems.slice(visibleRange.start, visibleRange.end);
+  const topSpacerHeight = visibleRange.start * virtualRowHeight;
+  const bottomSpacerHeight = Math.max(0, (resultItems.length - visibleRange.end) * virtualRowHeight);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const updateViewportHeight = () => setViewportHeight(list.clientHeight);
+    updateViewportHeight();
+
+    const observer = new ResizeObserver(updateViewportHeight);
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || !cityFocusRequest) return;
+    if (handledCityFocusRequestIdRef.current === cityFocusRequest.requestId) return;
+    handledCityFocusRequestIdRef.current = cityFocusRequest.requestId;
+
+    const selectedIndex = resultItems.findIndex((item) => item.city.id === cityFocusRequest.cityId);
+    if (selectedIndex < 0) return;
+    const targetTop = selectedIndex * virtualRowHeight;
+    const targetBottom = targetTop + virtualRowHeight;
+    const comfortableTop = list.scrollTop + virtualRowHeight;
+    const comfortableBottom = list.scrollTop + list.clientHeight - virtualRowHeight;
+    if (targetTop >= comfortableTop && targetBottom <= comfortableBottom) return;
+
+    list.scrollTo({
+      top: Math.max(0, targetTop - (list.clientHeight - virtualRowHeight) / 2),
+      behavior: 'auto'
+    });
+  }, [cityFocusRequest, resultItems]);
 
   if (resultItems.length === 0) return <div className="empty-results">{copy.noCityMatches}</div>;
 
   return (
     <div className="ranking-list-frame">
-      <ol className="ranking-list">
-        {visibleResultItems.map((item) => {
+      <ol
+        ref={listRef}
+        className="ranking-list virtual-ranking-list"
+        onScroll={(event) => setScrollTop(event.currentTarget.scrollTop)}
+      >
+        <li className="virtual-ranking-list-spacer" style={{ height: topSpacerHeight }} aria-hidden="true" />
+        {virtualItems.map((item) => {
           const city = item.city;
           const active = selectedCityId === city.id;
           const isTravelItem = isDashboardCityFinderItem(item);
+          const rowStyle = { '--virtual-row-height': `${virtualRowHeight}px` } as CSSProperties;
           const primary = isTravelItem
             ? copy.suitableDays(item.matchDays, item.totalDays)
             : formatWeatherMapLayerMetric(item, layer, locale, temperatureUnit);
@@ -80,7 +134,7 @@ export function ResultsList({
             : null;
 
           return (
-            <li key={city.id}>
+            <li key={city.id} className="virtual-ranking-list-row" style={rowStyle}>
               <button className={active ? 'is-active' : ''} type="button" onClick={() => onSelectCity(city.id)}>
                 <span className="city-name-line">{formatCityName(city, locale)}</span>
                 <span className="city-result-meta">
@@ -92,13 +146,7 @@ export function ResultsList({
             </li>
           );
         })}
-        {visibleResultItems.length < resultItems.length ? (
-          <li className="load-more-results-item">
-            <button className="load-more-results" type="button" onClick={onLoadMore}>
-              {listCopy.loadMore}
-            </button>
-          </li>
-        ) : null}
+        <li className="virtual-ranking-list-spacer" style={{ height: bottomSpacerHeight }} aria-hidden="true" />
       </ol>
     </div>
   );

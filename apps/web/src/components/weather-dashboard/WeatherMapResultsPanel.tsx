@@ -8,6 +8,7 @@ import { ArrowDown, ArrowUp } from 'lucide-react';
 import type { MapLayer } from 'weather-core/types';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
 import type { DashboardResultItem } from '@/domain/weather-dashboard-shared';
+import type { CityFocusRequest } from '../WorldWeatherMap/types';
 import { CitySearchField } from './CitySearchField';
 import { RefreshOverlay } from './RefreshOverlay';
 import { ResultsList } from './ResultsList';
@@ -20,9 +21,8 @@ type WeatherMapResultsPanelProps = {
   copy: DashboardPanelCopy;
   cityKeyword: string;
   resultItems: DashboardResultItem[];
-  visibleResultItems: DashboardResultItem[];
   selectedCityId: string | null;
-  visibleRegionCount: number;
+  listFocusRequest: CityFocusRequest | null;
   visibleCount: number;
   loadError: string | null;
   isLoading: boolean;
@@ -36,7 +36,6 @@ type WeatherMapResultsPanelProps = {
   onSelectCity: (cityId: string) => void;
   onWeatherMapSortKeyChange: (sortKey: WeatherMapSortKey) => void;
   onWeatherMapSortDirectionChange: (direction: SortDirection) => void;
-  onLoadMore: () => void;
 };
 
 export function WeatherMapResultsPanel({
@@ -46,9 +45,8 @@ export function WeatherMapResultsPanel({
   copy,
   cityKeyword,
   resultItems,
-  visibleResultItems,
   selectedCityId,
-  visibleRegionCount,
+  listFocusRequest,
   visibleCount,
   loadError,
   isLoading,
@@ -61,18 +59,13 @@ export function WeatherMapResultsPanel({
   onCityKeywordChange,
   onSelectCity,
   onWeatherMapSortKeyChange,
-  onWeatherMapSortDirectionChange,
-  onLoadMore
+  onWeatherMapSortDirectionChange
 }: WeatherMapResultsPanelProps) {
   return (
     <aside className="results-panel" aria-label={copy.resultPanel}>
       <div className="summary-grid summary-grid-weather-map">
         <div>
-          <span>{copy.coverageRegions}</span>
-          <strong>{visibleRegionCount}</strong>
-        </div>
-        <div>
-          <span>{copy.coverageCities}</span>
+          <span>{copy.cities}</span>
           <strong>{visibleCount}</strong>
         </div>
         <div className="summary-sort-field">
@@ -121,10 +114,9 @@ export function WeatherMapResultsPanel({
           temperatureUnit={temperatureUnit}
           copy={copy}
           resultItems={resultItems}
-          visibleResultItems={visibleResultItems}
           selectedCityId={selectedCityId}
+          cityFocusRequest={listFocusRequest}
           onSelectCity={onSelectCity}
-          onLoadMore={onLoadMore}
         />
       )}
       {isRefreshing ? <RefreshOverlay label={copy.loadingWeatherData} /> : null}

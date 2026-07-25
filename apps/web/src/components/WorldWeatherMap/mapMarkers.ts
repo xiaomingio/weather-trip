@@ -13,6 +13,7 @@ import {
   isDashboardCityFinderItem
 } from '@/domain/weather-dashboard-shared';
 import { getWeatherTypeLabel } from '@/domain/weather';
+import { messages } from '@/i18n';
 import {
   comfortColor,
   elevationColor,
@@ -68,6 +69,10 @@ function windMarkerText(value: number): string {
 
 function percentageMarkerText(value: number): string {
   return `${Math.round(value * 100)}%`;
+}
+
+function matchDaysMarkerText(matchDays: number, totalDays: number): string {
+  return `${matchDays}/${totalDays}`;
 }
 
 function markerTooltip(label: string, metric: MarkerMetric): string {
@@ -141,11 +146,11 @@ function cityFinderMarkerMetric(
     };
   }
 
-  const markerText = percentageMarkerText(score.score);
+  const markerText = matchDaysMarkerText(score.matchDays, score.totalDays);
   return {
     markerText,
     markerIcon: '',
-    tooltipValue: markerText,
+    tooltipValue: messages[locale].dashboard.matchingFilterDays(score.matchDays, score.totalDays),
     color: matchColor,
     sortValue: score.matchDays
   };

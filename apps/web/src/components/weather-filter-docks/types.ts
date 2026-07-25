@@ -65,6 +65,10 @@ export type RegionFieldsProps = {
 export type FilterDockProps = {
   children: ReactNode;
   presets?: ReactNode;
+  presetToggleLabels?: {
+    expand: string;
+    collapse: string;
+  };
   variant?: 'city-finder' | 'weather-map';
 };
 

@@ -1,10 +1,9 @@
 /**
- * 文件说明: 覆盖 Weather Map 结果列表默认排序和默认选中城市使用解码后的 city.rank。
+ * 文件说明: 覆盖 Weather Map 结果列表默认排序使用解码后的 city.rank。
  * 对应文档: docs/specs/22-weather-map-interactions.md
  */
 import { describe, expect, it } from 'vitest';
 import type { City, DailyForecast } from 'weather-core/types';
-import { findDefaultSelectedResultItem } from '@/components/weather-dashboard/dashboardSelection';
 import { sortWeatherMapItems } from '@/components/weather-dashboard/weatherMapSort';
 import type { DashboardWeatherMapResultItem } from '@/domain/weather-dashboard-shared';
 
@@ -59,14 +58,5 @@ describe('weather map rank behavior', () => {
       'regional-seat',
       'large-ordinary-city'
     ]);
-  });
-
-  it('uses default city rank for the implicit selected city', () => {
-    const items = [
-      item({ ...baseCity, id: 'large-ordinary-city', names: { en: 'Large Ordinary City', zh: '普通大城' }, population: 20_000_000, rank: 200 }, 0.9),
-      item({ ...baseCity, id: 'major-capital', names: { en: 'Major Capital', zh: '首都' }, population: 2_000_000, rank: 1 }, 0.4)
-    ];
-
-    expect(findDefaultSelectedResultItem(items, 'en')?.city.id).toBe('major-capital');
   });
 });

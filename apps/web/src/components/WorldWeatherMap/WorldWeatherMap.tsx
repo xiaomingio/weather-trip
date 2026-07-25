@@ -148,6 +148,28 @@ function parentAdmin1RegionKey(regionKey: string): string | null {
   return match ? `admin1:${match[1]}` : null;
 }
 
+function comfortableViewportPadding(width: number, height: number): { x: number; y: number } {
+  const xLimit = Math.max(0, width / 2 - 24);
+  const yLimit = Math.max(0, height / 2 - 24);
+
+  return {
+    x: Math.min(Math.max(width * 0.22, 72), xLimit),
+    y: Math.min(Math.max(height * 0.22, 72), yLimit)
+  };
+}
+
+function isPointInComfortableViewport(map: MapLibreMap, point: MapPoint): boolean {
+  const canvas = map.getCanvas();
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (width === 0 || height === 0) return true;
+
+  const padding = comfortableViewportPadding(width, height);
+  const projected = map.project([point.longitude, point.latitude]);
+
+  return projected.x >= padding.x && projected.x <= width - padding.x && projected.y >= padding.y && projected.y <= height - padding.y;
+}
+
 export function WorldWeatherMap({
   tool,
   locale,
@@ -158,6 +180,7 @@ export function WorldWeatherMap({
   temperatureUnit,
   activeRegion,
   selectedCityId,
+  cityFocusRequest,
   onSelectCity,
   statusLabel,
   statusKind = 'empty',
@@ -172,6 +195,7 @@ export function WorldWeatherMap({
   const onSelectCityRef = useRef(onSelectCity);
   const cameraRegionRef = useRef<RegionKey | null>(null);
   const restoredCameraPendingRef = useRef(false);
+  const handledCityFocusRequestIdRef = useRef<number | null>(null);
   const vectorRegionStyleEntriesRef = useRef<Map<string, VectorRegionStyleEntry>>(new Map());
   const [mapReady, setMapReady] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -295,14 +319,6 @@ export function WorldWeatherMap({
 
     return points.filter((point) => visibleIds.has(point.cityId));
   }, [markerViewport, points]);
-
-  const cityCountText = useMemo(() => {
-    const cityCount = visiblePoints.length === points.length ? `${points.length}` : `${visiblePoints.length}/${points.length}`;
-    const cityLabel = mapCopy.cityUnit;
-
-    if (!hasRegionLayer) return `${cityCount} ${cityLabel}`;
-    return `${regionSummaries.length} ${mapCopy.regionUnit} · ${cityCount} ${cityLabel}`;
-  }, [hasRegionLayer, mapCopy.cityUnit, mapCopy.regionUnit, points.length, regionSummaries.length, visiblePoints.length]);
 
   const pointBounds = useMemo(() => {
     const boundsPoints = resultItems.map((item): BoundsPoint => [item.city.longitude, item.city.latitude]);
@@ -572,6 +588,23 @@ export function WorldWeatherMap({
   }, [mapReady, visiblePoints]);
 
   useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady || !cityFocusRequest) return;
+    if (handledCityFocusRequestIdRef.current === cityFocusRequest.requestId) return;
+
+    const targetPoint = points.find((point) => point.cityId === cityFocusRequest.cityId);
+    if (!targetPoint) return;
+    handledCityFocusRequestIdRef.current = cityFocusRequest.requestId;
+    if (isPointInComfortableViewport(map, targetPoint)) return;
+
+    map.easeTo({
+      center: [targetPoint.longitude, targetPoint.latitude],
+      duration: 420,
+      essential: true
+    });
+  }, [cityFocusRequest, mapReady, points]);
+
+  useEffect(() => {
     const resizeMap = () => {
       mapRef.current?.resize();
       updateMarkerViewport();
@@ -650,7 +683,6 @@ export function WorldWeatherMap({
             </div>
           </div>
         </div>
-        <span>{cityCountText}</span>
       </div>
     </section>
   );

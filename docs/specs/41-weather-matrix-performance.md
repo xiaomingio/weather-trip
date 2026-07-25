@@ -182,7 +182,7 @@ UI 组件需要 `DailyForecast` 或现有 result item 时，只在当前列表�
 | 日期关联 | `date[]` 和 `current.ds` 不一致时拒绝解码 |
 | 缺测处理 | forecast 没有的城市或日期显示暂无天气，不抛错 |
 | Weather Map | 默认日期、切日期、切图层和地区聚合结果一致 |
-| City Finder | matchDays、score、bestStreakDays、排序和分页结果一致 |
+| City Finder | matchDays、score、bestStreakDays、排序和虚拟列表展示一致 |
 | Forecast panel | 选中城市的 14 天预报内容一致 |
 | 性能 | 对比 JS heap、主线程耗时和切 tab 体感 |
 

@@ -5,9 +5,10 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { RegionKey, WeatherFilter } from 'weather-core/types';
+import type { DailyForecast, RegionKey, WeatherFilter } from 'weather-core/types';
 import { cityMatchesKeyword } from '@/domain/city-search';
 import { type DisplayLocale } from '@/domain/format';
+import { dayMatchesFilter } from '@/domain/scoring';
 import { getMessages } from '@/i18n';
 import { loadWeatherSnapshot } from '@/domain/weather-data-source';
 import { buildCitySearchPayload } from '@/domain/weather-dashboard-payload';
@@ -21,15 +22,14 @@ import {
 } from '@/domain/weather-dashboard-shared';
 import { CityFinderFilterDock } from '../weather-filter-docks/CityFinderFilterDock';
 import { WorldWeatherMap } from '../WorldWeatherMap/WorldWeatherMap';
+import type { CityFocusRequest } from '../WorldWeatherMap/types';
 import {
   readInitialToolSearch,
   readSearch,
   replaceToolUrl,
-  resultPageSize,
   saveToolSearch
 } from './dashboardApi';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
-import { findDefaultSelectedResultItem } from './dashboardSelection';
 import { CityFinderResultsPanel } from './CityFinderResultsPanel';
 import { ForecastPanel } from './ForecastPanel';
 
@@ -43,14 +43,17 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
   const temperatureUnit = useTemperatureUnitPreference(locale);
   const [weatherFilter, setWeatherFilter] = useState<WeatherFilter>(() => parseWeatherFilterFromSearch(initialSearch));
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+  const [cityFocusRequest, setCityFocusRequest] = useState<CityFocusRequest | null>(null);
+  const [listFocusRequest, setListFocusRequest] = useState<CityFocusRequest | null>(null);
   const [cityKeyword, setCityKeyword] = useState('');
   const [dashboardData, setDashboardData] = useState<WeatherToolPayload | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [visibleResultLimit, setVisibleResultLimit] = useState(resultPageSize);
   const [isBrowserReady, setIsBrowserReady] = useState(false);
   const isApplyingPopState = useRef(false);
   const isRestoringSavedState = useRef(false);
+  const cityFocusRequestId = useRef(0);
+  const listFocusRequestId = useRef(0);
   const primaryRegion = getPrimaryRegionId(weatherFilter.region);
   const { primaryRegionOptions, subRegionOptions } = useRegionOptions(locale, primaryRegion, isBrowserReady);
   const canSelectSubRegion = subRegionOptions.length > 1;
@@ -69,7 +72,6 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
       const search = readSearch();
       saveToolSearch('city-finder', search);
       setWeatherFilter(parseWeatherFilterFromSearch(search));
-      setSelectedCityId(null);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -120,14 +122,18 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
   const resultItems = useMemo(() => {
     return (dashboardData?.resultItems ?? []).filter((item) => cityMatchesKeyword(item.city, cityKeyword));
   }, [cityKeyword, dashboardData?.resultItems]);
-  const visibleResultItems = resultItems.slice(0, visibleResultLimit);
-  const defaultSelectedResultItem = useMemo(() => findDefaultSelectedResultItem(resultItems, locale), [locale, resultItems]);
-  const selectedResultItem = resultItems.find((item) => item.city.id === selectedCityId) ?? defaultSelectedResultItem;
+  const selectedResultItem = (dashboardData?.resultItems ?? []).find((item) => item.city.id === selectedCityId);
   const selectedCity = selectedResultItem?.city;
-  const effectiveSelectedCityId = selectedCity?.id ?? null;
+  const selectedMatchSummary = selectedResultItem && isDashboardCityFinderItem(selectedResultItem)
+    ? copy.matchingFilterDays(selectedResultItem.matchDays, selectedResultItem.totalDays)
+    : undefined;
+  const selectedCityMatchesElevation =
+    !selectedCity ||
+    !weatherFilter.useElevation ||
+    (selectedCity.elevationMeters >= weatherFilter.elevationMinMeters && selectedCity.elevationMeters <= weatherFilter.elevationMaxMeters);
   const { forecasts: selectedForecasts, isLoading: isLoadingCityForecast } = useSelectedCityForecasts(
     locale,
-    effectiveSelectedCityId,
+    selectedCityId,
     isBrowserReady
   );
   const shouldShowDashboardLoading = isLoadingData && !dashboardData;
@@ -141,19 +147,36 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
       ? copy.all
       : weatherFilter.weatherTypes.map((type) => getWeatherTypeLabel(type, locale)).join(locale === 'zh' ? '、' : ', ');
   const visibleCount = resultItems.length;
-  const visibleRegionCount = dashboardData?.regionSummaries.length ?? 0;
   const highMatchCityCount = resultItems.filter(
     (item) => isDashboardCityFinderItem(item) && item.matchDays / Math.max(item.totalDays, 1) >= 0.7
   ).length;
 
   useEffect(() => {
-    setVisibleResultLimit(resultPageSize);
-  }, [cityKeyword, dashboardData?.resultItems]);
+    if (selectedCityId !== null) return;
+    const firstCityId = resultItems[0]?.city.id;
+    if (firstCityId) setSelectedCityId(firstCityId);
+  }, [resultItems, selectedCityId]);
 
   const setRegion = useCallback((region: RegionKey) => {
     setWeatherFilter((current) => ({ ...current, region }));
-    setSelectedCityId(null);
   }, []);
+  const selectCityFromResults = useCallback((cityId: string) => {
+    cityFocusRequestId.current += 1;
+    setSelectedCityId(cityId);
+    setCityFocusRequest({ cityId, requestId: cityFocusRequestId.current });
+  }, []);
+  const selectCityFromMap = useCallback((cityId: string) => {
+    listFocusRequestId.current += 1;
+    setSelectedCityId(cityId);
+    setListFocusRequest({ cityId, requestId: listFocusRequestId.current });
+  }, []);
+  const getSelectedForecastMatchState = useCallback(
+    (forecast: DailyForecast, forecastIndex: number) =>
+      selectedCityMatchesElevation &&
+      forecastIndex < weatherFilter.dateWindowDays &&
+      dayMatchesFilter(forecast, weatherFilter),
+    [selectedCityMatchesElevation, weatherFilter]
+  );
 
   return (
     <section className="workspace">
@@ -174,36 +197,7 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
         />
       </aside>
 
-      <section className="workspace-body" aria-label={copy.resultPanel}>
-        <CityFinderResultsPanel
-          locale={locale}
-          temperatureUnit={temperatureUnit}
-          copy={copy}
-          cityKeyword={cityKeyword}
-          resultItems={resultItems}
-          visibleResultItems={visibleResultItems}
-          selectedCityId={effectiveSelectedCityId}
-          visibleRegionCount={visibleRegionCount}
-          visibleCount={visibleCount}
-          highMatchCityCount={highMatchCityCount}
-          loadError={loadError}
-          isLoading={shouldShowDashboardLoading}
-          isRefreshing={showDashboardRefreshOverlay}
-          onCityKeywordChange={setCityKeyword}
-          onSelectCity={setSelectedCityId}
-          onLoadMore={() => setVisibleResultLimit((current) => current + resultPageSize)}
-        />
-
-        <ForecastPanel
-          locale={locale}
-          temperatureUnit={temperatureUnit}
-          copy={copy}
-          city={selectedCity}
-          forecasts={selectedForecasts}
-          isLoading={shouldShowForecastLoading}
-          isRefreshing={showForecastRefreshOverlay}
-        />
-
+      <section className="workspace-body map-first-workspace-body" aria-label={copy.resultPanel}>
         <section className="map-column" aria-label={copy.mapPanel}>
           <WorldWeatherMap
             tool="city-finder"
@@ -214,8 +208,9 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
             dataRegion={dashboardData?.region ?? null}
             temperatureUnit={temperatureUnit}
             activeRegion={weatherFilter.region}
-            selectedCityId={effectiveSelectedCityId}
-            onSelectCity={setSelectedCityId}
+            selectedCityId={selectedCityId}
+            cityFocusRequest={cityFocusRequest}
+            onSelectCity={selectCityFromMap}
             statusLabel={
               shouldShowDashboardLoading
                 ? copy.loadingWeatherData
@@ -228,6 +223,35 @@ export function CityFinderDashboard({ locale, initialSearch }: CityFinderDashboa
             refreshLabel={copy.loadingWeatherData}
           />
         </section>
+
+        <CityFinderResultsPanel
+          locale={locale}
+          temperatureUnit={temperatureUnit}
+          copy={copy}
+          cityKeyword={cityKeyword}
+          resultItems={resultItems}
+          selectedCityId={selectedCityId}
+          listFocusRequest={listFocusRequest}
+          visibleCount={visibleCount}
+          highMatchCityCount={highMatchCityCount}
+          loadError={loadError}
+          isLoading={shouldShowDashboardLoading}
+          isRefreshing={showDashboardRefreshOverlay}
+          onCityKeywordChange={setCityKeyword}
+          onSelectCity={selectCityFromResults}
+        />
+
+        <ForecastPanel
+          locale={locale}
+          temperatureUnit={temperatureUnit}
+          copy={copy}
+          city={selectedCity}
+          matchSummary={selectedMatchSummary}
+          getForecastMatchState={getSelectedForecastMatchState}
+          forecasts={selectedForecasts}
+          isLoading={shouldShowForecastLoading}
+          isRefreshing={showForecastRefreshOverlay}
+        />
       </section>
     </section>
   );

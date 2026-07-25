@@ -171,7 +171,10 @@ export function CityFinderFilterDock({
           </div>
         </>
       }
+      presetToggleLabels={{ expand: copy.expandQuickFilters, collapse: copy.collapseQuickFilters }}
     >
+      <p className="filter-dock-intro">{copy.cityFinderIntro}</p>
+
       <RegionFields
         locale={locale}
         primaryRegion={primaryRegion}
@@ -186,7 +189,7 @@ export function CityFinderFilterDock({
       <label className="filter-select-card">
         <span className="filter-summary-label">
           <CalendarDays size={15} />
-          {copy.time}
+          <span>{copy.time}</span>
         </span>
         <select
           value={weatherFilter.dateWindowDays}

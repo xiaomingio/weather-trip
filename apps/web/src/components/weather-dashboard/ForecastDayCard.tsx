@@ -23,6 +23,7 @@ type ForecastDayCardTooltipMessages = AppMessages['ui']['forecastDayCardTooltip'
 type ForecastDayCardProps = {
   cityName: string;
   forecast: DailyForecast;
+  filterMatch?: boolean;
   locale: DisplayLocale;
   temperatureUnit: TemperatureUnit;
   copy: DashboardPanelCopy;
@@ -72,14 +73,15 @@ function buildForecastDayTitle(
     .join('\n');
 }
 
-export function ForecastDayCard({ cityName, forecast, locale, temperatureUnit, copy }: ForecastDayCardProps) {
+export function ForecastDayCard({ cityName, forecast, filterMatch, locale, temperatureUnit, copy }: ForecastDayCardProps) {
   const precipitationProbability = formatPrecipitationProbability(forecast.precipitationProbabilityMax);
   const windSpeed = formatWindSpeed(forecast.windSpeedMaxKmh);
   const tooltipCopy = messages[locale].ui.forecastDayCardTooltip;
   const forecastTitle = buildForecastDayTitle(cityName, forecast, locale, temperatureUnit, tooltipCopy);
+  const filterMatchClassName = typeof filterMatch === 'boolean' ? ` is-filter-${filterMatch ? 'match' : 'miss'}` : '';
 
   return (
-    <div className="forecast-day" title={forecastTitle}>
+    <div className={`forecast-day${filterMatchClassName}`} title={forecastTitle}>
       <div className="forecast-day-heading">
         <strong className="forecast-date">{formatCompactForecastDateLabel(forecast.date, locale)}</strong>
         <span className="forecast-icon" aria-label={formatWeatherType(forecast.weatherType, locale)}>

@@ -17,9 +17,7 @@ export type WeatherMapSortOption = {
 export type DashboardPanelCopy = {
   resultPanel: string;
   forecastPanel: string;
-  coverageRegions: string;
-  coverageCities: string;
-  citySamples: string;
+  cities: string;
   highMatchCities: string;
   citySearch: string;
   citySearchPlaceholder: string;
@@ -30,6 +28,7 @@ export type DashboardPanelCopy = {
   sortAscending: string;
   sortDescending: string;
   suitableDays: (match: number, total: number) => string;
+  matchingFilterDays: (match: number, total: number) => string;
   average: string;
   forecastHumidity: string;
   forecastPrecipitation: string;

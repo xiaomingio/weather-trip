@@ -6,6 +6,7 @@
 
 import type { TemperatureUnit, DisplayLocale } from '@/domain/format';
 import type { DashboardResultItem } from '@/domain/weather-dashboard-shared';
+import type { CityFocusRequest } from '../WorldWeatherMap/types';
 import { CitySearchField } from './CitySearchField';
 import { RefreshOverlay } from './RefreshOverlay';
 import { ResultsList } from './ResultsList';
@@ -17,9 +18,8 @@ type CityFinderResultsPanelProps = {
   copy: DashboardPanelCopy;
   cityKeyword: string;
   resultItems: DashboardResultItem[];
-  visibleResultItems: DashboardResultItem[];
   selectedCityId: string | null;
-  visibleRegionCount: number;
+  listFocusRequest: CityFocusRequest | null;
   visibleCount: number;
   highMatchCityCount: number;
   loadError: string | null;
@@ -27,7 +27,6 @@ type CityFinderResultsPanelProps = {
   isRefreshing: boolean;
   onCityKeywordChange: (keyword: string) => void;
   onSelectCity: (cityId: string) => void;
-  onLoadMore: () => void;
 };
 
 export function CityFinderResultsPanel({
@@ -36,27 +35,21 @@ export function CityFinderResultsPanel({
   copy,
   cityKeyword,
   resultItems,
-  visibleResultItems,
   selectedCityId,
-  visibleRegionCount,
+  listFocusRequest,
   visibleCount,
   highMatchCityCount,
   loadError,
   isLoading,
   isRefreshing,
   onCityKeywordChange,
-  onSelectCity,
-  onLoadMore
+  onSelectCity
 }: CityFinderResultsPanelProps) {
   return (
     <aside className="results-panel" aria-label={copy.resultPanel}>
       <div className="summary-grid">
         <div>
-          <span>{visibleRegionCount > 0 ? copy.coverageRegions : copy.coverageCities}</span>
-          <strong>{visibleRegionCount > 0 ? visibleRegionCount : visibleCount}</strong>
-        </div>
-        <div>
-          <span>{copy.citySamples}</span>
+          <span>{copy.cities}</span>
           <strong>{visibleCount}</strong>
         </div>
         <div>
@@ -77,10 +70,9 @@ export function CityFinderResultsPanel({
           temperatureUnit={temperatureUnit}
           copy={copy}
           resultItems={resultItems}
-          visibleResultItems={visibleResultItems}
           selectedCityId={selectedCityId}
+          cityFocusRequest={listFocusRequest}
           onSelectCity={onSelectCity}
-          onLoadMore={onLoadMore}
         />
       )}
       {isRefreshing ? <RefreshOverlay label={copy.loadingWeatherData} /> : null}

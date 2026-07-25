@@ -25,15 +25,14 @@ import {
 } from '@/domain/weather-dashboard-shared';
 import { WeatherMapFilterDock } from '../weather-filter-docks/WeatherMapFilterDock';
 import { WorldWeatherMap } from '../WorldWeatherMap/WorldWeatherMap';
+import type { CityFocusRequest } from '../WorldWeatherMap/types';
 import {
   readInitialToolSearch,
   readSearch,
   replaceToolUrl,
-  resultPageSize,
   saveToolSearch
 } from './dashboardApi';
 import { useDelayedFlag, useRegionOptions, useSelectedCityForecasts, useTemperatureUnitPreference } from './dashboardHooks';
-import { findDefaultSelectedResultItem } from './dashboardSelection';
 import { ForecastPanel } from './ForecastPanel';
 import type { SortDirection, WeatherMapSortKey } from './types';
 import { weatherMapLayers } from './weatherMapLayers';
@@ -99,11 +98,12 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const [weatherMapSortKey, setWeatherMapSortKey] = useState<WeatherMapSortKey>(() => initialWeatherMapSortKey(readLayerFromSearch(initialSearch)));
   const [weatherMapSortDirection, setWeatherMapSortDirection] = useState<SortDirection>(() => weatherMapSortDirections[initialWeatherMapSortKey(readLayerFromSearch(initialSearch))]);
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+  const [cityFocusRequest, setCityFocusRequest] = useState<CityFocusRequest | null>(null);
+  const [listFocusRequest, setListFocusRequest] = useState<CityFocusRequest | null>(null);
   const [cityKeyword, setCityKeyword] = useState('');
   const [dashboardData, setDashboardData] = useState<WeatherToolPayload | null>(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [visibleResultLimit, setVisibleResultLimit] = useState(resultPageSize);
   const [isBrowserReady, setIsBrowserReady] = useState(false);
   const isApplyingPopState = useRef(false);
   const isApplyingPayloadDate = useRef(false);
@@ -111,6 +111,8 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const isInitialStorageRestorePending = useRef(false);
   const shouldSkipNextPayloadDateUrlReplace = useRef(false);
   const weatherMapDaysCache = useRef<WeatherMapDaysCache | null>(null);
+  const cityFocusRequestId = useRef(0);
+  const listFocusRequestId = useRef(0);
   const primaryRegion = getPrimaryRegionId(weatherFilter.region);
   const { primaryRegionOptions, subRegionOptions } = useRegionOptions(locale, primaryRegion, isBrowserReady);
   const canSelectSubRegion = subRegionOptions.length > 1;
@@ -141,7 +143,6 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
       setWeatherFilter(parseWeatherFilterFromSearch(search));
       setSelectedDate(readDateFromSearch(search, regionAvailableDates[0] ?? ''));
       setLayer(readLayerFromSearch(search));
-      setSelectedCityId(null);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -284,14 +285,11 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
     const weatherMapItems = resultItems.filter((item): item is DashboardWeatherMapResultItem => !isDashboardCityFinderItem(item));
     return sortWeatherMapItems(weatherMapItems, weatherMapSortKey, weatherMapSortDirection, locale);
   }, [locale, resultItems, weatherMapSortDirection, weatherMapSortKey]);
-  const visibleResultItems = sortedResultItems.slice(0, visibleResultLimit);
-  const defaultSelectedResultItem = useMemo(() => findDefaultSelectedResultItem(resultItems, locale), [locale, resultItems]);
-  const selectedResultItem = resultItems.find((item) => item.city.id === selectedCityId) ?? defaultSelectedResultItem;
+  const selectedResultItem = (dashboardData?.resultItems ?? []).find((item) => item.city.id === selectedCityId);
   const selectedCity = selectedResultItem?.city;
-  const effectiveSelectedCityId = selectedCity?.id ?? null;
   const { forecasts: selectedForecasts, isLoading: isLoadingCityForecast } = useSelectedCityForecasts(
     locale,
-    effectiveSelectedCityId,
+    selectedCityId,
     isBrowserReady
   );
   const shouldShowDashboardLoading = isLoadingData && !dashboardData;
@@ -301,16 +299,26 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
   const showDashboardRefreshOverlay = useDelayedFlag(shouldBlockDashboardRefresh, 300);
   const showForecastRefreshOverlay = useDelayedFlag(shouldBlockForecastRefresh, 300);
   const visibleCount = resultItems.length;
-  const visibleRegionCount = dashboardData?.regionSummaries.length ?? 0;
   const selectedWeatherMapSortLabel = weatherMapSortOptions.find((option) => option.id === weatherMapSortKey)?.labels[locale] ?? '';
 
   useEffect(() => {
-    setVisibleResultLimit(resultPageSize);
-  }, [cityKeyword, dashboardData?.resultItems, weatherMapSortDirection, weatherMapSortKey]);
+    if (selectedCityId !== null) return;
+    const firstCityId = sortedResultItems[0]?.city.id;
+    if (firstCityId) setSelectedCityId(firstCityId);
+  }, [selectedCityId, sortedResultItems]);
 
   const setRegion = useCallback((region: RegionKey) => {
     setWeatherFilter((current) => ({ ...current, region }));
-    setSelectedCityId(null);
+  }, []);
+  const selectCityFromResults = useCallback((cityId: string) => {
+    cityFocusRequestId.current += 1;
+    setSelectedCityId(cityId);
+    setCityFocusRequest({ cityId, requestId: cityFocusRequestId.current });
+  }, []);
+  const selectCityFromMap = useCallback((cityId: string) => {
+    listFocusRequestId.current += 1;
+    setSelectedCityId(cityId);
+    setListFocusRequest({ cityId, requestId: listFocusRequestId.current });
   }, []);
 
   return (
@@ -335,43 +343,7 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
         />
       </aside>
 
-      <section className="workspace-body" aria-label={copy.resultPanel}>
-        <WeatherMapResultsPanel
-          locale={locale}
-          layer={layer}
-          temperatureUnit={temperatureUnit}
-          copy={copy}
-          cityKeyword={cityKeyword}
-          resultItems={resultItems}
-          visibleResultItems={visibleResultItems}
-          selectedCityId={effectiveSelectedCityId}
-          visibleRegionCount={visibleRegionCount}
-          visibleCount={visibleCount}
-          loadError={loadError}
-          isLoading={shouldShowDashboardLoading}
-          isRefreshing={showDashboardRefreshOverlay}
-          weatherMapSortKey={weatherMapSortKey}
-          weatherMapSortDirection={weatherMapSortDirection}
-          weatherMapSortOptions={weatherMapSortOptions}
-          weatherMapSortDirections={weatherMapSortDirections}
-          selectedWeatherMapSortLabel={selectedWeatherMapSortLabel}
-          onCityKeywordChange={setCityKeyword}
-          onSelectCity={setSelectedCityId}
-          onWeatherMapSortKeyChange={setWeatherMapSortKey}
-          onWeatherMapSortDirectionChange={setWeatherMapSortDirection}
-          onLoadMore={() => setVisibleResultLimit((current) => current + resultPageSize)}
-        />
-
-        <ForecastPanel
-          locale={locale}
-          temperatureUnit={temperatureUnit}
-          copy={copy}
-          city={selectedCity}
-          forecasts={selectedForecasts}
-          isLoading={shouldShowForecastLoading}
-          isRefreshing={showForecastRefreshOverlay}
-        />
-
+      <section className="workspace-body map-first-workspace-body" aria-label={copy.resultPanel}>
         <section className="map-column" aria-label={copy.mapPanel}>
           <WorldWeatherMap
             tool="weather-map"
@@ -382,8 +354,9 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
             dataRegion={dashboardData?.region ?? null}
             temperatureUnit={temperatureUnit}
             activeRegion={weatherFilter.region}
-            selectedCityId={effectiveSelectedCityId}
-            onSelectCity={setSelectedCityId}
+            selectedCityId={selectedCityId}
+            cityFocusRequest={cityFocusRequest}
+            onSelectCity={selectCityFromMap}
             statusLabel={
               shouldShowDashboardLoading
                 ? copy.loadingWeatherData
@@ -396,6 +369,40 @@ export function WeatherMapDashboard({ locale, initialSearch }: WeatherMapDashboa
             refreshLabel={copy.loadingWeatherData}
           />
         </section>
+
+        <WeatherMapResultsPanel
+          locale={locale}
+          layer={layer}
+          temperatureUnit={temperatureUnit}
+          copy={copy}
+          cityKeyword={cityKeyword}
+          resultItems={sortedResultItems}
+          selectedCityId={selectedCityId}
+          listFocusRequest={listFocusRequest}
+          visibleCount={visibleCount}
+          loadError={loadError}
+          isLoading={shouldShowDashboardLoading}
+          isRefreshing={showDashboardRefreshOverlay}
+          weatherMapSortKey={weatherMapSortKey}
+          weatherMapSortDirection={weatherMapSortDirection}
+          weatherMapSortOptions={weatherMapSortOptions}
+          weatherMapSortDirections={weatherMapSortDirections}
+          selectedWeatherMapSortLabel={selectedWeatherMapSortLabel}
+          onCityKeywordChange={setCityKeyword}
+          onSelectCity={selectCityFromResults}
+          onWeatherMapSortKeyChange={setWeatherMapSortKey}
+          onWeatherMapSortDirectionChange={setWeatherMapSortDirection}
+        />
+
+        <ForecastPanel
+          locale={locale}
+          temperatureUnit={temperatureUnit}
+          copy={copy}
+          city={selectedCity}
+          forecasts={selectedForecasts}
+          isLoading={shouldShowForecastLoading}
+          isRefreshing={showForecastRefreshOverlay}
+        />
       </section>
     </section>
   );

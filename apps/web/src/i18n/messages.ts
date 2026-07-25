@@ -47,9 +47,7 @@ export type DashboardCopyMessages = {
   sort: string;
   sortAscending: string;
   sortDescending: string;
-  coverageRegions: string;
-  coverageCities: string;
-  citySamples: string;
+  cities: string;
   highMatchCities: string;
   citySearch: string;
   citySearchPlaceholder: string;
@@ -58,6 +56,7 @@ export type DashboardCopyMessages = {
   noForecastData: string;
   noMapData: string;
   suitableDays: (match: number, total: number) => string;
+  matchingFilterDays: (match: number, total: number) => string;
   average: string;
   dryDays: (days: number) => string;
   humidityValue: (value: string) => string;
@@ -75,6 +74,7 @@ export type DashboardCopyMessages = {
 };
 
 export type FilterCopyMessages = {
+  cityFinderIntro: string;
   region: string;
   subRegion: string;
   time: string;
@@ -82,6 +82,8 @@ export type FilterCopyMessages = {
   date: string;
   layer: string;
   quickFilters: string;
+  expandQuickFilters: string;
+  collapseQuickFilters: string;
   temperature: string;
   weather: string;
   humidity: string;
@@ -121,13 +123,8 @@ export type UiMessages = {
     fullscreenMap: string;
     exitMapFullscreen: string;
     noData: string;
-    cityUnit: string;
-    regionUnit: string;
     mapAriaLabel: string;
     colorLegendAriaLabel: string;
-  };
-  resultsList: {
-    loadMore: string;
   };
   forecastDayCardTooltip: {
     temperature: string;
@@ -158,7 +155,7 @@ const zhMessages = {
     mapPanel: '地图',
     language: 'English',
     region: '地区/国家',
-    subRegion: '省/州/地区',
+    subRegion: '省/州',
     time: '时间',
     nextDays: (days: number) => `未来 ${days} 天`,
     date: '日期',
@@ -172,9 +169,7 @@ const zhMessages = {
     sort: '排序',
     sortAscending: '升序',
     sortDescending: '降序',
-    coverageRegions: '覆盖区域',
-    coverageCities: '覆盖城市',
-    citySamples: '城市样本',
+    cities: '城市',
     highMatchCities: '高匹配城市',
     citySearch: '搜索城市',
     citySearchPlaceholder: '搜索城市',
@@ -182,7 +177,8 @@ const zhMessages = {
     loadingWeatherData: '正在加载天气数据',
     noForecastData: '暂无城市天气',
     noMapData: '暂无地图数据',
-    suitableDays: (match: number, total: number) => `${match}/${total} 天适合`,
+    suitableDays: (match: number, total: number) => `${match}/${total} 天匹配`,
+    matchingFilterDays: (match: number, total: number) => `${match}/${total}天符合筛选条件`,
     average: '平均',
     dryDays: (days: number) => `少雨 ${days} 天`,
     humidityValue: (value: string) => `湿度 ${value}`,
@@ -199,13 +195,16 @@ const zhMessages = {
     precipitation: (value: number) => `降水 ${value} mm`
   },
   filter: {
+    cityFinderIntro: '选择你喜欢的天气，查看适合的城市。',
     region: '地区/国家',
-    subRegion: '省/州/地区',
+    subRegion: '省/州',
     time: '时间',
     nextDays: (days: number) => `${days}天`,
     date: '日期',
     layer: '图层',
-    quickFilters: '推荐',
+    quickFilters: '快速筛选',
+    expandQuickFilters: '更多',
+    collapseQuickFilters: '收起',
     temperature: '气温',
     weather: '天气',
     humidity: '湿度',
@@ -299,13 +298,8 @@ const zhMessages = {
       fullscreenMap: '地图全屏',
       exitMapFullscreen: '退出地图全屏',
       noData: '暂无数据',
-      cityUnit: '个城市',
-      regionUnit: '个区域',
       mapAriaLabel: '全球天气地图',
       colorLegendAriaLabel: '颜色图例'
-    },
-    resultsList: {
-      loadMore: '加载更多'
     },
     forecastDayCardTooltip: {
       temperature: '气温',
@@ -330,7 +324,7 @@ const enMessages = {
     mapPanel: 'Map',
     language: '中文',
     region: 'Region/country',
-    subRegion: 'State/province/region',
+    subRegion: 'State/province',
     time: 'Time',
     nextDays: (days: number) => `Next ${days} days`,
     date: 'Date',
@@ -344,9 +338,7 @@ const enMessages = {
     sort: 'Sort',
     sortAscending: 'Ascending',
     sortDescending: 'Descending',
-    coverageRegions: 'Regions',
-    coverageCities: 'Cities',
-    citySamples: 'City samples',
+    cities: 'Cities',
     highMatchCities: 'High matches',
     citySearch: 'Search cities',
     citySearchPlaceholder: 'Search city',
@@ -354,7 +346,8 @@ const enMessages = {
     loadingWeatherData: 'Loading weather data',
     noForecastData: 'No city forecast',
     noMapData: 'No map data',
-    suitableDays: (match: number, total: number) => `${match}/${total} suitable`,
+    suitableDays: (match: number, total: number) => `${match}/${total}d match`,
+    matchingFilterDays: (match: number, total: number) => `${match}/${total} days match your filters`,
     average: 'Avg',
     dryDays: (days: number) => `${days} low-rain days`,
     humidityValue: (value: string) => `RH ${value}`,
@@ -371,13 +364,16 @@ const enMessages = {
     precipitation: (value: number) => `Rainfall ${value} mm`
   },
   filter: {
+    cityFinderIntro: 'Choose weather you like, and find suitable cities.',
     region: 'Region/country',
-    subRegion: 'State/province/region',
+    subRegion: 'State/province',
     time: 'Time',
     nextDays: (days: number) => `${days}d`,
     date: 'Date',
     layer: 'Layer',
-    quickFilters: 'Suggested',
+    quickFilters: 'Quick filters',
+    expandQuickFilters: 'More',
+    collapseQuickFilters: 'Less',
     temperature: 'Temperature',
     weather: 'Weather',
     humidity: 'Humidity',
@@ -471,13 +467,8 @@ const enMessages = {
       fullscreenMap: 'Fullscreen map',
       exitMapFullscreen: 'Exit map fullscreen',
       noData: 'No data',
-      cityUnit: 'cities',
-      regionUnit: 'regions',
       mapAriaLabel: 'Global weather map',
       colorLegendAriaLabel: 'Color legend'
-    },
-    resultsList: {
-      loadMore: 'Load more'
     },
     forecastDayCardTooltip: {
       temperature: 'Temperature',

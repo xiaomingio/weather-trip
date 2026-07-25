@@ -4,13 +4,30 @@
  */
 'use client';
 
+import { useState } from 'react';
 import type { FilterDockProps } from './types';
 
-export function FilterDock({ children, presets, variant = 'city-finder' }: FilterDockProps) {
+export function FilterDock({ children, presets, presetToggleLabels, variant = 'city-finder' }: FilterDockProps) {
+  const [presetsExpanded, setPresetsExpanded] = useState(false);
+
   return (
     <section className="filter-dock" data-variant={variant} aria-label="Weather filters">
       <div className="filter-dock-main">{children}</div>
-      {presets ? <div className="filter-dock-presets">{presets}</div> : null}
+      {presets ? (
+        <div className={`filter-dock-presets ${presetsExpanded ? 'is-expanded' : ''}`}>
+          {presets}
+          {presetToggleLabels ? (
+            <button
+              className="filter-presets-toggle"
+              type="button"
+              aria-expanded={presetsExpanded}
+              onClick={() => setPresetsExpanded((current) => !current)}
+            >
+              {presetsExpanded ? presetToggleLabels.collapse : presetToggleLabels.expand}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }

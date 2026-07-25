@@ -2,7 +2,7 @@
 
 ## 文档边界
 
-本文定义 Weather Map 的地区控件、zoom 分档、hover、点击反馈、相机行为、刷新状态和 marker 密度。项目整体交互、默认排序和默认选中城市见 `docs/specs/20-interaction-logic.md`；国家分层、城市选择、区域聚合和着色口径见 `docs/specs/30-weather-coverage-design.md`；数据来源和生成链路见 `docs/specs/31-data-flow.md`；公开数据分块、请求顺序和字段结构见 `docs/specs/32-public-data-contract.md`。
+本文定义 Weather Map 的地区控件、zoom 分档、hover、点击反馈、相机行为、刷新状态、城市列表联动和 marker 密度。项目整体交互、默认排序和选中城市规则见 `docs/specs/20-interaction-logic.md`；国家分层、城市选择、区域聚合和着色口径见 `docs/specs/30-weather-coverage-design.md`；数据来源和生成链路见 `docs/specs/31-data-flow.md`；公开数据分块、请求顺序和字段结构见 `docs/specs/32-public-data-contract.md`。
 
 ## 地区控件
 
@@ -40,11 +40,25 @@ z6-z8 不生成更细的 MVT 文件，由 MapLibre overzoom z5 瓦片。这样�
 
 桌面端 hover 城市 marker 时，marker 显示轻量 hover ring，并弹出 tooltip。tooltip 显示当前语言的城市名、地区名和当前图层指标；天气图层显示本地化天气类型名，不显示内部天气码或图标 ID。
 
+City Finder 的舒适度 marker 使用匹配天数表达筛选命中情况。marker 点位上的短标签只显示 `n/total`，例如 `1/14`；hover tooltip 的指标文案显示完整含义，例如 `1/14天符合筛选条件` / `1/14 days match your filters`。
+
 城市 marker 响应 click。点击 marker 选中对应城市并刷新 forecast 面板，不改变当前地区、日期、图层或地图相机。触摸设备不依赖 hover tooltip，tap marker 直接选中城市。
+
+## 城市列表联动
+
+城市列表使用当前本地结果集做虚拟滚动，不使用“加载更多”。全量结果已经在浏览器内存中，虚拟列表只决定当前渲染哪些行；搜索、筛选、排序和日期变化只重算结果，不主动滚动列表。
+
+没有任何选中城市且当前结果非空时，工具页选中列表第一项，让 forecast 面板有可展示城市。这个兜底选择不触发地图相机移动，也不触发列表滚动。
+
+用户点击城市列表项时，选中对应城市并刷新 forecast 面板。若该城市 marker 不在地图可见区域，或太靠近地图边缘，地图把该点移动到舒适可视区域并尽量居中；这次移动不改变 zoom、地区、日期、图层或排序。
+
+用户点击地图 marker 时，选中对应城市并刷新 forecast 面板。若该城市存在于当前城市列表，虚拟列表瞬时滚动到对应行并显示选中态；列表很长时不使用平滑滚动。若当前搜索或筛选让该城市不在列表里，列表不滚动；只要选中城市之后重新出现在列表结果里，它仍然显示选中态。
+
+搜索、筛选、排序、日期和图层变化不覆盖已有选中城市。已有选中城市不在当前结果里时，列表没有选中行，地图没有选中 marker；forecast 面板按可用数据展示该城市，取不到数据时显示空状态。
 
 ## 区块开关与图例
 
-地图图例区提供“显示区块 / Show regions”开关。关闭后移除地区矢量图层、无数据 hatch、普通态边界、hover 高亮和 tooltip，保留城市 marker、底图、缩放和平移。图例颜色条进入弱化状态，城市数量仍显示当前 marker 避让后的可见数量。
+地图图例区提供“显示区块 / Show regions”开关和当前图层的颜色图例。关闭后移除地区矢量图层、无数据 hatch、普通态边界、hover 高亮和 tooltip，保留城市 marker、底图、缩放和平移。图例颜色条进入弱化状态。
 
 开关说明文案只解释区域颜色来自城市采样点聚合：数值图层取平均值，天气图层取出现最多的类型。具体聚合口径见 `docs/specs/30-weather-coverage-design.md`。
 
@@ -72,4 +86,4 @@ z6-z8 不生成更细的 MVT 文件，由 MapLibre overzoom z5 瓦片。这样�
 
 区域色块和 marker 使用同一批天气点。marker 解释样本位置；区域颜色解释聚合结果。
 
-地图左下角显示当前区域数量和城市数量。marker 避让生效时，城市数量显示为“可见数量/总数量”；未避让时只显示总数量。
+marker 避让只影响地图上实际渲染的点位密度，不在地图图例区输出城市数量或区域数量。

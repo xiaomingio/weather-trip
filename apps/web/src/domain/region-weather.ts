@@ -31,6 +31,12 @@ type RegionAccumulator = {
   elevationMetersTotal: number;
 };
 
+type RegionForecastContribution = {
+  forecasts: DailyForecast[];
+  matchDays?: number;
+  totalDays?: number;
+};
+
 function chinaCompanionRegionForCity(city: City, activeRegion: RegionKey): Pick<RegionAccumulator, 'id' | 'level' | 'countryCode' | 'admin1Code' | 'admin2Code'> | null {
   const companionAdmin2Region = chinaCompanionAdmin2RegionForCountry(city.countryCode);
   if (!companionAdmin2Region) return null;
@@ -195,6 +201,29 @@ function addCityGeography(accumulator: RegionAccumulator, city: City): void {
   }
 }
 
+function buildRegionSummariesFromCities(
+  cities: City[],
+  region: RegionKey,
+  locale: DisplayLocale,
+  contributionForCity: (city: City) => RegionForecastContribution
+): RegionWeatherSummary[] {
+  const grouped = new Map<string, RegionAccumulator>();
+
+  for (const city of cities) {
+    if (!cityMatchesRegion(city, region)) continue;
+    const accumulator = ensureAccumulator(grouped, city, region, cities, locale);
+    if (!accumulator) continue;
+
+    addCityGeography(accumulator, city);
+    const contribution = contributionForCity(city);
+    if (contribution.forecasts.length > 0) accumulator.forecasts.push(...contribution.forecasts);
+    accumulator.matchDays += contribution.matchDays ?? 0;
+    accumulator.totalDays += contribution.totalDays ?? 0;
+  }
+
+  return [...grouped.values()].map(summarizeAccumulator);
+}
+
 export function buildWeatherMapRegionSummaries(
   cities: City[],
   forecasts: DailyForecast[],
@@ -202,27 +231,17 @@ export function buildWeatherMapRegionSummaries(
   region: RegionKey,
   locale: DisplayLocale
 ): RegionWeatherSummary[] {
-  const cityById = new Map(cities.map((city) => [city.id, city]));
-  const grouped = new Map<string, RegionAccumulator>();
-
-  for (const city of cities) {
-    if (!cityMatchesRegion(city, region)) continue;
-    const accumulator = ensureAccumulator(grouped, city, region, cities, locale);
-    if (!accumulator) continue;
-    addCityGeography(accumulator, city);
-  }
-
+  const forecastsByCity = new Map<string, DailyForecast[]>();
   for (const forecast of forecasts) {
     if (forecast.date !== date) continue;
-    const city = cityById.get(forecast.cityId);
-    if (!city || !cityMatchesRegion(city, region)) continue;
-    const accumulator = ensureAccumulator(grouped, city, region, cities, locale);
-    if (!accumulator) continue;
-    addCityGeography(accumulator, city);
-    accumulator.forecasts.push(forecast);
+    const cityForecasts = forecastsByCity.get(forecast.cityId) ?? [];
+    cityForecasts.push(forecast);
+    forecastsByCity.set(forecast.cityId, cityForecasts);
   }
 
-  return [...grouped.values()].map(summarizeAccumulator);
+  return buildRegionSummariesFromCities(cities, region, locale, (city) => ({
+    forecasts: forecastsByCity.get(city.id) ?? []
+  }));
 }
 
 export function buildCityFinderRegionSummaries(
@@ -231,19 +250,12 @@ export function buildCityFinderRegionSummaries(
   filter: WeatherFilter,
   locale: DisplayLocale
 ): RegionWeatherSummary[] {
-  const grouped = new Map<string, RegionAccumulator>();
-
-  for (const city of cities) {
-    if (!cityMatchesRegion(city, filter.region)) continue;
-    const accumulator = ensureAccumulator(grouped, city, filter.region, cities, locale);
-    if (!accumulator) continue;
-    addCityGeography(accumulator, city);
+  return buildRegionSummariesFromCities(cities, filter.region, locale, (city) => {
     const scopedForecasts = (forecastsByCity.get(city.id) ?? []).slice(0, filter.dateWindowDays);
-    if (scopedForecasts.length === 0) continue;
-    accumulator.forecasts.push(...scopedForecasts);
-    accumulator.matchDays += scopedForecasts.filter((forecast) => dayMatchesFilter(forecast, filter)).length;
-    accumulator.totalDays += scopedForecasts.length;
-  }
-
-  return [...grouped.values()].map(summarizeAccumulator);
+    return {
+      forecasts: scopedForecasts,
+      matchDays: scopedForecasts.filter((forecast) => dayMatchesFilter(forecast, filter)).length,
+      totalDays: scopedForecasts.length
+    };
+  });
 }

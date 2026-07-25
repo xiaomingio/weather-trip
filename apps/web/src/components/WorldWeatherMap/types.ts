@@ -33,11 +33,17 @@ export type WorldWeatherMapProps = {
   temperatureUnit: TemperatureUnit;
   activeRegion: RegionKey;
   selectedCityId: string | null;
+  cityFocusRequest: CityFocusRequest | null;
   onSelectCity: (cityId: string) => void;
   statusLabel?: string | null;
   statusKind?: 'loading' | 'empty';
   isRefreshing?: boolean;
   refreshLabel?: string;
+};
+
+export type CityFocusRequest = {
+  cityId: string;
+  requestId: number;
 };
 
 export type LegendScale = {

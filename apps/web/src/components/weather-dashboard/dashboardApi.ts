@@ -1,5 +1,5 @@
 /**
- * 文件说明: 封装天气工具 React 组件使用的页面 URL、分页大小和工具状态本地保存。
+ * 文件说明: 封装天气工具 React 组件使用的页面 URL 和工具状态本地保存。
  * 对应文档: docs/specs/20-interaction-logic.md
  */
 
@@ -7,8 +7,6 @@ import type { MapLayer, WeatherFilter, WeatherToolId } from 'weather-core/types'
 import type { DisplayLocale } from '@/domain/format';
 import { buildToolPath } from '@/domain/navigation';
 import { buildFilterSearch } from '@/domain/weather-dashboard-shared';
-
-export const resultPageSize = 50;
 
 export function readSearch(): string {
   return typeof window === 'undefined' ? '' : window.location.search;
