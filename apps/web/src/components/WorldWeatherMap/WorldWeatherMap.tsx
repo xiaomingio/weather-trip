@@ -504,8 +504,8 @@ export function WorldWeatherMap({
 
     const entries = buildVectorRegionStyleEntries(regionSummaries, vectorAsset.styleLayer, tool, layer, locale, temperatureUnit);
     vectorRegionStyleEntriesRef.current = new Map(entries.map((entry) => [entry.regionKey, entry]));
-    applyVectorRegionStyles(map, regionLayer, vectorAsset.styleLayer, entries);
-  }, [isRegionColoringEnabled, layer, locale, regionLayer, regionSummaries, mapReady, temperatureUnit, tool, vectorAsset.styleLayer]);
+    applyVectorRegionStyles(map, regionLayer, vectorAsset.styleLayer, entries, isRegionColoringEnabled, activeRegion);
+  }, [activeRegion, isRegionColoringEnabled, layer, locale, regionLayer, regionSummaries, mapReady, temperatureUnit, tool, vectorAsset.styleLayer]);
 
   useEffect(() => {
     const map = mapRef.current;

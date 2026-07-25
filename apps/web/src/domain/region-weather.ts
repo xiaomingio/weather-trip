@@ -8,6 +8,7 @@ import { calculateComfortScore, dayMatchesFilter } from './scoring';
 import {
   chinaCompanionAdmin2RegionForCountry,
   cityMatchesRegion,
+  isChinaDirectMunicipalityAdmin1Code,
   parseAdmin1Region,
   parseAdmin2Region,
   primaryCountryCodeForRegion
@@ -76,6 +77,14 @@ function regionIdForCity(city: City, activeRegion: RegionKey, allCities: City[])
   const countryTier = activeCountryCode ? countryTierForCountry(allCities, activeCountryCode) : city.countryTier ?? 'C1';
 
   if (countryTier === 'C3') {
+    if (city.countryCode === 'CN' && isChinaDirectMunicipalityAdmin1Code(city.admin1GroupCode)) {
+      return {
+        id: `admin1:${city.countryCode}.${city.admin1GroupCode}`,
+        level: 'admin1',
+        countryCode: city.countryCode,
+        admin1Code: city.admin1GroupCode
+      };
+    }
     if (!city.admin1GroupCode || !city.admin2Code) return null;
     return {
       id: `admin2:${city.countryCode}.${city.admin1GroupCode}.${city.admin2Code}`,

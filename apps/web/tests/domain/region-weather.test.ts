@@ -110,6 +110,28 @@ describe('map region weather summaries', () => {
     });
   });
 
+  it('uses associated city samples as the region elevation source', () => {
+    const lowCity = city({ id: 'low-city', admin1: 'California', admin1GroupCode: 'CA', countryTier: 'C2', elevationMeters: 100 });
+    const highCity = city({ id: 'high-city', admin1: 'California', admin1GroupCode: 'CA', countryTier: 'C2', elevationMeters: 300 });
+
+    const summaries = buildWeatherMapRegionSummaries(
+      [lowCity, highCity],
+      [forecast({ cityId: lowCity.id }), forecast({ cityId: highCity.id })],
+      '2026-07-21',
+      'country:US',
+      'en'
+    );
+
+    expect(summaries).toEqual([
+      expect.objectContaining({
+        id: 'admin1:US.CA',
+        cityCount: 2,
+        forecastCount: 2,
+        elevationMeters: 200
+      })
+    ]);
+  });
+
   it('groups C3 country detail weather by admin2 region key', () => {
     const yunnan = city({
       id: 'kunming',
@@ -136,6 +158,38 @@ describe('map region weather summaries', () => {
       forecastCount: 1,
       name: 'Kunming Shi'
     });
+  });
+
+  it('groups China direct municipalities by admin1 because their city sample represents the whole municipality', () => {
+    const shanghai = city({
+      id: 'shanghai',
+      names: { zh: '上海', en: 'Shanghai' },
+      country: 'China',
+      countryCode: 'CN',
+      admin1: 'Shanghai',
+      admin1LocalName: '上海',
+      admin1GroupCode: '23',
+      admin2: 'Songjiang District',
+      admin2LocalName: '松江区',
+      admin2Code: '310117',
+      countryTier: 'C3',
+      region: 'asia',
+      selectionReasons: ['coverage-override:admin2']
+    });
+
+    const summaries = buildWeatherMapRegionSummaries([shanghai], [forecast({ cityId: shanghai.id })], '2026-07-21', 'country:CN', 'zh');
+
+    expect(summaries).toEqual([
+      expect.objectContaining({
+        id: 'admin1:CN.23',
+        level: 'admin1',
+        countryCode: 'CN',
+        admin1Code: '23',
+        admin2Code: undefined,
+        forecastCount: 1,
+        name: '上海'
+      })
+    ]);
   });
 
   it('groups Hong Kong, Macau and Taiwan cities into China companion C3 regions', () => {

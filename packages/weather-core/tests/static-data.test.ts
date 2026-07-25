@@ -4,6 +4,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  decodeWeatherDataSnapshot,
   decodeWeatherForecastBin,
   encodeWeatherForecastBin,
   readForecastDay,
@@ -78,5 +79,28 @@ describe('weather forecast bin', () => {
     expect(() => decodeWeatherForecastBin(current(bin.byteLength, ['2026-07-22', '2026-07-23']), bin)).toThrow(
       'Forecast bin dates do not match current.ds.'
     );
+  });
+
+  it('uses weather source elevation before falling back to city index elevation', () => {
+    const bin = encodeWeatherForecastBin(dates, rows);
+    const snapshot = decodeWeatherDataSnapshot(
+      {
+        v: 'test-cities',
+        d: {
+          co: [['AA', ['Testland', '测试国'], 'asia', 1]],
+          a1: [],
+          a2: []
+        },
+        c: [
+          ['city-a', ['Alpha', '阿尔法'], 0, null, null, 100000, 100000, 999],
+          ['city-b', ['Beta', '贝塔'], 0, null, null, 200000, 200000, 456]
+        ]
+      },
+      current(bin.byteLength),
+      bin
+    );
+
+    expect(snapshot.cities.find((city) => city.id === 'city-a')?.elevationMeters).toBe(123);
+    expect(snapshot.cities.find((city) => city.id === 'city-b')?.elevationMeters).toBe(456);
   });
 });

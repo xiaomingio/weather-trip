@@ -10,7 +10,7 @@ import { pipeline } from 'node:stream/promises';
 import { parseZip } from 'shpjs';
 import YAML from 'yaml';
 import type { CountryTier } from 'weather-core/types';
-import { loadCoverageOverrides, type CoverageOverrideSeed } from '../static-data/coverage-overrides.js';
+import { generatedDataVersion, readJsonLines } from '../generated-jsonl.js';
 
 type GeoJsonGeometry = {
   type: string;
@@ -35,7 +35,7 @@ type CountryProfile = {
 };
 
 type CountryProfilesPayload = {
-  version?: string;
+  version: string;
   profiles: CountryProfile[];
 };
 
@@ -102,13 +102,12 @@ const rawDir = path.join(rootDir, 'data', 'raw', 'geo-boundaries');
 const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
 const reportDir = path.join(rootDir, 'data', 'report');
-const profilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.json');
+const profilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.jsonl');
 const geoBoundarySourcesPath = path.join(rootDir, 'data', 'input', 'geo-boundary-sources.yml');
 const geoCountryPath = 'data/generated/geo/country.geojson';
 const geoC2Admin1Path = 'data/generated/geo/c2_admin1.geojson';
 const geoC3Admin1Path = 'data/generated/geo/c3_admin1.geojson';
 const geoC3Admin2Dir = 'data/generated/geo/c3_admin2';
-const maxPrettyGeoJsonBytes = 95 * 1024 * 1024;
 
 const naturalEarthAdmin0Url = 'https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip';
 const naturalEarthAdmin0DetailedUrl = 'https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_admin_0_countries.zip';
@@ -160,9 +159,18 @@ const chinaCompanionRegions = [
   { countryCode: 'MO', admin1Code: 'MO', admin2Code: '820000', adcode: 820000, nameZh: '澳门', nameEn: 'Macau', source: 'full' },
   { countryCode: 'TW', admin1Code: 'TW', admin2Code: '710000', adcode: 710000, nameZh: '台湾', nameEn: 'Taiwan', source: 'single' }
 ] as const;
+const chinaDirectMunicipalityAdcodes = new Set([110000, 120000, 310000, 500000]);
 
 async function readJson<T>(filePath: string): Promise<T> {
   return JSON.parse(await readFile(filePath, 'utf8')) as T;
+}
+
+async function readCountryProfiles(): Promise<CountryProfilesPayload> {
+  const profiles = await readJsonLines<CountryProfile>(profilesPath);
+  return {
+    version: generatedDataVersion('country-profiles', profiles),
+    profiles
+  };
 }
 
 async function readYaml<T>(filePath: string): Promise<T> {
@@ -486,15 +494,6 @@ function chinaBoundaryProperties(nameZh: string, nameEn?: string): Record<string
   };
 }
 
-function boundaryLabelOverridesByKey(seed: CoverageOverrideSeed): Map<string, { zh: string; en: string }> {
-  return new Map(
-    (seed.boundaryLabelOverrides ?? []).map((item) => [
-      `${item.countryCode}.${item.admin1Code}.${item.sourceAdcode}`,
-      item.name
-    ])
-  );
-}
-
 function chinaFeatureName(feature: GeoJsonFeature): string {
   return typeof feature.properties.name === 'string' ? feature.properties.name : '';
 }
@@ -546,10 +545,11 @@ async function chinaAdmin1Features(): Promise<{ features: GeoJsonFeature[]; sour
   };
 }
 
-async function chinaAdmin2Features(boundaryLabelsByKey: Map<string, { zh: string; en: string }>): Promise<{ features: GeoJsonFeature[]; sources: string[] }> {
+async function chinaAdmin2Features(): Promise<{ features: GeoJsonFeature[]; sources: string[] }> {
   const output: GeoJsonFeature[] = [];
 
   for (const [provinceAdcode, admin1Code] of chinaAmapAdmin1CodeByAdcode) {
+    if (chinaDirectMunicipalityAdcodes.has(provinceAdcode)) continue;
     const province = await downloadJson(`${datavChinaUrl}/${provinceAdcode}_full.json`, path.join(rawDir, `datav-cn-${provinceAdcode}-full.geojson`));
     for (const feature of province.features) {
       const adcode = Number(feature.properties.adcode);
@@ -557,9 +557,8 @@ async function chinaAdmin2Features(boundaryLabelsByKey: Map<string, { zh: string
       const featureName = chinaFeatureName(feature);
       const admin2Code = String(Math.trunc(adcode / 100));
       const key = `admin2:CN.${admin1Code}.${admin2Code}`;
-      const boundaryLabel = boundaryLabelsByKey.get(`CN.${admin1Code}.${adcode}`);
       output.push(boundaryFeature(key, feature.geometry, {
-        ...chinaBoundaryProperties(boundaryLabel?.zh ?? featureName, boundaryLabel?.en),
+        ...chinaBoundaryProperties(featureName),
         source: 'DataV/高德（Amap）',
         sourceId: String(adcode),
         weatherRegionKey: key
@@ -641,10 +640,9 @@ async function admin1FeaturesForCountry(
 async function admin2FeaturesForCountry(
   countryCode: string,
   seed: GeoBoundarySourceSeed,
-  boundaryLabelsByKey: Map<string, { zh: string; en: string }>,
   iso3ByCountry: Map<string, string>
 ): Promise<{ features: GeoJsonFeature[]; sources: string[] }> {
-  if (countryCode === 'CN') return chinaAdmin2Features(boundaryLabelsByKey);
+  if (countryCode === 'CN') return chinaAdmin2Features();
 
   const sourceLevel = geoBoundariesCountryDetailSource(seed, countryCode)?.admin2SourceLevel ?? 'ADM2';
   const geoBoundaries = await geoBoundariesPackage(countryCode, sourceLevel, iso3ByCountry);
@@ -755,15 +753,26 @@ function quantizeFeature(feature: GeoJsonFeature, precision: number): GeoJsonFea
   };
 }
 
+function featureCollectionContent(payload: FeatureCollection): string {
+  return [
+    '{',
+    '  "type": "FeatureCollection",',
+    '  "features": [',
+    payload.features.map((feature, index) => {
+      const suffix = index === payload.features.length - 1 ? '' : ',';
+      return `    ${JSON.stringify(feature)}${suffix}`;
+    }).join('\n'),
+    '  ]',
+    '}',
+    ''
+  ].join('\n');
+}
+
 async function writeGeoPackage(relativePath: string, features: GeoJsonFeature[], precision: number): Promise<GeoBoundaryReport['packages'][number]> {
   const filePath = path.join(rootDir, relativePath);
   const payload: FeatureCollection = { type: 'FeatureCollection', features: sortFeatures(features).map((feature) => quantizeFeature(feature, precision)) };
-  const prettyContent = `${JSON.stringify(payload, null, 2)}\n`;
-  const content = Buffer.byteLength(prettyContent) > maxPrettyGeoJsonBytes
-    ? `${JSON.stringify(payload)}\n`
-    : prettyContent;
   await mkdir(path.dirname(filePath), { recursive: true });
-  await writeFile(filePath, content);
+  await writeFile(filePath, featureCollectionContent(payload));
   return {
     id: path.basename(relativePath, '.geojson'),
     outputPath: relativePath,
@@ -819,9 +828,8 @@ export async function runGenerateStaticGeo(): Promise<void> {
   await downloadFile(naturalEarthAdmin1LowUrl, naturalEarthAdmin1LowPath);
   await downloadFile(naturalEarthAdmin1Url, naturalEarthAdmin1Path);
 
-  const [profilesPayload, overrideSeed, geoBoundarySourceSeed, naturalEarthAdmin0, naturalEarthAdmin0Detailed, naturalEarthAdmin0MapUnits, naturalEarthAdmin1Low, naturalEarthAdmin1] = await Promise.all([
-    readJson<CountryProfilesPayload>(profilesPath),
-    loadCoverageOverrides(rootDir),
+  const [profilesPayload, geoBoundarySourceSeed, naturalEarthAdmin0, naturalEarthAdmin0Detailed, naturalEarthAdmin0MapUnits, naturalEarthAdmin1Low, naturalEarthAdmin1] = await Promise.all([
+    readCountryProfiles(),
     readYaml<GeoBoundarySourceSeed>(geoBoundarySourcesPath),
     parseShapefileZip(naturalEarthAdmin0Path),
     parseShapefileZip(naturalEarthAdmin0DetailedPath),
@@ -835,7 +843,6 @@ export async function runGenerateStaticGeo(): Promise<void> {
   const detailedCountryCodes = new Set(profiles.filter((profile) => profile.detailedCoverage).map((profile) => profile.countryCode));
   const c3CountryCodes = new Set(profiles.filter((profile) => profile.detailedCoverage === 'admin2').map((profile) => profile.countryCode));
   const iso3ByCountry = naturalEarthIso3ByCountry([naturalEarthAdmin0Detailed, naturalEarthAdmin0MapUnits, naturalEarthAdmin0]);
-  const boundaryLabelsByKey = boundaryLabelOverridesByKey(overrideSeed);
 
   await rm(generatedGeoDir, { recursive: true, force: true });
 
@@ -897,7 +904,7 @@ export async function runGenerateStaticGeo(): Promise<void> {
   for (const countryCode of [...c3CountryCodes].sort()) {
     const profile = profileByCountry.get(countryCode);
     const admin1Generated = admin1GeneratedByCountry.get(countryCode) ?? await admin1FeaturesForCountry(countryCode, naturalEarthAdmin1Low, naturalEarthAdmin1, iso3ByCountry);
-    const admin2Generated = await admin2FeaturesForCountry(countryCode, geoBoundarySourceSeed, boundaryLabelsByKey, iso3ByCountry);
+    const admin2Generated = await admin2FeaturesForCountry(countryCode, geoBoundarySourceSeed, iso3ByCountry);
     report.packages.push(await writeTrackedGeoPackage(`${geoC3Admin2Dir}/${countryCode}.geojson`, admin2Generated.features, 3));
     countryReports.push({
       countryCode,

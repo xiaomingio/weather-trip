@@ -1,0 +1,32 @@
+# 外部旅游来源里的国家名称别名，用于把 raw 文本国家名对齐到 ISO 3166-1 alpha-2。
+
+- name: czechia
+  countryCode: CZ
+  reason: 外部来源可能使用短名而非 GeoNames countryInfo 名称。
+- name: iran
+  countryCode: IR
+  reason: 外部来源可能使用短名而非 GeoNames countryInfo 名称。
+- name: republic of korea
+  countryCode: KR
+  reason: 外部来源可能使用正式英文名。
+- name: south korea
+  countryCode: KR
+  reason: 外部来源可能使用常见英文名。
+- name: turkiye
+  countryCode: TR
+  reason: 外部来源可能去掉变音符。
+- name: türkiye
+  countryCode: TR
+  reason: 外部来源可能使用当前英文国名。
+- name: united states
+  countryCode: US
+  reason: 外部来源可能使用短名。
+- name: united states of america
+  countryCode: US
+  reason: 外部来源可能使用完整英文名。
+- name: viet nam
+  countryCode: VN
+  reason: 外部来源可能使用正式英文拼写。
+- name: vietnam
+  countryCode: VN
+  reason: 外部来源可能使用常见英文拼写。

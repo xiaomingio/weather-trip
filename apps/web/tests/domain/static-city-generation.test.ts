@@ -3,7 +3,8 @@
  * 对应文档: docs/specs/30-weather-coverage-design.md
  */
 import { describe, expect, it } from 'vitest';
-import { compareDefaultRank, inferSelectedCityAdmin2, mergeSelectedCityGeography } from '../../../../scripts/lib/cities/static-city-generation';
+import { compareDefaultRank, encodeCitiesPayload, inferSelectedCityAdmin2, mergeSelectedCityGeography } from '../../../../scripts/lib/cities/static-city-generation';
+import { buildSupportedAdmin2KeySet, isCodeLevelSupportedAdmin2 } from '../../../../scripts/lib/static-data/coverage-overrides';
 import { normalizeChineseAlternateName, type GeoNamesAdmin2, type GeoNamesCity } from '../../../../scripts/lib/static-data/geonames';
 
 type TestCity = {
@@ -15,6 +16,33 @@ type TestCity = {
 
 function city(id: string, featureCode: string, population: number, countryCode = 'ZZ'): TestCity {
   return { id, featureCode, population, countryCode };
+}
+
+function admin2(countryCode: string, admin1Code: string, admin2Code: string, name: string): GeoNamesAdmin2 {
+  return {
+    code: `${countryCode}.${admin1Code}.${admin2Code}`,
+    countryCode,
+    admin1Code,
+    admin2Code,
+    name,
+    asciiName: name,
+    geonameId: Number(`${admin1Code}${admin2Code}`.replace(/\D/g, '').slice(0, 8)) || 1
+  };
+}
+
+function geoCity(params: Partial<GeoNamesCity> & Pick<GeoNamesCity, 'id' | 'countryCode' | 'admin1Code' | 'featureCode'>): GeoNamesCity {
+  return {
+    geonameId: 1,
+    name: params.id,
+    asciiName: params.id,
+    alternateNames: [],
+    latitude: 0,
+    longitude: 0,
+    population: 1,
+    timezone: 'UTC',
+    continentCode: 'EU',
+    ...params
+  };
 }
 
 describe('static city generation rank order', () => {
@@ -50,6 +78,68 @@ describe('static city generation rank order', () => {
       'alpha',
       'beta'
     ]);
+  });
+});
+
+describe('static city generated tables', () => {
+  it('encodes readable generated city rows into compact public wire rows', () => {
+    const payload = encodeCitiesPayload({
+      version: 'cities-test',
+      cityProfilesVersion: 'profiles-test',
+      countries: [
+        {
+          countryCode: 'US',
+          names: { en: 'United States', zh: '美国' },
+          worldRegion: 'north_america',
+          countryTier: 'C2'
+        }
+      ],
+      admin1: [
+        {
+          countryCode: 'US',
+          admin1Code: 'CA',
+          names: { en: 'California', zh: '加利福尼亚州' }
+        }
+      ],
+      admin2: [
+        {
+          countryCode: 'US',
+          admin1Code: 'CA',
+          admin2Code: '037',
+          names: { en: 'Los Angeles County', zh: '洛杉矶县' }
+        }
+      ],
+      cities: [
+        {
+          id: 'city-la',
+          geonameId: 5368361,
+          names: { en: 'Los Angeles', zh: '洛杉矶' },
+          countryCode: 'US',
+          admin1Code: 'CA',
+          admin2Code: '037',
+          latitude: 34.05223,
+          longitude: -118.24368,
+          timezone: 'America/Los_Angeles',
+          population: 3971883,
+          elevationMeters: 89,
+          worldRegion: 'north_america',
+          countryTier: 'C2',
+          rank: 1,
+          selectionPriority: 1,
+          selectionReasons: ['fixture']
+        }
+      ]
+    });
+
+    expect(payload).toEqual({
+      v: 'cities-test',
+      d: {
+        co: [['US', ['United States', '美国'], 'north_america', 2]],
+        a1: [[0, 'CA', ['California', '加利福尼亚州']]],
+        a2: [[0, 0, '037', ['Los Angeles County', '洛杉矶县']]]
+      },
+      c: [['city-la', ['Los Angeles', '洛杉矶'], 0, 0, 0, 3405223, -11824368, 89]]
+    });
   });
 });
 
@@ -129,5 +219,37 @@ describe('GeoNames Chinese alternate names', () => {
     expect(normalizeChineseAlternateName('馬德里')).toBe('马德里');
     expect(normalizeChineseAlternateName('河內市')).toBe('河内市');
     expect(normalizeChineseAlternateName('首都區')).toBe('首都区');
+  });
+});
+
+describe('GeoNames admin2 support rules', () => {
+  it('keeps China supported admin2 rules in code instead of data input files', () => {
+    expect(isCodeLevelSupportedAdmin2(admin2('CN', '30', '4403', 'Shenzhen'))).toBe(true);
+    expect(isCodeLevelSupportedAdmin2(admin2('CN', '23', '3101', 'Shanghai district'))).toBe(true);
+    expect(isCodeLevelSupportedAdmin2(admin2('CN', '13', '6590', 'Unsupported county-level code'))).toBe(false);
+    expect(isCodeLevelSupportedAdmin2(admin2('ES', '56', '001', 'Barcelona'))).toBe(false);
+  });
+
+  it('allows non-China admin2 only when a supported city can represent it', () => {
+    const supportedAdmin2Keys = buildSupportedAdmin2KeySet(
+      [
+        admin2('ES', '56', '001', 'Barcelona'),
+        admin2('ZZ', '01', '002', 'No City Region')
+      ],
+      [
+        geoCity({
+          id: 'barcelona',
+          countryCode: 'ES',
+          admin1Code: '56',
+          admin2Code: '001',
+          featureCode: 'PPLA2',
+          population: 1_600_000
+        })
+      ],
+      new Set(['PPLA2'])
+    );
+
+    expect(supportedAdmin2Keys.has('ES.56.001')).toBe(true);
+    expect(supportedAdmin2Keys.has('ZZ.01.002')).toBe(false);
   });
 });

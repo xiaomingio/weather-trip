@@ -16,14 +16,14 @@ apps/web
 
 顶部导航由 Astro 在构建期输出静态入口；React island 只管理当前工具页自己的筛选 URL 和工作区状态。固定 Tab URL、语言切换、温度单位、本地偏好和工具状态恢复规则见 `docs/specs/20-interaction-logic.md`。
 
-Weather Map 的底图、地区选项和 MVT 边界读取 `cities.json` 与 `/data/geo/region-tiles/*`，不以 `weather/current.json` 或 forecast bin 成功解码为前置条件。天气入口或 forecast bin 失效时，页面只把天气点位、天气图层、天气列表和单城市预报置为空或错误状态；地图边界仍继续显示，地区选择仍基于城市索引工作。City Finder 是天气筛选工具，天气快照不可用时可以进入错误 / 空状态。
+Weather Map 的底图、地区选项和 MVT 边界读取 `cities.json` 与 `/data/geo/region-tiles/*`，不以 `weather/current.json` 或 forecast bin 成功解码为前置条件。跨源对齐规则见 `docs/specs/31-data-flow.md`：行政区划、城市点位和天气包可能来自不同版本，运行时只在关联层降级。天气入口或 forecast bin 失效时，页面只把天气点位、天气图层、天气列表和单城市预报置为空或错误状态；地图边界仍继续显示，地区选择仍基于城市索引工作。City Finder 是天气筛选工具，天气快照不可用时可以进入错误 / 空状态。
 
 ## 仓库脚本
 
 | 命令 | 说明 |
 | --- | --- |
-| `npm run static:profiles` | 从 GeoNames、覆盖规则和旅游种子生成 `country-admin-stats.json`、`country-profiles.json` 和分档报告 |
-| `npm run static:cities` | 先生成 profiles，再从 GeoNames 和旅游种子生成 `data/generated/cities.json`、公开 `cities.json` 和筛选报告 |
+| `npm run static:profiles` | 从 GeoNames、覆盖规则和旅游种子生成 `country-admin-stats.jsonl`、`country-profiles.jsonl` 和分档报告 |
+| `npm run static:cities` | 先生成 profiles，再从 GeoNames 和旅游种子生成 `data/generated/cities/*.jsonl` 中间表、公开 `cities.json` 和筛选报告 |
 | `npm run static:geo` | 从 Natural Earth、geoBoundaries、DataV/高德（Amap）raw 生成标准化边界中间产物和边界报告，供 `static:geo:tiles` 切成前端运行时 MVT |
 | `npm run static:geo:tiles` | 从现有 GeoJSON 边界中间产物生成 `geo/region-tiles/{country,admin1,admin2}/{z}/{x}/{y}.mvt` 和瓦片报告 |
 | `npm run weather:refresh` | 刷新每日天气 current 和 forecast 包，CI 使用 `--source=open-meteo` 上传 R2 |

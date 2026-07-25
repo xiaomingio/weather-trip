@@ -14,7 +14,7 @@ import type {
 import { encodeWeatherForecastBin } from 'weather-core/static-data';
 
 const rootDir = process.cwd();
-const generatedCitiesPath = path.join(rootDir, 'data', 'generated', 'cities.json');
+const publicCitiesPath = path.join(rootDir, 'apps', 'web', 'public', 'data', 'cities.json');
 const defaultOutputDir = path.join(rootDir, 'apps', 'web', 'public', 'data', 'weather');
 
 type CliOptions = {
@@ -234,7 +234,7 @@ function defaultDateByCoverage(dates: string[], weatherRows: WeatherForecastBinI
 
 export async function runGenerateStaticWeather(args: string[]): Promise<void> {
 const options = readCliOptions(args);
-const citiesPayload = await readJson<CitiesPayloadWire>(generatedCitiesPath);
+const citiesPayload = await readJson<CitiesPayloadWire>(publicCitiesPath);
 const { dates, weatherRows } = await buildForecastFromOpenMeteo(citiesPayload, options);
 
 const matchedWeatherRows = weatherRows.filter((row) => row.days.some(Boolean)).length;

@@ -2,11 +2,11 @@
  * 文件说明: 读取旅行目的地 raw、人工 override 和 GeoNames 城市池，生成可审计旅游目的地输入。
  * 对应文档: docs/specs/30-weather-coverage-design.md, docs/specs/31-data-flow.md
  */
-import { createHash } from 'node:crypto';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import YAML from 'yaml';
 import { loadGeoNamesDataset, type GeoNamesCity } from '../static-data/geonames.js';
+import { generatedDataVersion, jsonLineContent } from '../generated-jsonl.js';
 
 type TourismDestinationSource = 'curated' | 'wikivoyage' | 'unesco' | 'un-tourism-village' | 'reference-list';
 type TourismWeatherMode = 'standalone' | 'map_to_nearest_city' | 'boost_existing_city';
@@ -21,6 +21,12 @@ type ManualTourismDestinationOverride = {
   geonameId?: number;
   mappedGeonameId?: number;
   notes?: string;
+};
+
+export type CountryNameAlias = {
+  name: string;
+  countryCode: string;
+  reason?: string;
 };
 
 type TourismDestination = {
@@ -107,9 +113,11 @@ type TourismDestinationReport = {
 const rootDir = process.cwd();
 const rawTourismDir = path.join(rootDir, 'data', 'raw', 'tourism-destinations');
 const overridesPath = path.join(rootDir, 'data', 'input', 'tourism-destination-overrides.yml');
+const countryNameAliasesPath = path.join(rootDir, 'data', 'input', 'country-name-aliases.yml');
 const generatedDir = path.join(rootDir, 'data', 'generated');
 const reportDir = path.join(rootDir, 'data', 'report');
-const outputPath = path.join(generatedDir, 'tourism-destinations.json');
+const outputPath = path.join(generatedDir, 'tourism-destinations.jsonl');
+const legacyOutputPath = path.join(generatedDir, 'tourism-destinations.json');
 const reportMarkdownPath = path.join(reportDir, 'tourism-destination-report.md');
 
 async function readJson<T>(filePath: string): Promise<T> {
@@ -192,24 +200,13 @@ async function loadRawData(): Promise<{ summary: RawTourismSummary | null; desti
   return { summary, destinations };
 }
 
-function countryCodeByName(countries: Map<string, { code: string; name: string }>): Map<string, string> {
+export function buildCountryCodeByName(countries: Map<string, { code: string; name: string }>, aliases: CountryNameAlias[] = []): Map<string, string> {
   const names = new Map<string, string>();
   for (const country of countries.values()) {
     names.set(normalizeName(country.name), country.code);
   }
-  for (const [name, code] of Object.entries({
-    'czechia': 'CZ',
-    'iran': 'IR',
-    'republic of korea': 'KR',
-    'south korea': 'KR',
-    'turkiye': 'TR',
-    'türkiye': 'TR',
-    'united states': 'US',
-    'united states of america': 'US',
-    'viet nam': 'VN',
-    'vietnam': 'VN'
-  })) {
-    names.set(normalizeName(name), code);
+  for (const alias of aliases) {
+    names.set(normalizeName(alias.name), alias.countryCode);
   }
   return names;
 }
@@ -661,61 +658,62 @@ function reportMarkdown(report: TourismDestinationReport): string {
 }
 
 export async function runGenerateTourismDestinations(): Promise<void> {
-const [{ summary: rawSummary, destinations: rawDestinations }, overrides, dataset] = await Promise.all([
-  loadRawData(),
-  readYaml<ManualTourismDestinationOverride[]>(overridesPath),
-  loadGeoNamesDataset(rootDir)
-]);
+  const [{ summary: rawSummary, destinations: rawDestinations }, overrides, countryNameAliases, dataset] = await Promise.all([
+    loadRawData(),
+    readYaml<ManualTourismDestinationOverride[]>(overridesPath),
+    readYaml<CountryNameAlias[]>(countryNameAliasesPath),
+    loadGeoNamesDataset(rootDir)
+  ]);
 
-const groupedCities = citiesByCountry(dataset.cities);
-const rawResult = alignRawDestinations(rawDestinations, dataset.cities, groupedCities, countryCodeByName(dataset.countries));
-const overrideResult = alignOverrides(overrides, groupedCities);
-const destinations = mergeDestinations([...rawResult.destinations, ...overrideResult.destinations]);
-const rawMatchSummary = summarizeRawMatches(rawDestinations, dataset.cities);
-const generatedAt = new Date().toISOString();
-const hash = createHash('sha1').update(JSON.stringify({ rawGeneratedAt: rawSummary?.generatedAt, destinations })).digest('hex').slice(0, 12);
-const version = `tourism-destinations-${hash}`;
-const report: TourismDestinationReport = {
-  version,
-  generatedAt,
-  rawData: {
-    path: rawSummary?.outputDir ?? null,
-    generatedAt: rawSummary?.generatedAt ?? null,
-    sourceCount: rawSummary?.sources.length ?? 0,
-    destinationCount: rawDestinations.length,
-    uniqueNameCount: rawMatchSummary.uniqueNameCount,
-    sources: rawSummary?.sources ?? [],
-    matchedUniqueNameCount: rawMatchSummary.matchedUniqueNameCount,
-    ambiguousNameCount: rawMatchSummary.ambiguousNameCount,
-    unmatchedNameCount: rawMatchSummary.unmatchedNameCount
-  },
-  overrides: {
-    overrideCount: overrides.length,
-    alignedCount: overrideResult.destinations.length,
-    unmatchedCount: overrideResult.unmatched.length
-  },
-  rawGenerated: {
-    promotedCount: rawResult.destinations.length,
-    skippedCount: rawResult.skipped.length,
-    bySource: countBy(rawResult.destinations, (item) => item.source),
-    byWeatherMode: countBy(rawResult.destinations, (item) => item.weatherMode)
-  },
-  output: {
-    destinationCount: destinations.length,
-    bySource: countBy(destinations, (item) => item.source),
-    byWeatherMode: countBy(destinations, (item) => item.weatherMode),
-    byCountry: countBy(destinations, (item) => item.countryCode)
-  },
-  unmatchedOverrides: overrideResult.unmatched,
-  rawSkippedExamples: rawResult.skipped.slice(0, 80),
-  rawAmbiguousExamples: rawMatchSummary.ambiguousExamples,
-  rawUnmatchedExamples: rawMatchSummary.unmatchedExamples
-};
+  const groupedCities = citiesByCountry(dataset.cities);
+  const rawResult = alignRawDestinations(rawDestinations, dataset.cities, groupedCities, buildCountryCodeByName(dataset.countries, countryNameAliases));
+  const overrideResult = alignOverrides(overrides, groupedCities);
+  const destinations = mergeDestinations([...rawResult.destinations, ...overrideResult.destinations]);
+  const rawMatchSummary = summarizeRawMatches(rawDestinations, dataset.cities);
+  const generatedAt = new Date().toISOString();
+  const version = generatedDataVersion('tourism-destinations', destinations);
+  const report: TourismDestinationReport = {
+    version,
+    generatedAt,
+    rawData: {
+      path: rawSummary?.outputDir ?? null,
+      generatedAt: rawSummary?.generatedAt ?? null,
+      sourceCount: rawSummary?.sources.length ?? 0,
+      destinationCount: rawDestinations.length,
+      uniqueNameCount: rawMatchSummary.uniqueNameCount,
+      sources: rawSummary?.sources ?? [],
+      matchedUniqueNameCount: rawMatchSummary.matchedUniqueNameCount,
+      ambiguousNameCount: rawMatchSummary.ambiguousNameCount,
+      unmatchedNameCount: rawMatchSummary.unmatchedNameCount
+    },
+    overrides: {
+      overrideCount: overrides.length,
+      alignedCount: overrideResult.destinations.length,
+      unmatchedCount: overrideResult.unmatched.length
+    },
+    rawGenerated: {
+      promotedCount: rawResult.destinations.length,
+      skippedCount: rawResult.skipped.length,
+      bySource: countBy(rawResult.destinations, (item) => item.source),
+      byWeatherMode: countBy(rawResult.destinations, (item) => item.weatherMode)
+    },
+    output: {
+      destinationCount: destinations.length,
+      bySource: countBy(destinations, (item) => item.source),
+      byWeatherMode: countBy(destinations, (item) => item.weatherMode),
+      byCountry: countBy(destinations, (item) => item.countryCode)
+    },
+    unmatchedOverrides: overrideResult.unmatched,
+    rawSkippedExamples: rawResult.skipped.slice(0, 80),
+    rawAmbiguousExamples: rawMatchSummary.ambiguousExamples,
+    rawUnmatchedExamples: rawMatchSummary.unmatchedExamples
+  };
 
-await mkdir(generatedDir, { recursive: true });
-await mkdir(reportDir, { recursive: true });
-await writeFile(outputPath, `${JSON.stringify(destinations, null, 2)}\n`);
-await writeFile(reportMarkdownPath, reportMarkdown(report));
+  await mkdir(generatedDir, { recursive: true });
+  await mkdir(reportDir, { recursive: true });
+  await rm(legacyOutputPath, { force: true });
+  await writeFile(outputPath, jsonLineContent(destinations));
+  await writeFile(reportMarkdownPath, reportMarkdown(report));
 
-console.log(`Generated ${destinations.length} tourism destinations from ${rawResult.destinations.length} raw promotions, ${overrides.length} overrides and ${rawDestinations.length} raw destinations (${version}).`);
+  console.log(`Generated ${destinations.length} tourism destinations from ${rawResult.destinations.length} raw promotions, ${overrides.length} overrides and ${rawDestinations.length} raw destinations (${version}).`);
 }

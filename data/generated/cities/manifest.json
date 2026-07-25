@@ -1,0 +1,16 @@
+{
+  "version": "cities-441e9e8b5428",
+  "cityProfilesVersion": "country-profiles-ea0a90834d71",
+  "counts": {
+    "countries": 245,
+    "admin1": 1812,
+    "admin2": 2705,
+    "cities": 3841
+  },
+  "files": {
+    "countries": "countries.jsonl",
+    "admin1": "admin1.jsonl",
+    "admin2": "admin2.jsonl",
+    "cities": "cities.jsonl"
+  }
+}

@@ -1,5 +1,5 @@
 /**
- * 文件说明: 读取按数据类型拆分的输入 seed，并提供生成脚本通用的国家分层和区域支持判断。
+ * 文件说明: 读取国家分档输入 seed，并提供生成脚本通用的国家分层和 GeoNames admin2 支持判断。
  * 对应文档: docs/specs/30-weather-coverage-design.md, data/input/README.md
  */
 import { readFile } from 'node:fs/promises';
@@ -8,30 +8,10 @@ import YAML from 'yaml';
 import type { CountryTier } from 'weather-core/types';
 import type { GeoNamesAdmin2, GeoNamesCity } from './geonames.js';
 
-export type CoverageOverrideSeed = {
+export type CountryTierSeed = {
   countryTierCountries: Array<{
     countryCode: string;
     countryTier: CountryTier;
-  }>;
-  admin2SupportOverrides: Array<{
-    countryCode: string;
-    reason: string;
-    includeAdmin1Codes?: string[];
-    includeAdmin2CodeRules?: Array<{
-      pattern: string;
-      lastTwoMin?: number;
-      lastTwoMax?: number;
-    }>;
-  }>;
-  boundaryLabelOverrides?: Array<{
-    countryCode: string;
-    admin1Code: string;
-    sourceAdcode: number;
-    name: {
-      zh: string;
-      en: string;
-    };
-    reason: string;
   }>;
 };
 
@@ -40,39 +20,23 @@ async function readSeedArray<T>(rootDir: string, fileName: string): Promise<T[]>
   return YAML.parse(await readFile(filePath, 'utf8')) as T[];
 }
 
-async function readCountryTierCountries(rootDir: string): Promise<CoverageOverrideSeed['countryTierCountries']> {
-  const rows = await readSeedArray<CoverageOverrideSeed['countryTierCountries'][number]>(rootDir, 'country-tier-countries.yml');
+async function readCountryTierCountries(rootDir: string): Promise<CountryTierSeed['countryTierCountries']> {
+  const rows = await readSeedArray<CountryTierSeed['countryTierCountries'][number]>(rootDir, 'country-tier-countries.yml');
   return rows.map((item) => ({
     countryCode: item.countryCode,
     countryTier: item.countryTier
   }));
 }
 
-export async function loadCoverageOverrides(rootDir: string): Promise<CoverageOverrideSeed> {
-  const [
-    countryTierCountries,
-    admin2SupportOverrides,
-    boundaryLabelOverrides
-  ] = await Promise.all([
-    readCountryTierCountries(rootDir),
-    readSeedArray<CoverageOverrideSeed['admin2SupportOverrides'][number]>(rootDir, 'admin2-support-overrides.yml'),
-    readSeedArray<NonNullable<CoverageOverrideSeed['boundaryLabelOverrides']>[number]>(rootDir, 'boundary-label-overrides.yml')
-  ]);
+export async function loadCountryTierSeed(rootDir: string): Promise<CountryTierSeed> {
+  const countryTierCountries = await readCountryTierCountries(rootDir);
   return {
-    countryTierCountries,
-    admin2SupportOverrides,
-    boundaryLabelOverrides
-  };
-}
-
-export async function loadAdmin2SupportOverrides(rootDir: string): Promise<Pick<CoverageOverrideSeed, 'admin2SupportOverrides'>> {
-  return {
-    admin2SupportOverrides: await readSeedArray<CoverageOverrideSeed['admin2SupportOverrides'][number]>(rootDir, 'admin2-support-overrides.yml')
+    countryTierCountries
   };
 }
 
 export function detailedCoverageCountry(
-  seed: CoverageOverrideSeed,
+  seed: CountryTierSeed,
   countryCode: string
 ): { detailedCoverage: 'admin1' | 'admin2' } | undefined {
   const item = seed.countryTierCountries.find((candidate) => candidate.countryCode === countryCode);
@@ -82,18 +46,14 @@ export function detailedCoverageCountry(
   };
 }
 
-export function isSupportedAdmin2(seed: CoverageOverrideSeed, admin2: GeoNamesAdmin2): boolean {
-  const override = seed.admin2SupportOverrides.find((item) => item.countryCode === admin2.countryCode);
-  if (!override) return true;
-  if (override.includeAdmin1Codes?.includes(admin2.admin1Code)) return true;
+const chinaDirectMunicipalityAdmin1Codes = new Set(['22', '23', '28', '33']);
 
-  return (override.includeAdmin2CodeRules ?? []).some((rule) => {
-    if (!new RegExp(rule.pattern).test(admin2.admin2Code)) return false;
-    const lastTwo = Number(admin2.admin2Code.slice(-2));
-    if (rule.lastTwoMin !== undefined && lastTwo < rule.lastTwoMin) return false;
-    if (rule.lastTwoMax !== undefined && lastTwo > rule.lastTwoMax) return false;
-    return true;
-  });
+export function isCodeLevelSupportedAdmin2(admin2: GeoNamesAdmin2): boolean {
+  if (admin2.countryCode !== 'CN') return false;
+  if (chinaDirectMunicipalityAdmin1Codes.has(admin2.admin1Code)) return true;
+  if (!/^[0-9]{4}$/.test(admin2.admin2Code)) return false;
+  const lastTwo = Number(admin2.admin2Code.slice(-2));
+  return lastTwo >= 1 && lastTwo <= 70;
 }
 
 function normalizeName(value: string): string {
@@ -122,17 +82,13 @@ function cityCanRepresentAdmin2(admin2: GeoNamesAdmin2, cities: GeoNamesCity[], 
 }
 
 export function buildSupportedAdmin2KeySet(
-  seed: CoverageOverrideSeed,
   admin2Items: GeoNamesAdmin2[],
   cities: GeoNamesCity[],
   supportedFeatureCodes: Set<string>
 ): Set<string> {
   return new Set(
     admin2Items.flatMap((admin2) => {
-      const override = seed.admin2SupportOverrides.find((item) => item.countryCode === admin2.countryCode);
-      const isIncluded = override
-        ? isSupportedAdmin2(seed, admin2) || cityCanRepresentAdmin2(admin2, cities, supportedFeatureCodes)
-        : cityCanRepresentAdmin2(admin2, cities, supportedFeatureCodes);
+      const isIncluded = isCodeLevelSupportedAdmin2(admin2) || cityCanRepresentAdmin2(admin2, cities, supportedFeatureCodes);
       if (isIncluded) {
         return [admin2Key(admin2)];
       }

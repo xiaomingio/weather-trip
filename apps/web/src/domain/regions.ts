@@ -28,6 +28,7 @@ const fixedRegionRank = new Map<RegionKey, number>([
 ]);
 
 const chinaRegionCountryCodes = new Set(['CN', 'HK', 'MO', 'TW']);
+const chinaDirectMunicipalityAdmin1Codes = new Set(['22', '23', '28', '33']);
 
 export const chinaCompanionRegionAdmin2Codes: Record<string, string> = {
   HK: '810000',
@@ -37,6 +38,10 @@ export const chinaCompanionRegionAdmin2Codes: Record<string, string> = {
 
 export function isChinaRegionCountryCode(countryCode: string | undefined): boolean {
   return Boolean(countryCode && chinaRegionCountryCodes.has(countryCode));
+}
+
+export function isChinaDirectMunicipalityAdmin1Code(admin1Code: string | undefined): boolean {
+  return Boolean(admin1Code && chinaDirectMunicipalityAdmin1Codes.has(admin1Code));
 }
 
 export function countryMatchesRegionCountry(cityCountryCode: string | undefined, regionCountryCode: string): boolean {

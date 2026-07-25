@@ -1,0 +1,417 @@
+{"id":"un-tourism-village:450","name":"Ordino","countryCode":"AD","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3039678}
+{"id":"un-tourism-village:594","name":"Masfout","countryCode":"AE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":291489,"notes":"根据 UN Tourism village 坐标映射到 Masfut，距离 1 公里"}
+{"id":"curated:bariloche","name":"San Carlos de Bariloche","countryCode":"AR","source":"curated","weatherMode":"standalone","priority":12,"geonameId":7647007}
+{"id":"curated:ushuaia","name":"Ushuaia","countryCode":"AR","source":"curated","weatherMode":"standalone","priority":14,"geonameId":3833367}
+{"id":"un-tourism-village:507","name":"Gaiman","countryCode":"AR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3855284}
+{"id":"un-tourism-village:592","name":"Maimara","countryCode":"AR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3845254}
+{"id":"un-tourism-village:573","name":"Pellegrini","countryCode":"AR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3841614}
+{"id":"un-tourism-village:558","name":"Trevelin","countryCode":"AR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3833675}
+{"id":"un-tourism-village:505","name":"Villa Tulumba","countryCode":"AR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3832607}
+{"id":"un-tourism-village:369","name":"Caspalá","countryCode":"AR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":3833219,"notes":"根据 UN Tourism village 坐标映射到 Valle Grande，距离 19 公里"}
+{"id":"un-tourism-village:451","name":"La Carolina","countryCode":"AR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":3837624,"notes":"根据 UN Tourism village 坐标映射到 San Francisco del Monte de Oro，距离 24 公里"}
+{"id":"curated:salzburg","name":"Salzburg","countryCode":"AT","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2766824}
+{"id":"curated:innsbruck","name":"Innsbruck","countryCode":"AT","source":"curated","weatherMode":"standalone","priority":16,"geonameId":2775220}
+{"id":"un-tourism-village:508","name":"Sankt Johann in Tirol","countryCode":"AT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2766636}
+{"id":"un-tourism-village:453","name":"Schladming","countryCode":"AT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2765961}
+{"id":"un-tourism-village:452","name":"St Anton am Arlberg","countryCode":"AT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2766757}
+{"id":"un-tourism-village:418","name":"Wagrain","countryCode":"AT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":11609343}
+{"id":"un-tourism-village:417","name":"Zell am See","countryCode":"AT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2760634}
+{"id":"un-tourism-village:370","name":"Kaunertal","countryCode":"AT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2779648,"notes":"根据 UN Tourism village 坐标映射到 Fendels，距离 6 公里"}
+{"id":"wikivoyage:18467","name":"Kununurra","countryCode":"AU","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2068110}
+{"id":"wikivoyage:22007","name":"Menzies","countryCode":"AU","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":8348180}
+{"id":"wikivoyage:5775","name":"Canberra","countryCode":"AU","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":2172517}
+{"id":"wikivoyage:12918","name":"Gold Coast","countryCode":"AU","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":2165087}
+{"id":"un-tourism-village:589","name":"Krupa na Vrbasu","countryCode":"BA","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3197112}
+{"id":"curated:bruges","name":"Brugge","countryCode":"BE","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2800931}
+{"id":"curated:foz-do-iguacu","name":"Foz do Iguacu","countryCode":"BR","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3463030}
+{"id":"curated:paraty","name":"Paraty","countryCode":"BR","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3455036}
+{"id":"wikivoyage:29724","name":"Rio de Janeiro","countryCode":"BR","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":3451190}
+{"id":"un-tourism-village:613","name":"Antonio Prado","countryCode":"BR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3471981}
+{"id":"un-tourism-village:371","name":"Testo Alto","countryCode":"BR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3453245,"notes":"根据 UN Tourism village 坐标映射到 Pomerode，距离 4 公里"}
+{"id":"curated:thimphu","name":"Thimphu","countryCode":"BT","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1252416}
+{"id":"curated:banff","name":"Banff","countryCode":"CA","source":"curated","weatherMode":"standalone","priority":12,"geonameId":5892532}
+{"id":"curated:whistler","name":"Whistler","countryCode":"CA","source":"curated","weatherMode":"standalone","priority":12,"geonameId":6180144}
+{"id":"curated:niagara-falls","name":"Niagara Falls","countryCode":"CA","source":"curated","weatherMode":"standalone","priority":14,"geonameId":6087892}
+{"id":"curated:quebec-city","name":"Quebec","countryCode":"CA","source":"curated","weatherMode":"standalone","priority":16,"geonameId":6325494}
+{"id":"wikivoyage:5608","name":"Calgary","countryCode":"CA","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":5913490}
+{"id":"curated:interlaken","name":"Interlaken","countryCode":"CH","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2660253}
+{"id":"curated:lucerne","name":"Luzern","countryCode":"CH","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2659811}
+{"id":"curated:zermatt","name":"Zermatt","countryCode":"CH","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2657928}
+{"id":"un-tourism-village:447","name":"Andermatt","countryCode":"CH","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2661750}
+{"id":"un-tourism-village:410","name":"Gruyeres","countryCode":"CH","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2660463}
+{"id":"un-tourism-village:446","name":"Murten/Morat","countryCode":"CH","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2659529}
+{"id":"un-tourism-village:409","name":"Saas-Fee","countryCode":"CH","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2658898}
+{"id":"un-tourism-village:499","name":"Morcote","countryCode":"CH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2659692,"notes":"根据 UN Tourism village 坐标映射到 Melide，距离 4 公里"}
+{"id":"un-tourism-village:530","name":"Romoos","countryCode":"CH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2660887,"notes":"根据 UN Tourism village 坐标映射到 Entlebuch，距离 3 公里"}
+{"id":"un-tourism-village:500","name":"Saint-Ursanne","countryCode":"CH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2661099,"notes":"根据 UN Tourism village 坐标映射到 Courgenay，距离 5 公里"}
+{"id":"un-tourism-village:556","name":"Splügen","countryCode":"CH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2660341,"notes":"根据 UN Tourism village 坐标映射到 Hinterrhein，距离 10 公里"}
+{"id":"un-tourism-village:610","name":"Valendas","countryCode":"CH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2660083,"notes":"根据 UN Tourism village 坐标映射到 Laax，距离 3 公里"}
+{"id":"un-tourism-village:408","name":"Valposchiavo","countryCode":"CH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2659165,"notes":"根据 UN Tourism village 坐标映射到 Poschiavo，距离 1 公里"}
+{"id":"curated:puerto-natales","name":"Puerto Natales","countryCode":"CL","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3874958}
+{"id":"curated:valparaiso","name":"Valparaiso","countryCode":"CL","source":"curated","weatherMode":"standalone","priority":14,"geonameId":3868626}
+{"id":"un-tourism-village:373","name":"Pica","countryCode":"CL","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3876353}
+{"id":"un-tourism-village:372","name":"Puerto Williams","countryCode":"CL","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3874926}
+{"id":"un-tourism-village:455","name":"Barrancas","countryCode":"CL","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3876256,"notes":"根据 UN Tourism village 坐标映射到 Pichilemu，距离 13 公里"}
+{"id":"un-tourism-village:456","name":"Pisco Elqui","countryCode":"CL","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3877770,"notes":"根据 UN Tourism village 坐标映射到 Paiguano，距离 11 公里"}
+{"id":"un-tourism-village:419","name":"Puqueldón","countryCode":"CL","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3894871,"notes":"根据 UN Tourism village 坐标映射到 Chonchi，距离 9 公里"}
+{"id":"un-tourism-village:510","name":"Ralco","countryCode":"CL","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":3874272,"notes":"根据 UN Tourism village 坐标映射到 Quilaco，距离 41 公里"}
+{"id":"curated:cn-dali","name":"Dali","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1814093}
+{"id":"curated:cn-lijiang","name":"Lijiang","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1813253}
+{"id":"curated:cn-huangshan","name":"Huangshan","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1792359}
+{"id":"curated:cn-jinghong","name":"Jinghong","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1785710,"notes":"西双版纳主城天气点"}
+{"id":"curated:cn-mangshi","name":"Mangshi","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1280623,"notes":"德宏州府和主要旅行天气点"}
+{"id":"curated:cn-shangri-la","name":"Shangri-La","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":7910932}
+{"id":"curated:cn-yangshuo","name":"Yangshuo","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1787323}
+{"id":"curated:cn-zhangjiajie","name":"Zhangjiajie","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1813171}
+{"id":"curated:cn-dunhuang","name":"Dunhuang","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1529531}
+{"id":"curated:cn-kashgar","name":"Kashgar","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1280849}
+{"id":"curated:cn-lhasa","name":"Lhasa","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1280737}
+{"id":"curated:cn-turpan","name":"Turpan","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1529114}
+{"id":"curated:cn-wuyishan","name":"Wuyishan","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1922014}
+{"id":"curated:cn-enshi","name":"Enshi","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1811720}
+{"id":"curated:cn-fenghuang","name":"Fenghuang","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":7304020}
+{"id":"curated:cn-jingdezhen","name":"Jingdezhen","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1805680}
+{"id":"curated:cn-leshan","name":"Leshan","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1804153}
+{"id":"curated:cn-wuzhen","name":"Wuzhen","countryCode":"CN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1790848}
+{"id":"wikivoyage:3187","name":"Beijing","countryCode":"CN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1816670}
+{"id":"wikivoyage:8902","name":"Dalian","countryCode":"CN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1814087}
+{"id":"wikivoyage:13558","name":"Guangzhou","countryCode":"CN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1809858}
+{"id":"wikivoyage:32332","name":"Shanghai","countryCode":"CN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1796236}
+{"id":"wikivoyage:35963","name":"Tianjin","countryCode":"CN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1792947}
+{"id":"wikivoyage:39707","name":"Wuhan","countryCode":"CN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1791247}
+{"id":"un-tourism-village:509","name":"Guanyang","countryCode":"CN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":1809720}
+{"id":"un-tourism-village:420","name":"Haiyang","countryCode":"CN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":8406681}
+{"id":"un-tourism-village:513","name":"Jinfeng","countryCode":"CN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":1790251}
+{"id":"un-tourism-village:557","name":"Taopingxiang","countryCode":"CN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":1793136}
+{"id":"un-tourism-village:457","name":"Xiajiang","countryCode":"CN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":1790696}
+{"id":"un-tourism-village:506","name":"Azheke","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1799795,"notes":"根据 UN Tourism village 坐标映射到 Nansha，距离 9 公里"}
+{"id":"un-tourism-village:575","name":"Digang Village","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1806535,"notes":"根据 UN Tourism village 坐标映射到 Huzhou，距离 14 公里"}
+{"id":"un-tourism-village:576","name":"Dongluo Village","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1784820,"notes":"根据 UN Tourism village 坐标映射到 Xinghua，距离 12 公里"}
+{"id":"un-tourism-village:582","name":"Jikayi Village","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1785258,"notes":"根据 UN Tourism village 坐标映射到 Zhanggu，距离 4 公里"}
+{"id":"un-tourism-village:421","name":"Jingzhu","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":8399052,"notes":"根据 UN Tourism village 坐标映射到 Fengping，距离 9 公里"}
+{"id":"un-tourism-village:511","name":"Shibadong","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1795060,"notes":"根据 UN Tourism village 坐标映射到 Shiqi，距离 6 公里"}
+{"id":"un-tourism-village:375","name":"Xidi","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1816316,"notes":"根据 UN Tourism village 坐标映射到 Biyang，距离 5 公里"}
+{"id":"un-tourism-village:460","name":"Zhagana","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":7343011,"notes":"根据 UN Tourism village 坐标映射到 Yiwa，距离 11 公里"}
+{"id":"un-tourism-village:514","name":"Yandunjiao","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":1786855,"notes":"根据 UN Tourism village 坐标映射到 Yatou，距离 19 公里"}
+{"id":"un-tourism-village:374","name":"Yucun","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":1803281,"notes":"根据 UN Tourism village 坐标映射到 Liquan Chengguanzhen，距离 15 公里"}
+{"id":"un-tourism-village:459","name":"Zhujiawan","countryCode":"CN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":6599420,"notes":"根据 UN Tourism village 坐标映射到 Hanbin，距离 36 公里"}
+{"id":"curated:cartagena","name":"Cartagena","countryCode":"CO","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3687238}
+{"id":"curated:santa-marta","name":"Santa Marta","countryCode":"CO","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3668605}
+{"id":"un-tourism-village:422","name":"Choachi","countryCode":"CO","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3686441}
+{"id":"un-tourism-village:461","name":"Filandia","countryCode":"CO","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3682473}
+{"id":"un-tourism-village:547","name":"Jardin","countryCode":"CO","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3680366}
+{"id":"un-tourism-village:597","name":"Murillo","countryCode":"CO","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3674166}
+{"id":"un-tourism-village:462","name":"Zapatoca","countryCode":"CO","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3665587}
+{"id":"un-tourism-village:550","name":"Pissouri","countryCode":"CY","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":146150}
+{"id":"un-tourism-village:548","name":"Kalopanagiotis","countryCode":"CY","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":146582,"notes":"根据 UN Tourism village 坐标映射到 Kakopetria，距离 7 公里"}
+{"id":"un-tourism-village:376","name":"Pano Lefkara","countryCode":"CY","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":146358,"notes":"根据 UN Tourism village 坐标映射到 Lythrodontas，距离 9 公里"}
+{"id":"wikivoyage:36626","name":"Travemuende","countryCode":"DE","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2821480}
+{"id":"wikivoyage:23467","name":"Munich","countryCode":"DE","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":2867714}
+{"id":"un-tourism-village:578","name":"Flößerstadt Schiltach","countryCode":"DE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2839195,"notes":"根据 UN Tourism village 坐标映射到 Schiltach，距离 0 公里"}
+{"id":"un-tourism-village:593","name":"Marktgemeinde Bad Hindelang","countryCode":"DE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2831088,"notes":"根据 UN Tourism village 坐标映射到 Sonthofen，距离 7 公里"}
+{"id":"wikivoyage:8182","name":"Copenhagen","countryCode":"DK","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2618425}
+{"id":"un-tourism-village:515","name":"Mindo","countryCode":"EC","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3654182}
+{"id":"un-tourism-village:464","name":"Oyacachi","countryCode":"EC","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3653679}
+{"id":"un-tourism-village:600","name":"Pacto","countryCode":"EC","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3653641}
+{"id":"un-tourism-village:541","name":"Tambo","countryCode":"EC","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3658078}
+{"id":"un-tourism-village:424","name":"Angochagua","countryCode":"EC","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3655233,"notes":"根据 UN Tourism village 坐标映射到 La Esperanza，距离 7 公里"}
+{"id":"un-tourism-village:554","name":"San Rafael de la Laguna","countryCode":"EC","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3653693,"notes":"根据 UN Tourism village 坐标映射到 Otavalo，距离 6 公里"}
+{"id":"un-tourism-village:423","name":"Aguarico","countryCode":"EC","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":3650626,"notes":"根据 UN Tourism village 坐标映射到 Tiputini，距离 21 公里"}
+{"id":"curated:luxor","name":"Luxor","countryCode":"EG","source":"curated","weatherMode":"standalone","priority":10,"geonameId":360502}
+{"id":"curated:hurghada","name":"Hurghada","countryCode":"EG","source":"curated","weatherMode":"standalone","priority":14,"geonameId":361291}
+{"id":"curated:aswan","name":"Aswan","countryCode":"EG","source":"curated","weatherMode":"standalone","priority":16,"geonameId":359792}
+{"id":"un-tourism-village:466","name":"Siwah","countryCode":"EG","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":347863}
+{"id":"un-tourism-village:465","name":"Dahshour","countryCode":"EG","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":361473,"notes":"根据 UN Tourism village 坐标映射到 Al Badrashayn，距离 6 公里"}
+{"id":"curated:granada","name":"Granada","countryCode":"ES","source":"curated","weatherMode":"standalone","priority":12,"geonameId":2517117}
+{"id":"curated:cordoba","name":"Cordoba","countryCode":"ES","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2519240}
+{"id":"curated:san-sebastian","name":"Donostia / San Sebastian","countryCode":"ES","source":"curated","weatherMode":"standalone","priority":14,"geonameId":3110044}
+{"id":"curated:seville","name":"Sevilla","countryCode":"ES","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2510911}
+{"id":"curated:ibiza","name":"Ibiza Town","countryCode":"ES","source":"curated","weatherMode":"standalone","priority":16,"geonameId":2516479}
+{"id":"curated:toledo","name":"Toledo","countryCode":"ES","source":"curated","weatherMode":"standalone","priority":18,"geonameId":2510409}
+{"id":"un-tourism-village:561","name":"Agaete","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2522423}
+{"id":"un-tourism-village:536","name":"Ainsa","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3130772}
+{"id":"un-tourism-village:444","name":"Alquezar","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3130248}
+{"id":"un-tourism-village:497","name":"Cantavieja","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3126503}
+{"id":"un-tourism-village:577","name":"Ezcaray","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3122709}
+{"id":"un-tourism-village:445","name":"Guadalupe","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2516970}
+{"id":"un-tourism-village:407","name":"Lekunberri","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3118608}
+{"id":"un-tourism-village:406","name":"Morella","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3116121}
+{"id":"un-tourism-village:517","name":"Mura","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3115881}
+{"id":"un-tourism-village:498","name":"Onate","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3115063}
+{"id":"un-tourism-village:496","name":"Siguenza","countryCode":"ES","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3108961}
+{"id":"un-tourism-village:443","name":"Rupit","countryCode":"ES","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3108266,"notes":"根据 UN Tourism village 坐标映射到 Tavertet，距离 5 公里"}
+{"id":"un-tourism-village:377","name":"Wonchi","countryCode":"ET","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":326308,"notes":"根据 UN Tourism village 坐标映射到 Wenji，距离 1 公里"}
+{"id":"un-tourism-village:425","name":"Choke Mountains Ecovillage","countryCode":"ET","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":339671,"notes":"根据 UN Tourism village 坐标映射到 Debre Werk'，距离 35 公里"}
+{"id":"un-tourism-village:467","name":"Lephis Village","countryCode":"ET","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":8643798,"notes":"根据 UN Tourism village 坐标映射到 Arsi Negele，距离 23 公里"}
+{"id":"wikivoyage:14463","name":"Helsinki","countryCode":"FI","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":658225}
+{"id":"curated:paris","name":"Paris","countryCode":"FR","source":"curated","weatherMode":"standalone","priority":8,"geonameId":2988507}
+{"id":"curated:nice","name":"Nice","countryCode":"FR","source":"curated","weatherMode":"standalone","priority":12,"geonameId":2990440}
+{"id":"wikivoyage:158794","name":"Bouzigues","countryCode":"FR","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":3030676}
+{"id":"curated:annecy","name":"Annecy","countryCode":"FR","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3037543}
+{"id":"curated:avignon","name":"Avignon","countryCode":"FR","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3035681}
+{"id":"curated:chamonix","name":"Chamonix-Mont-Blanc","countryCode":"FR","source":"curated","weatherMode":"standalone","priority":18,"geonameId":3027301}
+{"id":"curated:saint-malo","name":"Saint-Malo","countryCode":"FR","source":"curated","weatherMode":"standalone","priority":18,"geonameId":2978640}
+{"id":"un-tourism-village:603","name":"Pont-Croix","countryCode":"FR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2986267}
+{"id":"wikivoyage:11436","name":"Farnborough","countryCode":"GB","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2649672}
+{"id":"un-tourism-village:426","name":"Mestia","countryCode":"GE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":612987}
+{"id":"curated:santorini","name":"Fira","countryCode":"GR","source":"curated","weatherMode":"standalone","priority":12,"geonameId":252920,"notes":"圣托里尼主城天气点"}
+{"id":"curated:crete-heraklion","name":"Irakleion","countryCode":"GR","source":"curated","weatherMode":"standalone","priority":14,"geonameId":261745,"notes":"克里特北海岸天气点"}
+{"id":"curated:crete-chania","name":"Chania","countryCode":"GR","source":"curated","weatherMode":"standalone","priority":16,"geonameId":260114,"notes":"克里特西海岸天气点"}
+{"id":"un-tourism-village:537","name":"Anogeia","countryCode":"GR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":264806}
+{"id":"un-tourism-village:378","name":"Soufli","countryCode":"GR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":734187}
+{"id":"un-tourism-village:553","name":"San Juan del Obispo","countryCode":"GT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3589253,"notes":"根据 UN Tourism village 坐标映射到 Santa Maria de Jesus，距离 4 公里"}
+{"id":"wikivoyage:14902","name":"Hong Kong","countryCode":"HK","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1819729}
+{"id":"curated:dubrovnik","name":"Dubrovnik","countryCode":"HR","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3201047}
+{"id":"curated:split","name":"Split","countryCode":"HR","source":"curated","weatherMode":"standalone","priority":14,"geonameId":3190261}
+{"id":"un-tourism-village:463","name":"Slunj","countryCode":"HR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3190523}
+{"id":"un-tourism-village:585","name":"Kaštelir Labinci","countryCode":"HR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3198217,"notes":"根据 UN Tourism village 坐标映射到 Kastelir，距离 0 公里"}
+{"id":"wikivoyage:4964","name":"Budapest","countryCode":"HU","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":3054643}
+{"id":"un-tourism-village:580","name":"Hosszuheteny","countryCode":"HU","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3051280}
+{"id":"un-tourism-village:560","name":"Morahalom","countryCode":"HU","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3047922}
+{"id":"un-tourism-village:468","name":"Tokaj","countryCode":"HU","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":714659}
+{"id":"curated:ubud","name":"Ubud","countryCode":"ID","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1622846}
+{"id":"curated:yogyakarta","name":"Yogyakarta","countryCode":"ID","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1621177}
+{"id":"curated:denpasar","name":"Denpasar","countryCode":"ID","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1645528}
+{"id":"wikivoyage:16075","name":"Jakarta","countryCode":"ID","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1642911}
+{"id":"un-tourism-village:519","name":"Jatiluwih","countryCode":"ID","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":7038931,"notes":"根据 UN Tourism village 坐标映射到 Pohgending Kawan，距离 7 公里"}
+{"id":"un-tourism-village:380","name":"Nglanggeran","countryCode":"ID","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1999251,"notes":"根据 UN Tourism village 坐标映射到 Karangnongko，距离 8 公里"}
+{"id":"un-tourism-village:470","name":"Penglipuran","countryCode":"ID","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":7376148,"notes":"根据 UN Tourism village 坐标映射到 Sulahan，距离 1 公里"}
+{"id":"un-tourism-village:520","name":"Wukirsari","countryCode":"ID","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1627357,"notes":"根据 UN Tourism village 坐标映射到 Sewon，距离 7 公里"}
+{"id":"un-tourism-village:601","name":"Pemuteran","countryCode":"ID","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":11185371,"notes":"根据 UN Tourism village 坐标映射到 Jembrana Subdistrict，距离 20 公里"}
+{"id":"wikivoyage:35523","name":"Tel Aviv","countryCode":"IL","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":293397}
+{"id":"un-tourism-village:428","name":"Kfar Kama","countryCode":"IL","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":294611,"notes":"根据 UN Tourism village 坐标映射到 Kafr Kamma，距离 0 公里"}
+{"id":"un-tourism-village:598","name":"Neot Semadar","countryCode":"IL","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":295536,"notes":"根据 UN Tourism village 坐标映射到 Be'er Ora，距离 38 公里"}
+{"id":"curated:agra","name":"Agra","countryCode":"IN","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1279259}
+{"id":"curated:jaipur","name":"Jaipur","countryCode":"IN","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1269515}
+{"id":"curated:varanasi","name":"Varanasi","countryCode":"IN","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1253405}
+{"id":"curated:goa","name":"Panaji","countryCode":"IN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1260607,"notes":"果阿主城天气点"}
+{"id":"curated:udaipur","name":"Udaipur","countryCode":"IN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1253986}
+{"id":"wikivoyage:357","name":"Ahmedabad","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1279233}
+{"id":"wikivoyage:2597","name":"Bengaluru","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1277333}
+{"id":"wikivoyage:6989","name":"Chennai","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1264527}
+{"id":"wikivoyage:153457","name":"Delhi","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1273294}
+{"id":"wikivoyage:17962","name":"Kolkata","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1275004}
+{"id":"wikivoyage:23443","name":"Mumbai","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1275339}
+{"id":"wikivoyage:28716","name":"Pune","countryCode":"IN","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1259229}
+{"id":"un-tourism-village:379","name":"Pochampally","countryCode":"IN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1445396,"notes":"根据 UN Tourism village 坐标映射到 Pochampalli，距离 0 公里"}
+{"id":"un-tourism-village:584","name":"Kandelous","countryCode":"IR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":128862,"notes":"根据 UN Tourism village 坐标映射到 Kandolus，距离 0 公里"}
+{"id":"un-tourism-village:471","name":"Kandovan","countryCode":"IR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":135303,"notes":"根据 UN Tourism village 坐标映射到 Esfanjan，距离 14 公里"}
+{"id":"un-tourism-village:607","name":"Soheili","countryCode":"IR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":113650,"notes":"根据 UN Tourism village 坐标映射到 Tabl，距离 6 公里"}
+{"id":"un-tourism-village:543","name":"Esfahak","countryCode":"IR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":136301,"notes":"根据 UN Tourism village 坐标映射到 Deyhuk，距离 32 公里"}
+{"id":"un-tourism-village:605","name":"Shafiabad","countryCode":"IR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":115960,"notes":"根据 UN Tourism village 坐标映射到 Shahdad，距离 16 公里"}
+{"id":"curated:reykjavik","name":"Reykjavik","countryCode":"IS","source":"curated","weatherMode":"standalone","priority":10,"geonameId":3413829}
+{"id":"curated:florence","name":"Florence","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":10,"geonameId":3176959}
+{"id":"curated:venice","name":"Venice","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":10,"geonameId":3164603}
+{"id":"curated:verona","name":"Verona","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3164527}
+{"id":"curated:amalfi","name":"Amalfi","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":18,"geonameId":3183130}
+{"id":"curated:positano","name":"Positano","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":18,"geonameId":3170069}
+{"id":"curated:siena","name":"Siena","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":18,"geonameId":3166548}
+{"id":"curated:sorrento","name":"Sorrento","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":18,"geonameId":3166350}
+{"id":"curated:san-gimignano","name":"San Gimignano","countryCode":"IT","source":"curated","weatherMode":"standalone","priority":20,"geonameId":3168231}
+{"id":"un-tourism-village:566","name":"Arqua Petrarca","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3182805}
+{"id":"un-tourism-village:567","name":"Asolo","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3182732}
+{"id":"un-tourism-village:571","name":"Bellano","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3182227}
+{"id":"un-tourism-village:430","name":"Isola del Giglio","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":6534705}
+{"id":"un-tourism-village:472","name":"Lerici","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3174856}
+{"id":"un-tourism-village:521","name":"San Casciano dei Bagni","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3168499}
+{"id":"un-tourism-village:381","name":"San Ginesio","countryCode":"IT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3168318}
+{"id":"un-tourism-village:429","name":"Sauris Zahre","countryCode":"IT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3167050,"notes":"根据 UN Tourism village 坐标映射到 Sauris di Sotto，距离 0 公里"}
+{"id":"un-tourism-village:477","name":"Al Sela","countryCode":"JO","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":249842,"notes":"根据 UN Tourism village 坐标映射到 Busayra，距离 5 公里"}
+{"id":"un-tourism-village:599","name":"North Azraq","countryCode":"JO","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":250095,"notes":"根据 UN Tourism village 坐标映射到 Al Azraq ash Shamali，距离 0 公里"}
+{"id":"un-tourism-village:431","name":"Umm Qais","countryCode":"JO","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":246202,"notes":"根据 UN Tourism village 坐标映射到 Umm Qays，距离 1 公里"}
+{"id":"curated:kyoto","name":"Kyoto","countryCode":"JP","source":"curated","weatherMode":"standalone","priority":10,"geonameId":1857910}
+{"id":"wikivoyage:14709","name":"Hiroshima","countryCode":"JP","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":1862415}
+{"id":"wikivoyage:25764","name":"Okayama","countryCode":"JP","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":1854383}
+{"id":"curated:nara","name":"Nara-shi","countryCode":"JP","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1855612}
+{"id":"wikivoyage:26155","name":"Osaka","countryCode":"JP","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1853909}
+{"id":"wikivoyage:36215","name":"Tokyo","countryCode":"JP","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1850147}
+{"id":"curated:hakone","name":"Hakone","countryCode":"JP","source":"curated","weatherMode":"standalone","priority":22,"geonameId":1862555}
+{"id":"curated:nikko","name":"Nikko","countryCode":"JP","source":"curated","weatherMode":"standalone","priority":22,"geonameId":1855395}
+{"id":"curated:kamakura","name":"Kamakura","countryCode":"JP","source":"curated","weatherMode":"standalone","priority":24,"geonameId":1860672}
+{"id":"curated:takayama","name":"Takayama","countryCode":"JP","source":"curated","weatherMode":"standalone","priority":24,"geonameId":1850892}
+{"id":"un-tourism-village:523","name":"Amagi","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":1865375}
+{"id":"un-tourism-village:568","name":"Asuka","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":1864967}
+{"id":"un-tourism-village:473","name":"Biei","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2130531}
+{"id":"un-tourism-village:476","name":"Hakuba","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":8630153}
+{"id":"un-tourism-village:606","name":"Horikoshi","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":6417759}
+{"id":"un-tourism-village:383","name":"Miyama","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":11612459}
+{"id":"un-tourism-village:522","name":"Mizusawa","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2114101}
+{"id":"un-tourism-village:382","name":"Niseko","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":11776771}
+{"id":"un-tourism-village:474","name":"Shirakawa","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":11612472}
+{"id":"un-tourism-village:609","name":"Sukayama","countryCode":"JP","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2110954}
+{"id":"un-tourism-village:588","name":"Koyasan","countryCode":"JP","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":6417596,"notes":"根据 UN Tourism village 坐标映射到 Koya，距离 3 公里"}
+{"id":"un-tourism-village:475","name":"Oku-Matsushima","countryCode":"JP","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":6822189,"notes":"根据 UN Tourism village 坐标映射到 Higashimatsushima，距离 4 公里"}
+{"id":"un-tourism-village:384","name":"Olergesailie","countryCode":"KE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":191318,"notes":"根据 UN Tourism village 坐标映射到 Kiserian，距离 32 公里"}
+{"id":"curated:siem-reap","name":"Siem Reap","countryCode":"KH","source":"curated","weatherMode":"standalone","priority":10,"geonameId":1822214}
+{"id":"wikivoyage:32160","name":"Seoul","countryCode":"KR","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1835848}
+{"id":"un-tourism-village:495","name":"Mosan","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1844509,"notes":"根据 UN Tourism village 坐标映射到 Hancheolli，距离 8 公里"}
+{"id":"un-tourism-village:596","name":"Muju Village","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1832440,"notes":"根据 UN Tourism village 坐标映射到 Yonghwa，距离 10 公里"}
+{"id":"un-tourism-village:399","name":"Purple Island","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":11718119,"notes":"根据 UN Tourism village 坐标映射到 Palgeum，距离 9 公里"}
+{"id":"un-tourism-village:439","name":"Pyeongsa-ri","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":11841016,"notes":"根据 UN Tourism village 坐标映射到 Jeongnyang，距离 14 公里"}
+{"id":"un-tourism-village:400","name":"Ungok Village","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":11888965,"notes":"根据 UN Tourism village 坐标映射到 Simwon，距离 14 公里"}
+{"id":"un-tourism-village:612","name":"Yangsuri Village","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1897007,"notes":"根据 UN Tourism village 坐标映射到 Hanam，距离 10 公里"}
+{"id":"un-tourism-village:494","name":"Dongbaek","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":6621166,"notes":"根据 UN Tourism village 坐标映射到 Seogwipo，距离 19 公里"}
+{"id":"un-tourism-village:493","name":"Sehwa","countryCode":"KR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":1883990,"notes":"根据 UN Tourism village 坐标映射到 Ponggae-dong，距离 25 公里"}
+{"id":"curated:luang-prabang","name":"Luang Prabang","countryCode":"LA","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1655559}
+{"id":"un-tourism-village:386","name":"Bkassine","countryCode":"LB","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":273360,"notes":"根据 UN Tourism village 坐标映射到 Jezzine，距离 3 公里"}
+{"id":"un-tourism-village:479","name":"Douma","countryCode":"LB","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":278936,"notes":"根据 UN Tourism village 坐标映射到 Amioun，距离 11 公里"}
+{"id":"un-tourism-village:602","name":"Plateliai","countryCode":"LT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":595726}
+{"id":"wikivoyage:29689","name":"Riga","countryCode":"LV","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":456172}
+{"id":"curated:marrakesh","name":"Marrakesh","countryCode":"MA","source":"curated","weatherMode":"standalone","priority":10,"geonameId":2542997}
+{"id":"curated:fes","name":"Fes","countryCode":"MA","source":"curated","weatherMode":"standalone","priority":14,"geonameId":2548885}
+{"id":"curated:chefchaouen","name":"Chefchaouene","countryCode":"MA","source":"curated","weatherMode":"standalone","priority":18,"geonameId":2553455}
+{"id":"un-tourism-village:434","name":"Ksar Elkhorbat","countryCode":"MA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2527925,"notes":"根据 UN Tourism village 坐标映射到 Tinajdad，距离 6 公里"}
+{"id":"un-tourism-village:435","name":"Moulay Bouzerktoune","countryCode":"MA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":2549263,"notes":"根据 UN Tourism village 坐标映射到 Essaouira，距离 17 公里"}
+{"id":"un-tourism-village:392","name":"Sidi Kaouki","countryCode":"MA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":2569052,"notes":"根据 UN Tourism village 坐标映射到 Smimou，距离 18 公里"}
+{"id":"un-tourism-village:483","name":"Văleni","countryCode":"MD","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":617926,"notes":"根据 UN Tourism village 坐标映射到 Cislita-Prut，距离 13 公里"}
+{"id":"curated:kotor","name":"Kotor","countryCode":"ME","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3197538}
+{"id":"wikivoyage:33014","name":"Skopje","countryCode":"MK","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":785842}
+{"id":"curated:mauritius","name":"Port Louis","countryCode":"MU","source":"curated","weatherMode":"standalone","priority":12,"geonameId":934154}
+{"id":"un-tourism-village:546","name":"Grand Baie","countryCode":"MU","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":934482}
+{"id":"un-tourism-village:579","name":"Grande Riviere Sud Est","countryCode":"MU","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":934475}
+{"id":"un-tourism-village:551","name":"Roches Noire","countryCode":"MU","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":934085}
+{"id":"un-tourism-village:388","name":"Le Morne","countryCode":"MU","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":934198,"notes":"根据 UN Tourism village 坐标映射到 Petite Case Noyale，距离 6 公里"}
+{"id":"un-tourism-village:389","name":"Old Grand Port","countryCode":"MU","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":934705,"notes":"根据 UN Tourism village 坐标映射到 Bois des Amourettes，距离 2 公里"}
+{"id":"curated:cabo-san-lucas","name":"Cabo San Lucas","countryCode":"MX","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3985710}
+{"id":"curated:cancun","name":"Cancun","countryCode":"MX","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3531673}
+{"id":"curated:oaxaca","name":"Oaxaca","countryCode":"MX","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3522507}
+{"id":"curated:san-miguel-de-allende","name":"San Miguel de Allende","countryCode":"MX","source":"curated","weatherMode":"standalone","priority":16,"geonameId":3985344}
+{"id":"wikivoyage:22140","name":"Mexico City","countryCode":"MX","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":3530597}
+{"id":"wikivoyage:36006","name":"Tijuana","countryCode":"MX","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":3981609}
+{"id":"un-tourism-village:432","name":"Creel","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":4012593}
+{"id":"un-tourism-village:540","name":"Cuatro Cienegas de Carranza","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":4012421}
+{"id":"un-tourism-village:390","name":"Cuetzalan","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3529932}
+{"id":"un-tourism-village:433","name":"El Fuerte","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":4009788}
+{"id":"un-tourism-village:480","name":"Higueron","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3761664}
+{"id":"un-tourism-village:391","name":"Mani","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3523619}
+{"id":"un-tourism-village:481","name":"Omitlan de Juarez","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3522335}
+{"id":"un-tourism-village:518","name":"Palizada","countryCode":"MX","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3522156}
+{"id":"un-tourism-village:539","name":"Capulálpam de Méndez","countryCode":"MX","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3526665,"notes":"根据 UN Tourism village 坐标映射到 Ixtlan de Juarez，距离 5 公里"}
+{"id":"un-tourism-village:482","name":"Jalpa de Cánovas","countryCode":"MX","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":4007349,"notes":"根据 UN Tourism village 坐标映射到 El Tecolote，距离 6 公里"}
+{"id":"curated:georgetown-my","name":"George Town","countryCode":"MY","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1735106}
+{"id":"curated:langkawi","name":"Kuah","countryCode":"MY","source":"curated","weatherMode":"standalone","priority":18,"notes":"兰卡威主城天气点"}
+{"id":"wikivoyage:18348","name":"Kuala Lumpur","countryCode":"MY","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1735161}
+{"id":"un-tourism-village:387","name":"Kampung Batu Puteh","countryCode":"MY","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1734854,"notes":"根据 UN Tourism village 坐标映射到 Rembau，距离 7 公里"}
+{"id":"wikivoyage:134","name":"Abuja","countryCode":"NG","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":2352778}
+{"id":"wikivoyage:14671","name":"Hilversum","countryCode":"NL","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2754064}
+{"id":"curated:pokhara","name":"Pokhara","countryCode":"NP","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1282898}
+{"id":"wikivoyage:17083","name":"Kathmandu","countryCode":"NP","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1283240}
+{"id":"curated:queenstown","name":"Queenstown","countryCode":"NZ","source":"curated","weatherMode":"standalone","priority":12,"geonameId":6204696}
+{"id":"curated:rotorua","name":"Rotorua","countryCode":"NZ","source":"curated","weatherMode":"standalone","priority":16,"geonameId":6241325}
+{"id":"wikivoyage:1930","name":"Auckland","countryCode":"NZ","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":2193733}
+{"id":"un-tourism-village:393","name":"Misfat Al Abriyeen","countryCode":"OM","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":288899,"notes":"根据 UN Tourism village 坐标映射到 Bahla'，距离 18 公里"}
+{"id":"un-tourism-village:524","name":"Portobelo","countryCode":"PA","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3702577}
+{"id":"un-tourism-village:542","name":"El Valle de Antón","countryCode":"PA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3705238,"notes":"根据 UN Tourism village 坐标映射到 Los Llanitos，距离 4 公里"}
+{"id":"curated:cusco","name":"Cusco","countryCode":"PE","source":"curated","weatherMode":"standalone","priority":10,"geonameId":3941584}
+{"id":"curated:arequipa","name":"Arequipa","countryCode":"PE","source":"curated","weatherMode":"standalone","priority":14,"geonameId":3947322}
+{"id":"un-tourism-village:486","name":"Chacas","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3698545}
+{"id":"un-tourism-village:525","name":"Huancayo","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3939459}
+{"id":"un-tourism-village:436","name":"Lamas","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3695757}
+{"id":"un-tourism-village:395","name":"Ollantaytambo","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3934055}
+{"id":"un-tourism-village:487","name":"Paucartambo","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":12070605}
+{"id":"un-tourism-village:488","name":"Pozuzo","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3931820}
+{"id":"un-tourism-village:528","name":"Quinua","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3930736}
+{"id":"un-tourism-village:529","name":"Sibayo","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3928695}
+{"id":"un-tourism-village:484","name":"Taquile","countryCode":"PE","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3927803}
+{"id":"un-tourism-village:485","name":"Chavín de Huantar","countryCode":"PE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3692396,"notes":"根据 UN Tourism village 坐标映射到 San Marcos，距离 8 公里"}
+{"id":"un-tourism-village:526","name":"Leymebamba","countryCode":"PE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3694609,"notes":"根据 UN Tourism village 坐标映射到 Montevideo，距离 10 公里"}
+{"id":"un-tourism-village:527","name":"Pueblo de Maras","countryCode":"PE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3935375,"notes":"根据 UN Tourism village 坐标映射到 Maras，距离 0 公里"}
+{"id":"un-tourism-village:437","name":"Raqchi","countryCode":"PE","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3953732,"notes":"根据 UN Tourism village 坐标映射到 Queromarca，距离 2 公里"}
+{"id":"wikivoyage:28987","name":"Quezon City","countryCode":"PH","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1692192}
+{"id":"un-tourism-village:396","name":"Bojo","countryCode":"PH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1731302,"notes":"根据 UN Tourism village 坐标映射到 Aloguinsan，距离 3 公里"}
+{"id":"curated:porto","name":"Porto","countryCode":"PT","source":"curated","weatherMode":"standalone","priority":12,"geonameId":2735943}
+{"id":"wikivoyage:5591","name":"Caldas da Rainha","countryCode":"PT","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2270437}
+{"id":"curated:funchal","name":"Funchal","countryCode":"PT","source":"curated","weatherMode":"standalone","priority":16,"geonameId":2267827}
+{"id":"curated:sintra","name":"Sintra","countryCode":"PT","source":"curated","weatherMode":"standalone","priority":16,"geonameId":2262912}
+{"id":"un-tourism-village:492","name":"Ericeira","countryCode":"PT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2268563}
+{"id":"un-tourism-village:591","name":"Loriga","countryCode":"PT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2738210}
+{"id":"un-tourism-village:491","name":"Manteigas","countryCode":"PT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2737936}
+{"id":"un-tourism-village:595","name":"Mertola","countryCode":"PT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2266442}
+{"id":"un-tourism-village:549","name":"Obidos","countryCode":"PT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":2265485}
+{"id":"un-tourism-village:555","name":"Santa Cruz da Graciosa","countryCode":"PT","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3372644}
+{"id":"un-tourism-village:438","name":"Castelo Novo","countryCode":"PT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2739187,"notes":"根据 UN Tourism village 坐标映射到 Fundao，距离 7 公里"}
+{"id":"un-tourism-village:398","name":"Castelo Rodrigo","countryCode":"PT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2739589,"notes":"根据 UN Tourism village 坐标映射到 Figueira de Castelo Rodrigo，距离 2 公里"}
+{"id":"un-tourism-village:397","name":"Cumeada","countryCode":"PT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2263974,"notes":"根据 UN Tourism village 坐标映射到 Reguengos de Monsaraz，距离 8 公里"}
+{"id":"un-tourism-village:489","name":"Sortelha","countryCode":"PT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":2734925,"notes":"根据 UN Tourism village 坐标映射到 Sabugal，距离 10 公里"}
+{"id":"un-tourism-village:490","name":"Vila da Madalena","countryCode":"PT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3372908,"notes":"根据 UN Tourism village 坐标映射到 Madalena，距离 1 公里"}
+{"id":"un-tourism-village:611","name":"Vila Nogueira de Azeitão","countryCode":"PT","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":11808241,"notes":"根据 UN Tourism village 坐标映射到 Azeitao，距离 0 公里"}
+{"id":"un-tourism-village:394","name":"San Cosme y Damian","countryCode":"PY","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3437107}
+{"id":"un-tourism-village:440","name":"Rasinari","countryCode":"RO","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":669156}
+{"id":"un-tourism-village:403","name":"Mokra Gora","countryCode":"RS","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3300709,"notes":"根据 UN Tourism village 坐标映射到 Durici，距离 10 公里"}
+{"id":"wikivoyage:34011","name":"Staraya Russa","countryCode":"RU","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":489088}
+{"id":"un-tourism-village:402","name":"Nkotsi Village","countryCode":"RW","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":201521,"notes":"根据 UN Tourism village 坐标映射到 Musanze，距离 7 公里"}
+{"id":"un-tourism-village:441","name":"AlUla Old Town","countryCode":"SA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":108841,"notes":"根据 UN Tourism village 坐标映射到 Al-`Ula，距离 2 公里"}
+{"id":"un-tourism-village:385","name":"Rijal Alma'a","countryCode":"SA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":110690,"notes":"根据 UN Tourism village 坐标映射到 Abha，距离 25 公里"}
+{"id":"curated:seychelles","name":"Victoria","countryCode":"SC","source":"curated","weatherMode":"standalone","priority":12,"geonameId":241131}
+{"id":"wikivoyage:37332","name":"Uppsala","countryCode":"SE","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":2666199}
+{"id":"wikivoyage:34294","name":"Stockholm","countryCode":"SE","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":2673730}
+{"id":"wikivoyage:32831","name":"Singapore","countryCode":"SG","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1880252}
+{"id":"curated:bled","name":"Bled","countryCode":"SI","source":"curated","weatherMode":"standalone","priority":12,"geonameId":3203925}
+{"id":"un-tourism-village:405","name":"Solcava","countryCode":"SI","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":3190360}
+{"id":"un-tourism-village:442","name":"Bohinj","countryCode":"SI","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3203808,"notes":"根据 UN Tourism village 坐标映射到 Bohinjska Bistrica，距离 6 公里"}
+{"id":"un-tourism-village:404","name":"Radovlijca","countryCode":"SI","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":3192063,"notes":"根据 UN Tourism village 坐标映射到 Radovljica，距离 0 公里"}
+{"id":"curated:chiang-mai","name":"Chiang Mai","countryCode":"TH","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1153671}
+{"id":"curated:phuket","name":"Phuket","countryCode":"TH","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1151254}
+{"id":"curated:pattaya","name":"Pattaya","countryCode":"TH","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1614295}
+{"id":"curated:krabi","name":"Krabi","countryCode":"TH","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1152633}
+{"id":"wikivoyage:2613","name":"Bangkok","countryCode":"TH","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1609350}
+{"id":"un-tourism-village:538","name":"Bo Suak","countryCode":"TH","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":1608452,"notes":"根据 UN Tourism village 坐标映射到 Nan，距离 17 公里"}
+{"id":"wikivoyage:15886","name":"Istanbul","countryCode":"TR","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":745044}
+{"id":"un-tourism-village:562","name":"Akyaka","countryCode":"TR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":752297}
+{"id":"un-tourism-village:448","name":"Birgi","countryCode":"TR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":321059}
+{"id":"un-tourism-village:411","name":"Tarakli","countryCode":"TR","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":739107}
+{"id":"un-tourism-village:564","name":"Anıtlı","countryCode":"TR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":303353,"notes":"根据 UN Tourism village 坐标映射到 Ortaca，距离 5 公里"}
+{"id":"un-tourism-village:570","name":"Barbaros","countryCode":"TR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":298178,"notes":"根据 UN Tourism village 坐标映射到 Uzunkuyu，距离 6 公里"}
+{"id":"un-tourism-village:583","name":"Kale Üçağız","countryCode":"TR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":295781,"notes":"根据 UN Tourism village 坐标映射到 Demre，距离 13 公里"}
+{"id":"un-tourism-village:412","name":"Mustafapaşa","countryCode":"TR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":298326,"notes":"根据 UN Tourism village 坐标映射到 UErguep，距离 5 公里"}
+{"id":"un-tourism-village:531","name":"Ormana","countryCode":"TR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":322817,"notes":"根据 UN Tourism village 坐标映射到 Ibradi，距离 3 公里"}
+{"id":"un-tourism-village:501","name":"Şirince","countryCode":"TR","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":301256,"notes":"根据 UN Tourism village 坐标映射到 Selcuk，距离 6 公里"}
+{"id":"curated:new-taipei","name":"New Taipei City","countryCode":"TW","source":"curated","weatherMode":"standalone","priority":14,"geonameId":12908892}
+{"id":"curated:taichung","name":"Taichung","countryCode":"TW","source":"curated","weatherMode":"standalone","priority":14,"geonameId":1668399}
+{"id":"wikivoyage:35091","name":"Taipei","countryCode":"TW","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":1668341}
+{"id":"curated:zanzibar","name":"Zanzibar","countryCode":"TZ","source":"curated","weatherMode":"standalone","priority":12,"geonameId":148730}
+{"id":"curated:arusha","name":"Arusha","countryCode":"TZ","source":"curated","weatherMode":"standalone","priority":14,"geonameId":161325}
+{"id":"un-tourism-village:587","name":"Kolochava","countryCode":"UA","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":705433}
+{"id":"un-tourism-village:532","name":"Vorokhta","countryCode":"UA","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":689037}
+{"id":"un-tourism-village:608","name":"Synevyrska Polyana","countryCode":"UA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":693789,"notes":"根据 UN Tourism village 坐标映射到 Synevyrska Poliana，距离 0 公里"}
+{"id":"un-tourism-village:533","name":"Urych","countryCode":"UA","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":693679,"notes":"根据 UN Tourism village 坐标映射到 Skhidnytsia，距离 6 公里"}
+{"id":"un-tourism-village:552","name":"Ruboni","countryCode":"UG","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":233315,"notes":"根据 UN Tourism village 坐标映射到 Hima，距离 15 公里"}
+{"id":"curated:honolulu","name":"Honolulu","countryCode":"US","source":"curated","weatherMode":"standalone","priority":10,"geonameId":5856195}
+{"id":"curated:las-vegas","name":"Las Vegas","countryCode":"US","source":"curated","weatherMode":"standalone","priority":10,"geonameId":5506956}
+{"id":"curated:orlando","name":"Orlando","countryCode":"US","source":"curated","weatherMode":"standalone","priority":10,"geonameId":4167147}
+{"id":"wikivoyage:1241","name":"Ann Arbor","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":4984247}
+{"id":"wikivoyage:5014","name":"Buffalo","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":5110629}
+{"id":"wikivoyage:7106","name":"Chicago","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":4887398}
+{"id":"curated:jackson","name":"Jackson","countryCode":"US","source":"curated","weatherMode":"standalone","priority":14,"geonameId":5828648}
+{"id":"curated:key-west","name":"Key West","countryCode":"US","source":"curated","weatherMode":"standalone","priority":14,"geonameId":4160812}
+{"id":"curated:moab","name":"Moab","countryCode":"US","source":"curated","weatherMode":"standalone","priority":14,"geonameId":5543307}
+{"id":"curated:sedona","name":"Sedona","countryCode":"US","source":"curated","weatherMode":"standalone","priority":14,"geonameId":5313667}
+{"id":"wikivoyage:38583","name":"Washington","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":14,"geonameId":4140963}
+{"id":"curated:bar-harbor","name":"Bar Harbor","countryCode":"US","source":"curated","weatherMode":"standalone","priority":16,"geonameId":4957320}
+{"id":"curated:gatlinburg","name":"Gatlinburg","countryCode":"US","source":"curated","weatherMode":"standalone","priority":16,"geonameId":4624443}
+{"id":"curated:miami-beach","name":"Miami Beach","countryCode":"US","source":"curated","weatherMode":"standalone","priority":16,"geonameId":4164143}
+{"id":"wikivoyage:1838","name":"Atlanta","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4180439}
+{"id":"wikivoyage:1981","name":"Austin","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4671654}
+{"id":"wikivoyage:2500","name":"Baltimore","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4347778}
+{"id":"wikivoyage:6866","name":"Charlotte","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4460243}
+{"id":"wikivoyage:7575","name":"Cincinnati","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4508722}
+{"id":"wikivoyage:8015","name":"Columbus","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4509177}
+{"id":"wikivoyage:9384","name":"Detroit","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4990729}
+{"id":"wikivoyage:22453","name":"Minneapolis","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":5037649}
+{"id":"wikivoyage:24313","name":"New Orleans","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4335045}
+{"id":"wikivoyage:21171","name":"New York City","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":5128581}
+{"id":"wikivoyage:25786","name":"Oklahoma City","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":4544349}
+{"id":"wikivoyage:27753","name":"Pittsburgh","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":5206379}
+{"id":"wikivoyage:28941","name":"Queens","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":5133273}
+{"id":"wikivoyage:31986","name":"Seattle","countryCode":"US","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":5809844}
+{"id":"un-tourism-village:502","name":"Sentob","countryCode":"UZ","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":34,"mappedGeonameId":12127991,"notes":"根据 UN Tourism village 坐标映射到 Qo'shrabod，距离 41 公里"}
+{"id":"curated:hoi-an","name":"Hoi An","countryCode":"VN","source":"curated","weatherMode":"standalone","priority":12,"geonameId":1580541}
+{"id":"curated:da-lat","name":"Da Lat","countryCode":"VN","source":"curated","weatherMode":"standalone","priority":16,"geonameId":1584071}
+{"id":"curated:sa-pa","name":"Sa Pa","countryCode":"VN","source":"curated","weatherMode":"standalone","priority":18,"geonameId":1568043}
+{"id":"un-tourism-village:503","name":"Tan Hoa","countryCode":"VN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":9113580}
+{"id":"un-tourism-village:534","name":"Tra Que Vegetable Village","countryCode":"VN","source":"un-tourism-village","weatherMode":"standalone","priority":28,"geonameId":11790693}
+{"id":"un-tourism-village:590","name":"Lô Lô Chải","countryCode":"VN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1574706,"notes":"根据 UN Tourism village 坐标映射到 Thi Tran Meo Vac，距离 1 公里"}
+{"id":"un-tourism-village:604","name":"Quynh Son Community-based Tourism Village","countryCode":"VN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":1591435,"notes":"根据 UN Tourism village 坐标映射到 Bac Son，距离 2 公里"}
+{"id":"un-tourism-village:449","name":"Thái Hải","countryCode":"VN","source":"un-tourism-village","weatherMode":"map_to_nearest_city","priority":30,"mappedGeonameId":13513037,"notes":"根据 UN Tourism village 坐标映射到 Thanh pho Song Cong，距离 7 公里"}
+{"id":"curated:cape-town","name":"Cape Town","countryCode":"ZA","source":"curated","weatherMode":"standalone","priority":10,"geonameId":3369157}
+{"id":"wikivoyage:16432","name":"Johannesburg","countryCode":"ZA","source":"wikivoyage","weatherMode":"standalone","priority":20,"geonameId":993800}

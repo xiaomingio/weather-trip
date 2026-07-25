@@ -4,7 +4,7 @@
  * 对应文档: docs/specs/30-weather-coverage-design.md, docs/specs/31-data-flow.md
  */
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type {
   Admin1RowWire,
@@ -24,10 +24,9 @@ import {
 } from '../static-data/geonames.js';
 import {
   buildSupportedAdmin2KeySet,
-  isSupportedAdmin2ByKey,
-  loadCoverageOverrides,
-  type CoverageOverrideSeed
+  isSupportedAdmin2ByKey
 } from '../static-data/coverage-overrides.js';
+import { generatedDataVersion, jsonLineContent, readJsonLines } from '../generated-jsonl.js';
 
 type CountryProfile = {
   countryCode: string;
@@ -39,7 +38,6 @@ type CountryProfile = {
 
 type CountryProfilesPayload = {
   version: string;
-  generatedAt: string;
   profiles: CountryProfile[];
 };
 
@@ -90,6 +88,54 @@ type TourismSeedGap = {
   reason: string;
 };
 
+export type GeneratedCountryRow = {
+  countryCode: string;
+  names: { en: string; zh: string };
+  worldRegion: WorldRegionCode;
+  countryTier: CountryTier;
+};
+
+export type GeneratedAdmin1Row = {
+  countryCode: string;
+  admin1Code: string;
+  names: { en: string; zh: string };
+};
+
+export type GeneratedAdmin2Row = {
+  countryCode: string;
+  admin1Code: string;
+  admin2Code: string;
+  names: { en: string; zh: string };
+};
+
+export type GeneratedCityRow = {
+  id: string;
+  geonameId: number;
+  names: { en: string; zh: string };
+  countryCode: string;
+  admin1Code?: string;
+  admin2Code?: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  population: number;
+  elevationMeters: number;
+  worldRegion: WorldRegionCode;
+  countryTier: CountryTier;
+  rank: number;
+  selectionPriority: number;
+  selectionReasons: string[];
+};
+
+export type GeneratedCitiesData = {
+  version: string;
+  cityProfilesVersion: string;
+  countries: GeneratedCountryRow[];
+  admin1: GeneratedAdmin1Row[];
+  admin2: GeneratedAdmin2Row[];
+  cities: GeneratedCityRow[];
+};
+
 type CitySelectionReport = {
   version: string;
   generatedAt: string;
@@ -108,9 +154,10 @@ type CitySelectionReport = {
 };
 
 const rootDir = process.cwd();
-const cityProfilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.json');
-const tourismSeedsPath = path.join(rootDir, 'data', 'generated', 'tourism-destinations.json');
+const cityProfilesPath = path.join(rootDir, 'data', 'generated', 'country-profiles.jsonl');
+const tourismSeedsPath = path.join(rootDir, 'data', 'generated', 'tourism-destinations.jsonl');
 const generatedDir = path.join(rootDir, 'data', 'generated');
+const generatedCitiesDir = path.join(generatedDir, 'cities');
 const reportDir = path.join(rootDir, 'data', 'report');
 const publicDataDir = path.join(rootDir, 'apps', 'web', 'public', 'data');
 const supportedFeatureCodes = new Set(['PPLC', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPL']);
@@ -148,8 +195,12 @@ const defaultRankFeatureOrder: Record<string, number> = {
   PPL: 6
 };
 
-async function readJson<T>(filePath: string): Promise<T> {
-  return JSON.parse(await readFile(filePath, 'utf8')) as T;
+async function readCountryProfiles(): Promise<CountryProfilesPayload> {
+  const profiles = await readJsonLines<CountryProfile>(cityProfilesPath);
+  return {
+    version: generatedDataVersion('country-profiles', profiles),
+    profiles
+  };
 }
 
 function normalizeCityName(value: string): string {
@@ -327,8 +378,7 @@ function chooseCities(
   admin1Items: GeoNamesAdmin1[],
   admin2Items: GeoNamesAdmin2[],
   profiles: CountryProfile[],
-  seeds: TourismSeed[],
-  overrideSeed: CoverageOverrideSeed
+  seeds: TourismSeed[]
 ): {
   selectedRows: Array<{ city: GeoNamesCity; reasons: string[]; priority: number }>;
   unmatchedSeeds: TourismSeedGap[];
@@ -336,7 +386,7 @@ function chooseCities(
   missingAdmin2Representatives: RegionGap[];
 } {
   const profilesByCountry = new Map(profiles.map((profile) => [profile.countryCode, profile]));
-  const supportedAdmin2Keys = buildSupportedAdmin2KeySet(overrideSeed, admin2Items, cities, supportedFeatureCodes);
+  const supportedAdmin2Keys = buildSupportedAdmin2KeySet(admin2Items, cities, supportedFeatureCodes);
   const citiesByCountry = new Map<string, GeoNamesCity[]>();
   const seedPriorityByGeonameId = new Map<number, number>();
   const selected = new Map<string, { city: GeoNamesCity; reasons: Map<string, number> }>();
@@ -473,71 +523,186 @@ function toCity(
   };
 }
 
-function buildCitiesPayload(cities: SelectedCity[], profilesByCountry: Map<string, CountryProfile>, version: string): CitiesPayloadWire {
-  const countries: CountryRowWire[] = [];
-  const admin1Rows: Admin1RowWire[] = [];
-  const admin2Rows: Admin2RowWire[] = [];
+function buildGeneratedCitiesData(
+  cities: SelectedCity[],
+  profilesByCountry: Map<string, CountryProfile>,
+  cityProfilesVersion: string,
+  version: string
+): GeneratedCitiesData {
+  const countries: GeneratedCountryRow[] = [];
+  const admin1Rows: GeneratedAdmin1Row[] = [];
+  const admin2Rows: GeneratedAdmin2Row[] = [];
+  const generatedCities: GeneratedCityRow[] = [];
   const countryIndexByCode = new Map<string, number>();
   const admin1IndexByKey = new Map<string, number>();
   const admin2IndexByKey = new Map<string, number>();
 
-  function ensureCountry(city: SelectedCity): number {
+  function ensureCountry(city: SelectedCity): void {
     const countryCode = city.countryCode ?? city.country;
     const current = countryIndexByCode.get(countryCode);
-    if (current !== undefined) return current;
+    if (current !== undefined) return;
 
     const index = countries.length;
     countryIndexByCode.set(countryCode, index);
-    countries.push([countryCode, localizedCountryName(countryCode), city.region, countryTierCode(profilesByCountry.get(countryCode)?.countryTier ?? 'C1')]);
-    return index;
+    const [en, zh] = localizedCountryName(countryCode);
+    countries.push({
+      countryCode,
+      names: { en, zh },
+      worldRegion: city.region,
+      countryTier: profilesByCountry.get(countryCode)?.countryTier ?? 'C1'
+    });
   }
 
-  function ensureAdmin1(city: SelectedCity, countryIndex: number): number | null {
+  function ensureAdmin1(city: SelectedCity): void {
     const countryCode = city.countryCode ?? city.country;
     const code = cityAdmin1Code(city);
-    if (!code) return null;
+    if (!code) return;
     const key = `${countryCode}.${code}`;
     const current = admin1IndexByKey.get(key);
-    if (current !== undefined) return current;
+    if (current !== undefined) return;
 
     const index = admin1Rows.length;
     admin1IndexByKey.set(key, index);
-    admin1Rows.push([countryIndex, code, [city.admin1 ?? code, city.admin1LocalName ?? city.admin1 ?? code]]);
-    return index;
+    admin1Rows.push({
+      countryCode,
+      admin1Code: code,
+      names: {
+        en: city.admin1 ?? code,
+        zh: city.admin1LocalName ?? city.admin1 ?? code
+      }
+    });
   }
 
-  function ensureAdmin2(city: SelectedCity, countryIndex: number, admin1Index: number | null): number | null {
+  function ensureAdmin2(city: SelectedCity): void {
     const countryCode = city.countryCode ?? city.country;
-    if (!city.admin2Code || admin1Index === null) return null;
-    const key = `${countryCode}.${cityAdmin1Code(city)}.${city.admin2Code}`;
+    const admin1Code = cityAdmin1Code(city);
+    if (!admin1Code || !city.admin2Code) return;
+    const key = `${countryCode}.${admin1Code}.${city.admin2Code}`;
     const current = admin2IndexByKey.get(key);
-    if (current !== undefined) return current;
+    if (current !== undefined) return;
 
     const index = admin2Rows.length;
     admin2IndexByKey.set(key, index);
-    admin2Rows.push([countryIndex, admin1Index, city.admin2Code, [city.admin2 ?? city.admin2Code, city.admin2LocalName ?? city.admin2 ?? city.admin2Code]]);
-    return index;
+    admin2Rows.push({
+      countryCode,
+      admin1Code,
+      admin2Code: city.admin2Code,
+      names: {
+        en: city.admin2 ?? city.admin2Code,
+        zh: city.admin2LocalName ?? city.admin2 ?? city.admin2Code
+      }
+    });
   }
 
+  cities.forEach((city, index) => {
+    const countryCode = city.countryCode ?? city.country;
+    const countryTier = profilesByCountry.get(countryCode)?.countryTier ?? 'C1';
+    ensureCountry(city);
+    ensureAdmin1(city);
+    ensureAdmin2(city);
+    generatedCities.push({
+      id: city.id,
+      geonameId: city.geonameId,
+      names: {
+        en: city.names.en,
+        zh: city.names.zh || city.names.en
+      },
+      countryCode,
+      admin1Code: cityAdmin1Code(city) ?? undefined,
+      admin2Code: city.admin2Code,
+      latitude: city.latitude,
+      longitude: city.longitude,
+      timezone: city.timezone,
+      population: city.population ?? 0,
+      elevationMeters: city.elevationMeters,
+      worldRegion: city.region,
+      countryTier,
+      rank: index + 1,
+      selectionPriority: city.selectionPriority,
+      selectionReasons: city.selectionReasons
+    });
+  });
+
   return {
-    v: version,
+    version,
+    cityProfilesVersion,
+    countries,
+    admin1: admin1Rows,
+    admin2: admin2Rows,
+    cities: generatedCities
+  };
+}
+
+export function encodeCitiesPayload(data: GeneratedCitiesData): CitiesPayloadWire {
+  const countryIndexByCode = new Map(data.countries.map((country, index) => [country.countryCode, index]));
+  const admin1IndexByKey = new Map(data.admin1.map((admin1, index) => [`${admin1.countryCode}.${admin1.admin1Code}`, index]));
+  const admin2IndexByKey = new Map(data.admin2.map((admin2, index) => [`${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}`, index]));
+
+  const countries: CountryRowWire[] = data.countries.map((country) => [
+    country.countryCode,
+    [country.names.en, country.names.zh || country.names.en],
+    country.worldRegion,
+    countryTierCode(country.countryTier)
+  ]);
+  const admin1Rows: Admin1RowWire[] = data.admin1.map((admin1) => {
+    const countryIndex = countryIndexByCode.get(admin1.countryCode);
+    if (countryIndex === undefined) throw new Error(`Missing country for admin1 ${admin1.countryCode}.${admin1.admin1Code}.`);
+    return [countryIndex, admin1.admin1Code, [admin1.names.en, admin1.names.zh || admin1.names.en]];
+  });
+  const admin2Rows: Admin2RowWire[] = data.admin2.map((admin2) => {
+    const countryIndex = countryIndexByCode.get(admin2.countryCode);
+    const admin1Index = admin1IndexByKey.get(`${admin2.countryCode}.${admin2.admin1Code}`);
+    if (countryIndex === undefined) throw new Error(`Missing country for admin2 ${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}.`);
+    if (admin1Index === undefined) throw new Error(`Missing admin1 for admin2 ${admin2.countryCode}.${admin2.admin1Code}.${admin2.admin2Code}.`);
+    return [countryIndex, admin1Index, admin2.admin2Code, [admin2.names.en, admin2.names.zh || admin2.names.en]];
+  });
+
+  return {
+    v: data.version,
     d: { co: countries, a1: admin1Rows, a2: admin2Rows },
-    c: cities.map((city) => {
-      const countryIndex = ensureCountry(city);
-      const admin1Index = ensureAdmin1(city, countryIndex);
-      const admin2Index = ensureAdmin2(city, countryIndex, admin1Index);
+    c: data.cities.map((city) => {
+      const countryIndex = countryIndexByCode.get(city.countryCode);
+      if (countryIndex === undefined) throw new Error(`Missing country for city ${city.id}: ${city.countryCode}.`);
+      const admin1Index = city.admin1Code ? admin1IndexByKey.get(`${city.countryCode}.${city.admin1Code}`) : undefined;
+      const admin2Index = city.admin1Code && city.admin2Code ? admin2IndexByKey.get(`${city.countryCode}.${city.admin1Code}.${city.admin2Code}`) : undefined;
       return [
         city.id,
         [city.names.en, city.names.zh || city.names.en],
         countryIndex,
-        admin1Index,
-        admin2Index,
+        admin1Index ?? null,
+        admin2Index ?? null,
         Math.round(city.latitude * 100000),
         Math.round(city.longitude * 100000),
         Math.round(city.elevationMeters)
       ] as CitiesPayloadWire['c'][number];
     })
   };
+}
+
+async function writeGeneratedCitiesData(data: GeneratedCitiesData): Promise<void> {
+  await rm(generatedCitiesDir, { recursive: true, force: true });
+  await rm(path.join(generatedDir, 'cities.json'), { force: true });
+  await mkdir(generatedCitiesDir, { recursive: true });
+  await writeFile(path.join(generatedCitiesDir, 'manifest.json'), `${JSON.stringify({
+    version: data.version,
+    cityProfilesVersion: data.cityProfilesVersion,
+    counts: {
+      countries: data.countries.length,
+      admin1: data.admin1.length,
+      admin2: data.admin2.length,
+      cities: data.cities.length
+    },
+    files: {
+      countries: 'countries.jsonl',
+      admin1: 'admin1.jsonl',
+      admin2: 'admin2.jsonl',
+      cities: 'cities.jsonl'
+    }
+  }, null, 2)}\n`);
+  await writeFile(path.join(generatedCitiesDir, 'countries.jsonl'), jsonLineContent(data.countries));
+  await writeFile(path.join(generatedCitiesDir, 'admin1.jsonl'), jsonLineContent(data.admin1));
+  await writeFile(path.join(generatedCitiesDir, 'admin2.jsonl'), jsonLineContent(data.admin2));
+  await writeFile(path.join(generatedCitiesDir, 'cities.jsonl'), jsonLineContent(data.cities));
 }
 
 function buildReport(
@@ -661,10 +826,9 @@ function reportMarkdown(report: CitySelectionReport): string {
 }
 
 export async function runGenerateStaticCities(): Promise<void> {
-  const [profilesPayload, seeds, overrideSeed, dataset] = await Promise.all([
-    readJson<CountryProfilesPayload>(cityProfilesPath),
-    readJson<TourismSeed[]>(tourismSeedsPath),
-    loadCoverageOverrides(rootDir),
+  const [profilesPayload, seeds, dataset] = await Promise.all([
+    readCountryProfiles(),
+    readJsonLines<TourismSeed>(tourismSeedsPath),
     loadGeoNamesDataset(rootDir, { includeAlternateNames: true })
   ]);
   const profiles = profilesPayload.profiles;
@@ -676,8 +840,7 @@ export async function runGenerateStaticCities(): Promise<void> {
     dataset.admin1Items,
     dataset.admin2Items,
     profiles,
-    seeds,
-    overrideSeed
+    seeds
   );
   const scopedGeonameIds = new Set<number>([
     ...selectedRows.map((row) => row.city.geonameId),
@@ -696,7 +859,8 @@ export async function runGenerateStaticCities(): Promise<void> {
     .digest('hex')
     .slice(0, 12);
   const version = `cities-${hash}`;
-  const payload = buildCitiesPayload(selectedCities, profilesByCountry, version);
+  const generatedCitiesData = buildGeneratedCitiesData(selectedCities, profilesByCountry, profilesPayload.version, version);
+  const payload = encodeCitiesPayload(generatedCitiesData);
   const report = buildReport(selectedCities, dataset.cities.length, profilesPayload, unmatchedSeeds, missingAdmin1Representatives, missingAdmin2Representatives, version);
 
   if (payload.c.length > 5000) {
@@ -706,7 +870,7 @@ export async function runGenerateStaticCities(): Promise<void> {
   await mkdir(generatedDir, { recursive: true });
   await mkdir(reportDir, { recursive: true });
   await mkdir(publicDataDir, { recursive: true });
-  await writeFile(path.join(generatedDir, 'cities.json'), `${JSON.stringify(payload, null, 2)}\n`);
+  await writeGeneratedCitiesData(generatedCitiesData);
   await writeFile(path.join(publicDataDir, 'cities.json'), `${JSON.stringify(payload)}\n`);
   await writeFile(path.join(reportDir, 'city-selection-report.md'), reportMarkdown(report));
 

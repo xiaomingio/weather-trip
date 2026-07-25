@@ -2,11 +2,16 @@
  * 文件说明: 处理 WorldWeatherMap 静态矢量瓦片 source、样式表达式和地区 hover 文案。
  * 对应文档: docs/specs/40-map-vector-tiles-performance.md
  */
-import type { MapLayer, RegionWeatherSummary, WeatherToolId } from 'weather-core/types';
+import type { MapLayer, RegionKey, RegionWeatherSummary, WeatherToolId } from 'weather-core/types';
 import type { FilterSpecification, Map as MapLibreMap } from 'maplibre-gl';
 import { countryLabel } from '@/domain/country-labels';
 import type { DisplayLocale, TemperatureUnit } from '@/domain/format';
-import type { MapRegionLayer } from '@/domain/regions';
+import {
+  parseAdmin1Region,
+  parseAdmin2Region,
+  primaryCountryCodeForRegion,
+  type MapRegionLayer
+} from '@/domain/regions';
 import { getWeatherTypeLabel } from '@/domain/weather';
 import { messages } from '@/i18n';
 import {
@@ -43,6 +48,10 @@ export type VectorRegionAsset = {
 
 export type VectorRegionStyleEntry = {
   regionKey: string;
+  level: RegionWeatherSummary['level'];
+  countryCode: string;
+  admin1Code?: string;
+  admin2Code?: string;
   admin1Name?: string;
   fillColor: string;
   fillOpacity: number;
@@ -329,6 +338,10 @@ function styleEntryForSummary(
   const isNoMetricRegion = !hasMetricData;
   return {
     regionKey: summary.id,
+    level: summary.level,
+    countryCode: summary.countryCode,
+    admin1Code: summary.admin1Code,
+    admin2Code: summary.admin2Code,
     admin1Name: summary.admin1Name ? cleanRegionLabel(summary.admin1Name) : undefined,
     fillColor,
     fillOpacity: isNoMetricRegion ? noMetricFillOpacity(targetLayer) : metricFillOpacity,
@@ -390,8 +403,70 @@ function matchExpression<T extends string | number | boolean>(entries: VectorReg
 
 function noDataRegionFilter(targetLayer: MapTileRegionLayer, includeNoDataRegions: boolean): FilterSpecification | null {
   if (!includeNoDataRegions) return null;
-  const levels = targetLayer === 'admin1' ? ['admin1'] : ['admin2', 'boundary'];
+  const levels =
+    targetLayer === 'country'
+      ? ['country']
+      : targetLayer === 'admin1'
+        ? ['country', 'admin1']
+        : ['country', 'admin1', 'admin2', 'boundary'];
   return ['in', ['get', 'level'], ['literal', levels]];
+}
+
+function countryScopeFilter(countryCode: string): FilterSpecification {
+  const countryCodes = countryCode === 'CN' ? ['CN', 'HK', 'MO', 'TW'] : [countryCode];
+  return ['in', ['get', 'countryCode'], ['literal', countryCodes]];
+}
+
+function fixedRegionScopeFilter(entries: VectorRegionStyleEntry[]): FilterSpecification | null {
+  const countryCodes = [...new Set(entries.map((entry) => entry.countryCode).filter(Boolean))];
+  if (countryCodes.length === 0) return null;
+  return ['in', ['get', 'countryCode'], ['literal', countryCodes]];
+}
+
+function admin1ScopeFilter(activeRegion: RegionKey): FilterSpecification | null {
+  const admin1Region = parseAdmin1Region(activeRegion);
+  if (!admin1Region) return null;
+
+  return [
+    'any',
+    ['==', styleLookupExpression(), activeRegion],
+    [
+      'all',
+      countryScopeFilter(admin1Region.countryCode),
+      ['==', ['get', 'admin1Code'], admin1Region.admin1Code]
+    ]
+  ] as unknown as FilterSpecification;
+}
+
+function admin2ScopeFilter(activeRegion: RegionKey): FilterSpecification | null {
+  const admin2Region = parseAdmin2Region(activeRegion);
+  if (!admin2Region) return null;
+
+  return [
+    'any',
+    ['==', styleLookupExpression(), activeRegion],
+    [
+      'all',
+      countryScopeFilter(admin2Region.countryCode),
+      ['==', ['get', 'admin1Code'], admin2Region.admin1Code],
+      ['==', ['get', 'admin2Code'], admin2Region.admin2Code]
+    ]
+  ] as unknown as FilterSpecification;
+}
+
+function regionScopeFilter(entries: VectorRegionStyleEntry[], activeRegion: RegionKey | undefined): FilterSpecification | null {
+  if (!activeRegion || activeRegion === 'world') return null;
+
+  const admin2Filter = admin2ScopeFilter(activeRegion);
+  if (admin2Filter) return admin2Filter;
+
+  const admin1Filter = admin1ScopeFilter(activeRegion);
+  if (admin1Filter) return admin1Filter;
+
+  const countryCode = primaryCountryCodeForRegion(activeRegion);
+  if (countryCode) return countryScopeFilter(countryCode);
+
+  return fixedRegionScopeFilter(entries);
 }
 
 function noMetricPatternOpacityExpression(
@@ -426,13 +501,20 @@ function noMetricPatternOpacityExpression(
   ];
 }
 
-function visibleRegionFilter(entries: VectorRegionStyleEntry[], targetLayer: MapTileRegionLayer, includeNoDataRegions: boolean): FilterSpecification {
+function visibleRegionFilter(
+  entries: VectorRegionStyleEntry[],
+  targetLayer: MapTileRegionLayer,
+  includeNoDataRegions: boolean,
+  activeRegion?: RegionKey
+): FilterSpecification {
   const regionKeys = entries.map((entry) => entry.regionKey);
   const regionKeyFilter = regionKeys.length > 0
     ? (['in', styleLookupExpression(), ['literal', regionKeys]] as FilterSpecification)
     : (['==', styleLookupExpression(), ''] as unknown as FilterSpecification);
   const noDataFilter = noDataRegionFilter(targetLayer, includeNoDataRegions);
-  return noDataFilter ? ['any', regionKeyFilter, noDataFilter] as FilterSpecification : regionKeyFilter;
+  const dataFilter = noDataFilter ? ['any', regionKeyFilter, noDataFilter] as FilterSpecification : regionKeyFilter;
+  const scopeFilter = regionScopeFilter(entries, activeRegion);
+  return scopeFilter ? ['all', scopeFilter, dataFilter] as FilterSpecification : dataFilter;
 }
 
 export function addVectorRegionLayers(
@@ -597,10 +679,11 @@ export function applyVectorRegionStyles(
   targetLayer: MapTileRegionLayer,
   styleLayer: MapRegionLayer,
   entries: VectorRegionStyleEntry[],
-  isRegionColoringEnabled = true
+  isRegionColoringEnabled = true,
+  activeRegion?: RegionKey
 ): void {
-  const includeNoDataRegions = targetLayer === 'admin1' || targetLayer === 'admin2';
-  const filter = visibleRegionFilter(entries, targetLayer, includeNoDataRegions);
+  const includeNoDataRegions = true;
+  const filter = visibleRegionFilter(entries, targetLayer, includeNoDataRegions, activeRegion);
   const noDataFillOpacity = includeNoDataRegions && isRegionColoringEnabled ? noMetricFillOpacity(styleLayer) : 0;
   const noDataLineOpacity = includeNoDataRegions ? 0.46 : 0;
   const noDataLineWidth = includeNoDataRegions ? 0.85 : 0;

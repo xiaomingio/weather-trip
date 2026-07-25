@@ -6,6 +6,8 @@ import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { GeoJSONVT, type GeoJSONVTTile } from '@maplibre/geojson-vt';
 import { fromGeojsonVt } from '@maplibre/vt-pbf';
+import { readJsonLines } from '../generated-jsonl.js';
+import { loadGeoNamesAdminDataset, type GeoNamesAdmin2 } from '../static-data/geonames.js';
 
 type GeoJsonGeometry = {
   type: string;
@@ -48,7 +50,7 @@ type TileCountry = {
 type CliOptions = {
   dryRun: boolean;
   outputDir: string;
-  ndjsonPath: string;
+  jsonlPath: string;
   reportMarkdownPath: string;
   sourceLayer: string;
   extent: number;
@@ -61,6 +63,8 @@ type RegionParseResult = {
   admin1Code?: string;
   admin2Code?: string;
 };
+
+type Admin2WeatherKeyLookup = Map<string, Map<string, GeoNamesAdmin2[]>>;
 
 type SourcePackageReport = {
   path: string;
@@ -127,7 +131,7 @@ type GeoTileReport = {
   outputs: {
     tileRootDir: string;
     manifestPath: string;
-    ndjsonPath: string;
+    jsonlPath: string;
     reportMarkdownPath: string;
   };
   sourcePackages: SourcePackageReport[];
@@ -168,7 +172,7 @@ const generatedDir = path.join(rootDir, 'data', 'generated');
 const generatedGeoDir = path.join(generatedDir, 'geo');
 const generatedC3Admin2GeoDir = path.join(generatedGeoDir, 'c3_admin2');
 const reportDir = path.join(rootDir, 'data', 'report');
-const profilesPath = path.join(generatedDir, 'country-profiles.json');
+const profilesPath = path.join(generatedDir, 'country-profiles.jsonl');
 
 const defaultMapMinZoom = 1;
 const defaultMapZoom = 1.35;
@@ -197,7 +201,8 @@ function usage(): string {
     'Options:',
     '  --dry-run                   Build report without writing tiles or generated files.',
     '  --output-dir=<path>          Tile output root. Default: apps/web/public/data/geo/region-tiles',
-    '  --ndjson=<path>              GeoJSON feature NDJSON output path. Default: data/generated/geo-regions.ndjson',
+    '  --jsonl=<path>               GeoJSON feature JSONL output path. Default: data/generated/geo/regions.jsonl',
+    '  --ndjson=<path>              Alias of --jsonl for older local commands.',
     '  --report-md=<path>           Markdown report output path. Default: data/report/geo-tile-report.md',
     '  --source-layer=<name>        Vector tile source-layer name. Default: weather_region',
     '  --extent=<number>            Vector tile extent. Default: 4096',
@@ -225,7 +230,7 @@ function parseArgs(args: string[]): CliOptions {
   const options: CliOptions = {
     dryRun: false,
     outputDir: defaultTileRootDir,
-    ndjsonPath: path.join(generatedDir, 'geo-regions.ndjson'),
+    jsonlPath: path.join(generatedGeoDir, 'regions.jsonl'),
     reportMarkdownPath: path.join(reportDir, 'geo-tile-report.md'),
     sourceLayer: defaultSourceLayer,
     extent: 4096,
@@ -243,7 +248,7 @@ function parseArgs(args: string[]): CliOptions {
       continue;
     }
     if (flag === '--output-dir') options.outputDir = resolveOutputPath(parseStringOption(flag, value));
-    else if (flag === '--ndjson') options.ndjsonPath = resolveOutputPath(parseStringOption(flag, value));
+    else if (flag === '--jsonl' || flag === '--ndjson') options.jsonlPath = resolveOutputPath(parseStringOption(flag, value));
     else if (flag === '--report-md') options.reportMarkdownPath = resolveOutputPath(parseStringOption(flag, value));
     else if (flag === '--source-layer') options.sourceLayer = parseStringOption(flag, value);
     else if (flag === '--extent') options.extent = parseNumberOption(flag, value);
@@ -255,10 +260,6 @@ function parseArgs(args: string[]): CliOptions {
   if (!Number.isInteger(options.extent) || options.extent <= 0) throw new Error(`extent must be a positive integer: ${options.extent}`);
   if (!Number.isInteger(options.buffer) || options.buffer < 0) throw new Error(`buffer must be a non-negative integer: ${options.buffer}`);
   return options;
-}
-
-async function readJson<T>(filePath: string): Promise<T> {
-  return JSON.parse(await readFile(filePath, 'utf8')) as T;
 }
 
 function relativePath(filePath: string): string {
@@ -278,7 +279,9 @@ async function loadSourcePackage(filePath: string): Promise<{ collection: Featur
 }
 
 async function tileCountries(): Promise<Map<string, TileCountry>> {
-  const profilesPayload = await readJson<CountryProfilesPayload>(profilesPath);
+  const profilesPayload: CountryProfilesPayload = {
+    profiles: await readJsonLines<CountryProfile>(profilesPath)
+  };
   return new Map(
     profilesPayload.profiles.map((profile) => [
       profile.countryCode,
@@ -318,6 +321,61 @@ function parseRegionKey(regionKey: string): RegionParseResult | null {
   return null;
 }
 
+function normalizeName(value: string): string {
+  return value
+    .replace(/[Đđ]/g, 'd')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\b(province|provincia|departement|department|region|regione|regency|kabupaten|kota|district|township|urban|municipality|comunidad|comunitat|autonoma|autonomous|principado|ciudad|citta|metropolitana|capitale|foral|of|de|di|da|do|del|dell|du|d|la|le|the|y)\b/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function nameVariants(value: string | undefined): string[] {
+  if (!value) return [];
+  const normalized = normalizeName(value);
+  return [
+    normalized,
+    ...value.split('/').map(normalizeName),
+    normalized.replace(/\bprovince\b/g, ''),
+    normalized.replace(/\bcity\b/g, '')
+  ].map(normalizeName).filter((item, index, items) => item && items.indexOf(item) === index);
+}
+
+function buildAdmin2WeatherKeyLookup(admin2Items: GeoNamesAdmin2[]): Admin2WeatherKeyLookup {
+  const lookup: Admin2WeatherKeyLookup = new Map();
+  for (const admin2 of admin2Items) {
+    const countryLookup = lookup.get(admin2.countryCode) ?? new Map<string, GeoNamesAdmin2[]>();
+    for (const variant of [...nameVariants(admin2.name), ...nameVariants(admin2.asciiName)]) {
+      const matches = countryLookup.get(variant) ?? [];
+      if (!matches.some((match) => match.code === admin2.code)) matches.push(admin2);
+      countryLookup.set(variant, matches);
+    }
+    lookup.set(admin2.countryCode, countryLookup);
+  }
+  return lookup;
+}
+
+function inferAdmin2WeatherRegionKey(feature: GeoJsonFeature, parsed: RegionParseResult, lookup: Admin2WeatherKeyLookup): string | undefined {
+  if (parsed.level !== 'admin2' && parsed.level !== 'boundary') return undefined;
+  const countryLookup = lookup.get(parsed.countryCode);
+  if (!countryLookup) return undefined;
+
+  const labelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
+  const labelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
+  const matchesByCode = new Map<string, GeoNamesAdmin2>();
+  for (const variant of [...nameVariants(labelEn), ...nameVariants(labelZh)]) {
+    for (const match of countryLookup.get(variant) ?? []) {
+      matchesByCode.set(match.code, match);
+    }
+  }
+  if (matchesByCode.size !== 1) return undefined;
+
+  const match = [...matchesByCode.values()][0];
+  return `admin2:${match.countryCode}.${match.admin1Code}.${match.admin2Code}`;
+}
+
 function weatherLevelForCountry(countryCode: string, countries: Map<string, TileCountry>): WeatherLevel {
   const tier = countries.get(countryCode)?.tier;
   if (tier === 'C3') return 'admin2';
@@ -331,7 +389,7 @@ function minDisplayZoom(level: WeatherRegionLevel): number {
   return 5;
 }
 
-function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, TileCountry>): GeoJsonFeature | null {
+function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, TileCountry>, admin2WeatherKeyLookup: Admin2WeatherKeyLookup): GeoJsonFeature | null {
   const regionKey = typeof feature.properties.regionKey === 'string' ? feature.properties.regionKey : '';
   const parsed = parseRegionKey(regionKey);
   if (!parsed) return null;
@@ -339,8 +397,12 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, T
   const country = countries.get(parsed.countryCode);
   const sourceLabelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
   const sourceLabelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
-  const weatherRegionKey = typeof feature.properties.weatherRegionKey === 'string' ? feature.properties.weatherRegionKey : undefined;
+  const existingWeatherRegionKey = typeof feature.properties.weatherRegionKey === 'string' ? feature.properties.weatherRegionKey : undefined;
+  const weatherRegionKey = existingWeatherRegionKey ?? inferAdmin2WeatherRegionKey(feature, parsed, admin2WeatherKeyLookup);
+  const weatherRegion = weatherRegionKey ? parseRegionKey(weatherRegionKey) : null;
   const weatherLevel = weatherLevelForCountry(parsed.countryCode, countries);
+  const admin1Code = weatherRegion?.admin1Code ?? parsed.admin1Code;
+  const admin2Code = weatherRegion?.admin2Code ?? parsed.admin2Code;
 
   return {
     type: 'Feature',
@@ -349,8 +411,8 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, T
       regionKey,
       level: parsed.level,
       countryCode: parsed.countryCode,
-      ...(parsed.admin1Code ? { admin1Code: parsed.admin1Code } : {}),
-      ...(parsed.admin2Code ? { admin2Code: parsed.admin2Code } : {}),
+      ...(admin1Code ? { admin1Code } : {}),
+      ...(admin2Code ? { admin2Code } : {}),
       ...(sourceLabelZh || country?.labelZh ? { labelZh: sourceLabelZh ?? country?.labelZh } : {}),
       ...(sourceLabelEn || country?.labelEn ? { labelEn: sourceLabelEn ?? country?.labelEn } : {}),
       ...(weatherRegionKey ? { weatherRegionKey } : {}),
@@ -394,7 +456,7 @@ function addFeature(featuresByKey: Map<string, GeoJsonFeature>, feature: GeoJson
   featuresByKey.set(regionKey, feature);
 }
 
-async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
+async function buildTileSources(countries: Map<string, TileCountry>, admin2WeatherKeyLookup: Admin2WeatherKeyLookup): Promise<{
   reports: SourcePackageReport[];
   allFeatures: GeoJsonFeature[];
   worldLowFeatures: GeoJsonFeature[];
@@ -411,12 +473,11 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
   const lowFeaturesByKey = new Map<string, GeoJsonFeature>();
   const worldMidFeatures: GeoJsonFeature[] = [];
   const detailParentKeysWithChildren = new Set<string>();
-  const detailCountriesWithChildren = new Set<string>();
 
   const countryPackage = await loadSourcePackage(path.join(generatedGeoDir, 'country.geojson'));
   reports.push(countryPackage.report);
   for (const sourceFeature of countryPackage.collection.features) {
-    const normalized = normalizedTileFeature(sourceFeature, countries);
+    const normalized = normalizedTileFeature(sourceFeature, countries, admin2WeatherKeyLookup);
     if (!normalized) {
       skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
       continue;
@@ -432,7 +493,7 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
     const admin1Package = await loadSourcePackage(path.join(generatedGeoDir, packageName));
     reports.push(admin1Package.report);
     for (const sourceFeature of admin1Package.collection.features) {
-      const normalized = normalizedTileFeature(sourceFeature, countries);
+      const normalized = normalizedTileFeature(sourceFeature, countries, admin2WeatherKeyLookup);
       if (!normalized) {
         skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
         continue;
@@ -447,7 +508,7 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
     reports.push(countryPackage.report);
 
     for (const sourceFeature of countryPackage.collection.features) {
-      const normalized = normalizedTileFeature(sourceFeature, countries);
+      const normalized = normalizedTileFeature(sourceFeature, countries, admin2WeatherKeyLookup);
       if (!normalized) {
         skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
         continue;
@@ -456,7 +517,6 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
       if (['admin2', 'boundary'].includes(featureLevel(normalized)) && typeof normalized.properties.admin1Code === 'string') {
         detailParentKeysWithChildren.add(`admin1:${featureCountryCode(normalized)}.${normalized.properties.admin1Code}`);
       }
-      if (['admin2', 'boundary'].includes(featureLevel(normalized))) detailCountriesWithChildren.add(featureCountryCode(normalized));
     }
   }
 
@@ -466,7 +526,7 @@ async function buildTileSources(countries: Map<string, TileCountry>): Promise<{
     if (weatherLevel === 'country') return level === 'country';
     if (weatherLevel === 'admin1') return level === 'admin1';
     if (['admin2', 'boundary'].includes(level)) return true;
-    return level === 'admin1' && !detailCountriesWithChildren.has(featureCountryCode(feature)) && !detailParentKeysWithChildren.has(featureRegionKey(feature));
+    return level === 'admin1' && !detailParentKeysWithChildren.has(featureRegionKey(feature));
   });
 
   const countriesWithoutLowZoomBoundary = [...countries.keys()]
@@ -702,7 +762,7 @@ function aggregateTileTotals(tierReports: TileTierReport[], packageReports: Tile
   };
 }
 
-function ndjsonContent(features: GeoJsonFeature[]): string {
+function jsonlContent(features: GeoJsonFeature[]): string {
   return `${features.map((feature) => JSON.stringify(feature)).join('\n')}\n`;
 }
 
@@ -759,7 +819,7 @@ function reportMarkdown(report: GeoTileReport): string {
     '',
     `- 瓦片目录：\`${report.outputs.tileRootDir}\``,
     `- Manifest：\`${report.outputs.manifestPath}\``,
-    `- NDJSON：\`${report.outputs.ndjsonPath}\``,
+    `- JSONL：\`${report.outputs.jsonlPath}\``,
     `- Markdown 报告：\`${report.outputs.reportMarkdownPath}\``,
     '',
     '## 源包',
@@ -827,8 +887,8 @@ async function writeOutputs(features: GeoJsonFeature[], report: GeoTileReport, o
   if (options.dryRun) return;
 
   const manifestPath = path.join(options.outputDir, manifestFileName);
-  await mkdir(path.dirname(options.ndjsonPath), { recursive: true });
-  await writeFile(options.ndjsonPath, ndjsonContent(features));
+  await mkdir(path.dirname(options.jsonlPath), { recursive: true });
+  await writeFile(options.jsonlPath, jsonlContent(features));
   await mkdir(path.dirname(options.reportMarkdownPath), { recursive: true });
   await writeFile(options.reportMarkdownPath, reportMarkdown(report));
   await mkdir(path.dirname(manifestPath), { recursive: true });
@@ -843,7 +903,8 @@ export async function runGenerateStaticGeoTiles(args: string[]): Promise<void> {
   }
 
   const countries = await tileCountries();
-  const tileSources = await buildTileSources(countries);
+  const adminDataset = await loadGeoNamesAdminDataset(rootDir);
+  const tileSources = await buildTileSources(countries, buildAdmin2WeatherKeyLookup(adminDataset.admin2Items));
   const tierDefinitions = buildTierDefinitions(tileSources);
   const tierReports: TileTierReport[] = [];
   for (const tier of tierDefinitions) {
@@ -865,7 +926,7 @@ export async function runGenerateStaticGeoTiles(args: string[]): Promise<void> {
     outputs: {
       tileRootDir: relativePath(options.outputDir),
       manifestPath: relativePath(path.join(options.outputDir, manifestFileName)),
-      ndjsonPath: relativePath(options.ndjsonPath),
+      jsonlPath: relativePath(options.jsonlPath),
       reportMarkdownPath: relativePath(options.reportMarkdownPath)
     },
     sourcePackages: tileSources.reports,

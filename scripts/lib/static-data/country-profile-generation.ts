@@ -2,17 +2,16 @@
  * 文件说明: 从 GeoNames 原始数据、生成后的旅游目的地输入和覆盖规则生成国家 C1/C2/C3 分档与行政区统计报告。
  * 对应文档: docs/specs/30-weather-coverage-design.md, docs/specs/31-data-flow.md
  */
-import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import YAML from 'yaml';
+import { generatedDataVersion, jsonLineContent, readJsonLines } from '../generated-jsonl.js';
 import {
   buildSupportedAdmin2KeySet,
   detailedCoverageCountry,
   isSupportedAdmin2ByKey,
-  loadAdmin2SupportOverrides,
-  loadCoverageOverrides,
-  type CoverageOverrideSeed
+  loadCountryTierSeed,
+  type CountryTierSeed
 } from './coverage-overrides.js';
 import { loadGeoNamesDataset, type GeoNamesAdmin1, type GeoNamesAdmin2, type GeoNamesCity } from './geonames.js';
 import type { CountryTier } from 'weather-core/types';
@@ -170,10 +169,6 @@ const adminRepresentativeFeatureRank: Record<string, number> = {
   PPLA3: 4,
   PPL: 5
 };
-
-async function readJson<T>(filePath: string): Promise<T> {
-  return JSON.parse(await readFile(filePath, 'utf8')) as T;
-}
 
 async function readYaml<T>(filePath: string): Promise<T> {
   return YAML.parse(await readFile(filePath, 'utf8')) as T;
@@ -511,11 +506,11 @@ function buildSeedPriorityByGeonameId(seeds: TourismSeed[]): Map<number, number>
   return result;
 }
 
-function selectDetailedCountries(statsRows: CountryAdminStats[], overrideSeed: CoverageOverrideSeed): Map<string, { detailedCoverage: 'admin1' | 'admin2' }> {
+function selectDetailedCountries(statsRows: CountryAdminStats[], countryTierSeed: CountryTierSeed): Map<string, { detailedCoverage: 'admin1' | 'admin2' }> {
   const selected = new Map<string, { detailedCoverage: 'admin1' | 'admin2' }>();
   const knownCountryCodes = new Set(statsRows.map((stats) => stats.countryCode));
   for (const stats of statsRows) {
-    const override = detailedCoverageCountry(overrideSeed, stats.countryCode);
+    const override = detailedCoverageCountry(countryTierSeed, stats.countryCode);
     if (!override || !knownCountryCodes.has(stats.countryCode)) continue;
     selected.set(stats.countryCode, { detailedCoverage: override.detailedCoverage });
   }
@@ -745,33 +740,33 @@ function countryTierCandidateReportMarkdown(report: CountryTierCandidateReport):
 
 async function loadCountryProfileInputs(rootDir: string, includeFinalCountryTierInput: boolean) {
   const rulesPath = path.join(rootDir, 'data', 'input', 'coverage-rules.yml');
-  const tourismSeedsPath = path.join(rootDir, 'data', 'generated', 'tourism-destinations.json');
-  const [rules, overrideSeed, seeds, dataset] = await Promise.all([
+  const tourismSeedsPath = path.join(rootDir, 'data', 'generated', 'tourism-destinations.jsonl');
+  const [rules, countryTierSeed, seeds, dataset] = await Promise.all([
     readYaml<CoverageRules>(rulesPath),
-    includeFinalCountryTierInput ? loadCoverageOverrides(rootDir) : loadAdmin2SupportOverrides(rootDir),
-    readJson<TourismSeed[]>(tourismSeedsPath),
+    includeFinalCountryTierInput ? loadCountryTierSeed(rootDir) : Promise.resolve<CountryTierSeed>({ countryTierCountries: [] }),
+    readJsonLines<TourismSeed>(tourismSeedsPath),
     loadGeoNamesDataset(rootDir)
   ]);
   const admin1ByCountry = groupByCountry(dataset.admin1Items);
   const admin2ByCountry = groupByCountry(dataset.admin2Items);
-  const supportedAdmin2Keys = buildSupportedAdmin2KeySet(overrideSeed as CoverageOverrideSeed, dataset.admin2Items, dataset.cities, supportedFeatureCodes);
+  const supportedAdmin2Keys = buildSupportedAdmin2KeySet(dataset.admin2Items, dataset.cities, supportedFeatureCodes);
   const statsRows = buildCountryStats(supportedAdmin2Keys, seeds, dataset.cities, admin1ByCountry, admin2ByCountry, dataset.countries);
-  return { rules, overrideSeed: overrideSeed as CoverageOverrideSeed, seeds, dataset, supportedAdmin2Keys, statsRows };
+  return { rules, countryTierSeed, seeds, dataset, supportedAdmin2Keys, statsRows };
 }
 
 export async function generateCountryTierCandidateReport(rootDir = process.cwd()): Promise<CountryTierCandidateReport> {
   const generatedDir = path.join(rootDir, 'data', 'generated');
   const reportDir = path.join(rootDir, 'data', 'report');
   const { rules, seeds, dataset, supportedAdmin2Keys, statsRows } = await loadCountryProfileInputs(rootDir, false);
-  const hash = createHash('sha1').update(JSON.stringify({ rules, statsRows })).digest('hex').slice(0, 12);
-  const version = `country-tier-candidates-${hash}`;
+  const version = generatedDataVersion('country-tier-candidates', { rules, statsRows });
   const generatedAt = new Date().toISOString();
   const countryTierCandidates = buildCountryTierCandidates(rules, statsRows, [], seeds, dataset, supportedAdmin2Keys);
   const candidateReport = buildCountryTierCandidateReport(version, generatedAt, rules, statsRows, seeds, countryTierCandidates);
 
   await mkdir(generatedDir, { recursive: true });
   await mkdir(reportDir, { recursive: true });
-  await writeFile(path.join(generatedDir, 'country-admin-stats.json'), `${JSON.stringify({ version, generatedAt, stats: statsRows }, null, 2)}\n`);
+  await rm(path.join(generatedDir, 'country-admin-stats.json'), { force: true });
+  await writeFile(path.join(generatedDir, 'country-admin-stats.jsonl'), jsonLineContent(statsRows));
   await writeFile(path.join(reportDir, 'country-tier-candidate-report.md'), countryTierCandidateReportMarkdown(candidateReport));
   return candidateReport;
 }
@@ -779,24 +774,25 @@ export async function generateCountryTierCandidateReport(rootDir = process.cwd()
 export async function generateCountryProfiles(rootDir = process.cwd()): Promise<CountryProfileReport> {
   const generatedDir = path.join(rootDir, 'data', 'generated');
   const reportDir = path.join(rootDir, 'data', 'report');
-  const { rules, overrideSeed, seeds, dataset, supportedAdmin2Keys, statsRows } = await loadCountryProfileInputs(rootDir, true);
-  const detailedCountries = selectDetailedCountries(statsRows, overrideSeed);
+  const { rules, countryTierSeed, seeds, dataset, supportedAdmin2Keys, statsRows } = await loadCountryProfileInputs(rootDir, true);
+  const detailedCountries = selectDetailedCountries(statsRows, countryTierSeed);
   const profiles = statsRows
     .map((stats) => toProfile(stats, rules, detailedCountries.get(stats.countryCode)))
     .sort((a, b) => {
       const tierOrder = { C3: 0, C2: 1, C1: 2 } satisfies Record<CountryTier, number>;
       return tierOrder[a.countryTier] - tierOrder[b.countryTier] || a.countryCode.localeCompare(b.countryCode);
     });
-  const hash = createHash('sha1').update(JSON.stringify({ rules, statsRows, profiles })).digest('hex').slice(0, 12);
-  const version = `country-profiles-${hash}`;
+  const version = generatedDataVersion('country-profiles', profiles);
   const generatedAt = new Date().toISOString();
   const countryTierCandidates = buildCountryTierCandidates(rules, statsRows, profiles, seeds, dataset, supportedAdmin2Keys);
   const report = buildReport(version, generatedAt, rules, statsRows, profiles, seeds, countryTierCandidates);
 
   await mkdir(generatedDir, { recursive: true });
   await mkdir(reportDir, { recursive: true });
-  await writeFile(path.join(generatedDir, 'country-admin-stats.json'), `${JSON.stringify({ version, generatedAt: report.generatedAt, stats: statsRows }, null, 2)}\n`);
-  await writeFile(path.join(generatedDir, 'country-profiles.json'), `${JSON.stringify({ version, generatedAt: report.generatedAt, profiles }, null, 2)}\n`);
+  await rm(path.join(generatedDir, 'country-admin-stats.json'), { force: true });
+  await rm(path.join(generatedDir, 'country-profiles.json'), { force: true });
+  await writeFile(path.join(generatedDir, 'country-admin-stats.jsonl'), jsonLineContent(statsRows));
+  await writeFile(path.join(generatedDir, 'country-profiles.jsonl'), jsonLineContent(profiles));
   await writeFile(path.join(reportDir, 'country-profile-report.md'), reportMarkdown(report));
   return report;
 }

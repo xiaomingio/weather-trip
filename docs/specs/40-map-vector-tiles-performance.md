@@ -234,7 +234,7 @@ flowchart TD
   rawBoundary["行政边界 raw<br/>Natural Earth / geoBoundaries / DataV"]
   profiles["国家分层<br/>country profiles"]
   geojson["GeoJSON 中间产物<br/>country / c2_admin1 / c3_admin1 / c3_admin2"]
-  regions["统一天气区域中间文件<br/>geo-regions.ndjson"]
+  regions["统一天气区域中间文件<br/>data/generated/geo/regions.jsonl"]
   tiles["静态矢量瓦片<br/>region-tiles/**/*.mvt"]
   report["瓦片报告<br/>data/report/geo-tile-report.md"]
   browser["MapLibre vector source"]
@@ -250,7 +250,7 @@ flowchart TD
 中间检查文件：
 
 ```text
-data/generated/geo-regions.ndjson
+data/generated/geo/regions.jsonl
 ```
 
 公开产物：

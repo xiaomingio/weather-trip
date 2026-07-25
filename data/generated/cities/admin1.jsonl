@@ -1,0 +1,1812 @@
+{"countryCode":"CN","admin1Code":"22","names":{"en":"Beijing","zh":"北京"}}
+{"countryCode":"CD","admin1Code":"06","names":{"en":"Kinshasa","zh":"Kinshasa"}}
+{"countryCode":"MX","admin1Code":"09","names":{"en":"Mexico City","zh":"墨西哥城市"}}
+{"countryCode":"RU","admin1Code":"48","names":{"en":"Moscow","zh":"Moscow"}}
+{"countryCode":"BD","admin1Code":"81","names":{"en":"Dhaka Division","zh":"达卡专区"}}
+{"countryCode":"KR","admin1Code":"11","names":{"en":"Seoul","zh":"首尔特别市"}}
+{"countryCode":"JP","admin1Code":"40","names":{"en":"Tokyo","zh":"东京都"}}
+{"countryCode":"EG","admin1Code":"11","names":{"en":"Cairo","zh":"开罗省"}}
+{"countryCode":"GB","admin1Code":"ENG","names":{"en":"England","zh":"英格兰"}}
+{"countryCode":"ID","admin1Code":"04","names":{"en":"Jakarta","zh":"Jakarta"}}
+{"countryCode":"VN","admin1Code":"01","names":{"en":"Hanoi","zh":"Hanoi"}}
+{"countryCode":"TW","admin1Code":"04","names":{"en":"Taiwan","zh":"台湾省 or 台湾省"}}
+{"countryCode":"PE","admin1Code":"LMA","names":{"en":"Lima Province","zh":"利马省"}}
+{"countryCode":"CO","admin1Code":"34","names":{"en":"Bogota D.C.","zh":"Bogota D.C."}}
+{"countryCode":"IQ","admin1Code":"07","names":{"en":"Baghdad","zh":"巴格达省"}}
+{"countryCode":"IR","admin1Code":"26","names":{"en":"Tehran","zh":"德黑兰省"}}
+{"countryCode":"TH","admin1Code":"40","names":{"en":"Bangkok","zh":"曼谷"}}
+{"countryCode":"CL","admin1Code":"12","names":{"en":"Santiago Metropolitan","zh":"圣地亚哥首都大区"}}
+{"countryCode":"AF","admin1Code":"13","names":{"en":"Kabul","zh":"喀布尔省"}}
+{"countryCode":"KE","admin1Code":"05","names":{"en":"Nairobi County","zh":"内罗毕郡"}}
+{"countryCode":"ML","admin1Code":"01","names":{"en":"Bamako","zh":"巴马科"}}
+{"countryCode":"SA","admin1Code":"10","names":{"en":"Riyadh Region","zh":"利雅得省"}}
+{"countryCode":"ET","admin1Code":"44","names":{"en":"Addis Ababa","zh":"Addis Ababa"}}
+{"countryCode":"TR","admin1Code":"68","names":{"en":"Ankara","zh":"安卡拉次分区"}}
+{"countryCode":"DE","admin1Code":"16","names":{"en":"State of Berlin","zh":"柏林"}}
+{"countryCode":"ES","admin1Code":"29","names":{"en":"Madrid","zh":"马德里自治区"}}
+{"countryCode":"KP","admin1Code":"12","names":{"en":"Pyongyang","zh":"Pyongyang"}}
+{"countryCode":"VE","admin1Code":"25","names":{"en":"Distrito Federal","zh":"首都区"}}
+{"countryCode":"UA","admin1Code":"12","names":{"en":"Kyiv City","zh":"Kyiv City"}}
+{"countryCode":"AR","admin1Code":"07","names":{"en":"Buenos Aires F.D.","zh":"布宜诺斯艾利斯"}}
+{"countryCode":"EC","admin1Code":"18","names":{"en":"Pichincha","zh":"皮钦查省"}}
+{"countryCode":"AO","admin1Code":"20","names":{"en":"Luanda","zh":"罗安达省"}}
+{"countryCode":"NG","admin1Code":"11","names":{"en":"FCT","zh":"联邦首都特区"}}
+{"countryCode":"SN","admin1Code":"01","names":{"en":"Dakar","zh":"达喀尔区"}}
+{"countryCode":"SO","admin1Code":"02","names":{"en":"Banaadir","zh":"Banaadir"}}
+{"countryCode":"BF","admin1Code":"03","names":{"en":"Centre","zh":"中央大区"}}
+{"countryCode":"DZ","admin1Code":"01","names":{"en":"Algiers","zh":"阿尔及尔省"}}
+{"countryCode":"AZ","admin1Code":"09","names":{"en":"Baki","zh":"Baki"}}
+{"countryCode":"IT","admin1Code":"07","names":{"en":"Lazio","zh":"拉齐奥"}}
+{"countryCode":"ZM","admin1Code":"09","names":{"en":"Lusaka Province","zh":"卢萨卡省"}}
+{"countryCode":"BR","admin1Code":"07","names":{"en":"Federal District","zh":"联邦区"}}
+{"countryCode":"DO","admin1Code":"34","names":{"en":"Nacional","zh":"国家特区"}}
+{"countryCode":"TG","admin1Code":"24","names":{"en":"Maritime","zh":"滨海区"}}
+{"countryCode":"CU","admin1Code":"02","names":{"en":"Havana","zh":"Havana"}}
+{"countryCode":"FR","admin1Code":"11","names":{"en":"Ile-de-France","zh":"法兰西岛大区"}}
+{"countryCode":"ZA","admin1Code":"06","names":{"en":"Gauteng","zh":"豪登省"}}
+{"countryCode":"CG","admin1Code":"12","names":{"en":"Brazzaville","zh":"Brazzaville"}}
+{"countryCode":"UZ","admin1Code":"13","names":{"en":"Tashkent","zh":"Tashkent"}}
+{"countryCode":"SD","admin1Code":"29","names":{"en":"Khartoum","zh":"喀土穆州"}}
+{"countryCode":"GH","admin1Code":"01","names":{"en":"Greater Accra","zh":"Greater Accra"}}
+{"countryCode":"YE","admin1Code":"26","names":{"en":"Amanat Alasimah","zh":"Amanat Alasimah"}}
+{"countryCode":"GN","admin1Code":"04","names":{"en":"Conakry","zh":"Conakry"}}
+{"countryCode":"LB","admin1Code":"04","names":{"en":"Beirut","zh":"Beirut"}}
+{"countryCode":"RO","admin1Code":"10","names":{"en":"Bucharest","zh":"Bucharest"}}
+{"countryCode":"AE","admin1Code":"01","names":{"en":"Abu Dhabi","zh":"阿布扎比酋长国"}}
+{"countryCode":"BY","admin1Code":"04","names":{"en":"Minsk City","zh":"明斯克"}}
+{"countryCode":"HU","admin1Code":"05","names":{"en":"Budapest","zh":"Budapest"}}
+{"countryCode":"PL","admin1Code":"78","names":{"en":"Mazovia","zh":"Mazovia"}}
+{"countryCode":"AT","admin1Code":"09","names":{"en":"State of Vienna","zh":"State of Vienna"}}
+{"countryCode":"UG","admin1Code":"C","names":{"en":"Central Region","zh":"中部区"}}
+{"countryCode":"MA","admin1Code":"04","names":{"en":"Rabat-Sale-Kenitra","zh":"Rabat-Sale-Kenitra"}}
+{"countryCode":"PH","admin1Code":"NCR","names":{"en":"National Capital Region","zh":"National Capital Region"}}
+{"countryCode":"KH","admin1Code":"22","names":{"en":"Phnom Penh","zh":"Phnom Penh"}}
+{"countryCode":"SY","admin1Code":"13","names":{"en":"Damascus Governorate","zh":"大马士革省"}}
+{"countryCode":"KZ","admin1Code":"05","names":{"en":"Astana","zh":"Astana"}}
+{"countryCode":"ZW","admin1Code":"10","names":{"en":"Harare","zh":"哈拉雷省"}}
+{"countryCode":"LR","admin1Code":"14","names":{"en":"Montserrado County","zh":"蒙特塞拉多县"}}
+{"countryCode":"SE","admin1Code":"26","names":{"en":"Stockholm","zh":"Stockholm"}}
+{"countryCode":"PY","admin1Code":"22","names":{"en":"Asuncion","zh":"Asuncion"}}
+{"countryCode":"MY","admin1Code":"14","names":{"en":"Kuala Lumpur","zh":"Kuala Lumpur"}}
+{"countryCode":"NP","admin1Code":"3","names":{"en":"Bagmati Province","zh":"Bagmati Province"}}
+{"countryCode":"TD","admin1Code":"21","names":{"en":"N'Djamena","zh":"N'Djamena"}}
+{"countryCode":"MG","admin1Code":"11","names":{"en":"Analamanga","zh":"Analamanga"}}
+{"countryCode":"NE","admin1Code":"08","names":{"en":"Niamey","zh":"Niamey"}}
+{"countryCode":"LY","admin1Code":"77","names":{"en":"Tripoli","zh":"Tripoli"}}
+{"countryCode":"CM","admin1Code":"11","names":{"en":"Centre","zh":"中部区"}}
+{"countryCode":"JO","admin1Code":"16","names":{"en":"Amman","zh":"安曼省"}}
+{"countryCode":"RS","admin1Code":"SE","names":{"en":"Central Serbia","zh":"Central Serbia"}}
+{"countryCode":"UY","admin1Code":"10","names":{"en":"Montevideo Department","zh":"蒙得维的亚省"}}
+{"countryCode":"MZ","admin1Code":"11","names":{"en":"Maputo City","zh":"Maputo City"}}
+{"countryCode":"HT","admin1Code":"11","names":{"en":"Ouest","zh":"西部省"}}
+{"countryCode":"CZ","admin1Code":"52","names":{"en":"Prague","zh":"Prague"}}
+{"countryCode":"DK","admin1Code":"17","names":{"en":"Capital Region","zh":"Capital Region"}}
+{"countryCode":"BG","admin1Code":"42","names":{"en":"Sofia-Capital","zh":"Sofia-Capital"}}
+{"countryCode":"AM","admin1Code":"11","names":{"en":"Yerevan","zh":"埃里温"}}
+{"countryCode":"RW","admin1Code":"12","names":{"en":"Kigali","zh":"Kigali"}}
+{"countryCode":"MW","admin1Code":"C","names":{"en":"Central Region","zh":"中央区"}}
+{"countryCode":"NO","admin1Code":"12","names":{"en":"Oslo","zh":"Oslo"}}
+{"countryCode":"GE","admin1Code":"51","names":{"en":"Tbilisi","zh":"第比利斯"}}
+{"countryCode":"TM","admin1Code":"S","names":{"en":"Ashgabat","zh":"Ashgabat"}}
+{"countryCode":"IE","admin1Code":"L","names":{"en":"Leinster","zh":"伦斯特省"}}
+{"countryCode":"BE","admin1Code":"BRU","names":{"en":"Brussels Capital","zh":"布鲁塞尔-首都大区"}}
+{"countryCode":"CA","admin1Code":"08","names":{"en":"Ontario","zh":"安大略"}}
+{"countryCode":"GT","admin1Code":"07","names":{"en":"Guatemala","zh":"瓜地马拉省"}}
+{"countryCode":"NI","admin1Code":"10","names":{"en":"Managua Department","zh":"Managua Department"}}
+{"countryCode":"JM","admin1Code":"17","names":{"en":"Kingston","zh":"金斯敦区"}}
+{"countryCode":"MM","admin1Code":"18","names":{"en":"Nay Pyi Taw","zh":"Nay Pyi Taw"}}
+{"countryCode":"KG","admin1Code":"01","names":{"en":"Bishkek","zh":"Bishkek"}}
+{"countryCode":"HN","admin1Code":"08","names":{"en":"Francisco Morazan Department","zh":"弗朗西斯科·莫拉桑省"}}
+{"countryCode":"GA","admin1Code":"01","names":{"en":"Estuaire","zh":"河口省"}}
+{"countryCode":"MN","admin1Code":"20","names":{"en":"Ulaanbaatar","zh":"Ulaanbaatar"}}
+{"countryCode":"LA","admin1Code":"24","names":{"en":"Vientiane Prefecture","zh":"永珍地区"}}
+{"countryCode":"CF","admin1Code":"18","names":{"en":"Bangui","zh":"Bangui"}}
+{"countryCode":"SL","admin1Code":"04","names":{"en":"Western Area","zh":"西部区"}}
+{"countryCode":"OM","admin1Code":"06","names":{"en":"Muscat","zh":"马斯喀特省"}}
+{"countryCode":"TZ","admin1Code":"03","names":{"en":"Dodoma","zh":"多多马区"}}
+{"countryCode":"LV","admin1Code":"25","names":{"en":"Riga","zh":"Riga"}}
+{"countryCode":"NL","admin1Code":"07","names":{"en":"North Holland","zh":"北荷兰省"}}
+{"countryCode":"BA","admin1Code":"01","names":{"en":"Federation of B&H","zh":"Federation of B&H"}}
+{"countryCode":"TN","admin1Code":"36","names":{"en":"Tunis Governorate","zh":"突尼斯省"}}
+{"countryCode":"US","admin1Code":"DC","names":{"en":"District of Columbia","zh":"哥伦比亚特区"}}
+{"countryCode":"TJ","admin1Code":"04","names":{"en":"Dushanbe","zh":"Dushanbe"}}
+{"countryCode":"GR","admin1Code":"ESYE31","names":{"en":"Attica","zh":"Attica"}}
+{"countryCode":"HR","admin1Code":"21","names":{"en":"Zagreb","zh":"Zagreb"}}
+{"countryCode":"FI","admin1Code":"01","names":{"en":"Uusimaa","zh":"新地区"}}
+{"countryCode":"MO","admin1Code":"02","names":{"en":"02","zh":"02"}}
+{"countryCode":"LK","admin1Code":"36","names":{"en":"Western Province","zh":"西部省"}}
+{"countryCode":"MD","admin1Code":"57","names":{"en":"Chisinau Municipality","zh":"Chisinau Municipality"}}
+{"countryCode":"DJ","admin1Code":"07","names":{"en":"Djibouti","zh":"Djibouti"}}
+{"countryCode":"PK","admin1Code":"08","names":{"en":"Islamabad","zh":"伊斯兰堡首都区"}}
+{"countryCode":"ER","admin1Code":"05","names":{"en":"Maekel","zh":"中部区"}}
+{"countryCode":"XK","admin1Code":"10097360","names":{"en":"Pristina","zh":"Pristina"}}
+{"countryCode":"LT","admin1Code":"65","names":{"en":"Vilnius","zh":"维尔纽斯县"}}
+{"countryCode":"SV","admin1Code":"10","names":{"en":"San Salvador Department","zh":"圣萨尔瓦多省"}}
+{"countryCode":"PT","admin1Code":"14","names":{"en":"Lisbon","zh":"里斯本区"}}
+{"countryCode":"MK","admin1Code":"F6","names":{"en":"Grad Skopje","zh":"Grad Skopje"}}
+{"countryCode":"SS","admin1Code":"01","names":{"en":"Central Equatoria","zh":"中赤道州"}}
+{"countryCode":"GW","admin1Code":"11","names":{"en":"Bissau","zh":"Bissau"}}
+{"countryCode":"SK","admin1Code":"02","names":{"en":"Bratislava Region","zh":"布拉迪斯拉发州"}}
+{"countryCode":"AL","admin1Code":"50","names":{"en":"Tirana","zh":"Tirana"}}
+{"countryCode":"PR","admin1Code":"127","names":{"en":"San Juan","zh":"San Juan"}}
+{"countryCode":"PA","admin1Code":"08","names":{"en":"Panama","zh":"Panama"}}
+{"countryCode":"EE","admin1Code":"01","names":{"en":"Harjumaa","zh":"哈尔尤县"}}
+{"countryCode":"NA","admin1Code":"21","names":{"en":"Khomas Region","zh":"霍马斯区"}}
+{"countryCode":"NZ","admin1Code":"G2","names":{"en":"Wellington Region","zh":"惠灵顿大区"}}
+{"countryCode":"AU","admin1Code":"01","names":{"en":"Australian Capital Territory","zh":"澳大利亚首都领地"}}
+{"countryCode":"LS","admin1Code":"14","names":{"en":"Maseru District","zh":"马塞卢区"}}
+{"countryCode":"QA","admin1Code":"01","names":{"en":"Baladiyat ad Dawhah","zh":"Baladiyat ad Dawhah"}}
+{"countryCode":"CR","admin1Code":"08","names":{"en":"San Jose","zh":"San Jose"}}
+{"countryCode":"IN","admin1Code":"07","names":{"en":"Delhi","zh":"Delhi"}}
+{"countryCode":"PG","admin1Code":"20","names":{"en":"National Capital","zh":"National Capital"}}
+{"countryCode":"CI","admin1Code":"81","names":{"en":"Lacs District","zh":"湖泊区"}}
+{"countryCode":"SI","admin1Code":"61","names":{"en":"Ljubljana","zh":"卢布尔雅那城市市镇"}}
+{"countryCode":"BJ","admin1Code":"16","names":{"en":"Oueme","zh":"韦梅省"}}
+{"countryCode":"BW","admin1Code":"14","names":{"en":"Gaborone","zh":"Gaborone"}}
+{"countryCode":"ME","admin1Code":"16","names":{"en":"Podgorica","zh":"Podgorica"}}
+{"countryCode":"GY","admin1Code":"12","names":{"en":"Demerara-Mahaica","zh":"德梅拉拉-马海卡区"}}
+{"countryCode":"BS","admin1Code":"23","names":{"en":"New Providence","zh":"New Providence"}}
+{"countryCode":"BO","admin1Code":"01","names":{"en":"Chuquisaca Department","zh":"丘基萨卡省"}}
+{"countryCode":"SR","admin1Code":"16","names":{"en":"Paramaribo District","zh":"帕拉马里博区"}}
+{"countryCode":"CY","admin1Code":"04","names":{"en":"Nicosia","zh":"尼科西亚区"}}
+{"countryCode":"MU","admin1Code":"18","names":{"en":"Port Louis","zh":"Port Louis"}}
+{"countryCode":"RE","admin1Code":"RE","names":{"en":"Reunion","zh":"Reunion"}}
+{"countryCode":"TL","admin1Code":"DI","names":{"en":"Dili Municipality","zh":"帝力县"}}
+{"countryCode":"BH","admin1Code":"16","names":{"en":"Manama","zh":"首都省"}}
+{"countryCode":"CV","admin1Code":"14","names":{"en":"Praia","zh":"Praia"}}
+{"countryCode":"CH","admin1Code":"BE","names":{"en":"Bern","zh":"伯恩州"}}
+{"countryCode":"IS","admin1Code":"39","names":{"en":"Capital Region","zh":"首都区"}}
+{"countryCode":"MV","admin1Code":"38","names":{"en":"Kaafu Atoll","zh":"Kaafu Atoll"}}
+{"countryCode":"BT","admin1Code":"20","names":{"en":"Thimphu District","zh":"Thimphu District"}}
+{"countryCode":"BB","admin1Code":"08","names":{"en":"Saint Michael","zh":"圣迈克尔区"}}
+{"countryCode":"NC","admin1Code":"02","names":{"en":"South Province","zh":"South Province"}}
+{"countryCode":"MQ","admin1Code":"MQ","names":{"en":"Martinique","zh":"Martinique"}}
+{"countryCode":"FJ","admin1Code":"01","names":{"en":"Central","zh":"中央大区"}}
+{"countryCode":"LU","admin1Code":"LU","names":{"en":"Luxembourg","zh":"Luxembourg"}}
+{"countryCode":"SZ","admin1Code":"01","names":{"en":"Hhohho Region","zh":"霍霍"}}
+{"countryCode":"KM","admin1Code":"02","names":{"en":"Grande Comore","zh":"大科摩罗岛"}}
+{"countryCode":"BI","admin1Code":"13","names":{"en":"Gitega","zh":"基特加省"}}
+{"countryCode":"BN","admin1Code":"02","names":{"en":"Brunei-Muara District","zh":"汶莱摩拉县"}}
+{"countryCode":"GF","admin1Code":"GF","names":{"en":"Guyane","zh":"Guyane"}}
+{"countryCode":"KW","admin1Code":"02","names":{"en":"Al Asimah","zh":"Al Asimah"}}
+{"countryCode":"SB","admin1Code":"14","names":{"en":"Honiara","zh":"Honiara"}}
+{"countryCode":"YT","admin1Code":"97611","names":{"en":"Mamoudzou","zh":"Mamoudzou"}}
+{"countryCode":"ST","admin1Code":"02","names":{"en":"Sao Tome Island","zh":"圣多美岛"}}
+{"countryCode":"AG","admin1Code":"04","names":{"en":"Saint John Parish","zh":"圣约翰区"}}
+{"countryCode":"TT","admin1Code":"05","names":{"en":"Port of Spain","zh":"Port of Spain"}}
+{"countryCode":"MP","admin1Code":"110","names":{"en":"Saipan","zh":"Saipan"}}
+{"countryCode":"WS","admin1Code":"10","names":{"en":"Tuamasaga","zh":"图阿马萨加"}}
+{"countryCode":"KI","admin1Code":"01","names":{"en":"Gilbert Islands","zh":"Gilbert Islands"}}
+{"countryCode":"GM","admin1Code":"01","names":{"en":"Banjul","zh":"Banjul"}}
+{"countryCode":"VU","admin1Code":"18","names":{"en":"Shefa","zh":"Shefa"}}
+{"countryCode":"MC","admin1Code":"00","names":{"en":"Municipality of Monaco","zh":"Municipality of Monaco"}}
+{"countryCode":"AW","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"KY","admin1Code":"10346796","names":{"en":"George Town","zh":"George Town"}}
+{"countryCode":"JE","admin1Code":"3237864","names":{"en":"St Helier","zh":"St Helier"}}
+{"countryCode":"GI","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"PF","admin1Code":"01","names":{"en":"Iles du Vent","zh":"Iles du Vent"}}
+{"countryCode":"IM","admin1Code":"9782170","names":{"en":"Douglas","zh":"Douglas"}}
+{"countryCode":"MH","admin1Code":"190","names":{"en":"Majuro Atoll","zh":"Majuro Atoll"}}
+{"countryCode":"VC","admin1Code":"04","names":{"en":"Saint George Parish","zh":"圣乔治区"}}
+{"countryCode":"SC","admin1Code":"26","names":{"en":"La Riviere Anglaise","zh":"英吉利河"}}
+{"countryCode":"TO","admin1Code":"02","names":{"en":"Tongatapu","zh":"Tongatapu"}}
+{"countryCode":"AD","admin1Code":"07","names":{"en":"Andorra la Vella","zh":"Andorra la Vella"}}
+{"countryCode":"LC","admin1Code":"03","names":{"en":"Castries","zh":"卡斯特里区"}}
+{"countryCode":"VI","admin1Code":"030","names":{"en":"Saint Thomas Island","zh":"Saint Thomas Island"}}
+{"countryCode":"DM","admin1Code":"04","names":{"en":"Saint George Parish","zh":"圣乔治堂区"}}
+{"countryCode":"GG","admin1Code":"6417228","names":{"en":"St Peter Port","zh":"St Peter Port"}}
+{"countryCode":"GL","admin1Code":"07","names":{"en":"Sermersooq","zh":"Sermersooq"}}
+{"countryCode":"BZ","admin1Code":"02","names":{"en":"Cayo District","zh":"卡约区"}}
+{"countryCode":"CK","admin1Code":"11695425","names":{"en":"Rarotonga","zh":"Rarotonga"}}
+{"countryCode":"FO","admin1Code":"ST","names":{"en":"Streymoy","zh":"Streymoy"}}
+{"countryCode":"KN","admin1Code":"03","names":{"en":"Saint George Basseterre","zh":"Saint George Basseterre"}}
+{"countryCode":"AS","admin1Code":"010","names":{"en":"Eastern District","zh":"Eastern District"}}
+{"countryCode":"GP","admin1Code":"GP","names":{"en":"Guadeloupe","zh":"Guadeloupe"}}
+{"countryCode":"AX","admin1Code":"211","names":{"en":"Mariehamn","zh":"Mariehamn"}}
+{"countryCode":"BQ","admin1Code":"BO","names":{"en":"Bonaire","zh":"Bonaire"}}
+{"countryCode":"VG","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"GD","admin1Code":"03","names":{"en":"Saint George Parish","zh":"圣乔治区"}}
+{"countryCode":"FM","admin1Code":"02","names":{"en":"Pohnpei State","zh":"波纳佩州"}}
+{"countryCode":"MT","admin1Code":"60","names":{"en":"Valletta","zh":"Valletta"}}
+{"countryCode":"TV","admin1Code":"FUN","names":{"en":"Funafuti","zh":"Funafuti"}}
+{"countryCode":"PM","admin1Code":"97502","names":{"en":"Saint-Pierre","zh":"Saint-Pierre"}}
+{"countryCode":"BL","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"MF","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"LI","admin1Code":"11","names":{"en":"Vaduz","zh":"Vaduz"}}
+{"countryCode":"SM","admin1Code":"07","names":{"en":"San Marino","zh":"San Marino"}}
+{"countryCode":"TC","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"SJ","admin1Code":"21","names":{"en":"Svalbard","zh":"斯瓦尔巴群岛"}}
+{"countryCode":"FK","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"AI","admin1Code":"11205396","names":{"en":"The Valley","zh":"The Valley"}}
+{"countryCode":"GQ","admin1Code":"10","names":{"en":"Djibloho","zh":"Djibloho"}}
+{"countryCode":"WF","admin1Code":"98613","names":{"en":"Uvea","zh":"Uvea"}}
+{"countryCode":"NR","admin1Code":"14","names":{"en":"Yaren District","zh":"亚伦区"}}
+{"countryCode":"GU","admin1Code":"AN","names":{"en":"Hagatna","zh":"Hagatna"}}
+{"countryCode":"BM","admin1Code":"03","names":{"en":"Hamilton city","zh":"Hamilton city"}}
+{"countryCode":"NF","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"SH","admin1Code":"02","names":{"en":"Saint Helena","zh":"Saint Helena"}}
+{"countryCode":"NU","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"CX","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"TF","admin1Code":"03","names":{"en":"Kerguelen","zh":"Kerguelen"}}
+{"countryCode":"GS","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"MS","admin1Code":"01","names":{"en":"Saint Anthony","zh":"Saint Anthony"}}
+{"countryCode":"PW","admin1Code":"07","names":{"en":"Melekeok","zh":"梅莱凯奥克州"}}
+{"countryCode":"CN","admin1Code":"23","names":{"en":"Shanghai","zh":"上海市"}}
+{"countryCode":"CN","admin1Code":"30","names":{"en":"Guangdong","zh":"广东"}}
+{"countryCode":"TR","admin1Code":"34","names":{"en":"Istanbul","zh":"伊斯坦布尔"}}
+{"countryCode":"CN","admin1Code":"32","names":{"en":"Sichuan","zh":"四川"}}
+{"countryCode":"PK","admin1Code":"04","names":{"en":"Punjab","zh":"旁遮普省"}}
+{"countryCode":"IN","admin1Code":"16","names":{"en":"Maharashtra","zh":"马哈拉施特拉邦"}}
+{"countryCode":"BR","admin1Code":"27","names":{"en":"Sao Paulo","zh":"圣保罗州"}}
+{"countryCode":"PK","admin1Code":"05","names":{"en":"Sindh","zh":"信德省"}}
+{"countryCode":"CN","admin1Code":"28","names":{"en":"Tianjin","zh":"天津"}}
+{"countryCode":"CN","admin1Code":"12","names":{"en":"Hubei","zh":"湖北"}}
+{"countryCode":"CN","admin1Code":"26","names":{"en":"Shaanxi","zh":"陕西"}}
+{"countryCode":"CN","admin1Code":"04","names":{"en":"Jiangsu","zh":"江苏"}}
+{"countryCode":"CN","admin1Code":"02","names":{"en":"Zhejiang","zh":"浙江"}}
+{"countryCode":"IN","admin1Code":"19","names":{"en":"Karnataka","zh":"卡纳塔克邦"}}
+{"countryCode":"CN","admin1Code":"33","names":{"en":"Chongqing","zh":"重庆市"}}
+{"countryCode":"CN","admin1Code":"19","names":{"en":"Liaoning","zh":"辽宁"}}
+{"countryCode":"IN","admin1Code":"40","names":{"en":"Telangana","zh":"特伦甘纳邦"}}
+{"countryCode":"BR","admin1Code":"21","names":{"en":"Rio de Janeiro","zh":"里约热内卢州"}}
+{"countryCode":"CI","admin1Code":"93","names":{"en":"Abidjan Autonomous District","zh":"Abidjan Autonomous District"}}
+{"countryCode":"AU","admin1Code":"02","names":{"en":"New South Wales","zh":"新南威尔士州"}}
+{"countryCode":"AU","admin1Code":"07","names":{"en":"Victoria","zh":"维多利亚州"}}
+{"countryCode":"TZ","admin1Code":"23","names":{"en":"Dar es Salaam Region","zh":"达累斯萨拉姆区"}}
+{"countryCode":"RU","admin1Code":"66","names":{"en":"St.-Petersburg","zh":"St.-Petersburg"}}
+{"countryCode":"EG","admin1Code":"06","names":{"en":"Alexandria","zh":"亚历山大省"}}
+{"countryCode":"CN","admin1Code":"08","names":{"en":"Heilongjiang","zh":"黑龙江"}}
+{"countryCode":"CN","admin1Code":"01","names":{"en":"Anhui","zh":"安徽"}}
+{"countryCode":"NG","admin1Code":"29","names":{"en":"Kano State","zh":"卡诺州"}}
+{"countryCode":"ZA","admin1Code":"11","names":{"en":"Western Cape","zh":"西开普省"}}
+{"countryCode":"PK","admin1Code":"03","names":{"en":"Khyber Pakhtunkhwa","zh":"开伯尔-普什图省"}}
+{"countryCode":"CN","admin1Code":"05","names":{"en":"Jilin","zh":"吉林"}}
+{"countryCode":"IN","admin1Code":"25","names":{"en":"Tamil Nadu","zh":"泰米尔纳德邦"}}
+{"countryCode":"IN","admin1Code":"28","names":{"en":"West Bengal","zh":"西孟加拉邦"}}
+{"countryCode":"MM","admin1Code":"17","names":{"en":"Yangon","zh":"仰光省"}}
+{"countryCode":"EG","admin1Code":"08","names":{"en":"Giza","zh":"吉萨省"}}
+{"countryCode":"CN","admin1Code":"25","names":{"en":"Shandong","zh":"山东"}}
+{"countryCode":"CN","admin1Code":"24","names":{"en":"Shanxi","zh":"山西"}}
+{"countryCode":"CN","admin1Code":"09","names":{"en":"Henan","zh":"河南"}}
+{"countryCode":"CN","admin1Code":"10","names":{"en":"Hebei","zh":"河北"}}
+{"countryCode":"BD","admin1Code":"84","names":{"en":"Chittagong","zh":"吉大港专区"}}
+{"countryCode":"CN","admin1Code":"29","names":{"en":"Yunnan","zh":"云南"}}
+{"countryCode":"CN","admin1Code":"16","names":{"en":"Guangxi","zh":"广西"}}
+{"countryCode":"AE","admin1Code":"03","names":{"en":"Dubai","zh":"Dubai"}}
+{"countryCode":"JP","admin1Code":"19","names":{"en":"Kanagawa","zh":"神奈川县"}}
+{"countryCode":"CN","admin1Code":"07","names":{"en":"Fujian","zh":"福建省"}}
+{"countryCode":"MA","admin1Code":"06","names":{"en":"Casablanca-Settat","zh":"Casablanca-Settat"}}
+{"countryCode":"NG","admin1Code":"32","names":{"en":"Oyo State","zh":"奥约州"}}
+{"countryCode":"KR","admin1Code":"10","names":{"en":"Busan","zh":"釜山广域市"}}
+{"countryCode":"TR","admin1Code":"16","names":{"en":"Bursa Province","zh":"布尔萨省"}}
+{"countryCode":"CN","admin1Code":"11","names":{"en":"Hunan","zh":"湖南"}}
+{"countryCode":"IN","admin1Code":"24","names":{"en":"Rajasthan","zh":"拉贾斯坦邦"}}
+{"countryCode":"CN","admin1Code":"18","names":{"en":"Guizhou","zh":"贵州"}}
+{"countryCode":"CN","admin1Code":"13","names":{"en":"Xinjiang","zh":"新疆"}}
+{"countryCode":"ID","admin1Code":"08","names":{"en":"East Java","zh":"东爪哇省"}}
+{"countryCode":"KR","admin1Code":"12","names":{"en":"Incheon","zh":"Incheon"}}
+{"countryCode":"CN","admin1Code":"15","names":{"en":"Gansu","zh":"甘肃"}}
+{"countryCode":"TR","admin1Code":"35","names":{"en":"Izmir Province","zh":"伊兹密尔省"}}
+{"countryCode":"CN","admin1Code":"31","names":{"en":"Hainan","zh":"海南"}}
+{"countryCode":"AU","admin1Code":"04","names":{"en":"Queensland","zh":"Queensland"}}
+{"countryCode":"JP","admin1Code":"32","names":{"en":"Osaka","zh":"大阪府"}}
+{"countryCode":"TW","admin1Code":"02","names":{"en":"Takao","zh":"高雄市"}}
+{"countryCode":"EC","admin1Code":"10","names":{"en":"Guayas","zh":"瓜亚斯省"}}
+{"countryCode":"BR","admin1Code":"15","names":{"en":"Minas Gerais","zh":"米纳斯吉拉斯州"}}
+{"countryCode":"BR","admin1Code":"05","names":{"en":"Bahia","zh":"Bahia"}}
+{"countryCode":"VN","admin1Code":"31","names":{"en":"Hai Phong","zh":"Hai Phong"}}
+{"countryCode":"GH","admin1Code":"02","names":{"en":"Ashanti","zh":"Ashanti"}}
+{"countryCode":"ID","admin1Code":"30","names":{"en":"West Java","zh":"西爪哇省"}}
+{"countryCode":"ID","admin1Code":"26","names":{"en":"North Sumatra","zh":"北苏门答腊省"}}
+{"countryCode":"IN","admin1Code":"36","names":{"en":"Uttar Pradesh","zh":"北方邦"}}
+{"countryCode":"BR","admin1Code":"06","names":{"en":"Ceara","zh":"Ceara"}}
+{"countryCode":"CO","admin1Code":"29","names":{"en":"Valle del Cauca Department","zh":"考卡山谷省"}}
+{"countryCode":"AU","admin1Code":"08","names":{"en":"Western Australia","zh":"西澳大利亚州"}}
+{"countryCode":"KR","admin1Code":"15","names":{"en":"Daegu","zh":"Daegu"}}
+{"countryCode":"CN","admin1Code":"03","names":{"en":"Jiangxi","zh":"江西"}}
+{"countryCode":"CN","admin1Code":"20","names":{"en":"Inner Mongolia","zh":"内蒙古"}}
+{"countryCode":"JP","admin1Code":"01","names":{"en":"Aichi","zh":"爱知县"}}
+{"countryCode":"IR","admin1Code":"42","names":{"en":"Razavi Khorasan","zh":"礼萨呼罗珊省"}}
+{"countryCode":"TR","admin1Code":"83","names":{"en":"Gaziantep","zh":"加济安泰普省"}}
+{"countryCode":"CD","admin1Code":"14","names":{"en":"Haut-Katanga","zh":"上加丹加省"}}
+{"countryCode":"BR","admin1Code":"04","names":{"en":"Amazonas","zh":"亚马孙州"}}
+{"countryCode":"NG","admin1Code":"50","names":{"en":"Rivers State","zh":"河流州"}}
+{"countryCode":"AR","admin1Code":"05","names":{"en":"Cordoba","zh":"科尔多瓦省"}}
+{"countryCode":"CD","admin1Code":"04","names":{"en":"East Kasai","zh":"东开赛省"}}
+{"countryCode":"SY","admin1Code":"09","names":{"en":"Aleppo","zh":"阿勒颇省"}}
+{"countryCode":"CO","admin1Code":"02","names":{"en":"Antioquia","zh":"安蒂奥基亚省"}}
+{"countryCode":"KZ","admin1Code":"02","names":{"en":"Almaty","zh":"Almaty"}}
+{"countryCode":"DE","admin1Code":"04","names":{"en":"Hamburg","zh":"汉堡"}}
+{"countryCode":"JP","admin1Code":"12","names":{"en":"Hokkaido","zh":"北海道"}}
+{"countryCode":"BR","admin1Code":"18","names":{"en":"Parana","zh":"巴拉那州"}}
+{"countryCode":"KE","admin1Code":"20","names":{"en":"Kakamega County","zh":"卡卡梅加郡"}}
+{"countryCode":"NG","admin1Code":"23","names":{"en":"Kaduna State","zh":"卡杜纳州"}}
+{"countryCode":"PH","admin1Code":"11","names":{"en":"Davao Region","zh":"达沃区"}}
+{"countryCode":"TR","admin1Code":"21","names":{"en":"Diyarbakir Province","zh":"迪亚巴克尔省"}}
+{"countryCode":"BO","admin1Code":"08","names":{"en":"Santa Cruz Department","zh":"圣克鲁斯省"}}
+{"countryCode":"TR","admin1Code":"81","names":{"en":"Adana","zh":"阿达纳省"}}
+{"countryCode":"ID","admin1Code":"32","names":{"en":"South Sumatra","zh":"南苏门答腊省"}}
+{"countryCode":"AE","admin1Code":"06","names":{"en":"Sharjah","zh":"Sharjah"}}
+{"countryCode":"IN","admin1Code":"35","names":{"en":"Madhya Pradesh","zh":"中央邦"}}
+{"countryCode":"NG","admin1Code":"37","names":{"en":"Edo State","zh":"埃多州"}}
+{"countryCode":"VE","admin1Code":"23","names":{"en":"Zulia","zh":"Zulia"}}
+{"countryCode":"ID","admin1Code":"07","names":{"en":"Central Java","zh":"中爪哇省"}}
+{"countryCode":"MX","admin1Code":"21","names":{"en":"Puebla","zh":"普埃布拉州"}}
+{"countryCode":"ES","admin1Code":"56","names":{"en":"Catalonia","zh":"Catalonia"}}
+{"countryCode":"IN","admin1Code":"34","names":{"en":"Bihar","zh":"比哈尔邦"}}
+{"countryCode":"IQ","admin1Code":"15","names":{"en":"Nineveh","zh":"尼尼微省"}}
+{"countryCode":"CN","admin1Code":"06","names":{"en":"Qinghai","zh":"青海"}}
+{"countryCode":"BR","admin1Code":"30","names":{"en":"Pernambuco","zh":"伯南布哥州"}}
+{"countryCode":"US","admin1Code":"AZ","names":{"en":"Arizona","zh":"亚利桑那州"}}
+{"countryCode":"VE","admin1Code":"07","names":{"en":"Carabobo","zh":"Carabobo"}}
+{"countryCode":"RU","admin1Code":"53","names":{"en":"Novosibirsk Oblast","zh":"新西伯利亚州"}}
+{"countryCode":"IQ","admin1Code":"11","names":{"en":"Erbil","zh":"埃尔比勒省"}}
+{"countryCode":"JP","admin1Code":"07","names":{"en":"Fukuoka","zh":"福冈县"}}
+{"countryCode":"MX","admin1Code":"22","names":{"en":"Queretaro","zh":"克雷塔罗州"}}
+{"countryCode":"SA","admin1Code":"14","names":{"en":"Mecca Region","zh":"Mecca Region"}}
+{"countryCode":"PK","admin1Code":"02","names":{"en":"Balochistan","zh":"俾路支省"}}
+{"countryCode":"NZ","admin1Code":"E7","names":{"en":"Auckland","zh":"奥克兰大区"}}
+{"countryCode":"IR","admin1Code":"28","names":{"en":"Isfahan","zh":"伊斯法罕省"}}
+{"countryCode":"BR","admin1Code":"29","names":{"en":"Goias","zh":"戈亚斯州"}}
+{"countryCode":"JP","admin1Code":"13","names":{"en":"Hyogo","zh":"兵库县"}}
+{"countryCode":"VN","admin1Code":"92","names":{"en":"Can Tho City","zh":"Can Tho City"}}
+{"countryCode":"DE","admin1Code":"02","names":{"en":"Bavaria","zh":"巴伐利亚州"}}
+{"countryCode":"BD","admin1Code":"82","names":{"en":"Khulna Division","zh":"库尔纳专区"}}
+{"countryCode":"BR","admin1Code":"16","names":{"en":"Para","zh":"帕拉州"}}
+{"countryCode":"RU","admin1Code":"71","names":{"en":"Sverdlovsk Oblast","zh":"斯维尔德洛夫斯克州"}}
+{"countryCode":"BR","admin1Code":"23","names":{"en":"Rio Grande do Sul","zh":"Rio Grande do Sul"}}
+{"countryCode":"CN","admin1Code":"21","names":{"en":"Ningxia","zh":"宁夏"}}
+{"countryCode":"ID","admin1Code":"38","names":{"en":"South Sulawesi","zh":"South Sulawesi"}}
+{"countryCode":"AU","admin1Code":"05","names":{"en":"South Australia","zh":"South Australia"}}
+{"countryCode":"JP","admin1Code":"22","names":{"en":"Kyoto","zh":"京都府"}}
+{"countryCode":"TR","admin1Code":"38","names":{"en":"Kayseri","zh":"开塞利省"}}
+{"countryCode":"IR","admin1Code":"44","names":{"en":"Alborz Province","zh":"厄尔布尔士省"}}
+{"countryCode":"KR","admin1Code":"19","names":{"en":"Daejeon","zh":"Daejeon"}}
+{"countryCode":"TR","admin1Code":"71","names":{"en":"Konya","zh":"科尼亚省"}}
+{"countryCode":"IR","admin1Code":"33","names":{"en":"East Azerbaijan","zh":"东阿塞拜疆省"}}
+{"countryCode":"UA","admin1Code":"07","names":{"en":"Kharkiv","zh":"哈尔科夫州"}}
+{"countryCode":"KR","admin1Code":"18","names":{"en":"Gwangju","zh":"光州广域市"}}
+{"countryCode":"MX","admin1Code":"14","names":{"en":"Jalisco","zh":"哈利斯科州"}}
+{"countryCode":"VN","admin1Code":"46","names":{"en":"Thua Thien Hue Province","zh":"Thua Thien Hue Province"}}
+{"countryCode":"IT","admin1Code":"09","names":{"en":"Lombardy","zh":"Lombardy"}}
+{"countryCode":"CM","admin1Code":"05","names":{"en":"Littoral","zh":"滨海区"}}
+{"countryCode":"TR","admin1Code":"07","names":{"en":"Antalya","zh":"安塔利亚省"}}
+{"countryCode":"IQ","admin1Code":"02","names":{"en":"Basra","zh":"巴士拉省"}}
+{"countryCode":"JP","admin1Code":"34","names":{"en":"Saitama","zh":"埼玉县"}}
+{"countryCode":"SA","admin1Code":"05","names":{"en":"Medina Region","zh":"Medina Region"}}
+{"countryCode":"VN","admin1Code":"48","names":{"en":"Da Nang City","zh":"Da Nang City"}}
+{"countryCode":"VN","admin1Code":"75","names":{"en":"Dong Nai","zh":"Dong Nai"}}
+{"countryCode":"RU","admin1Code":"51","names":{"en":"Nizhny Novgorod Oblast","zh":"下诺夫哥罗德州"}}
+{"countryCode":"SA","admin1Code":"06","names":{"en":"Eastern Province","zh":"东部省"}}
+{"countryCode":"IR","admin1Code":"07","names":{"en":"Fars","zh":"法尔斯省"}}
+{"countryCode":"CD","admin1Code":"23","names":{"en":"Kasai-Central","zh":"卢卢阿省"}}
+{"countryCode":"RU","admin1Code":"73","names":{"en":"Tatarstan Republic","zh":"Tatarstan Republic"}}
+{"countryCode":"VE","admin1Code":"13","names":{"en":"Lara","zh":"Lara"}}
+{"countryCode":"KR","admin1Code":"13","names":{"en":"Gyeonggi-do","zh":"京畿道"}}
+{"countryCode":"PE","admin1Code":"07","names":{"en":"Callao","zh":"Callao"}}
+{"countryCode":"IQ","admin1Code":"12","names":{"en":"Karbala","zh":"Karbala"}}
+{"countryCode":"KE","admin1Code":"37","names":{"en":"Mombasa County","zh":"蒙巴萨县"}}
+{"countryCode":"MM","admin1Code":"08","names":{"en":"Mandalay Region","zh":"曼德勒省"}}
+{"countryCode":"IN","admin1Code":"12","names":{"en":"Jammu and Kashmir","zh":"Jammu and Kashmir"}}
+{"countryCode":"CO","admin1Code":"04","names":{"en":"Atlantico","zh":"Atlantico"}}
+{"countryCode":"RU","admin1Code":"13","names":{"en":"Chelyabinsk","zh":"车里雅宾斯克州"}}
+{"countryCode":"MX","admin1Code":"31","names":{"en":"Yucatan","zh":"尤卡坦州"}}
+{"countryCode":"JP","admin1Code":"11","names":{"en":"Hiroshima","zh":"广岛县"}}
+{"countryCode":"DO","admin1Code":"25","names":{"en":"Santiago Province","zh":"圣地亚哥省"}}
+{"countryCode":"KZ","admin1Code":"1537272","names":{"en":"Shymkent","zh":"Shymkent"}}
+{"countryCode":"MZ","admin1Code":"04","names":{"en":"Maputo Province","zh":"马普托省"}}
+{"countryCode":"PE","admin1Code":"04","names":{"en":"Arequipa","zh":"阿雷基帕大区"}}
+{"countryCode":"MA","admin1Code":"03","names":{"en":"Fes-Meknes","zh":"Fes-Meknes"}}
+{"countryCode":"CD","admin1Code":"30","names":{"en":"Tshopo","zh":"乔波省"}}
+{"countryCode":"RU","admin1Code":"54","names":{"en":"Omsk Oblast","zh":"鄂木斯克州"}}
+{"countryCode":"ID","admin1Code":"37","names":{"en":"Riau","zh":"Riau"}}
+{"countryCode":"ID","admin1Code":"15","names":{"en":"Lampung","zh":"Lampung"}}
+{"countryCode":"RU","admin1Code":"65","names":{"en":"Samara Oblast","zh":"萨马拉州"}}
+{"countryCode":"MX","admin1Code":"19","names":{"en":"Nuevo Leon","zh":"新莱昂州"}}
+{"countryCode":"RU","admin1Code":"61","names":{"en":"Rostov","zh":"罗斯托夫州"}}
+{"countryCode":"RU","admin1Code":"08","names":{"en":"Bashkortostan Republic","zh":"巴什科尔托斯坦共和国"}}
+{"countryCode":"IN","admin1Code":"38","names":{"en":"Jharkhand","zh":"贾坎德邦"}}
+{"countryCode":"NG","admin1Code":"27","names":{"en":"Borno State","zh":"博尔诺州"}}
+{"countryCode":"TZ","admin1Code":"12","names":{"en":"Mwanza","zh":"姆万扎区"}}
+{"countryCode":"KR","admin1Code":"21","names":{"en":"Ulsan","zh":"Ulsan"}}
+{"countryCode":"JP","admin1Code":"24","names":{"en":"Miyagi","zh":"宫城县"}}
+{"countryCode":"RU","admin1Code":"91","names":{"en":"Krasnoyarsk Krai","zh":"Krasnoyarsk Krai"}}
+{"countryCode":"NG","admin1Code":"30","names":{"en":"Kwara State","zh":"夸拉州"}}
+{"countryCode":"YE","admin1Code":"02","names":{"en":"Aden","zh":"Aden"}}
+{"countryCode":"PE","admin1Code":"13","names":{"en":"La Libertad","zh":"拉利伯塔德大区"}}
+{"countryCode":"RU","admin1Code":"86","names":{"en":"Voronezh Oblast","zh":"沃罗涅日州"}}
+{"countryCode":"NG","admin1Code":"51","names":{"en":"Sokoto","zh":"Sokoto"}}
+{"countryCode":"NG","admin1Code":"49","names":{"en":"Plateau State","zh":"高原州"}}
+{"countryCode":"MA","admin1Code":"01","names":{"en":"Tanger-Tetouan-Al Hoceima","zh":"Tanger-Tetouan-Al Hoceima"}}
+{"countryCode":"MX","admin1Code":"02","names":{"en":"Baja California","zh":"下加利福尼亚州"}}
+{"countryCode":"CG","admin1Code":"15","names":{"en":"Pointe-Noire","zh":"Pointe-Noire"}}
+{"countryCode":"BR","admin1Code":"02","names":{"en":"Alagoas","zh":"阿拉戈斯州"}}
+{"countryCode":"BD","admin1Code":"87","names":{"en":"Rangpur Division","zh":"朗布尔专区"}}
+{"countryCode":"IQ","admin1Code":"13","names":{"en":"Kirkuk","zh":"Kirkuk"}}
+{"countryCode":"IN","admin1Code":"37","names":{"en":"Chhattisgarh","zh":"恰蒂斯加尔邦"}}
+{"countryCode":"KR","admin1Code":"20","names":{"en":"Gyeongsangnam-do","zh":"Gyeongsangnam-do"}}
+{"countryCode":"RU","admin1Code":"84","names":{"en":"Volgograd Oblast","zh":"伏尔加格勒州"}}
+{"countryCode":"CA","admin1Code":"01","names":{"en":"Alberta","zh":"艾伯塔"}}
+{"countryCode":"UA","admin1Code":"17","names":{"en":"Odesa","zh":"敖德萨州"}}
+{"countryCode":"MA","admin1Code":"07","names":{"en":"Marrakesh-Safi","zh":"Marrakesh-Safi"}}
+{"countryCode":"RU","admin1Code":"90","names":{"en":"Perm Krai","zh":"彼尔姆边疆区"}}
+{"countryCode":"JP","admin1Code":"04","names":{"en":"Chiba","zh":"千叶县"}}
+{"countryCode":"US","admin1Code":"TX","names":{"en":"Texas","zh":"得克萨斯州"}}
+{"countryCode":"IL","admin1Code":"06","names":{"en":"Jerusalem","zh":"耶路撒冷区"}}
+{"countryCode":"IN","admin1Code":"05","names":{"en":"Chandigarh","zh":"昌迪加尔"}}
+{"countryCode":"UA","admin1Code":"04","names":{"en":"Dnipropetrovsk","zh":"Dnipropetrovsk"}}
+{"countryCode":"PH","admin1Code":"07","names":{"en":"Central Visayas","zh":"中米沙鄢"}}
+{"countryCode":"NG","admin1Code":"47","names":{"en":"Enugu State","zh":"埃努古州"}}
+{"countryCode":"ID","admin1Code":"24","names":{"en":"West Sumatra","zh":"West Sumatra"}}
+{"countryCode":"YE","admin1Code":"25","names":{"en":"Ta'izz","zh":"塔伊兹省"}}
+{"countryCode":"MX","admin1Code":"06","names":{"en":"Chihuahua","zh":"奇瓦瓦州"}}
+{"countryCode":"TR","admin1Code":"26","names":{"en":"Eskisehir","zh":"埃斯基谢希尔省"}}
+{"countryCode":"BR","admin1Code":"13","names":{"en":"Maranhao","zh":"马拉尼昂州"}}
+{"countryCode":"CO","admin1Code":"35","names":{"en":"Bolivar","zh":"Bolivar"}}
+{"countryCode":"US","admin1Code":"OH","names":{"en":"Ohio","zh":"俄亥俄州"}}
+{"countryCode":"IT","admin1Code":"04","names":{"en":"Campania","zh":"坎帕尼亚"}}
+{"countryCode":"BR","admin1Code":"11","names":{"en":"Mato Grosso do Sul","zh":"南马托格罗索州"}}
+{"countryCode":"BF","admin1Code":"09","names":{"en":"Hauts-Bassins","zh":"上盆地大区"}}
+{"countryCode":"MW","admin1Code":"S","names":{"en":"Southern Region","zh":"南部区"}}
+{"countryCode":"UA","admin1Code":"05","names":{"en":"Donetsk","zh":"顿涅茨克州"}}
+{"countryCode":"IR","admin1Code":"39","names":{"en":"Qom Province","zh":"库姆省"}}
+{"countryCode":"RU","admin1Code":"38","names":{"en":"Krasnodar Krai","zh":"克拉斯诺达尔边疆区"}}
+{"countryCode":"BR","admin1Code":"22","names":{"en":"Rio Grande do Norte","zh":"北里奥格兰德州"}}
+{"countryCode":"US","admin1Code":"IN","names":{"en":"Indiana","zh":"印第安纳州"}}
+{"countryCode":"IN","admin1Code":"21","names":{"en":"Odisha","zh":"Odisha"}}
+{"countryCode":"IQ","admin1Code":"05","names":{"en":"Sulaymaniyah","zh":"Sulaymaniyah"}}
+{"countryCode":"FR","admin1Code":"93","names":{"en":"Provence-Alpes-Cote d'Azur","zh":"普罗旺斯-阿尔卑斯-蔚蓝海岸大区"}}
+{"countryCode":"BR","admin1Code":"20","names":{"en":"Piaui","zh":"皮奥伊州"}}
+{"countryCode":"ID","admin1Code":"14","names":{"en":"East Kalimantan","zh":"东加里曼丹省"}}
+{"countryCode":"MY","admin1Code":"01","names":{"en":"Johor","zh":"柔佛州"}}
+{"countryCode":"KR","admin1Code":"05","names":{"en":"North Chungcheong","zh":"North Chungcheong"}}
+{"countryCode":"VN","admin1Code":"38","names":{"en":"Thanh Hoa Province","zh":"清化省"}}
+{"countryCode":"IT","admin1Code":"12","names":{"en":"Piedmont","zh":"皮埃蒙特"}}
+{"countryCode":"RU","admin1Code":"67","names":{"en":"Saratov Oblast","zh":"萨拉托夫州"}}
+{"countryCode":"KH","admin1Code":"19","names":{"en":"Takeo","zh":"Takeo"}}
+{"countryCode":"BO","admin1Code":"02","names":{"en":"Cochabamba","zh":"Cochabamba"}}
+{"countryCode":"IR","admin1Code":"15","names":{"en":"Khuzestan","zh":"Khuzestan"}}
+{"countryCode":"ZA","admin1Code":"02","names":{"en":"KwaZulu-Natal","zh":"夸祖鲁-纳塔尔省"}}
+{"countryCode":"CI","admin1Code":"90","names":{"en":"Vallee du Bandama District","zh":"邦达马河谷区"}}
+{"countryCode":"ES","admin1Code":"60","names":{"en":"Valencia","zh":"巴伦西亚自治区"}}
+{"countryCode":"BR","admin1Code":"17","names":{"en":"Paraiba","zh":"Paraiba"}}
+{"countryCode":"CD","admin1Code":"12","names":{"en":"South Kivu","zh":"南基伍省"}}
+{"countryCode":"PL","admin1Code":"77","names":{"en":"Lesser Poland","zh":"小波兰省"}}
+{"countryCode":"VE","admin1Code":"02","names":{"en":"Anzoategui","zh":"Anzoategui"}}
+{"countryCode":"MX","admin1Code":"26","names":{"en":"Sonora","zh":"索诺拉州"}}
+{"countryCode":"MX","admin1Code":"25","names":{"en":"Sinaloa","zh":"锡那罗亚州"}}
+{"countryCode":"DZ","admin1Code":"09","names":{"en":"Oran","zh":"奥兰省"}}
+{"countryCode":"HN","admin1Code":"06","names":{"en":"Cortes Department","zh":"科尔特斯省"}}
+{"countryCode":"JP","admin1Code":"29","names":{"en":"Niigata","zh":"新潟县"}}
+{"countryCode":"JO","admin1Code":"17","names":{"en":"Zarqa","zh":"Zarqa"}}
+{"countryCode":"VN","admin1Code":"40","names":{"en":"Nghe An Province","zh":"Nghe An Province"}}
+{"countryCode":"IN","admin1Code":"13","names":{"en":"Kerala","zh":"喀拉拉邦"}}
+{"countryCode":"EG","admin1Code":"19","names":{"en":"Port Said","zh":"塞得港省"}}
+{"countryCode":"CO","admin1Code":"21","names":{"en":"Norte de Santander Department","zh":"北桑坦德省"}}
+{"countryCode":"SY","admin1Code":"11","names":{"en":"Homs","zh":"霍姆斯省"}}
+{"countryCode":"YE","admin1Code":"23","names":{"en":"Ibb Governorate","zh":"伊卜省"}}
+{"countryCode":"MZ","admin1Code":"06","names":{"en":"Nampula","zh":"楠普拉省"}}
+{"countryCode":"BI","admin1Code":"24","names":{"en":"Bujumbura Mairie","zh":"布琼布拉市省"}}
+{"countryCode":"RU","admin1Code":"78","names":{"en":"Tyumen Oblast","zh":"秋明州"}}
+{"countryCode":"TR","admin1Code":"25","names":{"en":"Erzurum","zh":"埃尔祖鲁姆省"}}
+{"countryCode":"BD","admin1Code":"83","names":{"en":"Rajshahi Division","zh":"拉杰沙希专区"}}
+{"countryCode":"MY","admin1Code":"07","names":{"en":"Perak","zh":"霹雳州"}}
+{"countryCode":"LY","admin1Code":"69","names":{"en":"Banghazi","zh":"Banghazi"}}
+{"countryCode":"TR","admin1Code":"44","names":{"en":"Malatya","zh":"马拉蒂亚省"}}
+{"countryCode":"CA","admin1Code":"03","names":{"en":"Manitoba","zh":"曼尼托巴"}}
+{"countryCode":"UZ","admin1Code":"01","names":{"en":"Andijan Region","zh":"安集延州"}}
+{"countryCode":"SA","admin1Code":"08","names":{"en":"Al-Qassim Region","zh":"Al-Qassim Region"}}
+{"countryCode":"MX","admin1Code":"16","names":{"en":"Michoacan","zh":"米却肯州"}}
+{"countryCode":"JP","admin1Code":"21","names":{"en":"Kumamoto","zh":"熊本县"}}
+{"countryCode":"ID","admin1Code":"33","names":{"en":"Banten","zh":"万丹省"}}
+{"countryCode":"NG","admin1Code":"16","names":{"en":"Ogun State","zh":"奥贡州"}}
+{"countryCode":"YE","admin1Code":"08","names":{"en":"Al Hudaydah","zh":"荷台达省"}}
+{"countryCode":"NG","admin1Code":"48","names":{"en":"Ondo State","zh":"翁多州"}}
+{"countryCode":"US","admin1Code":"CO","names":{"en":"Colorado","zh":"科罗拉多州"}}
+{"countryCode":"PK","admin1Code":"06","names":{"en":"Azad Kashmir","zh":"阿扎德克什米尔"}}
+{"countryCode":"JP","admin1Code":"31","names":{"en":"Okayama","zh":"冈山县"}}
+{"countryCode":"MX","admin1Code":"24","names":{"en":"San Luis Potosi","zh":"圣路易斯波托西州"}}
+{"countryCode":"MX","admin1Code":"01","names":{"en":"Aguascalientes","zh":"阿瓜斯卡连特斯州"}}
+{"countryCode":"UA","admin1Code":"15","names":{"en":"Lviv","zh":"利沃夫州"}}
+{"countryCode":"UZ","admin1Code":"06","names":{"en":"Namangan","zh":"纳曼干州"}}
+{"countryCode":"UA","admin1Code":"26","names":{"en":"Zaporizhzhia","zh":"扎波罗热州"}}
+{"countryCode":"TZ","admin1Code":"25","names":{"en":"Zanzibar Urban/West","zh":"Zanzibar Urban/West"}}
+{"countryCode":"MX","admin1Code":"07","names":{"en":"Coahuila","zh":"科阿韦拉州"}}
+{"countryCode":"EG","admin1Code":"15","names":{"en":"Suez","zh":"苏伊士省"}}
+{"countryCode":"MA","admin1Code":"09","names":{"en":"Souss-Massa","zh":"Souss-Massa"}}
+{"countryCode":"NG","admin1Code":"46","names":{"en":"Bauchi","zh":"包奇州"}}
+{"countryCode":"JP","admin1Code":"37","names":{"en":"Shizuoka","zh":"静冈县"}}
+{"countryCode":"US","admin1Code":"TN","names":{"en":"Tennessee","zh":"田纳西州"}}
+{"countryCode":"MZ","admin1Code":"05","names":{"en":"Sofala","zh":"索法拉省"}}
+{"countryCode":"ES","admin1Code":"52","names":{"en":"Aragon","zh":"Aragon"}}
+{"countryCode":"ES","admin1Code":"51","names":{"en":"Andalusia","zh":"安达卢西亚"}}
+{"countryCode":"ID","admin1Code":"11","names":{"en":"West Kalimantan","zh":"西加里曼丹省"}}
+{"countryCode":"US","admin1Code":"OK","names":{"en":"Oklahoma","zh":"俄克拉荷马州"}}
+{"countryCode":"PL","admin1Code":"72","names":{"en":"Lower Silesia","zh":"下西里西亚省"}}
+{"countryCode":"ID","admin1Code":"02","names":{"en":"Bali","zh":"巴厘岛"}}
+{"countryCode":"NG","admin1Code":"24","names":{"en":"Katsina State","zh":"卡齐纳州"}}
+{"countryCode":"SA","admin1Code":"19","names":{"en":"Tabuk Region","zh":"塔布克省"}}
+{"countryCode":"ZW","admin1Code":"09","names":{"en":"Bulawayo","zh":"Bulawayo"}}
+{"countryCode":"BR","admin1Code":"28","names":{"en":"Sergipe","zh":"塞尔希培州"}}
+{"countryCode":"IN","admin1Code":"22","names":{"en":"Puducherry","zh":"本地治里"}}
+{"countryCode":"US","admin1Code":"MA","names":{"en":"Massachusetts","zh":"马萨诸塞州"}}
+{"countryCode":"IT","admin1Code":"15","names":{"en":"Sicily","zh":"西西里岛"}}
+{"countryCode":"RU","admin1Code":"80","names":{"en":"Udmurtiya Republic","zh":"Udmurtiya Republic"}}
+{"countryCode":"VE","admin1Code":"16","names":{"en":"Monagas","zh":"Monagas"}}
+{"countryCode":"NG","admin1Code":"42","names":{"en":"Osun State","zh":"奥孙州"}}
+{"countryCode":"PL","admin1Code":"74","names":{"en":"Lodz Voivodeship","zh":"罗兹省"}}
+{"countryCode":"KR","admin1Code":"03","names":{"en":"Jeollabuk-do","zh":"Jeollabuk-do"}}
+{"countryCode":"KW","admin1Code":"04","names":{"en":"Al Ahmadi","zh":"艾哈迈迪省"}}
+{"countryCode":"EC","admin1Code":"02","names":{"en":"Azuay","zh":"阿苏艾省"}}
+{"countryCode":"ID","admin1Code":"05","names":{"en":"Jambi","zh":"Jambi"}}
+{"countryCode":"RU","admin1Code":"04","names":{"en":"Altai Krai","zh":"阿尔泰边疆区"}}
+{"countryCode":"PE","admin1Code":"20","names":{"en":"Piura","zh":"皮乌拉地区"}}
+{"countryCode":"ZM","admin1Code":"08","names":{"en":"Copperbelt","zh":"铜带省"}}
+{"countryCode":"RU","admin1Code":"81","names":{"en":"Ulyanovsk","zh":"乌里扬诺夫斯克州"}}
+{"countryCode":"RU","admin1Code":"20","names":{"en":"Irkutsk Oblast","zh":"Irkutsk Oblast"}}
+{"countryCode":"EG","admin1Code":"01","names":{"en":"Dakahlia","zh":"代盖赫利耶省"}}
+{"countryCode":"IR","admin1Code":"13","names":{"en":"Kermanshah Province","zh":"克尔曼沙汗省"}}
+{"countryCode":"DE","admin1Code":"07","names":{"en":"North Rhine-Westphalia","zh":"北莱茵－威斯特法伦"}}
+{"countryCode":"RU","admin1Code":"30","names":{"en":"Khabarovsk","zh":"哈巴罗夫斯克边疆区"}}
+{"countryCode":"BR","admin1Code":"14","names":{"en":"Mato Grosso","zh":"马托格罗索州"}}
+{"countryCode":"TZ","admin1Code":"26","names":{"en":"Arusha","zh":"阿鲁沙区"}}
+{"countryCode":"DE","admin1Code":"01","names":{"en":"Baden-Wurttemberg","zh":"巴登－符腾堡"}}
+{"countryCode":"PE","admin1Code":"14","names":{"en":"Lambayeque","zh":"兰巴耶克大区"}}
+{"countryCode":"RU","admin1Code":"88","names":{"en":"Yaroslavl Oblast","zh":"雅罗斯拉夫尔州"}}
+{"countryCode":"SE","admin1Code":"28","names":{"en":"Vaestra Goetaland","zh":"西约塔兰省"}}
+{"countryCode":"SA","admin1Code":"13","names":{"en":"Ha'il Region","zh":"Ha'il Region"}}
+{"countryCode":"RU","admin1Code":"59","names":{"en":"Primorye","zh":"滨海边疆区"}}
+{"countryCode":"MX","admin1Code":"05","names":{"en":"Chiapas","zh":"恰帕斯州"}}
+{"countryCode":"AO","admin1Code":"09","names":{"en":"Huila","zh":"威拉省"}}
+{"countryCode":"NP","admin1Code":"4","names":{"en":"Gandaki Pradesh","zh":"Gandaki Pradesh"}}
+{"countryCode":"RU","admin1Code":"17","names":{"en":"Dagestan","zh":"达吉斯坦共和国"}}
+{"countryCode":"AO","admin1Code":"08","names":{"en":"Huambo","zh":"万博省"}}
+{"countryCode":"UZ","admin1Code":"10","names":{"en":"Samarqand Region","zh":"撒马尔罕州"}}
+{"countryCode":"JP","admin1Code":"18","names":{"en":"Kagoshima","zh":"鹿儿岛县"}}
+{"countryCode":"YE","admin1Code":"04","names":{"en":"Muhafazat Hadramaout","zh":"哈德拉毛省"}}
+{"countryCode":"IR","admin1Code":"08","names":{"en":"Gilan Province","zh":"吉兰省"}}
+{"countryCode":"CO","admin1Code":"26","names":{"en":"Santander Department","zh":"桑坦德省"}}
+{"countryCode":"IT","admin1Code":"08","names":{"en":"Liguria","zh":"利古里亚"}}
+{"countryCode":"MY","admin1Code":"04","names":{"en":"Melaka","zh":"Melaka"}}
+{"countryCode":"VN","admin1Code":"56","names":{"en":"Khanh Hoa","zh":"Khanh Hoa"}}
+{"countryCode":"IR","admin1Code":"29","names":{"en":"Kerman","zh":"克尔曼省"}}
+{"countryCode":"IR","admin1Code":"01","names":{"en":"West Azerbaijan","zh":"西阿塞拜疆省"}}
+{"countryCode":"EG","admin1Code":"05","names":{"en":"Gharbia","zh":"西部省"}}
+{"countryCode":"PH","admin1Code":"40","names":{"en":"Calabarzon","zh":"卡拉巴松"}}
+{"countryCode":"AF","admin1Code":"11","names":{"en":"Herat","zh":"赫拉特省"}}
+{"countryCode":"RU","admin1Code":"75","names":{"en":"Tomsk Oblast","zh":"Tomsk Oblast"}}
+{"countryCode":"KE","admin1Code":"39","names":{"en":"Nakuru County","zh":"纳库鲁郡"}}
+{"countryCode":"JO","admin1Code":"18","names":{"en":"Irbid","zh":"伊尔比德省"}}
+{"countryCode":"MY","admin1Code":"03","names":{"en":"Kelantan","zh":"吉兰丹"}}
+{"countryCode":"SD","admin1Code":"49","names":{"en":"Southern Darfur","zh":"南达尔富尔州"}}
+{"countryCode":"DE","admin1Code":"13","names":{"en":"Saxony","zh":"萨克森州"}}
+{"countryCode":"RU","admin1Code":"55","names":{"en":"Orenburg Oblast","zh":"Orenburg Oblast"}}
+{"countryCode":"NG","admin1Code":"55","names":{"en":"Gombe State","zh":"贡贝州"}}
+{"countryCode":"KP","admin1Code":"03","names":{"en":"South Hamgyong","zh":"South Hamgyong"}}
+{"countryCode":"RU","admin1Code":"29","names":{"en":"Kuzbass","zh":"Kuzbass"}}
+{"countryCode":"IQ","admin1Code":"09","names":{"en":"Dhi Qar","zh":"济加尔省"}}
+{"countryCode":"ZA","admin1Code":"03","names":{"en":"Free State","zh":"自由邦省"}}
+{"countryCode":"CU","admin1Code":"15","names":{"en":"Santiago de Cuba Province","zh":"圣地亚哥省"}}
+{"countryCode":"AO","admin1Code":"01","names":{"en":"Benguela","zh":"本格拉省"}}
+{"countryCode":"IR","admin1Code":"04","names":{"en":"Sistan and Baluchestan","zh":"锡斯坦和俾路支斯坦省"}}
+{"countryCode":"BR","admin1Code":"24","names":{"en":"Rondonia","zh":"朗多尼亚州"}}
+{"countryCode":"AR","admin1Code":"24","names":{"en":"Tucuman","zh":"图库曼省"}}
+{"countryCode":"MY","admin1Code":"06","names":{"en":"Pahang","zh":"彭亨"}}
+{"countryCode":"UA","admin1Code":"20","names":{"en":"Sevastopol City","zh":"Sevastopol City"}}
+{"countryCode":"DE","admin1Code":"03","names":{"en":"Bremen","zh":"不来梅州"}}
+{"countryCode":"NG","admin1Code":"28","names":{"en":"Imo State","zh":"伊莫州"}}
+{"countryCode":"TZ","admin1Code":"09","names":{"en":"Mbeya","zh":"姆贝亚区"}}
+{"countryCode":"NG","admin1Code":"22","names":{"en":"Cross River State","zh":"克罗斯河州"}}
+{"countryCode":"MA","admin1Code":"02","names":{"en":"Oriental","zh":"东部大区"}}
+{"countryCode":"RU","admin1Code":"62","names":{"en":"Ryazan Oblast","zh":"梁赞州"}}
+{"countryCode":"TR","admin1Code":"32","names":{"en":"Mersin","zh":"梅尔辛省"}}
+{"countryCode":"PL","admin1Code":"86","names":{"en":"Greater Poland","zh":"大波兰省"}}
+{"countryCode":"RU","admin1Code":"07","names":{"en":"Astrakhan Oblast","zh":"阿斯特拉罕州"}}
+{"countryCode":"CA","admin1Code":"10","names":{"en":"Quebec","zh":"Quebec"}}
+{"countryCode":"CO","admin1Code":"28","names":{"en":"Tolima Department","zh":"托利马省"}}
+{"countryCode":"EG","admin1Code":"17","names":{"en":"Asyut","zh":"艾斯尤特省"}}
+{"countryCode":"IR","admin1Code":"09","names":{"en":"Hamadan Province","zh":"哈马丹省"}}
+{"countryCode":"TR","admin1Code":"65","names":{"en":"Van","zh":"凡省"}}
+{"countryCode":"US","admin1Code":"CA","names":{"en":"California","zh":"加州"}}
+{"countryCode":"RU","admin1Code":"57","names":{"en":"Penza Oblast","zh":"奔萨州"}}
+{"countryCode":"AF","admin1Code":"30","names":{"en":"Balkh","zh":"巴尔赫省"}}
+{"countryCode":"AF","admin1Code":"23","names":{"en":"Kandahar","zh":"坎大哈省"}}
+{"countryCode":"IN","admin1Code":"39","names":{"en":"Uttarakhand","zh":"Uttarakhand"}}
+{"countryCode":"FR","admin1Code":"84","names":{"en":"Rhone-Alpes","zh":"奥弗涅-罗讷-阿尔卑斯大区"}}
+{"countryCode":"AR","admin1Code":"17","names":{"en":"Salta","zh":"萨尔塔省"}}
+{"countryCode":"VN","admin1Code":"52","names":{"en":"Gia Lai","zh":"Gia Lai"}}
+{"countryCode":"EG","admin1Code":"04","names":{"en":"Faiyum","zh":"法尤姆省"}}
+{"countryCode":"JP","admin1Code":"38","names":{"en":"Tochigi","zh":"栃木县"}}
+{"countryCode":"DE","admin1Code":"06","names":{"en":"Lower Saxony","zh":"下萨克森"}}
+{"countryCode":"GB","admin1Code":"SCT","names":{"en":"Scotland","zh":"苏格兰"}}
+{"countryCode":"BR","admin1Code":"03","names":{"en":"Amapa","zh":"Amapa"}}
+{"countryCode":"FR","admin1Code":"76","names":{"en":"Occitanie","zh":"Occitanie"}}
+{"countryCode":"JP","admin1Code":"05","names":{"en":"Ehime","zh":"爱媛县"}}
+{"countryCode":"US","admin1Code":"GA","names":{"en":"Georgia","zh":"佐治亚州"}}
+{"countryCode":"RU","admin1Code":"43","names":{"en":"Lipetsk Oblast","zh":"利佩茨克州"}}
+{"countryCode":"BR","admin1Code":"26","names":{"en":"Santa Catarina","zh":"圣卡塔琳娜州"}}
+{"countryCode":"HK","admin1Code":"NTM","names":{"en":"Tuen Mun","zh":"屯门区"}}
+{"countryCode":"RU","admin1Code":"33","names":{"en":"Kirov Oblast","zh":"基洛夫州"}}
+{"countryCode":"SA","admin1Code":"16","names":{"en":"Najran Region","zh":"奈季兰省"}}
+{"countryCode":"IR","admin1Code":"34","names":{"en":"Markazi","zh":"中央省"}}
+{"countryCode":"BY","admin1Code":"02","names":{"en":"Homyel' Voblasc'","zh":"Homyel' Voblasc'"}}
+{"countryCode":"KZ","admin1Code":"04","names":{"en":"Aktobe","zh":"Aktobe"}}
+{"countryCode":"MY","admin1Code":"16","names":{"en":"Sabah","zh":"沙巴州"}}
+{"countryCode":"CO","admin1Code":"38","names":{"en":"Magdalena Department","zh":"马格达莱纳省"}}
+{"countryCode":"KZ","admin1Code":"12","names":{"en":"Karaganda","zh":"卡拉干达州"}}
+{"countryCode":"RU","admin1Code":"16","names":{"en":"Chuvash Republic","zh":"楚瓦什共和国"}}
+{"countryCode":"CO","admin1Code":"12","names":{"en":"Cordoba","zh":"Cordoba"}}
+{"countryCode":"CO","admin1Code":"10","names":{"en":"Cesar Department","zh":"塞萨尔省"}}
+{"countryCode":"SD","admin1Code":"36","names":{"en":"Red Sea","zh":"红海州"}}
+{"countryCode":"MX","admin1Code":"15","names":{"en":"Mexico","zh":"墨西哥州"}}
+{"countryCode":"KR","admin1Code":"01","names":{"en":"Jeju-do","zh":"Jeju-do"}}
+{"countryCode":"PL","admin1Code":"82","names":{"en":"Pomerania","zh":"波美拉尼亚省"}}
+{"countryCode":"ET","admin1Code":"52","names":{"en":"Somali","zh":"索马里州"}}
+{"countryCode":"RU","admin1Code":"76","names":{"en":"Tula Oblast","zh":"图拉州"}}
+{"countryCode":"IQ","admin1Code":"17","names":{"en":"Najaf","zh":"Najaf"}}
+{"countryCode":"US","admin1Code":"NC","names":{"en":"North Carolina","zh":"北卡罗来纳州"}}
+{"countryCode":"IR","admin1Code":"40","names":{"en":"Yazd Province","zh":"亚兹德省"}}
+{"countryCode":"SO","admin1Code":"20","names":{"en":"Woqooyi Galbeed","zh":"Woqooyi Galbeed"}}
+{"countryCode":"JP","admin1Code":"30","names":{"en":"Oita","zh":"大分县"}}
+{"countryCode":"KE","admin1Code":"52","names":{"en":"Uasin Gishu County","zh":"瓦辛基苏郡"}}
+{"countryCode":"RU","admin1Code":"23","names":{"en":"Kaliningrad Oblast","zh":"加里宁格勒州"}}
+{"countryCode":"ID","admin1Code":"18","names":{"en":"East Nusa Tenggara","zh":"East Nusa Tenggara"}}
+{"countryCode":"ES","admin1Code":"31","names":{"en":"Murcia","zh":"穆尔西亚自治区"}}
+{"countryCode":"CA","admin1Code":"07","names":{"en":"Nova Scotia","zh":"新斯科舍"}}
+{"countryCode":"TZ","admin1Code":"10","names":{"en":"Morogoro","zh":"莫罗戈罗区"}}
+{"countryCode":"UA","admin1Code":"16","names":{"en":"Mykolaiv","zh":"尼古拉耶夫州"}}
+{"countryCode":"CO","admin1Code":"24","names":{"en":"Risaralda Department","zh":"里萨拉尔达省"}}
+{"countryCode":"JP","admin1Code":"15","names":{"en":"Ishikawa","zh":"石川县"}}
+{"countryCode":"VE","admin1Code":"04","names":{"en":"Aragua","zh":"Aragua"}}
+{"countryCode":"GH","admin1Code":"06","names":{"en":"Northern","zh":"Northern"}}
+{"countryCode":"NG","admin1Code":"35","names":{"en":"Adamawa","zh":"阿达马瓦"}}
+{"countryCode":"VN","admin1Code":"91","names":{"en":"An Giang","zh":"An Giang"}}
+{"countryCode":"ID","admin1Code":"31","names":{"en":"North Sulawesi","zh":"北苏拉威西省"}}
+{"countryCode":"EC","admin1Code":"26","names":{"en":"Santo Domingo de los Tsachilas","zh":"圣多明各-德洛斯查奇拉斯省"}}
+{"countryCode":"ET","admin1Code":"53","names":{"en":"Tigray","zh":"提格里州"}}
+{"countryCode":"PE","admin1Code":"12","names":{"en":"Junin","zh":"胡宁大区"}}
+{"countryCode":"IQ","admin1Code":"06","names":{"en":"Babil","zh":"巴比伦省"}}
+{"countryCode":"CD","admin1Code":"02","names":{"en":"Equateur","zh":"赤道省"}}
+{"countryCode":"KP","admin1Code":"14","names":{"en":"Nampo","zh":"Nampo"}}
+{"countryCode":"TR","admin1Code":"76","names":{"en":"Batman","zh":"巴特曼省"}}
+{"countryCode":"TR","admin1Code":"63","names":{"en":"Sanliurfa","zh":"尚勒乌尔法省"}}
+{"countryCode":"RU","admin1Code":"41","names":{"en":"Kursk Oblast","zh":"库尔斯克州"}}
+{"countryCode":"VN","admin1Code":"37","names":{"en":"Ninh Binh","zh":"Ninh Binh"}}
+{"countryCode":"DZ","admin1Code":"04","names":{"en":"Constantine","zh":"君士坦丁省"}}
+{"countryCode":"TR","admin1Code":"23","names":{"en":"Elazig","zh":"埃拉泽省"}}
+{"countryCode":"ID","admin1Code":"17","names":{"en":"West Nusa Tenggara","zh":"West Nusa Tenggara"}}
+{"countryCode":"CI","admin1Code":"87","names":{"en":"Savanes District","zh":"萨瓦内区"}}
+{"countryCode":"MM","admin1Code":"13","names":{"en":"Mon","zh":"Mon"}}
+{"countryCode":"ES","admin1Code":"07","names":{"en":"Balearic Islands","zh":"Balearic Islands"}}
+{"countryCode":"NG","admin1Code":"21","names":{"en":"Akwa Ibom State","zh":"阿夸伊博姆州"}}
+{"countryCode":"NG","admin1Code":"54","names":{"en":"Ekiti State","zh":"埃基蒂州"}}
+{"countryCode":"CO","admin1Code":"37","names":{"en":"Caldas Department","zh":"卡尔达斯省"}}
+{"countryCode":"VN","admin1Code":"66","names":{"en":"Dak Lak","zh":"Dak Lak"}}
+{"countryCode":"RU","admin1Code":"70","names":{"en":"Stavropol Kray","zh":"斯塔夫罗波尔边疆区"}}
+{"countryCode":"IL","admin1Code":"05","names":{"en":"Tel Aviv","zh":"特拉维夫区"}}
+{"countryCode":"CD","admin1Code":"11","names":{"en":"North Kivu","zh":"北基伍省"}}
+{"countryCode":"EG","admin1Code":"14","names":{"en":"Sharqia","zh":"Sharqia"}}
+{"countryCode":"UA","admin1Code":"23","names":{"en":"Vinnytsia","zh":"文尼察州"}}
+{"countryCode":"EG","admin1Code":"07","names":{"en":"Ismailia","zh":"伊斯梅利亚省"}}
+{"countryCode":"PE","admin1Code":"08","names":{"en":"Cuzco Department","zh":"库斯科大区"}}
+{"countryCode":"RU","admin1Code":"10","names":{"en":"Bryansk Oblast","zh":"布良斯克州"}}
+{"countryCode":"AZ","admin1Code":"54","names":{"en":"Sumqayit","zh":"Sumqayit"}}
+{"countryCode":"MY","admin1Code":"13","names":{"en":"Terengganu","zh":"登嘉楼"}}
+{"countryCode":"CD","admin1Code":"08","names":{"en":"Bas-Congo","zh":"Bas-Congo"}}
+{"countryCode":"NG","admin1Code":"31","names":{"en":"Niger State","zh":"尼日尔州"}}
+{"countryCode":"MX","admin1Code":"30","names":{"en":"Veracruz","zh":"韦拉克鲁斯州"}}
+{"countryCode":"EG","admin1Code":"28","names":{"en":"Luxor","zh":"卢克索省"}}
+{"countryCode":"ET","admin1Code":"SI","names":{"en":"Sidama Region","zh":"Sidama Region"}}
+{"countryCode":"MZ","admin1Code":"10","names":{"en":"Manica","zh":"Manica"}}
+{"countryCode":"CI","admin1Code":"96","names":{"en":"Sassandra-Marahoue","zh":"Sassandra-Marahoue"}}
+{"countryCode":"CM","admin1Code":"07","names":{"en":"North-West","zh":"North-West"}}
+{"countryCode":"RU","admin1Code":"77","names":{"en":"Tver Oblast","zh":"特维尔州"}}
+{"countryCode":"VN","admin1Code":"19","names":{"en":"Thai Nguyen","zh":"Thai Nguyen"}}
+{"countryCode":"NZ","admin1Code":"E9","names":{"en":"Canterbury","zh":"坎特伯雷"}}
+{"countryCode":"JP","admin1Code":"17","names":{"en":"Kagawa","zh":"香川县"}}
+{"countryCode":"MY","admin1Code":"02","names":{"en":"Kedah","zh":"吉打"}}
+{"countryCode":"JP","admin1Code":"42","names":{"en":"Toyama","zh":"富山县"}}
+{"countryCode":"CH","admin1Code":"ZH","names":{"en":"Zurich","zh":"苏黎世州"}}
+{"countryCode":"VN","admin1Code":"25","names":{"en":"Phu Tho","zh":"Phu Tho"}}
+{"countryCode":"VE","admin1Code":"06","names":{"en":"Bolivar","zh":"Bolivar"}}
+{"countryCode":"ID","admin1Code":"36","names":{"en":"Papua","zh":"Papua"}}
+{"countryCode":"IR","admin1Code":"32","names":{"en":"Ardabil Province","zh":"阿尔达比勒省"}}
+{"countryCode":"PS","admin1Code":"GZ","names":{"en":"Gaza Strip","zh":"加沙地带"}}
+{"countryCode":"RU","admin1Code":"21","names":{"en":"Ivanovo Oblast","zh":"伊万诺沃州"}}
+{"countryCode":"VE","admin1Code":"19","names":{"en":"Sucre","zh":"Sucre"}}
+{"countryCode":"MY","admin1Code":"11","names":{"en":"Sarawak","zh":"砂拉越"}}
+{"countryCode":"SD","admin1Code":"52","names":{"en":"Kassala","zh":"卡萨拉州"}}
+{"countryCode":"JP","admin1Code":"25","names":{"en":"Miyazaki","zh":"宫崎县"}}
+{"countryCode":"CL","admin1Code":"03","names":{"en":"Antofagasta","zh":"Antofagasta"}}
+{"countryCode":"CD","admin1Code":"17","names":{"en":"Ituri","zh":"伊图里省"}}
+{"countryCode":"TR","admin1Code":"31","names":{"en":"Hatay","zh":"哈塔伊省"}}
+{"countryCode":"KE","admin1Code":"26","names":{"en":"Kisumu County","zh":"基苏木郡"}}
+{"countryCode":"UA","admin1Code":"14","names":{"en":"Luhansk","zh":"卢甘斯克州"}}
+{"countryCode":"ID","admin1Code":"03","names":{"en":"Bengkulu","zh":"Bengkulu"}}
+{"countryCode":"VE","admin1Code":"05","names":{"en":"Barinas","zh":"Barinas"}}
+{"countryCode":"PL","admin1Code":"87","names":{"en":"West Pomerania","zh":"西滨海省"}}
+{"countryCode":"IT","admin1Code":"05","names":{"en":"Emilia-Romagna","zh":"Emilia-Romagna"}}
+{"countryCode":"KR","admin1Code":"22","names":{"en":"Sejong-si","zh":"Sejong-si"}}
+{"countryCode":"TR","admin1Code":"55","names":{"en":"Samsun","zh":"萨姆松省"}}
+{"countryCode":"TZ","admin1Code":"18","names":{"en":"Tanga","zh":"坦噶区"}}
+{"countryCode":"SD","admin1Code":"56","names":{"en":"North Kordofan","zh":"北科尔多凡州"}}
+{"countryCode":"CO","admin1Code":"20","names":{"en":"Narino","zh":"Narino"}}
+{"countryCode":"AR","admin1Code":"21","names":{"en":"Santa Fe","zh":"圣大非省"}}
+{"countryCode":"CI","admin1Code":"76","names":{"en":"Bas-Sassandra District","zh":"下萨桑德拉区"}}
+{"countryCode":"NG","admin1Code":"26","names":{"en":"Benue State","zh":"贝努埃州"}}
+{"countryCode":"ID","admin1Code":"21","names":{"en":"Central Sulawesi","zh":"中苏拉威西省"}}
+{"countryCode":"TH","admin1Code":"42","names":{"en":"Samut Prakan","zh":"沙没巴干府"}}
+{"countryCode":"EC","admin1Code":"19","names":{"en":"Tungurahua Province","zh":"通古拉瓦省"}}
+{"countryCode":"TR","admin1Code":"46","names":{"en":"Kahramanmaras","zh":"卡赫拉曼马拉什省"}}
+{"countryCode":"ES","admin1Code":"53","names":{"en":"Canary Islands","zh":"加那利群岛"}}
+{"countryCode":"EG","admin1Code":"16","names":{"en":"Aswan","zh":"阿斯旺省"}}
+{"countryCode":"CZ","admin1Code":"78","names":{"en":"South Moravian","zh":"南摩拉维亚州"}}
+{"countryCode":"RO","admin1Code":"23","names":{"en":"Iasi County","zh":"雅西县"}}
+{"countryCode":"PE","admin1Code":"16","names":{"en":"Loreto","zh":"洛雷托大区"}}
+{"countryCode":"NL","admin1Code":"09","names":{"en":"Utrecht","zh":"乌得勒支省"}}
+{"countryCode":"ID","admin1Code":"10","names":{"en":"Yogyakarta","zh":"Yogyakarta"}}
+{"countryCode":"CM","admin1Code":"08","names":{"en":"West","zh":"西部区"}}
+{"countryCode":"VN","admin1Code":"79","names":{"en":"Ho Chi Minh City (HCMC)","zh":"Ho Chi Minh City (HCMC)"}}
+{"countryCode":"MY","admin1Code":"05","names":{"en":"Negeri Sembilan","zh":"森美兰"}}
+{"countryCode":"GB","admin1Code":"WLS","names":{"en":"Wales","zh":"威尔士"}}
+{"countryCode":"NG","admin1Code":"45","names":{"en":"Abia State","zh":"阿比亚州"}}
+{"countryCode":"TR","admin1Code":"64","names":{"en":"Usak","zh":"乌沙克省"}}
+{"countryCode":"JP","admin1Code":"28","names":{"en":"Nara","zh":"奈良县"}}
+{"countryCode":"IT","admin1Code":"16","names":{"en":"Tuscany","zh":"托斯卡纳"}}
+{"countryCode":"NG","admin1Code":"52","names":{"en":"Bayelsa State","zh":"巴耶尔萨州"}}
+{"countryCode":"SD","admin1Code":"39","names":{"en":"Al Qadarif","zh":"加达里夫州"}}
+{"countryCode":"BY","admin1Code":"03","names":{"en":"Grodnenskaya","zh":"Grodnenskaya"}}
+{"countryCode":"SE","admin1Code":"27","names":{"en":"Skane","zh":"斯科讷省"}}
+{"countryCode":"NE","admin1Code":"04","names":{"en":"Maradi Region","zh":"马拉迪大区"}}
+{"countryCode":"KZ","admin1Code":"17","names":{"en":"Zhambyl","zh":"Zhambyl"}}
+{"countryCode":"IR","admin1Code":"36","names":{"en":"Zanjan","zh":"赞詹省"}}
+{"countryCode":"CO","admin1Code":"16","names":{"en":"Huila Department","zh":"乌伊拉省"}}
+{"countryCode":"RU","admin1Code":"83","names":{"en":"Vladimir Oblast","zh":"弗拉基米尔州"}}
+{"countryCode":"MZ","admin1Code":"08","names":{"en":"Tete","zh":"太特省"}}
+{"countryCode":"LY","admin1Code":"72","names":{"en":"Misratah","zh":"Misratah"}}
+{"countryCode":"KZ","admin1Code":"14","names":{"en":"Kyzylorda","zh":"Kyzylorda"}}
+{"countryCode":"IR","admin1Code":"11","names":{"en":"Hormozgan","zh":"霍尔木兹甘省"}}
+{"countryCode":"ID","admin1Code":"22","names":{"en":"Southeast Sulawesi","zh":"Southeast Sulawesi"}}
+{"countryCode":"US","admin1Code":"HI","names":{"en":"Hawaii","zh":"夏威夷州"}}
+{"countryCode":"ET","admin1Code":"46","names":{"en":"Amhara","zh":"阿姆哈拉州"}}
+{"countryCode":"MZ","admin1Code":"09","names":{"en":"Zambezia Province","zh":"赞比西亚省"}}
+{"countryCode":"ML","admin1Code":"06","names":{"en":"Sikasso","zh":"锡卡索区"}}
+{"countryCode":"IR","admin1Code":"16","names":{"en":"Kurdistan Province","zh":"库尔德斯坦省"}}
+{"countryCode":"CF","admin1Code":"17","names":{"en":"Ombella-M'Poko","zh":"翁贝拉－姆波科省"}}
+{"countryCode":"GB","admin1Code":"NIR","names":{"en":"Northern Ireland","zh":"北爱尔兰"}}
+{"countryCode":"CU","admin1Code":"05","names":{"en":"Camaguey","zh":"Camaguey"}}
+{"countryCode":"ID","admin1Code":"28","names":{"en":"Maluku","zh":"Maluku"}}
+{"countryCode":"AR","admin1Code":"06","names":{"en":"Corrientes","zh":"科连特斯省"}}
+{"countryCode":"RU","admin1Code":"09","names":{"en":"Belgorod Oblast","zh":"别尔哥罗德州"}}
+{"countryCode":"MG","admin1Code":"31","names":{"en":"Atsinanana","zh":"Atsinanana"}}
+{"countryCode":"ET","admin1Code":"48","names":{"en":"Dire Dawa","zh":"德雷达瓦"}}
+{"countryCode":"DZ","admin1Code":"37","names":{"en":"Annaba","zh":"安纳巴省"}}
+{"countryCode":"RU","admin1Code":"25","names":{"en":"Kaluga Oblast","zh":"卡卢加州"}}
+{"countryCode":"KP","admin1Code":"19","names":{"en":"Kaesong","zh":"Kaesong"}}
+{"countryCode":"PL","admin1Code":"75","names":{"en":"Lublin","zh":"卢布林省"}}
+{"countryCode":"IR","admin1Code":"38","names":{"en":"Qazvin Province","zh":"加兹温省"}}
+{"countryCode":"MX","admin1Code":"18","names":{"en":"Nayarit","zh":"纳亚里特州"}}
+{"countryCode":"SD","admin1Code":"38","names":{"en":"Al Jazirah","zh":"杰济拉州"}}
+{"countryCode":"UZ","admin1Code":"09","names":{"en":"Karakalpakstan","zh":"卡拉卡尔帕克斯坦共和国"}}
+{"countryCode":"JP","admin1Code":"20","names":{"en":"Kochi","zh":"高知县"}}
+{"countryCode":"DZ","admin1Code":"20","names":{"en":"Blida","zh":"卜利达省"}}
+{"countryCode":"AZ","admin1Code":"20","names":{"en":"Ganja City","zh":"Ganja City"}}
+{"countryCode":"PL","admin1Code":"73","names":{"en":"Kujawsko-Pomorskie","zh":"Kujawsko-Pomorskie"}}
+{"countryCode":"RU","admin1Code":"69","names":{"en":"Smolensk Oblast","zh":"斯摩棱斯克州"}}
+{"countryCode":"KZ","admin1Code":"07","names":{"en":"West Kazakhstan","zh":"West Kazakhstan"}}
+{"countryCode":"IR","admin1Code":"23","names":{"en":"Lorestan Province","zh":"洛雷斯坦省"}}
+{"countryCode":"BG","admin1Code":"51","names":{"en":"Plovdiv","zh":"Plovdiv"}}
+{"countryCode":"KP","admin1Code":"09","names":{"en":"Kangwon-do","zh":"Kangwon-do"}}
+{"countryCode":"KZ","admin1Code":"11","names":{"en":"Pavlodar Region","zh":"巴甫洛达尔州"}}
+{"countryCode":"TR","admin1Code":"75","names":{"en":"Aksaray","zh":"阿克萨赖省"}}
+{"countryCode":"ZM","admin1Code":"03","names":{"en":"Eastern Province","zh":"东方省"}}
+{"countryCode":"KP","admin1Code":"17","names":{"en":"North Hamgyong","zh":"North Hamgyong"}}
+{"countryCode":"PE","admin1Code":"25","names":{"en":"Ucayali","zh":"乌卡亚利大区"}}
+{"countryCode":"FR","admin1Code":"52","names":{"en":"Pays de la Loire","zh":"卢瓦尔河地区大区"}}
+{"countryCode":"KG","admin1Code":"08","names":{"en":"Osh Region","zh":"奥什州"}}
+{"countryCode":"EC","admin1Code":"14","names":{"en":"Manabi","zh":"Manabi"}}
+{"countryCode":"CO","admin1Code":"19","names":{"en":"Meta Department","zh":"梅塔省"}}
+{"countryCode":"KZ","admin1Code":"15","names":{"en":"East Kazakhstan","zh":"East Kazakhstan"}}
+{"countryCode":"NE","admin1Code":"07","names":{"en":"Zinder Region","zh":"津德尔大区"}}
+{"countryCode":"BG","admin1Code":"61","names":{"en":"Varna","zh":"Varna"}}
+{"countryCode":"ID","admin1Code":"13","names":{"en":"Central Kalimantan","zh":"Central Kalimantan"}}
+{"countryCode":"EG","admin1Code":"03","names":{"en":"Beheira","zh":"布海拉省"}}
+{"countryCode":"CO","admin1Code":"09","names":{"en":"Cauca Department","zh":"考卡省"}}
+{"countryCode":"TZ","admin1Code":"28","names":{"en":"Geita","zh":"盖塔区"}}
+{"countryCode":"RO","admin1Code":"14","names":{"en":"Constanta County","zh":"康斯坦察县"}}
+{"countryCode":"GR","admin1Code":"ESYE12","names":{"en":"Central Macedonia","zh":"中马其顿大区"}}
+{"countryCode":"IT","admin1Code":"13","names":{"en":"Apulia","zh":"普利亚"}}
+{"countryCode":"CM","admin1Code":"12","names":{"en":"Far North","zh":"极北区"}}
+{"countryCode":"TR","admin1Code":"20","names":{"en":"Denizli","zh":"代尼兹利省"}}
+{"countryCode":"RU","admin1Code":"85","names":{"en":"Vologda Oblast","zh":"沃洛格达州"}}
+{"countryCode":"KP","admin1Code":"07","names":{"en":"North Hwanghae","zh":"North Hwanghae"}}
+{"countryCode":"RU","admin1Code":"40","names":{"en":"Kurgan Oblast","zh":"库尔干州"}}
+{"countryCode":"TZ","admin1Code":"17","names":{"en":"Tabora","zh":"塔波拉区"}}
+{"countryCode":"JP","admin1Code":"02","names":{"en":"Akita","zh":"秋田县"}}
+{"countryCode":"EG","admin1Code":"20","names":{"en":"Damietta","zh":"杜姆亚特省"}}
+{"countryCode":"AR","admin1Code":"14","names":{"en":"Misiones","zh":"米西奥内斯省"}}
+{"countryCode":"CO","admin1Code":"23","names":{"en":"Quindio Department","zh":"金迪奥省"}}
+{"countryCode":"TZ","admin1Code":"24","names":{"en":"Rukwa","zh":"鲁夸区"}}
+{"countryCode":"RU","admin1Code":"56","names":{"en":"Oryol oblast","zh":"奥廖尔州"}}
+{"countryCode":"AT","admin1Code":"06","names":{"en":"Styria","zh":"施泰尔马克州"}}
+{"countryCode":"PY","admin1Code":"01","names":{"en":"Alto Parana Department","zh":"Alto Parana Department"}}
+{"countryCode":"ZM","admin1Code":"06","names":{"en":"North-Western","zh":"North-Western"}}
+{"countryCode":"ES","admin1Code":"55","names":{"en":"Castille and Leon","zh":"卡斯蒂利亚-莱昂"}}
+{"countryCode":"UZ","admin1Code":"03","names":{"en":"Fergana","zh":"费尔干纳州"}}
+{"countryCode":"JP","admin1Code":"03","names":{"en":"Aomori","zh":"青森县"}}
+{"countryCode":"PL","admin1Code":"81","names":{"en":"Podlasie","zh":"Podlasie"}}
+{"countryCode":"NO","admin1Code":"46","names":{"en":"Vestland","zh":"韦斯特兰郡"}}
+{"countryCode":"RU","admin1Code":"72","names":{"en":"Tambov Oblast","zh":"坦波夫州"}}
+{"countryCode":"KZ","admin1Code":"12510143","names":{"en":"Abai Region","zh":"Abai Region"}}
+{"countryCode":"TR","admin1Code":"02","names":{"en":"Adiyaman Province","zh":"阿德亚曼省"}}
+{"countryCode":"AR","admin1Code":"03","names":{"en":"Chaco","zh":"查科省"}}
+{"countryCode":"KZ","admin1Code":"06","names":{"en":"Atyrau Oblisi","zh":"Atyrau Oblisi"}}
+{"countryCode":"CA","admin1Code":"02","names":{"en":"British Columbia","zh":"不列颠哥伦比亚"}}
+{"countryCode":"DZ","admin1Code":"03","names":{"en":"Batna","zh":"巴特纳省"}}
+{"countryCode":"LT","admin1Code":"57","names":{"en":"Kaunas","zh":"考纳斯县"}}
+{"countryCode":"EC","admin1Code":"08","names":{"en":"El Oro","zh":"埃尔奥罗省"}}
+{"countryCode":"DE","admin1Code":"05","names":{"en":"Hesse","zh":"黑森州"}}
+{"countryCode":"ZM","admin1Code":"02","names":{"en":"Central Province","zh":"中央省"}}
+{"countryCode":"KP","admin1Code":"11","names":{"en":"P'yongan-bukto","zh":"P'yongan-bukto"}}
+{"countryCode":"PL","admin1Code":"83","names":{"en":"Silesia","zh":"西里西亚省"}}
+{"countryCode":"TZ","admin1Code":"14","names":{"en":"Ruvuma","zh":"鲁伍马区"}}
+{"countryCode":"PE","admin1Code":"23","names":{"en":"Tacna","zh":"塔克纳大区"}}
+{"countryCode":"IL","admin1Code":"04","names":{"en":"Haifa","zh":"海法区"}}
+{"countryCode":"KR","admin1Code":"06","names":{"en":"Gangwon-do","zh":"Gangwon-do"}}
+{"countryCode":"EG","admin1Code":"10","names":{"en":"Minya","zh":"明亚省"}}
+{"countryCode":"CL","admin1Code":"01","names":{"en":"Valparaiso","zh":"Valparaiso"}}
+{"countryCode":"PE","admin1Code":"11","names":{"en":"Ica","zh":"伊卡大区"}}
+{"countryCode":"MZ","admin1Code":"07","names":{"en":"Niassa Province","zh":"尼亚萨省"}}
+{"countryCode":"TN","admin1Code":"32","names":{"en":"Sfax Governorate","zh":"斯法克斯省"}}
+{"countryCode":"UZ","admin1Code":"02","names":{"en":"Bukhara","zh":"布哈拉州"}}
+{"countryCode":"CZ","admin1Code":"85","names":{"en":"Moravian-Silesian Region","zh":"Moravian-Silesian Region"}}
+{"countryCode":"VN","admin1Code":"51","names":{"en":"Quang Ngai","zh":"Quang Ngai"}}
+{"countryCode":"UZ","admin1Code":"08","names":{"en":"Qashqadaryo","zh":"卡什卡达里亚州"}}
+{"countryCode":"CO","admin1Code":"27","names":{"en":"Sucre Department","zh":"苏克雷省"}}
+{"countryCode":"RU","admin1Code":"37","names":{"en":"Kostroma Oblast","zh":"科斯特罗马州"}}
+{"countryCode":"CI","admin1Code":"95","names":{"en":"Goh-Djiboua","zh":"Goh-Djiboua"}}
+{"countryCode":"FR","admin1Code":"44","names":{"en":"Grand Est","zh":"大东部大区"}}
+{"countryCode":"EC","admin1Code":"12","names":{"en":"Loja","zh":"洛哈省"}}
+{"countryCode":"EG","admin1Code":"18","names":{"en":"Beni Suweif","zh":"Beni Suweif"}}
+{"countryCode":"AF","admin1Code":"18","names":{"en":"Nangarhar","zh":"楠格哈尔省"}}
+{"countryCode":"TR","admin1Code":"19","names":{"en":"Corum","zh":"乔鲁姆省"}}
+{"countryCode":"EG","admin1Code":"09","names":{"en":"Monufia","zh":"米努夫省"}}
+{"countryCode":"JP","admin1Code":"39","names":{"en":"Tokushima","zh":"德岛县"}}
+{"countryCode":"EG","admin1Code":"24","names":{"en":"Sohag","zh":"索哈杰省"}}
+{"countryCode":"VN","admin1Code":"42","names":{"en":"Ha Tinh Province","zh":"河静省"}}
+{"countryCode":"DZ","admin1Code":"22","names":{"en":"Djelfa","zh":"杰勒法省"}}
+{"countryCode":"TZ","admin1Code":"02","names":{"en":"Pwani","zh":"滨海区"}}
+{"countryCode":"FR","admin1Code":"75","names":{"en":"New Aquitaine","zh":"New Aquitaine"}}
+{"countryCode":"SD","admin1Code":"60","names":{"en":"Eastern Darfur","zh":"东达尔富尔州"}}
+{"countryCode":"EC","admin1Code":"06","names":{"en":"Chimborazo Province","zh":"钦博拉索省"}}
+{"countryCode":"TR","admin1Code":"58","names":{"en":"Sivas","zh":"锡瓦斯省"}}
+{"countryCode":"JP","admin1Code":"06","names":{"en":"Fukui","zh":"福井县"}}
+{"countryCode":"MG","admin1Code":"12","names":{"en":"Vakinankaratra","zh":"Vakinankaratra"}}
+{"countryCode":"FI","admin1Code":"06","names":{"en":"Pirkanmaa","zh":"皮尔卡区"}}
+{"countryCode":"MG","admin1Code":"41","names":{"en":"Boeny","zh":"Boeny"}}
+{"countryCode":"VN","admin1Code":"68","names":{"en":"Lam Dong","zh":"Lam Dong"}}
+{"countryCode":"AR","admin1Code":"10","names":{"en":"Jujuy","zh":"胡胡伊省"}}
+{"countryCode":"ES","admin1Code":"59","names":{"en":"Basque Country","zh":"Basque Country"}}
+{"countryCode":"BJ","admin1Code":"10","names":{"en":"Borgou","zh":"博尔古省"}}
+{"countryCode":"CD","admin1Code":"16","names":{"en":"Haut-Uele","zh":"上韦莱省"}}
+{"countryCode":"SL","admin1Code":"01","names":{"en":"Eastern Province","zh":"东方省"}}
+{"countryCode":"MX","admin1Code":"20","names":{"en":"Oaxaca","zh":"瓦哈卡州"}}
+{"countryCode":"AU","admin1Code":"06","names":{"en":"Tasmania","zh":"塔斯马尼亚州"}}
+{"countryCode":"TH","admin1Code":"38","names":{"en":"Nonthaburi","zh":"Nonthaburi"}}
+{"countryCode":"EG","admin1Code":"23","names":{"en":"Qena","zh":"基纳省"}}
+{"countryCode":"PT","admin1Code":"17","names":{"en":"Porto","zh":"波尔图区"}}
+{"countryCode":"DE","admin1Code":"10","names":{"en":"Schleswig-Holstein","zh":"石勒苏益格-荷尔斯泰因"}}
+{"countryCode":"SD","admin1Code":"55","names":{"en":"Northern Darfur","zh":"北达尔富尔州"}}
+{"countryCode":"AR","admin1Code":"22","names":{"en":"Santiago del Estero","zh":"圣地亚哥－德尔埃斯特罗省"}}
+{"countryCode":"DZ","admin1Code":"12","names":{"en":"Setif","zh":"塞提夫省"}}
+{"countryCode":"TR","admin1Code":"03","names":{"en":"Afyonkarahisar Province","zh":"阿菲永卡拉希萨尔省"}}
+{"countryCode":"MW","admin1Code":"N","names":{"en":"Northern Region","zh":"北部区"}}
+{"countryCode":"AR","admin1Code":"08","names":{"en":"Entre Rios","zh":"恩特雷里奥斯省"}}
+{"countryCode":"SV","admin1Code":"09","names":{"en":"San Miguel Department","zh":"圣米格尔省"}}
+{"countryCode":"CL","admin1Code":"14","names":{"en":"Los Lagos Region","zh":"湖大区"}}
+{"countryCode":"NL","admin1Code":"04","names":{"en":"Groningen","zh":"格罗宁根省"}}
+{"countryCode":"MM","admin1Code":"16","names":{"en":"Bago Region","zh":"勃固省"}}
+{"countryCode":"TR","admin1Code":"61","names":{"en":"Trabzon","zh":"特拉布宗省"}}
+{"countryCode":"TR","admin1Code":"45","names":{"en":"Manisa","zh":"马尼萨省"}}
+{"countryCode":"CI","admin1Code":"78","names":{"en":"Montagnes","zh":"Montagnes"}}
+{"countryCode":"CL","admin1Code":"16","names":{"en":"Arica y Parinacota Region","zh":"阿里卡和帕里纳科塔大区"}}
+{"countryCode":"FR","admin1Code":"32","names":{"en":"Hauts-de-France","zh":"上法兰西大区"}}
+{"countryCode":"CM","admin1Code":"10","names":{"en":"Adamaoua","zh":"阿达马瓦区"}}
+{"countryCode":"TR","admin1Code":"10","names":{"en":"Balikesir","zh":"巴勒克埃西尔省"}}
+{"countryCode":"CL","admin1Code":"04","names":{"en":"Araucania","zh":"Araucania"}}
+{"countryCode":"MM","admin1Code":"03","names":{"en":"Ayeyarwady","zh":"Ayeyarwady"}}
+{"countryCode":"BD","admin1Code":"86","names":{"en":"Sylhet Division","zh":"锡尔赫特专区"}}
+{"countryCode":"SO","admin1Code":"09","names":{"en":"Lower Juba","zh":"Lower Juba"}}
+{"countryCode":"CD","admin1Code":"10","names":{"en":"Maniema","zh":"马涅马省"}}
+{"countryCode":"SL","admin1Code":"03","names":{"en":"Southern Province","zh":"南方省"}}
+{"countryCode":"JP","admin1Code":"33","names":{"en":"Saga","zh":"佐贺县"}}
+{"countryCode":"MZ","admin1Code":"01","names":{"en":"Cabo Delgado Province","zh":"德尔加杜角省"}}
+{"countryCode":"TZ","admin1Code":"16","names":{"en":"Singida","zh":"辛吉达区"}}
+{"countryCode":"TZ","admin1Code":"05","names":{"en":"Kigoma","zh":"基戈马区"}}
+{"countryCode":"AR","admin1Code":"15","names":{"en":"Neuquen","zh":"内乌肯省"}}
+{"countryCode":"TM","admin1Code":"04","names":{"en":"Lebap","zh":"列巴普州"}}
+{"countryCode":"SO","admin1Code":"14","names":{"en":"Lower Shabeelle","zh":"Lower Shabeelle"}}
+{"countryCode":"LB","admin1Code":"09","names":{"en":"North Lebanon","zh":"North Lebanon"}}
+{"countryCode":"TR","admin1Code":"52","names":{"en":"Ordu","zh":"奥尔杜省"}}
+{"countryCode":"FR","admin1Code":"53","names":{"en":"Brittany","zh":"布列塔尼大区"}}
+{"countryCode":"GN","admin1Code":"N","names":{"en":"Nzerekore Region","zh":"恩泽雷科雷大区"}}
+{"countryCode":"CA","admin1Code":"11","names":{"en":"Saskatchewan","zh":"萨斯喀彻温"}}
+{"countryCode":"VN","admin1Code":"96","names":{"en":"Ca Mau","zh":"Ca Mau"}}
+{"countryCode":"BD","admin1Code":"H","names":{"en":"Mymensingh Division","zh":"Mymensingh Division"}}
+{"countryCode":"SK","admin1Code":"03","names":{"en":"Kosice Region","zh":"科希策州"}}
+{"countryCode":"ZW","admin1Code":"01","names":{"en":"Manicaland","zh":"马尼卡兰省"}}
+{"countryCode":"CL","admin1Code":"06","names":{"en":"Biobio","zh":"Biobio"}}
+{"countryCode":"AR","admin1Code":"09","names":{"en":"Formosa","zh":"福尔摩沙省"}}
+{"countryCode":"TZ","admin1Code":"06","names":{"en":"Kilimanjaro","zh":"乞力马扎罗区"}}
+{"countryCode":"TN","admin1Code":"23","names":{"en":"Sousse Governorate","zh":"苏塞省"}}
+{"countryCode":"UG","admin1Code":"W","names":{"en":"Western Region","zh":"西部区"}}
+{"countryCode":"EC","admin1Code":"11","names":{"en":"Imbabura","zh":"因巴布拉省"}}
+{"countryCode":"BA","admin1Code":"02","names":{"en":"Srpska","zh":"Srpska"}}
+{"countryCode":"ES","admin1Code":"34","names":{"en":"Asturias","zh":"阿斯图里亚斯"}}
+{"countryCode":"TH","admin1Code":"46","names":{"en":"Chon Buri","zh":"春武里府"}}
+{"countryCode":"EC","admin1Code":"09","names":{"en":"Esmeraldas","zh":"埃斯梅拉达斯省"}}
+{"countryCode":"FI","admin1Code":"17","names":{"en":"North Ostrobothnia","zh":"北博滕区"}}
+{"countryCode":"RS","admin1Code":"VO","names":{"en":"Vojvodina","zh":"伏伊伏丁那"}}
+{"countryCode":"CL","admin1Code":"08","names":{"en":"O'Higgins Region","zh":"奥伊金斯将军解放者大区"}}
+{"countryCode":"GH","admin1Code":"04","names":{"en":"Central","zh":"Central"}}
+{"countryCode":"SA","admin1Code":"11","names":{"en":"'Asir Region","zh":"阿西尔省"}}
+{"countryCode":"RU","admin1Code":"60","names":{"en":"Pskov Oblast","zh":"普斯科夫州"}}
+{"countryCode":"MA","admin1Code":"05","names":{"en":"Beni Mellal-Khenifra","zh":"Beni Mellal-Khenifra"}}
+{"countryCode":"DZ","admin1Code":"30","names":{"en":"Sidi Bel Abbes","zh":"西迪贝勒阿巴斯省"}}
+{"countryCode":"BO","admin1Code":"05","names":{"en":"Oruro","zh":"奥鲁罗省"}}
+{"countryCode":"ES","admin1Code":"32","names":{"en":"Navarre","zh":"纳瓦拉"}}
+{"countryCode":"EG","admin1Code":"02","names":{"en":"Red Sea","zh":"红海省"}}
+{"countryCode":"FI","admin1Code":"02","names":{"en":"Southwest Finland","zh":"西南芬兰区"}}
+{"countryCode":"ML","admin1Code":"05","names":{"en":"Segou","zh":"塞古区"}}
+{"countryCode":"EC","admin1Code":"07","names":{"en":"Cotopaxi","zh":"Cotopaxi"}}
+{"countryCode":"ID","admin1Code":"34","names":{"en":"Gorontalo","zh":"Gorontalo"}}
+{"countryCode":"AT","admin1Code":"04","names":{"en":"Upper Austria","zh":"上奥地利州"}}
+{"countryCode":"DZ","admin1Code":"19","names":{"en":"Biskra","zh":"比斯克拉省"}}
+{"countryCode":"IT","admin1Code":"06","names":{"en":"Friuli Venezia Giulia","zh":"Friuli Venezia Giulia"}}
+{"countryCode":"TZ","admin1Code":"29","names":{"en":"Katavi","zh":"卡塔维区"}}
+{"countryCode":"ET","admin1Code":"56","names":{"en":"South Ethiopia Regional State","zh":"South Ethiopia Regional State"}}
+{"countryCode":"PR","admin1Code":"021","names":{"en":"Bayamon","zh":"Bayamon"}}
+{"countryCode":"MG","admin1Code":"21","names":{"en":"Upper Matsiatra","zh":"Upper Matsiatra"}}
+{"countryCode":"CD","admin1Code":"20","names":{"en":"Kwilu","zh":"奎卢省"}}
+{"countryCode":"TR","admin1Code":"91","names":{"en":"Osmaniye","zh":"奥斯曼尼耶省"}}
+{"countryCode":"TZ","admin1Code":"04","names":{"en":"Iringa","zh":"伊林加区"}}
+{"countryCode":"HU","admin1Code":"10","names":{"en":"Hajdu-Bihar","zh":"豪伊杜-比豪尔州"}}
+{"countryCode":"BD","admin1Code":"85","names":{"en":"Barisal Division","zh":"巴里萨尔专区"}}
+{"countryCode":"LY","admin1Code":"82","names":{"en":"Al Marqab","zh":"Al Marqab"}}
+{"countryCode":"CH","admin1Code":"GE","names":{"en":"Geneva","zh":"日内瓦州"}}
+{"countryCode":"PE","admin1Code":"06","names":{"en":"Cajamarca Department","zh":"卡哈马卡大区"}}
+{"countryCode":"TM","admin1Code":"03","names":{"en":"Dasoguz","zh":"Dasoguz"}}
+{"countryCode":"CD","admin1Code":"15","names":{"en":"Haut-Lomami","zh":"Haut-Lomami"}}
+{"countryCode":"VN","admin1Code":"20","names":{"en":"Lang Son Province","zh":"谅山省"}}
+{"countryCode":"LY","admin1Code":"68","names":{"en":"Az Zawiyah","zh":"Az Zawiyah"}}
+{"countryCode":"CL","admin1Code":"15","names":{"en":"Tarapaca","zh":"塔拉帕卡大区"}}
+{"countryCode":"CL","admin1Code":"11","names":{"en":"Maule Region","zh":"Maule Region"}}
+{"countryCode":"CD","admin1Code":"28","names":{"en":"Sud-Ubangi","zh":"Sud-Ubangi"}}
+{"countryCode":"PE","admin1Code":"10","names":{"en":"Huanuco Department","zh":"瓦努科大区"}}
+{"countryCode":"TD","admin1Code":"08","names":{"en":"Logone Occidental","zh":"西洛贡区"}}
+{"countryCode":"AR","admin1Code":"01","names":{"en":"Buenos Aires","zh":"布宜诺斯艾利斯省"}}
+{"countryCode":"NP","admin1Code":"2","names":{"en":"Madhesh","zh":"Madhesh"}}
+{"countryCode":"ML","admin1Code":"03","names":{"en":"Kayes","zh":"卡伊区"}}
+{"countryCode":"EG","admin1Code":"21","names":{"en":"Kafr el-Sheikh","zh":"谢赫村省"}}
+{"countryCode":"DZ","admin1Code":"33","names":{"en":"Tebessa","zh":"泰贝萨省"}}
+{"countryCode":"TR","admin1Code":"93","names":{"en":"Duzce","zh":"Duzce"}}
+{"countryCode":"JP","admin1Code":"45","names":{"en":"Yamaguchi","zh":"山口县"}}
+{"countryCode":"PT","admin1Code":"04","names":{"en":"Braga","zh":"布拉加区"}}
+{"countryCode":"NZ","admin1Code":"G1","names":{"en":"Waikato Region","zh":"怀卡托"}}
+{"countryCode":"US","admin1Code":"RI","names":{"en":"Rhode Island","zh":"罗得岛州"}}
+{"countryCode":"JP","admin1Code":"41","names":{"en":"Tottori","zh":"鸟取县"}}
+{"countryCode":"ET","admin1Code":"55","names":{"en":"Central Ethiopia Regional State","zh":"Central Ethiopia Regional State"}}
+{"countryCode":"CO","admin1Code":"17","names":{"en":"La Guajira Department","zh":"瓜希拉省"}}
+{"countryCode":"TR","admin1Code":"79","names":{"en":"Kirikkale","zh":"克勒克卡莱省"}}
+{"countryCode":"GE","admin1Code":"04","names":{"en":"Adjara","zh":"阿扎尔自治共和国"}}
+{"countryCode":"IL","admin1Code":"01","names":{"en":"Southern District","zh":"南部区"}}
+{"countryCode":"ML","admin1Code":"04","names":{"en":"Mopti","zh":"莫普提区"}}
+{"countryCode":"TR","admin1Code":"43","names":{"en":"Kuetahya","zh":"屈塔希亚省"}}
+{"countryCode":"TR","admin1Code":"14","names":{"en":"Bolu","zh":"博卢省"}}
+{"countryCode":"UZ","admin1Code":"12","names":{"en":"Surxondaryo Region","zh":"苏尔汉河州"}}
+{"countryCode":"MM","admin1Code":"10","names":{"en":"Sagaing Region","zh":"实皆省"}}
+{"countryCode":"TR","admin1Code":"22","names":{"en":"Edirne","zh":"埃迪尔内省"}}
+{"countryCode":"ZM","admin1Code":"05","names":{"en":"Northern Province","zh":"北方省"}}
+{"countryCode":"AR","admin1Code":"12","names":{"en":"La Rioja","zh":"拉里奥哈省"}}
+{"countryCode":"MG","admin1Code":"51","names":{"en":"Atsimo-Andrefana","zh":"Atsimo-Andrefana"}}
+{"countryCode":"CH","admin1Code":"BS","names":{"en":"Basel-City","zh":"巴塞尔城市州"}}
+{"countryCode":"UG","admin1Code":"N","names":{"en":"Northern Region","zh":"北部区"}}
+{"countryCode":"SE","admin1Code":"21","names":{"en":"Uppsala","zh":"乌普萨拉省"}}
+{"countryCode":"TR","admin1Code":"78","names":{"en":"Karaman","zh":"卡拉曼省"}}
+{"countryCode":"ES","admin1Code":"39","names":{"en":"Cantabria","zh":"坎塔布里亚"}}
+{"countryCode":"IN","admin1Code":"11","names":{"en":"Himachal Pradesh","zh":"喜马偕尔邦"}}
+{"countryCode":"GQ","admin1Code":"08","names":{"en":"Litoral","zh":"Litoral"}}
+{"countryCode":"CO","admin1Code":"36","names":{"en":"Boyaca","zh":"Boyaca"}}
+{"countryCode":"TR","admin1Code":"33","names":{"en":"Isparta","zh":"厄斯帕尔塔省"}}
+{"countryCode":"LT","admin1Code":"58","names":{"en":"Klaipeda County","zh":"克莱佩达县"}}
+{"countryCode":"ZM","admin1Code":"04","names":{"en":"Luapula Province","zh":"卢阿普拉省"}}
+{"countryCode":"PR","admin1Code":"031","names":{"en":"Carolina","zh":"Carolina"}}
+{"countryCode":"AR","admin1Code":"19","names":{"en":"San Luis","zh":"圣路易斯省"}}
+{"countryCode":"CO","admin1Code":"32","names":{"en":"Casanare Department","zh":"卡萨纳雷省"}}
+{"countryCode":"CO","admin1Code":"08","names":{"en":"Caqueta","zh":"Caqueta"}}
+{"countryCode":"GR","admin1Code":"ESYE23","names":{"en":"West Greece","zh":"West Greece"}}
+{"countryCode":"TM","admin1Code":"05","names":{"en":"Mary","zh":"马雷州"}}
+{"countryCode":"SE","admin1Code":"16","names":{"en":"OEstergoetland","zh":"东约特兰省"}}
+{"countryCode":"KW","admin1Code":"08","names":{"en":"Hawalli","zh":"Hawalli"}}
+{"countryCode":"TZ","admin1Code":"08","names":{"en":"Mara","zh":"马拉区"}}
+{"countryCode":"LB","admin1Code":"06","names":{"en":"South Governorate","zh":"南部省"}}
+{"countryCode":"TR","admin1Code":"09","names":{"en":"Aydin","zh":"艾登省"}}
+{"countryCode":"NL","admin1Code":"03","names":{"en":"Gelderland","zh":"海尔德兰省"}}
+{"countryCode":"AF","admin1Code":"24","names":{"en":"Kunduz","zh":"昆都士省"}}
+{"countryCode":"NL","admin1Code":"06","names":{"en":"North Brabant","zh":"北布拉班特省"}}
+{"countryCode":"HU","admin1Code":"06","names":{"en":"Csongrad","zh":"Csongrad"}}
+{"countryCode":"SS","admin1Code":"07","names":{"en":"Upper Nile","zh":"上尼罗州"}}
+{"countryCode":"BF","admin1Code":"06","names":{"en":"Centre-Ouest","zh":"中西大区"}}
+{"countryCode":"YE","admin1Code":"11","names":{"en":"Dhamar","zh":"扎马尔省"}}
+{"countryCode":"FR","admin1Code":"27","names":{"en":"Bourgogne","zh":"勃艮第-弗朗什-孔泰大区"}}
+{"countryCode":"NE","admin1Code":"06","names":{"en":"Tahoua Region","zh":"塔瓦大区"}}
+{"countryCode":"BO","admin1Code":"09","names":{"en":"Tarija Department","zh":"塔里哈省"}}
+{"countryCode":"AR","admin1Code":"02","names":{"en":"Catamarca","zh":"卡塔马卡省"}}
+{"countryCode":"MY","admin1Code":"09","names":{"en":"Penang","zh":"槟城"}}
+{"countryCode":"ZW","admin1Code":"02","names":{"en":"Midlands Province","zh":"中部省"}}
+{"countryCode":"AT","admin1Code":"05","names":{"en":"State of Salzburg","zh":"萨尔茨堡州"}}
+{"countryCode":"ET","admin1Code":"50","names":{"en":"Harari","zh":"哈勒尔州"}}
+{"countryCode":"MD","admin1Code":"58","names":{"en":"Transnistria","zh":"德涅斯特河沿岸自治领土单位"}}
+{"countryCode":"TH","admin1Code":"06","names":{"en":"Lampang","zh":"南邦府"}}
+{"countryCode":"SE","admin1Code":"15","names":{"en":"OErebro","zh":"厄勒布鲁省"}}
+{"countryCode":"CL","admin1Code":"07","names":{"en":"Coquimbo Region","zh":"科金博大区"}}
+{"countryCode":"HU","admin1Code":"04","names":{"en":"Borsod-Abauj-Zemplen","zh":"包尔绍德-奥包乌伊-曾普伦州"}}
+{"countryCode":"CY","admin1Code":"05","names":{"en":"Limassol","zh":"利马索尔区"}}
+{"countryCode":"NO","admin1Code":"14","names":{"en":"Rogaland","zh":"罗加兰郡"}}
+{"countryCode":"GH","admin1Code":"05","names":{"en":"Eastern","zh":"Eastern"}}
+{"countryCode":"TR","admin1Code":"24","names":{"en":"Erzincan","zh":"埃尔津詹省"}}
+{"countryCode":"TR","admin1Code":"40","names":{"en":"Kirsehir","zh":"克尔谢希尔省"}}
+{"countryCode":"CL","admin1Code":"18","names":{"en":"Nuble","zh":"纽夫莱大区"}}
+{"countryCode":"HR","admin1Code":"15","names":{"en":"Split-Dalmatia","zh":"Split-Dalmatia"}}
+{"countryCode":"NE","admin1Code":"01","names":{"en":"Agadez","zh":"阿加德兹大区"}}
+{"countryCode":"LY","admin1Code":"75","names":{"en":"Sabha District","zh":"塞卜哈省"}}
+{"countryCode":"IT","admin1Code":"14","names":{"en":"Sardinia","zh":"Sardinia"}}
+{"countryCode":"FI","admin1Code":"13","names":{"en":"Central Finland","zh":"Central Finland"}}
+{"countryCode":"MX","admin1Code":"08","names":{"en":"Colima","zh":"科利马州"}}
+{"countryCode":"GR","admin1Code":"ESYE14","names":{"en":"Thessaly","zh":"Thessaly"}}
+{"countryCode":"MR","admin1Code":"08","names":{"en":"Dakhlet Nouadhibou","zh":"努瓦迪布湾省"}}
+{"countryCode":"HU","admin1Code":"02","names":{"en":"Baranya","zh":"Baranya"}}
+{"countryCode":"TZ","admin1Code":"19","names":{"en":"Kagera","zh":"卡盖拉区"}}
+{"countryCode":"NI","admin1Code":"08","names":{"en":"Leon Department","zh":"莱昂省"}}
+{"countryCode":"TR","admin1Code":"17","names":{"en":"Canakkale","zh":"恰纳卡莱省"}}
+{"countryCode":"DK","admin1Code":"19","names":{"en":"North Denmark","zh":"北日德兰大区"}}
+{"countryCode":"LY","admin1Code":"79","names":{"en":"Al Butnan","zh":"Al Butnan"}}
+{"countryCode":"BO","admin1Code":"07","names":{"en":"Potosi Department","zh":"波托西省"}}
+{"countryCode":"AF","admin1Code":"08","names":{"en":"Ghazni","zh":"加兹尼省"}}
+{"countryCode":"PT","admin1Code":"07","names":{"en":"Coimbra","zh":"科英布拉区"}}
+{"countryCode":"TZ","admin1Code":"11","names":{"en":"Mtwara","zh":"姆特瓦拉区"}}
+{"countryCode":"CM","admin1Code":"09","names":{"en":"South-West","zh":"South-West"}}
+{"countryCode":"PE","admin1Code":"05","names":{"en":"Ayacucho","zh":"阿亚库乔大区"}}
+{"countryCode":"TD","admin1Code":"12","names":{"en":"Ouadai","zh":"瓦达伊区"}}
+{"countryCode":"AU","admin1Code":"03","names":{"en":"Northern Territory","zh":"北领地"}}
+{"countryCode":"TZ","admin1Code":"15","names":{"en":"Shinyanga","zh":"欣延加区"}}
+{"countryCode":"KH","admin1Code":"24","names":{"en":"Siem Reap","zh":"Siem Reap"}}
+{"countryCode":"CH","admin1Code":"VD","names":{"en":"Vaud","zh":"沃州"}}
+{"countryCode":"TD","admin1Code":"17","names":{"en":"Moyen-Chari","zh":"中沙里区"}}
+{"countryCode":"GH","admin1Code":"09","names":{"en":"Western","zh":"Western"}}
+{"countryCode":"CM","admin1Code":"04","names":{"en":"East","zh":"东部区"}}
+{"countryCode":"VN","admin1Code":"86","names":{"en":"Vinh Long","zh":"Vinh Long"}}
+{"countryCode":"GR","admin1Code":"ESYE43","names":{"en":"Crete","zh":"Crete"}}
+{"countryCode":"MG","admin1Code":"71","names":{"en":"Diana","zh":"Diana"}}
+{"countryCode":"VN","admin1Code":"80","names":{"en":"Tay Ninh","zh":"Tay Ninh"}}
+{"countryCode":"GE","admin1Code":"66","names":{"en":"Imereti","zh":"伊梅列季亚州"}}
+{"countryCode":"CL","admin1Code":"17","names":{"en":"Los Rios Region","zh":"河大区"}}
+{"countryCode":"ML","admin1Code":"09","names":{"en":"Gao","zh":"加奥区"}}
+{"countryCode":"NZ","admin1Code":"F7","names":{"en":"Otago","zh":"奥塔哥大区"}}
+{"countryCode":"AT","admin1Code":"07","names":{"en":"Tyrol","zh":"蒂罗尔州"}}
+{"countryCode":"TH","admin1Code":"60","names":{"en":"Surat Thani","zh":"素叻他尼府"}}
+{"countryCode":"LY","admin1Code":"83","names":{"en":"Al Wahat","zh":"Al Wahat"}}
+{"countryCode":"TH","admin1Code":"76","names":{"en":"Udon Thani","zh":"乌隆府"}}
+{"countryCode":"SE","admin1Code":"23","names":{"en":"Vaesterbotten","zh":"西博滕省"}}
+{"countryCode":"NI","admin1Code":"11","names":{"en":"Masaya Department","zh":"马萨亚省"}}
+{"countryCode":"SO","admin1Code":"04","names":{"en":"Bay","zh":"Bay"}}
+{"countryCode":"TR","admin1Code":"60","names":{"en":"Tokat Province","zh":"托卡特省"}}
+{"countryCode":"HU","admin1Code":"09","names":{"en":"Gyor-Moson-Sopron","zh":"杰尔-莫雄-肖普朗州"}}
+{"countryCode":"CL","admin1Code":"05","names":{"en":"Atacama","zh":"Atacama"}}
+{"countryCode":"MA","admin1Code":"10","names":{"en":"Guelmim-Oued Noun","zh":"Guelmim-Oued Noun"}}
+{"countryCode":"CF","admin1Code":"19","names":{"en":"Mambere","zh":"Mambere"}}
+{"countryCode":"MX","admin1Code":"32","names":{"en":"Zacatecas","zh":"萨卡特卡斯州"}}
+{"countryCode":"TR","admin1Code":"12","names":{"en":"Bingoel","zh":"宾格尔省"}}
+{"countryCode":"PT","admin1Code":"13","names":{"en":"Leiria","zh":"莱里亚区"}}
+{"countryCode":"PE","admin1Code":"21","names":{"en":"Puno","zh":"普诺大区"}}
+{"countryCode":"SE","admin1Code":"25","names":{"en":"Vaestmanland","zh":"西曼兰省"}}
+{"countryCode":"SS","admin1Code":"09","names":{"en":"Western Bahr al Ghazal","zh":"西加扎勒河州"}}
+{"countryCode":"TH","admin1Code":"02","names":{"en":"Chiang Mai","zh":"清迈府"}}
+{"countryCode":"TH","admin1Code":"27","names":{"en":"Nakhon Ratchasima","zh":"那空叻差是玛府"}}
+{"countryCode":"LA","admin1Code":"20","names":{"en":"Savannakhet Province","zh":"沙湾拿吉省"}}
+{"countryCode":"TR","admin1Code":"28","names":{"en":"Giresun","zh":"吉雷松省"}}
+{"countryCode":"TR","admin1Code":"37","names":{"en":"Kastamonu","zh":"卡斯塔莫努省"}}
+{"countryCode":"JO","admin1Code":"20","names":{"en":"Ajloun","zh":"阿杰隆省"}}
+{"countryCode":"FI","admin1Code":"11","names":{"en":"North Savo","zh":"北萨沃区"}}
+{"countryCode":"TR","admin1Code":"89","names":{"en":"Karabuek Province","zh":"卡拉比克省"}}
+{"countryCode":"MD","admin1Code":"60","names":{"en":"Balti","zh":"Balti"}}
+{"countryCode":"TR","admin1Code":"04","names":{"en":"Agri","zh":"阿勒省"}}
+{"countryCode":"KG","admin1Code":"03","names":{"en":"Jalal-Abad Region","zh":"贾拉拉巴德州"}}
+{"countryCode":"TH","admin1Code":"75","names":{"en":"Ubon Ratchathani","zh":"乌汶府"}}
+{"countryCode":"TR","admin1Code":"59","names":{"en":"Tekirdag","zh":"泰基尔达省"}}
+{"countryCode":"FI","admin1Code":"07","names":{"en":"Paijat-Hame","zh":"Paijat-Hame"}}
+{"countryCode":"US","admin1Code":"CT","names":{"en":"Connecticut","zh":"康涅狄格州"}}
+{"countryCode":"CG","admin1Code":"07","names":{"en":"Niari","zh":"尼阿里省"}}
+{"countryCode":"IT","admin1Code":"17","names":{"en":"Trentino-Alto Adige","zh":"Trentino-Alto Adige"}}
+{"countryCode":"IT","admin1Code":"18","names":{"en":"Umbria","zh":"翁布里亚"}}
+{"countryCode":"LB","admin1Code":"07","names":{"en":"Nabatieh","zh":"Nabatieh"}}
+{"countryCode":"TR","admin1Code":"53","names":{"en":"Rize Province","zh":"里泽省"}}
+{"countryCode":"KH","admin1Code":"29","names":{"en":"Battambang","zh":"马德望省"}}
+{"countryCode":"PE","admin1Code":"02","names":{"en":"Ancash","zh":"安卡什大区"}}
+{"countryCode":"CN","admin1Code":"14","names":{"en":"Tibet","zh":"西藏"}}
+{"countryCode":"VN","admin1Code":"33","names":{"en":"Hung Yen Province","zh":"Hung Yen Province"}}
+{"countryCode":"PT","admin1Code":"19","names":{"en":"Setubal","zh":"塞图巴尔区"}}
+{"countryCode":"TH","admin1Code":"53","names":{"en":"Nakhon Pathom","zh":"佛统府"}}
+{"countryCode":"TG","admin1Code":"22","names":{"en":"Centrale","zh":"中部区"}}
+{"countryCode":"HU","admin1Code":"18","names":{"en":"Szabolcs-Szatmar-Bereg","zh":"索博尔奇-索特马尔-贝拉格州"}}
+{"countryCode":"CL","admin1Code":"10","names":{"en":"Region of Magallanes","zh":"Region of Magallanes"}}
+{"countryCode":"NO","admin1Code":"42","names":{"en":"Agder","zh":"阿格德尔"}}
+{"countryCode":"FR","admin1Code":"24","names":{"en":"Centre-Val de Loire","zh":"中央-卢瓦尔河谷大区"}}
+{"countryCode":"FR","admin1Code":"28","names":{"en":"Normandy","zh":"诺曼底大区"}}
+{"countryCode":"TR","admin1Code":"05","names":{"en":"Amasya","zh":"阿马西亚省"}}
+{"countryCode":"AR","admin1Code":"13","names":{"en":"Mendoza","zh":"门多萨省"}}
+{"countryCode":"AM","admin1Code":"07","names":{"en":"Shirak","zh":"希拉克省"}}
+{"countryCode":"TH","admin1Code":"22","names":{"en":"Khon Kaen","zh":"孔敬府"}}
+{"countryCode":"UY","admin1Code":"15","names":{"en":"Salto Department","zh":"萨尔托省"}}
+{"countryCode":"TR","admin1Code":"74","names":{"en":"Siirt","zh":"锡尔特省"}}
+{"countryCode":"SE","admin1Code":"08","names":{"en":"Joenkoeping","zh":"延雪平省"}}
+{"countryCode":"IN","admin1Code":"01","names":{"en":"Andaman and Nicobar","zh":"安达曼-尼科巴群岛"}}
+{"countryCode":"TR","admin1Code":"90","names":{"en":"Kilis","zh":"基利斯省"}}
+{"countryCode":"MU","admin1Code":"17","names":{"en":"Plaines Wilhems","zh":"Plaines Wilhems"}}
+{"countryCode":"BE","admin1Code":"WAL","names":{"en":"Wallonia","zh":"瓦隆"}}
+{"countryCode":"SZ","admin1Code":"03","names":{"en":"Manzini Region","zh":"曼齐尼区"}}
+{"countryCode":"CA","admin1Code":"05","names":{"en":"Newfoundland and Labrador","zh":"Newfoundland and Labrador"}}
+{"countryCode":"HU","admin1Code":"01","names":{"en":"Bacs-Kiskun","zh":"巴奇-基什孔州"}}
+{"countryCode":"HR","admin1Code":"12","names":{"en":"Primorje-Gorski Kotar","zh":"Primorje-Gorski Kotar"}}
+{"countryCode":"JO","admin1Code":"02","names":{"en":"Balqa","zh":"拜勒加省"}}
+{"countryCode":"TH","admin1Code":"47","names":{"en":"Rayong","zh":"罗勇府"}}
+{"countryCode":"VN","admin1Code":"14","names":{"en":"Son La Province","zh":"山罗省"}}
+{"countryCode":"NO","admin1Code":"04","names":{"en":"Buskerud","zh":"Buskerud"}}
+{"countryCode":"PT","admin1Code":"10","names":{"en":"Madeira","zh":"马德拉"}}
+{"countryCode":"TG","admin1Code":"23","names":{"en":"Kara","zh":"卡拉区"}}
+{"countryCode":"CF","admin1Code":"04","names":{"en":"Mambere-Kadei","zh":"曼贝雷-卡代省"}}
+{"countryCode":"AF","admin1Code":"36","names":{"en":"Paktia","zh":"帕克蒂亚省"}}
+{"countryCode":"PT","admin1Code":"22","names":{"en":"Viseu","zh":"维塞乌区"}}
+{"countryCode":"BW","admin1Code":"13","names":{"en":"City of Francistown","zh":"City of Francistown"}}
+{"countryCode":"TH","admin1Code":"64","names":{"en":"Nakhon Si Thammarat","zh":"那空是贪玛叻府"}}
+{"countryCode":"UY","admin1Code":"09","names":{"en":"Maldonado","zh":"马尔多纳多省"}}
+{"countryCode":"TR","admin1Code":"85","names":{"en":"Zonguldak Province","zh":"宗古尔达克省"}}
+{"countryCode":"TR","admin1Code":"88","names":{"en":"Igdir","zh":"厄德尔省"}}
+{"countryCode":"HU","admin1Code":"08","names":{"en":"Fejer","zh":"费耶尔州"}}
+{"countryCode":"RU","admin1Code":"32","names":{"en":"Khanty-Mansia","zh":"Khanty-Mansia"}}
+{"countryCode":"AT","admin1Code":"02","names":{"en":"Carinthia","zh":"克恩顿州"}}
+{"countryCode":"TH","admin1Code":"48","names":{"en":"Chanthaburi","zh":"庄他武里府"}}
+{"countryCode":"ES","admin1Code":"58","names":{"en":"Galicia","zh":"加利西亚"}}
+{"countryCode":"SO","admin1Code":"19","names":{"en":"Togdheer","zh":"Togdheer"}}
+{"countryCode":"MN","admin1Code":"25","names":{"en":"Orhon","zh":"Orhon"}}
+{"countryCode":"PE","admin1Code":"24","names":{"en":"Tumbes","zh":"通贝斯大区"}}
+{"countryCode":"SI","admin1Code":"J2","names":{"en":"Urban Municipality of Maribor","zh":"马里博尔城市市镇"}}
+{"countryCode":"AF","admin1Code":"37","names":{"en":"Khowst","zh":"霍斯特省"}}
+{"countryCode":"TR","admin1Code":"15","names":{"en":"Burdur","zh":"布尔杜尔省"}}
+{"countryCode":"MY","admin1Code":"15","names":{"en":"Labuan","zh":"Labuan"}}
+{"countryCode":"TZ","admin1Code":"07","names":{"en":"Lindi","zh":"林迪区"}}
+{"countryCode":"JO","admin1Code":"21","names":{"en":"Aqaba","zh":"Aqaba"}}
+{"countryCode":"TH","admin1Code":"70","names":{"en":"Yala","zh":"也拉府"}}
+{"countryCode":"RU","admin1Code":"44","names":{"en":"Magadan Oblast","zh":"马加丹州"}}
+{"countryCode":"TZ","admin1Code":"30","names":{"en":"Njombe","zh":"恩琼贝区"}}
+{"countryCode":"TH","admin1Code":"52","names":{"en":"Ratchaburi","zh":"叻武里府"}}
+{"countryCode":"TR","admin1Code":"48","names":{"en":"Mugla","zh":"穆拉省"}}
+{"countryCode":"TR","admin1Code":"84","names":{"en":"Kars Province","zh":"卡尔斯省"}}
+{"countryCode":"TR","admin1Code":"73","names":{"en":"Nigde Province","zh":"尼代省"}}
+{"countryCode":"LA","admin1Code":"15","names":{"en":"Khammouane Province","zh":"甘蒙省"}}
+{"countryCode":"ZW","admin1Code":"05","names":{"en":"Mashonaland West","zh":"西马绍纳兰省"}}
+{"countryCode":"YE","admin1Code":"19","names":{"en":"Omran","zh":"阿姆兰省"}}
+{"countryCode":"TR","admin1Code":"82","names":{"en":"Cankiri","zh":"昌克勒省"}}
+{"countryCode":"NZ","admin1Code":"F3","names":{"en":"Manawatu-Wanganui","zh":"Manawatu-Wanganui"}}
+{"countryCode":"ZW","admin1Code":"08","names":{"en":"Masvingo Province","zh":"马斯温戈省"}}
+{"countryCode":"NZ","admin1Code":"F9","names":{"en":"Taranaki Region","zh":"塔拉纳基大区"}}
+{"countryCode":"IT","admin1Code":"10","names":{"en":"The Marches","zh":"马尔凯"}}
+{"countryCode":"MG","admin1Code":"72","names":{"en":"Sava","zh":"Sava"}}
+{"countryCode":"TR","admin1Code":"66","names":{"en":"Yozgat","zh":"约兹加特省"}}
+{"countryCode":"TM","admin1Code":"02","names":{"en":"Balkan","zh":"巴尔坎州"}}
+{"countryCode":"ES","admin1Code":"54","names":{"en":"Castille-La Mancha","zh":"卡斯蒂利亚-拉曼恰"}}
+{"countryCode":"EC","admin1Code":"05","names":{"en":"Carchi","zh":"卡尔奇省"}}
+{"countryCode":"LR","admin1Code":"01","names":{"en":"Bong County","zh":"邦县"}}
+{"countryCode":"ES","admin1Code":"ML","names":{"en":"Melilla","zh":"Melilla"}}
+{"countryCode":"CO","admin1Code":"03","names":{"en":"Arauca Department","zh":"阿劳卡省"}}
+{"countryCode":"BW","admin1Code":"11","names":{"en":"North-West","zh":"西北区"}}
+{"countryCode":"PE","admin1Code":"17","names":{"en":"Madre de Dios","zh":"马德雷德迪奥斯大区"}}
+{"countryCode":"TZ","admin1Code":"32","names":{"en":"Songwe","zh":"Songwe"}}
+{"countryCode":"VN","admin1Code":"11","names":{"en":"GJien Bien Province","zh":"GJien Bien Province"}}
+{"countryCode":"MX","admin1Code":"29","names":{"en":"Tlaxcala","zh":"特拉斯卡拉州"}}
+{"countryCode":"BO","admin1Code":"03","names":{"en":"Beni Department","zh":"贝尼省"}}
+{"countryCode":"ML","admin1Code":"08","names":{"en":"Tombouctou","zh":"Tombouctou"}}
+{"countryCode":"MN","admin1Code":"23","names":{"en":"Darhan Uul","zh":"Darhan Uul"}}
+{"countryCode":"ES","admin1Code":"CE","names":{"en":"Ceuta","zh":"休达"}}
+{"countryCode":"FI","admin1Code":"04","names":{"en":"Satakunta","zh":"萨塔昆塔区"}}
+{"countryCode":"EG","admin1Code":"13","names":{"en":"New Valley","zh":"新河谷省"}}
+{"countryCode":"CF","admin1Code":"11","names":{"en":"Ouaka","zh":"瓦卡省"}}
+{"countryCode":"PA","admin1Code":"02","names":{"en":"Chiriqui Province","zh":"奇里基省"}}
+{"countryCode":"TR","admin1Code":"49","names":{"en":"Mus","zh":"穆什省"}}
+{"countryCode":"TH","admin1Code":"16","names":{"en":"Nakhon Sawan","zh":"那空沙旺府"}}
+{"countryCode":"TR","admin1Code":"87","names":{"en":"Bartin","zh":"巴尔滕省"}}
+{"countryCode":"CH","admin1Code":"LU","names":{"en":"Lucerne","zh":"卢塞恩州"}}
+{"countryCode":"PT","admin1Code":"02","names":{"en":"Aveiro","zh":"Aveiro"}}
+{"countryCode":"NE","admin1Code":"03","names":{"en":"Dosso Region","zh":"多索大区"}}
+{"countryCode":"TH","admin1Code":"62","names":{"en":"Phuket","zh":"普吉府"}}
+{"countryCode":"IT","admin1Code":"03","names":{"en":"Calabria","zh":"卡拉布里亚"}}
+{"countryCode":"FI","admin1Code":"12","names":{"en":"North Karelia","zh":"北卡累利阿区"}}
+{"countryCode":"LB","admin1Code":"08","names":{"en":"Bekaa","zh":"Bekaa"}}
+{"countryCode":"LV","admin1Code":"06","names":{"en":"Daugavpils","zh":"陶格夫匹尔斯"}}
+{"countryCode":"AM","admin1Code":"06","names":{"en":"Lori","zh":"Lori"}}
+{"countryCode":"FI","admin1Code":"08","names":{"en":"Kymenlaakso","zh":"屈米河谷区"}}
+{"countryCode":"HU","admin1Code":"22","names":{"en":"Vas County","zh":"沃什州"}}
+{"countryCode":"PA","admin1Code":"04","names":{"en":"Colon","zh":"Colon"}}
+{"countryCode":"SS","admin1Code":"08","names":{"en":"Warrap","zh":"瓦拉卜州"}}
+{"countryCode":"LA","admin1Code":"02","names":{"en":"Champasak Province","zh":"占巴塞省"}}
+{"countryCode":"TR","admin1Code":"70","names":{"en":"Hakkari","zh":"哈卡里省"}}
+{"countryCode":"EC","admin1Code":"13","names":{"en":"Los Rios","zh":"Los Rios"}}
+{"countryCode":"PG","admin1Code":"14","names":{"en":"Morobe Province","zh":"莫雷贝省"}}
+{"countryCode":"TH","admin1Code":"20","names":{"en":"Sakon Nakhon","zh":"沙功那空府"}}
+{"countryCode":"AF","admin1Code":"07","names":{"en":"Faryab","zh":"法利亚布省"}}
+{"countryCode":"LR","admin1Code":"11","names":{"en":"Grand Bassa County","zh":"大巴萨县"}}
+{"countryCode":"CH","admin1Code":"SG","names":{"en":"Saint Gallen","zh":"Saint Gallen"}}
+{"countryCode":"HR","admin1Code":"10","names":{"en":"County of Osijek-Baranja","zh":"County of Osijek-Baranja"}}
+{"countryCode":"KH","admin1Code":"03","names":{"en":"Kampong Chhnang","zh":"磅清扬省"}}
+{"countryCode":"NA","admin1Code":"40","names":{"en":"Kavango East","zh":"东卡万戈区"}}
+{"countryCode":"PY","admin1Code":"02","names":{"en":"Amambay Department","zh":"阿曼拜省"}}
+{"countryCode":"MK","admin1Code":"D7","names":{"en":"Kumanovo","zh":"Kumanovo"}}
+{"countryCode":"PY","admin1Code":"11","names":{"en":"Itapua","zh":"伊塔普阿省"}}
+{"countryCode":"BW","admin1Code":"06","names":{"en":"Kweneng","zh":"奎嫩区"}}
+{"countryCode":"ER","admin1Code":"01","names":{"en":"Anseba","zh":"安塞巴区"}}
+{"countryCode":"TD","admin1Code":"13","names":{"en":"Salamat","zh":"萨拉马特区"}}
+{"countryCode":"TR","admin1Code":"11","names":{"en":"Bilecik","zh":"比莱吉克省"}}
+{"countryCode":"MK","admin1Code":"E3","names":{"en":"Prilep","zh":"Prilep"}}
+{"countryCode":"VN","admin1Code":"04","names":{"en":"Cao Bang Province","zh":"高平省"}}
+{"countryCode":"KH","admin1Code":"28","names":{"en":"Preah Sihanouk","zh":"西哈努克市"}}
+{"countryCode":"PE","admin1Code":"03","names":{"en":"Apurimac Department","zh":"阿普里马克大区"}}
+{"countryCode":"CY","admin1Code":"03","names":{"en":"Larnaka","zh":"拉纳卡区"}}
+{"countryCode":"CF","admin1Code":"09","names":{"en":"Nana-Mambere","zh":"纳纳-曼贝雷省"}}
+{"countryCode":"TR","admin1Code":"92","names":{"en":"Yalova","zh":"亚洛瓦省"}}
+{"countryCode":"HU","admin1Code":"20","names":{"en":"Jasz-Nagykun-Szolnok","zh":"亚斯-瑙吉孔-索尔诺克州"}}
+{"countryCode":"MG","admin1Code":"53","names":{"en":"Anosy","zh":"Anosy"}}
+{"countryCode":"IN","admin1Code":"33","names":{"en":"Goa","zh":"果阿邦"}}
+{"countryCode":"TD","admin1Code":"09","names":{"en":"Logone Oriental","zh":"东洛贡区"}}
+{"countryCode":"TD","admin1Code":"20","names":{"en":"Mayo-Kebbi Ouest","zh":"西凯比河区"}}
+{"countryCode":"PT","admin1Code":"09","names":{"en":"Faro","zh":"法鲁区"}}
+{"countryCode":"PE","admin1Code":"18","names":{"en":"Moquegua Department","zh":"莫克瓜大区"}}
+{"countryCode":"TH","admin1Code":"37","names":{"en":"Saraburi","zh":"沙拉武里府"}}
+{"countryCode":"TR","admin1Code":"80","names":{"en":"Sirnak","zh":"舍尔纳克省"}}
+{"countryCode":"TZ","admin1Code":"27","names":{"en":"Manyara","zh":"曼亚拉区"}}
+{"countryCode":"TT","admin1Code":"CHA","names":{"en":"Chaguanas","zh":"Chaguanas"}}
+{"countryCode":"LV","admin1Code":"16","names":{"en":"Liepaja","zh":"利耶帕亚"}}
+{"countryCode":"HR","admin1Code":"19","names":{"en":"Zadar","zh":"Zadar"}}
+{"countryCode":"TH","admin1Code":"65","names":{"en":"Trang","zh":"Trang"}}
+{"countryCode":"NZ","admin1Code":"F2","names":{"en":"Hawke's Bay Region","zh":"霍克湾大区"}}
+{"countryCode":"ZW","admin1Code":"04","names":{"en":"Mashonaland East Province","zh":"东马绍纳兰省"}}
+{"countryCode":"HU","admin1Code":"12","names":{"en":"Komarom-Esztergom","zh":"科马罗姆-埃斯泰尔戈姆州"}}
+{"countryCode":"GR","admin1Code":"ESYE21","names":{"en":"Epirus","zh":"Epirus"}}
+{"countryCode":"BZ","admin1Code":"01","names":{"en":"Belize District","zh":"伯利兹区"}}
+{"countryCode":"MY","admin1Code":"08","names":{"en":"Perlis","zh":"玻璃市"}}
+{"countryCode":"TH","admin1Code":"50","names":{"en":"Kanchanaburi","zh":"北碧府"}}
+{"countryCode":"TD","admin1Code":"16","names":{"en":"Mayo-Kebbi Est","zh":"东凯比河区"}}
+{"countryCode":"TH","admin1Code":"17","names":{"en":"Nong Khai","zh":"廊开府"}}
+{"countryCode":"TH","admin1Code":"55","names":{"en":"Samut Sakhon","zh":"沙没沙空府"}}
+{"countryCode":"CR","admin1Code":"06","names":{"en":"Limon Province","zh":"利蒙省"}}
+{"countryCode":"TH","admin1Code":"12","names":{"en":"Phitsanulok","zh":"彭世洛府"}}
+{"countryCode":"MR","admin1Code":"03","names":{"en":"Assaba","zh":"阿萨巴省"}}
+{"countryCode":"TH","admin1Code":"68","names":{"en":"Songkhla","zh":"宋卡府"}}
+{"countryCode":"KH","admin1Code":"02","names":{"en":"Kampong Cham","zh":"磅湛省"}}
+{"countryCode":"BI","admin1Code":"19","names":{"en":"Ngozi","zh":"恩戈齐省"}}
+{"countryCode":"PA","admin1Code":"13","names":{"en":"Panama Oeste Province","zh":"Panama Oeste Province"}}
+{"countryCode":"MR","admin1Code":"14","names":{"en":"Nouakchott North","zh":"Nouakchott North"}}
+{"countryCode":"DK","admin1Code":"21","names":{"en":"South Denmark","zh":"南丹麦大区"}}
+{"countryCode":"MR","admin1Code":"01","names":{"en":"Hodh Ech Chargi","zh":"东胡德省"}}
+{"countryCode":"ES","admin1Code":"57","names":{"en":"Extremadura","zh":"埃斯特雷马杜拉"}}
+{"countryCode":"NO","admin1Code":"13","names":{"en":"Ostfold","zh":"东福尔郡"}}
+{"countryCode":"TD","admin1Code":"25","names":{"en":"Sila","zh":"西拉区"}}
+{"countryCode":"TH","admin1Code":"11","names":{"en":"Kamphaeng Phet","zh":"甘烹碧府"}}
+{"countryCode":"TH","admin1Code":"26","names":{"en":"Chaiyaphum","zh":"猜也蓬府"}}
+{"countryCode":"TH","admin1Code":"10","names":{"en":"Uttaradit","zh":"程逸府"}}
+{"countryCode":"CO","admin1Code":"25","names":{"en":"San Andres y Providencia","zh":"San Andres y Providencia"}}
+{"countryCode":"TR","admin1Code":"39","names":{"en":"Kirklareli","zh":"克尔克拉雷利省"}}
+{"countryCode":"ME","admin1Code":"12","names":{"en":"Opstina Niksic","zh":"Opstina Niksic"}}
+{"countryCode":"TH","admin1Code":"34","names":{"en":"Lopburi","zh":"华富里府"}}
+{"countryCode":"LA","admin1Code":"03","names":{"en":"Houaphan","zh":"Houaphan"}}
+{"countryCode":"AR","admin1Code":"23","names":{"en":"Tierra del Fuego","zh":"火地岛省"}}
+{"countryCode":"IT","admin1Code":"02","names":{"en":"Basilicate","zh":"巴斯利卡塔"}}
+{"countryCode":"MR","admin1Code":"04","names":{"en":"Gorgol","zh":"戈尔戈勒省"}}
+{"countryCode":"TH","admin1Code":"58","names":{"en":"Chumphon","zh":"春蓬府"}}
+{"countryCode":"BW","admin1Code":"01","names":{"en":"Central","zh":"中部区"}}
+{"countryCode":"CF","admin1Code":"12","names":{"en":"Ouham","zh":"瓦姆省"}}
+{"countryCode":"MR","admin1Code":"11","names":{"en":"Tiris Zemmour","zh":"提里斯-宰穆尔省"}}
+{"countryCode":"TH","admin1Code":"23","names":{"en":"Kalasin","zh":"加拉信府"}}
+{"countryCode":"CF","admin1Code":"15","names":{"en":"Nana-Grebizi","zh":"Nana-Grebizi"}}
+{"countryCode":"LA","admin1Code":"17","names":{"en":"Luang Prabang Province","zh":"琅勃拉邦省"}}
+{"countryCode":"PE","admin1Code":"15","names":{"en":"Lima region","zh":"利马大区"}}
+{"countryCode":"FR","admin1Code":"94","names":{"en":"Corsica","zh":"Corsica"}}
+{"countryCode":"TD","admin1Code":"19","names":{"en":"Mandoul","zh":"芒杜尔区"}}
+{"countryCode":"NE","admin1Code":"02","names":{"en":"Diffa","zh":"迪法大区"}}
+{"countryCode":"CF","admin1Code":"08","names":{"en":"Mbomou","zh":"姆博穆省"}}
+{"countryCode":"TD","admin1Code":"05","names":{"en":"Guera","zh":"盖拉区"}}
+{"countryCode":"PT","admin1Code":"08","names":{"en":"Evora","zh":"埃武拉区"}}
+{"countryCode":"TH","admin1Code":"51","names":{"en":"Suphan Buri","zh":"素攀府"}}
+{"countryCode":"TR","admin1Code":"13","names":{"en":"Bitlis","zh":"比特利斯省"}}
+{"countryCode":"NA","admin1Code":"29","names":{"en":"Erongo Region","zh":"埃龙戈区"}}
+{"countryCode":"KH","admin1Code":"12","names":{"en":"Pursat","zh":"菩萨省"}}
+{"countryCode":"TZ","admin1Code":"20","names":{"en":"Pemba South","zh":"Pemba South"}}
+{"countryCode":"YE","admin1Code":"15","names":{"en":"Sa'dah","zh":"萨达省"}}
+{"countryCode":"TH","admin1Code":"24","names":{"en":"Maha Sarakham","zh":"马哈沙拉堪府"}}
+{"countryCode":"IT","admin1Code":"20","names":{"en":"Veneto","zh":"威尼托"}}
+{"countryCode":"TH","admin1Code":"36","names":{"en":"Phra Nakhon Si Ayutthaya","zh":"大城府"}}
+{"countryCode":"TH","admin1Code":"14","names":{"en":"Phetchabun","zh":"碧差汶府"}}
+{"countryCode":"VI","admin1Code":"010","names":{"en":"Saint Croix Island","zh":"Saint Croix Island"}}
+{"countryCode":"BW","admin1Code":"05","names":{"en":"Kgatleng","zh":"卡特伦区"}}
+{"countryCode":"PE","admin1Code":"22","names":{"en":"San Martin Department","zh":"圣马丁大区"}}
+{"countryCode":"TH","admin1Code":"44","names":{"en":"Chachoengsao","zh":"差春骚府"}}
+{"countryCode":"PE","admin1Code":"09","names":{"en":"Huancavelica","zh":"万卡韦利卡大区"}}
+{"countryCode":"IT","admin1Code":"11","names":{"en":"Molise","zh":"莫利塞"}}
+{"countryCode":"RU","admin1Code":"87","names":{"en":"Yamalo-Nenets","zh":"亚马尔-涅涅茨自治区"}}
+{"countryCode":"CG","admin1Code":"06","names":{"en":"Likouala","zh":"利夸拉省"}}
+{"countryCode":"CO","admin1Code":"01","names":{"en":"Amazonas Department","zh":"亚马孙省"}}
+{"countryCode":"EC","admin1Code":"24","names":{"en":"Orellana Province","zh":"奥雷亚纳省"}}
+{"countryCode":"MR","admin1Code":"13","names":{"en":"Nouakchott West","zh":"Nouakchott West"}}
+{"countryCode":"TR","admin1Code":"77","names":{"en":"Bayburt Province","zh":"巴伊布尔特省"}}
+{"countryCode":"BW","admin1Code":"10","names":{"en":"Ngwaketsi","zh":"南部区"}}
+{"countryCode":"TH","admin1Code":"31","names":{"en":"Narathiwat","zh":"那拉提瓦府"}}
+{"countryCode":"CF","admin1Code":"21","names":{"en":"Lim-Pende","zh":"Lim-Pende"}}
+{"countryCode":"CR","admin1Code":"01","names":{"en":"Alajuela Province","zh":"阿拉胡埃拉省"}}
+{"countryCode":"CF","admin1Code":"03","names":{"en":"Haute-Kotto","zh":"上科托省"}}
+{"countryCode":"TH","admin1Code":"29","names":{"en":"Surin","zh":"素林府"}}
+{"countryCode":"TH","admin1Code":"56","names":{"en":"Phetchaburi","zh":"碧武里府"}}
+{"countryCode":"PA","admin1Code":"10","names":{"en":"Veraguas Province","zh":"贝拉瓜斯省"}}
+{"countryCode":"HR","admin1Code":"02","names":{"en":"Brod-Posavina","zh":"Brod-Posavina"}}
+{"countryCode":"GU","admin1Code":"DD","names":{"en":"Dededo","zh":"Dededo"}}
+{"countryCode":"MN","admin1Code":"06","names":{"en":"East Aimak","zh":"东方省"}}
+{"countryCode":"TH","admin1Code":"30","names":{"en":"Si Sa Ket","zh":"四色菊府"}}
+{"countryCode":"TH","admin1Code":"69","names":{"en":"Pattani","zh":"北大年府"}}
+{"countryCode":"TH","admin1Code":"66","names":{"en":"Phatthalung","zh":"博他仑府"}}
+{"countryCode":"NA","admin1Code":"37","names":{"en":"Oshana Region","zh":"奥沙纳区"}}
+{"countryCode":"CH","admin1Code":"TI","names":{"en":"Ticino","zh":"提契诺州"}}
+{"countryCode":"TH","admin1Code":"05","names":{"en":"Lamphun","zh":"南奔府"}}
+{"countryCode":"VN","admin1Code":"12","names":{"en":"Lai Chau Province","zh":"莱州省"}}
+{"countryCode":"CY","admin1Code":"01","names":{"en":"Ammochostos","zh":"法马古斯塔区"}}
+{"countryCode":"EC","admin1Code":"25","names":{"en":"Santa Elena","zh":"圣埃伦娜省"}}
+{"countryCode":"HR","admin1Code":"05","names":{"en":"Karlovac","zh":"Karlovac"}}
+{"countryCode":"CG","admin1Code":"10","names":{"en":"Sangha","zh":"桑加省"}}
+{"countryCode":"TH","admin1Code":"78","names":{"en":"Mukdahan","zh":"穆达汉府"}}
+{"countryCode":"SS","admin1Code":"10","names":{"en":"Western Equatoria","zh":"西赤道州"}}
+{"countryCode":"PT","admin1Code":"11","names":{"en":"Guarda","zh":"瓜达区"}}
+{"countryCode":"MN","admin1Code":"13","names":{"en":"Khoevsgoel Province","zh":"Khoevsgoel Province"}}
+{"countryCode":"TH","admin1Code":"25","names":{"en":"Roi Et","zh":"黎逸府"}}
+{"countryCode":"TR","admin1Code":"69","names":{"en":"Guemueshane Province","zh":"居米什哈内省"}}
+{"countryCode":"CA","admin1Code":"09","names":{"en":"Prince Edward Island","zh":"爱德华王子岛"}}
+{"countryCode":"SS","admin1Code":"05","names":{"en":"Northern Bahr al Ghazal","zh":"北加扎勒河州"}}
+{"countryCode":"TH","admin1Code":"07","names":{"en":"Phrae","zh":"帕府"}}
+{"countryCode":"CH","admin1Code":"FR","names":{"en":"Fribourg","zh":"弗里堡州"}}
+{"countryCode":"EG","admin1Code":"26","names":{"en":"South Sinai","zh":"南西奈省"}}
+{"countryCode":"SI","admin1Code":"11","names":{"en":"Urban Municipality of Celje","zh":"Urban Municipality of Celje"}}
+{"countryCode":"SI","admin1Code":"52","names":{"en":"Urban Municipality of Kranj","zh":"Urban Municipality of Kranj"}}
+{"countryCode":"LA","admin1Code":"14","names":{"en":"Xiangkhoang","zh":"Xiangkhoang"}}
+{"countryCode":"TH","admin1Code":"09","names":{"en":"Sukhothai","zh":"素可泰府"}}
+{"countryCode":"CH","admin1Code":"SH","names":{"en":"Schaffhausen","zh":"沙夫豪森州"}}
+{"countryCode":"HR","admin1Code":"16","names":{"en":"Varazdin","zh":"Varazdin"}}
+{"countryCode":"CY","admin1Code":"06","names":{"en":"Pafos","zh":"帕福斯区"}}
+{"countryCode":"TZ","admin1Code":"13","names":{"en":"Pemba North","zh":"Pemba North"}}
+{"countryCode":"TH","admin1Code":"13","names":{"en":"Phichit","zh":"披集府"}}
+{"countryCode":"CG","admin1Code":"13","names":{"en":"Cuvette","zh":"盆地省"}}
+{"countryCode":"CH","admin1Code":"GR","names":{"en":"Grisons","zh":"格劳宾登州"}}
+{"countryCode":"TH","admin1Code":"18","names":{"en":"Loei","zh":"黎府"}}
+{"countryCode":"IT","admin1Code":"19","names":{"en":"Aosta Valley","zh":"Aosta Valley"}}
+{"countryCode":"TR","admin1Code":"62","names":{"en":"Tunceli","zh":"通杰利省"}}
+{"countryCode":"TH","admin1Code":"54","names":{"en":"Samut Songkhram","zh":"沙没颂堪府"}}
+{"countryCode":"EC","admin1Code":"04","names":{"en":"Canar","zh":"Canar"}}
+{"countryCode":"TR","admin1Code":"57","names":{"en":"Sinop","zh":"锡诺普省"}}
+{"countryCode":"TH","admin1Code":"77","names":{"en":"Amnat Charoen","zh":"安纳乍伦府"}}
+{"countryCode":"CH","admin1Code":"VS","names":{"en":"Valais","zh":"瓦莱州"}}
+{"countryCode":"TH","admin1Code":"73","names":{"en":"Nakhon Phanom","zh":"那空拍侬府"}}
+{"countryCode":"TH","admin1Code":"67","names":{"en":"Satun","zh":"沙敦府"}}
+{"countryCode":"TH","admin1Code":"79","names":{"en":"Nong Bua Lamphu","zh":"农磨兰普府"}}
+{"countryCode":"IT","admin1Code":"01","names":{"en":"Abruzzo","zh":"阿布鲁佐"}}
+{"countryCode":"PG","admin1Code":"16","names":{"en":"Western Highlands Province","zh":"西高地省"}}
+{"countryCode":"NA","admin1Code":"28","names":{"en":"Zambezi Region","zh":"卡普里维区"}}
+{"countryCode":"TH","admin1Code":"57","names":{"en":"Prachuap Khiri Khan","zh":"巴蜀府"}}
+{"countryCode":"NA","admin1Code":"39","names":{"en":"Otjozondjupa Region","zh":"奥乔宗朱帕区"}}
+{"countryCode":"CH","admin1Code":"NE","names":{"en":"Neuchatel","zh":"纳沙泰尔州"}}
+{"countryCode":"CG","admin1Code":"05","names":{"en":"Lekoumou","zh":"莱库穆省"}}
+{"countryCode":"MR","admin1Code":"10","names":{"en":"Guidimaka","zh":"吉迪马卡省"}}
+{"countryCode":"TH","admin1Code":"74","names":{"en":"Prachin Buri","zh":"巴真府"}}
+{"countryCode":"SS","admin1Code":"04","names":{"en":"Lakes","zh":"湖泊州"}}
+{"countryCode":"MT","admin1Code":"52","names":{"en":"Saint Paul's Bay","zh":"Saint Paul's Bay"}}
+{"countryCode":"TH","admin1Code":"63","names":{"en":"Krabi","zh":"甲米府"}}
+{"countryCode":"HR","admin1Code":"13","names":{"en":"Sibenik-Knin","zh":"Sibenik-Knin"}}
+{"countryCode":"MN","admin1Code":"02","names":{"en":"Bayankhongor","zh":"Bayankhongor"}}
+{"countryCode":"LB","admin1Code":"11","names":{"en":"Baalbek-Hermel Governorate","zh":"巴勒贝克-希尔米勒省"}}
+{"countryCode":"CH","admin1Code":"ZG","names":{"en":"Zug","zh":"楚格州"}}
+{"countryCode":"MN","admin1Code":"19","names":{"en":"Uvs Province","zh":"乌布苏省"}}
+{"countryCode":"CO","admin1Code":"30","names":{"en":"Vaupes","zh":"Vaupes"}}
+{"countryCode":"AT","admin1Code":"08","names":{"en":"Vorarlberg","zh":"福拉尔贝格州"}}
+{"countryCode":"MN","admin1Code":"12","names":{"en":"Hovd","zh":"Hovd"}}
+{"countryCode":"MN","admin1Code":"15","names":{"en":"OEvoerhangay","zh":"OEvoerhangay"}}
+{"countryCode":"TH","admin1Code":"80","names":{"en":"Sa Kaeo","zh":"沙缴府"}}
+{"countryCode":"MN","admin1Code":"03","names":{"en":"Bayan-OElgii Province","zh":"Bayan-OElgii Province"}}
+{"countryCode":"TH","admin1Code":"28","names":{"en":"Buriram","zh":"武里南府"}}
+{"countryCode":"CA","admin1Code":"12","names":{"en":"Yukon","zh":"育空"}}
+{"countryCode":"PG","admin1Code":"04","names":{"en":"Oro Province","zh":"北部省"}}
+{"countryCode":"HR","admin1Code":"14","names":{"en":"Sisak-Moslavina","zh":"Sisak-Moslavina"}}
+{"countryCode":"PG","admin1Code":"12","names":{"en":"Madang Province","zh":"马当省"}}
+{"countryCode":"HR","admin1Code":"03","names":{"en":"Dubrovnik-Neretva","zh":"Dubrovnik-Neretva"}}
+{"countryCode":"SS","admin1Code":"03","names":{"en":"Jonglei","zh":"琼莱州"}}
+{"countryCode":"CY","admin1Code":"02","names":{"en":"Keryneia","zh":"凯里尼亚区"}}
+{"countryCode":"PG","admin1Code":"10","names":{"en":"East New Britain Province","zh":"东新不列颠省"}}
+{"countryCode":"PG","admin1Code":"05","names":{"en":"Southern Highlands Province","zh":"南高地省"}}
+{"countryCode":"TR","admin1Code":"08","names":{"en":"Artvin","zh":"阿尔特温省"}}
+{"countryCode":"SI","admin1Code":"50","names":{"en":"Urban Municipality of Koper","zh":"科佩尔"}}
+{"countryCode":"CH","admin1Code":"TG","names":{"en":"Thurgau","zh":"图尔高州"}}
+{"countryCode":"LC","admin1Code":"06","names":{"en":"Gros-Islet","zh":"Gros-Islet"}}
+{"countryCode":"LA","admin1Code":"07","names":{"en":"Oudomxai","zh":"Oudomxai"}}
+{"countryCode":"TH","admin1Code":"04","names":{"en":"Nan","zh":"Nan"}}
+{"countryCode":"TH","admin1Code":"59","names":{"en":"Ranong province","zh":"拉廊府"}}
+{"countryCode":"TH","admin1Code":"39","names":{"en":"Pathum Thani","zh":"巴吞他尼府"}}
+{"countryCode":"SI","admin1Code":"J7","names":{"en":"Urban Municipality of Novo Mesto","zh":"Urban Municipality of Novo Mesto"}}
+{"countryCode":"HR","admin1Code":"01","names":{"en":"Bjelovar-Bilogora","zh":"Bjelovar-Bilogora"}}
+{"countryCode":"SI","admin1Code":"D7","names":{"en":"Urban Municipality of Velenje","zh":"Urban Municipality of Velenje"}}
+{"countryCode":"TR","admin1Code":"86","names":{"en":"Ardahan","zh":"阿尔达汉省"}}
+{"countryCode":"BT","admin1Code":"07","names":{"en":"Tsirang District","zh":"Tsirang District"}}
+{"countryCode":"HR","admin1Code":"06","names":{"en":"Koprivnica-Krizevci","zh":"Koprivnica-Krizevci"}}
+{"countryCode":"HR","admin1Code":"18","names":{"en":"Vukovar-Srijem","zh":"Vukovar-Srijem"}}
+{"countryCode":"TH","admin1Code":"15","names":{"en":"Uthai Thani","zh":"Uthai Thani"}}
+{"countryCode":"AT","admin1Code":"03","names":{"en":"Lower Austria","zh":"下奥地利州"}}
+{"countryCode":"TH","admin1Code":"72","names":{"en":"Yasothon","zh":"益梭通府"}}
+{"countryCode":"TH","admin1Code":"49","names":{"en":"Trat","zh":"Trat"}}
+{"countryCode":"CH","admin1Code":"AG","names":{"en":"Aargau","zh":"阿尔高州"}}
+{"countryCode":"BT","admin1Code":"15","names":{"en":"Punakha","zh":"Punakha"}}
+{"countryCode":"TH","admin1Code":"43","names":{"en":"Nakhon Nayok","zh":"那空那育府"}}
+{"countryCode":"TH","admin1Code":"41","names":{"en":"Phayao","zh":"帕尧府"}}
+{"countryCode":"CA","admin1Code":"13","names":{"en":"Northwest Territories","zh":"Northwest Territories"}}
+{"countryCode":"TH","admin1Code":"33","names":{"en":"Sing Buri","zh":"信武里府"}}
+{"countryCode":"ME","admin1Code":"08","names":{"en":"Herceg Novi","zh":"新海尔采格"}}
+{"countryCode":"ME","admin1Code":"14","names":{"en":"Pljevlja","zh":"Pljevlja"}}
+{"countryCode":"IS","admin1Code":"40","names":{"en":"Northeast","zh":"Northeast"}}
+{"countryCode":"PG","admin1Code":"17","names":{"en":"West New Britain Province","zh":"西新不列颠省"}}
+{"countryCode":"PG","admin1Code":"09","names":{"en":"Eastern Highlands Province","zh":"东高地省"}}
+{"countryCode":"PG","admin1Code":"11","names":{"en":"East Sepik Province","zh":"东塞皮克省"}}
+{"countryCode":"RU","admin1Code":"50","names":{"en":"Nenets","zh":"涅涅茨自治区"}}
+{"countryCode":"ME","admin1Code":"05","names":{"en":"Budva","zh":"Budva"}}
+{"countryCode":"SI","admin1Code":"K7","names":{"en":"Urban Municipality of Ptuj","zh":"普图伊"}}
+{"countryCode":"ME","admin1Code":"02","names":{"en":"Bar","zh":"Bar"}}
+{"countryCode":"MU","admin1Code":"13","names":{"en":"Flacq","zh":"Flacq"}}
+{"countryCode":"HR","admin1Code":"11","names":{"en":"Pozega-Slavonia","zh":"Pozega-Slavonia"}}
+{"countryCode":"IN","admin1Code":"41","names":{"en":"Ladakh","zh":"拉达克"}}
+{"countryCode":"IS","admin1Code":"43","names":{"en":"Southern Peninsula","zh":"Southern Peninsula"}}
+{"countryCode":"AD","admin1Code":"08","names":{"en":"Escaldes-Engordany","zh":"埃斯卡尔德斯-恩戈尔达尼"}}
+{"countryCode":"TH","admin1Code":"32","names":{"en":"Chai Nat","zh":"猜纳府"}}
+{"countryCode":"ME","admin1Code":"04","names":{"en":"Bijelo Polje","zh":"比耶洛波列"}}
+{"countryCode":"SI","admin1Code":"D3","names":{"en":"Municipality of Trbovlje","zh":"Municipality of Trbovlje"}}
+{"countryCode":"ME","admin1Code":"06","names":{"en":"Cetinje","zh":"Cetinje"}}
+{"countryCode":"HR","admin1Code":"09","names":{"en":"Megimurje","zh":"Megimurje"}}
+{"countryCode":"PW","admin1Code":"06","names":{"en":"Koror","zh":"科罗尔州"}}
+{"countryCode":"BT","admin1Code":"14","names":{"en":"Pemagatshel","zh":"Pemagatshel"}}
+{"countryCode":"FM","admin1Code":"03","names":{"en":"Chuuk","zh":"丘克州"}}
+{"countryCode":"TH","admin1Code":"35","names":{"en":"Ang Thong","zh":"Ang Thong"}}
+{"countryCode":"SI","admin1Code":"H6","names":{"en":"Municipality of Kamnik","zh":"Municipality of Kamnik"}}
+{"countryCode":"HR","admin1Code":"17","names":{"en":"Virovitica-Podravina","zh":"Virovitica-Podravina"}}
+{"countryCode":"SI","admin1Code":"H4","names":{"en":"Municipality of Jesenice","zh":"Municipality of Jesenice"}}
+{"countryCode":"SI","admin1Code":"G7","names":{"en":"Municipality of Domzale","zh":"Municipality of Domzale"}}
+{"countryCode":"MU","admin1Code":"14","names":{"en":"Grand Port","zh":"Grand Port"}}
+{"countryCode":"BT","admin1Code":"13","names":{"en":"Paro","zh":"Paro"}}
+{"countryCode":"AD","admin1Code":"03","names":{"en":"Encamp","zh":"恩坎普"}}
+{"countryCode":"IN","admin1Code":"14","names":{"en":"Lakshadweep","zh":"Lakshadweep"}}
+{"countryCode":"ME","admin1Code":"03","names":{"en":"Berane","zh":"Berane"}}
+{"countryCode":"ME","admin1Code":"20","names":{"en":"Ulcinj","zh":"Ulcinj"}}
+{"countryCode":"MU","admin1Code":"19","names":{"en":"Riviere du Rempart","zh":"Riviere du Rempart"}}
+{"countryCode":"BT","admin1Code":"09","names":{"en":"Sarpang District","zh":"Sarpang District"}}
+{"countryCode":"TH","admin1Code":"81","names":{"en":"Bueng Kan","zh":"汶干府"}}
+{"countryCode":"MU","admin1Code":"16","names":{"en":"Pamplemousses","zh":"Pamplemousses"}}
+{"countryCode":"TH","admin1Code":"61","names":{"en":"Phang Nga","zh":"攀牙府"}}
+{"countryCode":"BT","admin1Code":"17","names":{"en":"Samdrup Jongkhar","zh":"Samdrup Jongkhar"}}
+{"countryCode":"SM","admin1Code":"09","names":{"en":"Serravalle","zh":"Serravalle"}}
+{"countryCode":"ME","admin1Code":"17","names":{"en":"Rozaje Municipality","zh":"罗扎耶市镇"}}
+{"countryCode":"TH","admin1Code":"01","names":{"en":"Mae Hong Son","zh":"夜丰颂府"}}
+{"countryCode":"IS","admin1Code":"42","names":{"en":"South","zh":"South"}}
+{"countryCode":"BT","admin1Code":"22","names":{"en":"Wangdi Phodrang","zh":"Wangdi Phodrang"}}
+{"countryCode":"MU","admin1Code":"23","names":{"en":"Rodrigues","zh":"罗德里格岛"}}
+{"countryCode":"CA","admin1Code":"14","names":{"en":"Nunavut","zh":"努纳武特"}}
+{"countryCode":"CO","admin1Code":"15","names":{"en":"Guainia Department","zh":"瓜伊尼亚省"}}
+{"countryCode":"SC","admin1Code":"11","names":{"en":"Cascade","zh":"卡斯喀得区"}}
+{"countryCode":"ME","admin1Code":"19","names":{"en":"Tivat","zh":"Tivat"}}
+{"countryCode":"BT","admin1Code":"05","names":{"en":"Bumthang District","zh":"Bumthang District"}}
+{"countryCode":"LI","admin1Code":"07","names":{"en":"Schaan","zh":"沙恩"}}
+{"countryCode":"SI","admin1Code":"A3","names":{"en":"Radovljica","zh":"拉多夫利察市镇"}}
+{"countryCode":"BT","admin1Code":"16","names":{"en":"Samtse District","zh":"Samtse District"}}
+{"countryCode":"ME","admin1Code":"10","names":{"en":"Kotor","zh":"科托尔"}}
+{"countryCode":"GL","admin1Code":"06","names":{"en":"Qeqqata","zh":"凯克卡塔"}}
+{"countryCode":"SI","admin1Code":"03","names":{"en":"Municipality of Bled","zh":"Municipality of Bled"}}
+{"countryCode":"SH","admin1Code":"01","names":{"en":"Ascension","zh":"Ascension"}}
+{"countryCode":"GL","admin1Code":"11839537","names":{"en":"Avannaata","zh":"Avannaata"}}
+{"countryCode":"SC","admin1Code":"02","names":{"en":"Anse Boileau","zh":"Anse Boileau"}}
+{"countryCode":"SC","admin1Code":"10","names":{"en":"Bel Ombre","zh":"贝尔翁布雷区"}}
+{"countryCode":"SC","admin1Code":"08","names":{"en":"Beau Vallon","zh":"Beau Vallon"}}
+{"countryCode":"GL","admin1Code":"04","names":{"en":"Kujalleq","zh":"库雅雷克"}}
+{"countryCode":"AD","admin1Code":"05","names":{"en":"Ordino","zh":"奥尔迪诺"}}
+{"countryCode":"GL","admin1Code":"11839534","names":{"en":"Qeqertalik","zh":"Qeqertalik"}}
+{"countryCode":"TZ","admin1Code":"22","names":{"en":"Zanzibar North","zh":"Zanzibar North"}}
+{"countryCode":"TZ","admin1Code":"21","names":{"en":"Zanzibar Central/South","zh":"Zanzibar Central/South"}}
+{"countryCode":"SI","admin1Code":"04","names":{"en":"Municipality of Bohinj","zh":"博希尼市镇"}}
+{"countryCode":"TK","admin1Code":"N","names":{"en":"Nukunonu","zh":"Nukunonu"}}
+{"countryCode":"SI","admin1Code":"M2","names":{"en":"Municipality of Solcava","zh":"索尔察瓦市镇"}}
+{"countryCode":"NG","admin1Code":"05","names":{"en":"Lagos","zh":"拉各斯州"}}
+{"countryCode":"US","admin1Code":"NY","names":{"en":"New York","zh":"纽约州"}}
+{"countryCode":"US","admin1Code":"IL","names":{"en":"Illinois","zh":"伊利诺伊州"}}
+{"countryCode":"MX","admin1Code":"11","names":{"en":"Guanajuato","zh":"瓜纳华托州"}}
+{"countryCode":"US","admin1Code":"PA","names":{"en":"Pennsylvania","zh":"宾夕法尼亚州"}}
+{"countryCode":"NG","admin1Code":"25","names":{"en":"Anambra","zh":"阿南布拉州"}}
+{"countryCode":"IN","admin1Code":"10","names":{"en":"Haryana","zh":"哈里亚纳邦"}}
+{"countryCode":"EG","admin1Code":"12","names":{"en":"Qalyubia","zh":"盖卢比尤省"}}
+{"countryCode":"IN","admin1Code":"02","names":{"en":"Andhra Pradesh","zh":"安得拉邦"}}
+{"countryCode":"ZA","admin1Code":"05","names":{"en":"Eastern Cape","zh":"东开普省"}}
+{"countryCode":"PH","admin1Code":"09","names":{"en":"Zamboanga Peninsula","zh":"三宝颜半岛"}}
+{"countryCode":"US","admin1Code":"FL","names":{"en":"Florida","zh":"佛罗里达州"}}
+{"countryCode":"NG","admin1Code":"36","names":{"en":"Delta","zh":"三角州"}}
+{"countryCode":"MY","admin1Code":"12","names":{"en":"Selangor","zh":"雪兰莪"}}
+{"countryCode":"CD","admin1Code":"22","names":{"en":"Lualaba","zh":"Lualaba"}}
+{"countryCode":"US","admin1Code":"WA","names":{"en":"Washington","zh":"华盛顿州"}}
+{"countryCode":"PH","admin1Code":"10","names":{"en":"Northern Mindanao","zh":"北棉兰老"}}
+{"countryCode":"ID","admin1Code":"12","names":{"en":"South Kalimantan","zh":"南加里曼丹省"}}
+{"countryCode":"CO","admin1Code":"33","names":{"en":"Cundinamarca","zh":"昆迪纳马卡省"}}
+{"countryCode":"US","admin1Code":"OR","names":{"en":"Oregon","zh":"俄勒冈州"}}
+{"countryCode":"AO","admin1Code":"19","names":{"en":"Bengo","zh":"本戈省"}}
+{"countryCode":"US","admin1Code":"MI","names":{"en":"Michigan","zh":"密歇根州"}}
+{"countryCode":"US","admin1Code":"NV","names":{"en":"Nevada","zh":"内华达州"}}
+{"countryCode":"CD","admin1Code":"18","names":{"en":"Kasai","zh":"Kasai"}}
+{"countryCode":"US","admin1Code":"KY","names":{"en":"Kentucky","zh":"肯塔基州"}}
+{"countryCode":"MX","admin1Code":"28","names":{"en":"Tamaulipas","zh":"塔毛利帕斯州"}}
+{"countryCode":"US","admin1Code":"MD","names":{"en":"Maryland","zh":"马里兰州"}}
+{"countryCode":"US","admin1Code":"NM","names":{"en":"New Mexico","zh":"新墨西哥州"}}
+{"countryCode":"US","admin1Code":"WI","names":{"en":"Wisconsin","zh":"威斯康星州"}}
+{"countryCode":"TW","admin1Code":"03","names":{"en":"Taipei","zh":"台北市"}}
+{"countryCode":"KR","admin1Code":"14","names":{"en":"Gyeongsangbuk-do","zh":"Gyeongsangbuk-do"}}
+{"countryCode":"US","admin1Code":"NE","names":{"en":"Nebraska","zh":"内布拉斯加州"}}
+{"countryCode":"NG","admin1Code":"41","names":{"en":"Kogi State","zh":"科吉州"}}
+{"countryCode":"PH","admin1Code":"06","names":{"en":"Western Visayas","zh":"西米沙鄢"}}
+{"countryCode":"US","admin1Code":"VA","names":{"en":"Virginia","zh":"弗吉尼亚州"}}
+{"countryCode":"VN","admin1Code":"24","names":{"en":"Bac Ninh","zh":"Bac Ninh"}}
+{"countryCode":"US","admin1Code":"MN","names":{"en":"Minnesota","zh":"明尼苏达州"}}
+{"countryCode":"US","admin1Code":"KS","names":{"en":"Kansas","zh":"堪萨斯州"}}
+{"countryCode":"JP","admin1Code":"10","names":{"en":"Gunma","zh":"群马县"}}
+{"countryCode":"US","admin1Code":"LA","names":{"en":"Louisiana","zh":"路易斯安那州"}}
+{"countryCode":"JP","admin1Code":"23","names":{"en":"Mie","zh":"三重县"}}
+{"countryCode":"US","admin1Code":"AK","names":{"en":"Alaska","zh":"阿拉斯加州"}}
+{"countryCode":"DK","admin1Code":"18","names":{"en":"Central Jutland","zh":"中日德兰大区"}}
+{"countryCode":"US","admin1Code":"NJ","names":{"en":"New Jersey","zh":"新泽西州"}}
+{"countryCode":"US","admin1Code":"MO","names":{"en":"Missouri","zh":"密苏里州"}}
+{"countryCode":"KR","admin1Code":"16","names":{"en":"Jeollanam-do","zh":"Jeollanam-do"}}
+{"countryCode":"TJ","admin1Code":"03","names":{"en":"Sughd","zh":"Sughd"}}
+{"countryCode":"JP","admin1Code":"14","names":{"en":"Ibaraki","zh":"茨城县"}}
+{"countryCode":"RU","admin1Code":"47","names":{"en":"Moscow Oblast","zh":"莫斯科州"}}
+{"countryCode":"ID","admin1Code":"40","names":{"en":"Riau Islands","zh":"Riau Islands"}}
+{"countryCode":"ZA","admin1Code":"10","names":{"en":"North West","zh":"西北省"}}
+{"countryCode":"IE","admin1Code":"M","names":{"en":"Munster","zh":"芒斯特省"}}
+{"countryCode":"VN","admin1Code":"82","names":{"en":"Dong Thap","zh":"Dong Thap"}}
+{"countryCode":"ZA","admin1Code":"07","names":{"en":"Mpumalanga","zh":"姆普马兰加省"}}
+{"countryCode":"RU","admin1Code":"06","names":{"en":"Arkhangelskaya","zh":"阿尔汉格尔斯克州"}}
+{"countryCode":"VN","admin1Code":"22","names":{"en":"Quang Ninh","zh":"广宁省"}}
+{"countryCode":"ZM","admin1Code":"07","names":{"en":"Southern Province","zh":"南部省"}}
+{"countryCode":"JP","admin1Code":"36","names":{"en":"Shimane","zh":"岛根县"}}
+{"countryCode":"RW","admin1Code":"14","names":{"en":"Western Province","zh":"西部省"}}
+{"countryCode":"US","admin1Code":"SD","names":{"en":"South Dakota","zh":"南达科他州"}}
+{"countryCode":"IN","admin1Code":"23","names":{"en":"Punjab","zh":"旁遮普邦"}}
+{"countryCode":"RU","admin1Code":"19","names":{"en":"Ingushetiya Republic","zh":"Ingushetiya Republic"}}
+{"countryCode":"NZ","admin1Code":"E8","names":{"en":"Bay of Plenty","zh":"普伦蒂湾大区"}}
+{"countryCode":"IN","admin1Code":"03","names":{"en":"Assam","zh":"阿萨姆邦"}}
+{"countryCode":"JP","admin1Code":"35","names":{"en":"Shiga","zh":"滋贺县"}}
+{"countryCode":"JP","admin1Code":"47","names":{"en":"Okinawa","zh":"冲绳县"}}
+{"countryCode":"AR","admin1Code":"04","names":{"en":"Chubut","zh":"丘布特省"}}
+{"countryCode":"ML","admin1Code":"07","names":{"en":"Koulikoro","zh":"库利科罗区"}}
+{"countryCode":"LB","admin1Code":"05","names":{"en":"Mount Lebanon","zh":"Mount Lebanon"}}
+{"countryCode":"US","admin1Code":"ND","names":{"en":"North Dakota","zh":"北达科他州"}}
+{"countryCode":"MX","admin1Code":"12","names":{"en":"Guerrero","zh":"格雷罗州"}}
+{"countryCode":"AF","admin1Code":"03","names":{"en":"Baghlan","zh":"巴格兰省"}}
+{"countryCode":"ZA","admin1Code":"09","names":{"en":"Limpopo","zh":"林波波省"}}
+{"countryCode":"VN","admin1Code":"44","names":{"en":"Quang Tri","zh":"Quang Tri"}}
+{"countryCode":"CG","admin1Code":"01","names":{"en":"Bouenza","zh":"布恩扎省"}}
+{"countryCode":"RU","admin1Code":"34","names":{"en":"Komi","zh":"科米共和国"}}
+{"countryCode":"ID","admin1Code":"35","names":{"en":"Bangka-Belitung Islands","zh":"邦加-勿里洞省"}}
+{"countryCode":"RU","admin1Code":"42","names":{"en":"Leningradskaya Oblast'","zh":"列宁格勒州"}}
+{"countryCode":"NO","admin1Code":"01","names":{"en":"Akershus","zh":"阿克什胡斯郡"}}
+{"countryCode":"JP","admin1Code":"09","names":{"en":"Gifu","zh":"岐阜县"}}
+{"countryCode":"BO","admin1Code":"04","names":{"en":"La Paz Department","zh":"拉巴斯省"}}
+{"countryCode":"US","admin1Code":"IA","names":{"en":"Iowa","zh":"艾奥瓦州"}}
+{"countryCode":"ID","admin1Code":"41","names":{"en":"West Sulawesi","zh":"West Sulawesi"}}
+{"countryCode":"RU","admin1Code":"31","names":{"en":"Khakasiya Republic","zh":"哈卡斯共和国"}}
+{"countryCode":"ZA","admin1Code":"08","names":{"en":"Northern Cape","zh":"北开普省"}}
+{"countryCode":"YE","admin1Code":"16","names":{"en":"Sanaa Governorate","zh":"萨那省"}}
+{"countryCode":"RU","admin1Code":"05","names":{"en":"Amur Oblast","zh":"阿穆尔州"}}
+{"countryCode":"ID","admin1Code":"01","names":{"en":"Aceh","zh":"Aceh"}}
+{"countryCode":"KH","admin1Code":"09","names":{"en":"Kratie","zh":"Kratie"}}
+{"countryCode":"NO","admin1Code":"20","names":{"en":"Vestfold","zh":"西福尔郡"}}
+{"countryCode":"RU","admin1Code":"22","names":{"en":"Kabardino-Balkariya Republic","zh":"卡巴尔达-巴尔卡尔共和国"}}
+{"countryCode":"JP","admin1Code":"08","names":{"en":"Fukushima","zh":"福岛县"}}
+{"countryCode":"US","admin1Code":"ID","names":{"en":"Idaho","zh":"爱达荷州"}}
+{"countryCode":"GR","admin1Code":"ESYE24","names":{"en":"Central Greece","zh":"Central Greece"}}
+{"countryCode":"RU","admin1Code":"45","names":{"en":"Mariy-El Republic","zh":"马里埃尔共和国"}}
+{"countryCode":"KH","admin1Code":"27","names":{"en":"Otar Meanchey","zh":"Otar Meanchey"}}
+{"countryCode":"GR","admin1Code":"ESYE42","names":{"en":"South Aegean","zh":"South Aegean"}}
+{"countryCode":"RU","admin1Code":"93","names":{"en":"Zabaykalskiy (Transbaikal) Kray","zh":"Zabaykalskiy (Transbaikal) Kray"}}
+{"countryCode":"HR","admin1Code":"04","names":{"en":"Istria","zh":"Istria"}}
+{"countryCode":"RU","admin1Code":"46","names":{"en":"Mordoviya Republic","zh":"莫尔多瓦共和国"}}
+{"countryCode":"US","admin1Code":"MS","names":{"en":"Mississippi","zh":"密西西比州"}}
+{"countryCode":"PT","admin1Code":"20","names":{"en":"Viana do Castelo","zh":"维亚纳堡区"}}
+{"countryCode":"EG","admin1Code":"27","names":{"en":"North Sinai","zh":"北西奈省"}}
+{"countryCode":"US","admin1Code":"VT","names":{"en":"Vermont","zh":"佛蒙特州"}}
+{"countryCode":"RU","admin1Code":"12","names":{"en":"Chechnya","zh":"车臣共和国"}}
+{"countryCode":"MX","admin1Code":"27","names":{"en":"Tabasco","zh":"塔巴斯科州"}}
+{"countryCode":"RU","admin1Code":"68","names":{"en":"North Ossetia-Alania","zh":"北奥塞梯-阿兰共和国"}}
+{"countryCode":"RU","admin1Code":"92","names":{"en":"Kamchatka","zh":"Kamchatka"}}
+{"countryCode":"IN","admin1Code":"26","names":{"en":"Tripura","zh":"特里普拉邦"}}
+{"countryCode":"PG","admin1Code":"07","names":{"en":"Bougainville","zh":"Bougainville"}}
+{"countryCode":"TH","admin1Code":"03","names":{"en":"Chiang Rai","zh":"清莱府"}}
+{"countryCode":"ID","admin1Code":"PT","names":{"en":"Central Papua","zh":"Central Papua"}}
+{"countryCode":"RU","admin1Code":"64","names":{"en":"Sakhalin Oblast","zh":"萨哈林州"}}
+{"countryCode":"RU","admin1Code":"28","names":{"en":"Karelia","zh":"卡累利阿共和国"}}
+{"countryCode":"RU","admin1Code":"52","names":{"en":"Novgorod Oblast","zh":"诺夫哥罗德州"}}
+{"countryCode":"RU","admin1Code":"27","names":{"en":"Karachayevo-Cherkesiya Republic","zh":"卡拉恰伊-切尔克斯共和国"}}
+{"countryCode":"JP","admin1Code":"46","names":{"en":"Yamanashi","zh":"山梨县"}}
+{"countryCode":"IN","admin1Code":"17","names":{"en":"Manipur","zh":"曼尼普尔邦"}}
+{"countryCode":"JP","admin1Code":"27","names":{"en":"Nagasaki","zh":"长崎县"}}
+{"countryCode":"HR","admin1Code":"20","names":{"en":"Zagreb County","zh":"Zagreb County"}}
+{"countryCode":"AR","admin1Code":"18","names":{"en":"San Juan","zh":"圣胡安省"}}
+{"countryCode":"CO","admin1Code":"22","names":{"en":"Putumayo Department","zh":"普图马约省"}}
+{"countryCode":"ID","admin1Code":"29","names":{"en":"North Maluku","zh":"North Maluku"}}
+{"countryCode":"IN","admin1Code":"20","names":{"en":"Nagaland","zh":"那加兰邦"}}
+{"countryCode":"RU","admin1Code":"11","names":{"en":"Buryatiya Republic","zh":"Buryatiya Republic"}}
+{"countryCode":"ID","admin1Code":"42","names":{"en":"North Kalimantan","zh":"North Kalimantan"}}
+{"countryCode":"ID","admin1Code":"39","names":{"en":"West Papua","zh":"West Papua"}}
+{"countryCode":"IN","admin1Code":"18","names":{"en":"Meghalaya","zh":"梅加拉亚邦"}}
+{"countryCode":"RU","admin1Code":"63","names":{"en":"Sakha","zh":"Sakha"}}
+{"countryCode":"CO","admin1Code":"31","names":{"en":"Vichada Department","zh":"比查达省"}}
+{"countryCode":"ID","admin1Code":"PS","names":{"en":"South Papua","zh":"South Papua"}}
+{"countryCode":"LA","admin1Code":"16","names":{"en":"Loungnamtha","zh":"Loungnamtha"}}
+{"countryCode":"BR","admin1Code":"01","names":{"en":"Acre","zh":"Acre"}}
+{"countryCode":"ID","admin1Code":"PD","names":{"en":"Southwest Papua","zh":"Southwest Papua"}}
+{"countryCode":"GT","admin1Code":"16","names":{"en":"Sacatepequez","zh":"萨卡特佩克斯省"}}
+{"countryCode":"ID","admin1Code":"PE","names":{"en":"Highland Papua","zh":"Highland Papua"}}
+{"countryCode":"CO","admin1Code":"11","names":{"en":"Choco","zh":"Choco"}}
+{"countryCode":"IN","admin1Code":"30","names":{"en":"Arunachal Pradesh","zh":"阿鲁纳恰尔邦"}}
+{"countryCode":"TH","admin1Code":"08","names":{"en":"Tak","zh":"达府"}}
+{"countryCode":"CL","admin1Code":"02","names":{"en":"Aysen","zh":"Aysen"}}
+{"countryCode":"TR","admin1Code":"50","names":{"en":"Nevsehir Province","zh":"内夫谢希尔省"}}
+{"countryCode":"RU","admin1Code":"03","names":{"en":"Altai","zh":"阿尔泰共和国"}}
+{"countryCode":"RU","admin1Code":"24","names":{"en":"Kalmykiya Republic","zh":"卡尔梅克共和国"}}
+{"countryCode":"BR","admin1Code":"31","names":{"en":"Tocantins","zh":"托坎廷斯"}}
+{"countryCode":"RU","admin1Code":"49","names":{"en":"Murmansk","zh":"摩尔曼斯克州"}}
+{"countryCode":"RU","admin1Code":"79","names":{"en":"Republic of Tyva","zh":"图瓦共和国"}}
+{"countryCode":"RU","admin1Code":"01","names":{"en":"Adygeya Republic","zh":"阿迪格共和国"}}
+{"countryCode":"BR","admin1Code":"08","names":{"en":"Espirito Santo","zh":"圣埃斯皮里图州"}}
+{"countryCode":"PE","admin1Code":"19","names":{"en":"Pasco","zh":"帕斯科大区"}}
+{"countryCode":"IN","admin1Code":"31","names":{"en":"Mizoram","zh":"米佐拉姆邦"}}
+{"countryCode":"CO","admin1Code":"14","names":{"en":"Guaviare Department","zh":"瓜维亚雷省"}}
+{"countryCode":"PT","admin1Code":"06","names":{"en":"Castelo Branco","zh":"布朗库堡区"}}
+{"countryCode":"BR","admin1Code":"25","names":{"en":"Roraima","zh":"罗赖马州"}}
+{"countryCode":"RU","admin1Code":"89","names":{"en":"Jewish Autonomous Oblast","zh":"犹太自治州"}}
+{"countryCode":"IS","admin1Code":"45","names":{"en":"West","zh":"West"}}
+{"countryCode":"PT","admin1Code":"03","names":{"en":"Beja","zh":"贝雅区"}}
+{"countryCode":"JO","admin1Code":"12","names":{"en":"Tafielah","zh":"塔菲拉省"}}
+{"countryCode":"VN","admin1Code":"08","names":{"en":"Tuyen Quang","zh":"Tuyen Quang"}}
+{"countryCode":"RO","admin1Code":"33","names":{"en":"Sibiu County","zh":"锡比乌县"}}
+{"countryCode":"AR","admin1Code":"20","names":{"en":"Santa Cruz","zh":"圣克鲁斯省"}}
+{"countryCode":"US","admin1Code":"UT","names":{"en":"Utah","zh":"犹他州"}}
+{"countryCode":"RU","admin1Code":"15","names":{"en":"Chukotka","zh":"楚科奇自治区"}}
+{"countryCode":"US","admin1Code":"NH","names":{"en":"New Hampshire","zh":"新罕布什尔州"}}
+{"countryCode":"IN","admin1Code":"29","names":{"en":"Sikkim","zh":"锡金"}}
+{"countryCode":"TR","admin1Code":"54","names":{"en":"Sakarya","zh":"萨卡里亚省"}}
+{"countryCode":"MX","admin1Code":"04","names":{"en":"Campeche","zh":"坎佩切州"}}
+{"countryCode":"GE","admin1Code":"71","names":{"en":"Samegrelo and Zemo Svaneti","zh":"萨梅格列罗-上斯瓦涅季亚州"}}
+{"countryCode":"MX","admin1Code":"13","names":{"en":"Hidalgo","zh":"伊达尔戈州"}}
+{"countryCode":"US","admin1Code":"WV","names":{"en":"West Virginia","zh":"西维吉尼亚州"}}
+{"countryCode":"US","admin1Code":"AR","names":{"en":"Arkansas","zh":"阿肯色州"}}
+{"countryCode":"KP","admin1Code":"15","names":{"en":"South Pyongan","zh":"South Pyongan"}}
+{"countryCode":"TZ","admin1Code":"31","names":{"en":"Simiyu","zh":"锡米尤区"}}
+{"countryCode":"ET","admin1Code":"51","names":{"en":"Oromiya","zh":"奥罗米亚州"}}
+{"countryCode":"AR","admin1Code":"16","names":{"en":"Rio Negro","zh":"内格罗河省"}}
+{"countryCode":"PE","admin1Code":"01","names":{"en":"Amazonas","zh":"亚马孙大区"}}
+{"countryCode":"UA","admin1Code":"25","names":{"en":"Zakarpattia","zh":"外喀尔巴阡州"}}
+{"countryCode":"GR","admin1Code":"ESYE11","names":{"en":"East Macedonia and Thrace","zh":"东马其顿和色雷斯大区"}}
+{"countryCode":"ES","admin1Code":"27","names":{"en":"La Rioja","zh":"拉里奥哈"}}
+{"countryCode":"EC","admin1Code":"23","names":{"en":"Napo","zh":"纳波省"}}
+{"countryCode":"IN","admin1Code":"09","names":{"en":"Gujarat","zh":"古吉拉特邦"}}
+{"countryCode":"PH","admin1Code":"14","names":{"en":"Autonomous Region in Muslim Mindanao","zh":"棉兰老穆斯林自治区"}}
+{"countryCode":"PH","admin1Code":"12","names":{"en":"Soccsksargen","zh":"索科斯克萨尔根"}}
+{"countryCode":"SN","admin1Code":"03","names":{"en":"Diourbel Region","zh":"久尔贝勒区"}}
+{"countryCode":"HK","admin1Code":"HCW","names":{"en":"Central and Western","zh":"中西区"}}
+{"countryCode":"MX","admin1Code":"23","names":{"en":"Quintana Roo","zh":"金塔纳罗奥州"}}
+{"countryCode":"NL","admin1Code":"11","names":{"en":"South Holland","zh":"南荷兰省"}}
+{"countryCode":"DO","admin1Code":"37","names":{"en":"Santo Domingo Province","zh":"圣多明哥省"}}
+{"countryCode":"KR","admin1Code":"17","names":{"en":"Chungcheongnam-do","zh":"Chungcheongnam-do"}}
+{"countryCode":"SO","admin1Code":"21","names":{"en":"Awdal","zh":"Awdal"}}
+{"countryCode":"BE","admin1Code":"VLG","names":{"en":"Flanders","zh":"佛兰德斯"}}
+{"countryCode":"MX","admin1Code":"10","names":{"en":"Durango","zh":"杜兰戈州"}}
+{"countryCode":"KE","admin1Code":"22","names":{"en":"Kiambu County","zh":"基安布郡"}}
+{"countryCode":"PH","admin1Code":"03","names":{"en":"Central Luzon","zh":"中央吕宋"}}
+{"countryCode":"BJ","admin1Code":"09","names":{"en":"Atlantique","zh":"大西洋省"}}
+{"countryCode":"SD","admin1Code":"41","names":{"en":"White Nile","zh":"白尼罗州"}}
+{"countryCode":"SG","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"SG","admin1Code":"04","names":{"en":"04","zh":"04"}}
+{"countryCode":"IL","admin1Code":"02","names":{"en":"Central District","zh":"中央区"}}
+{"countryCode":"CI","admin1Code":"92","names":{"en":"Zanzan District","zh":"赞赞区"}}
+{"countryCode":"NP","admin1Code":"1","names":{"en":"Koshi","zh":"Koshi"}}
+{"countryCode":"HN","admin1Code":"07","names":{"en":"El Paraiso Department","zh":"埃尔帕拉伊索省"}}
+{"countryCode":"PY","admin1Code":"06","names":{"en":"Central Department","zh":"中央省"}}
+{"countryCode":"CD","admin1Code":"21","names":{"en":"Lomami","zh":"Lomami"}}
+{"countryCode":"NO","admin1Code":"21","names":{"en":"Trondelag","zh":"特伦德拉格"}}
+{"countryCode":"NP","admin1Code":"7","names":{"en":"Sudurpashchim Pradesh","zh":"Sudurpashchim Pradesh"}}
+{"countryCode":"MX","admin1Code":"03","names":{"en":"Baja California Sur","zh":"南下加利福尼亚州"}}
+{"countryCode":"SO","admin1Code":"03","names":{"en":"Bari","zh":"Bari"}}
+{"countryCode":"NP","admin1Code":"5","names":{"en":"Lumbini Province","zh":"Lumbini Province"}}
+{"countryCode":"KE","admin1Code":"38","names":{"en":"Murang'A","zh":"Murang'A"}}
+{"countryCode":"UZ","admin1Code":"14","names":{"en":"Tashkent Region","zh":"塔什干州"}}
+{"countryCode":"MM","admin1Code":"11","names":{"en":"Shan State","zh":"掸邦"}}
+{"countryCode":"BH","admin1Code":"15","names":{"en":"Muharraq","zh":"穆哈拉格省"}}
+{"countryCode":"NL","admin1Code":"16","names":{"en":"Flevoland","zh":"弗莱福兰省"}}
+{"countryCode":"LY","admin1Code":"81","names":{"en":"Al Jafarah","zh":"Al Jafarah"}}
+{"countryCode":"RW","admin1Code":"13","names":{"en":"Northern Province","zh":"北部省"}}
+{"countryCode":"KW","admin1Code":"09","names":{"en":"Mubarak al Kabir","zh":"Mubarak al Kabir"}}
+{"countryCode":"LY","admin1Code":"67","names":{"en":"An Nuqat al Khams","zh":"An Nuqat al Khams"}}
+{"countryCode":"SO","admin1Code":"05","names":{"en":"Galguduud","zh":"Galguduud"}}
+{"countryCode":"KH","admin1Code":"25","names":{"en":"Banteay Meanchey","zh":"班迭棉吉省"}}
+{"countryCode":"JO","admin1Code":"15","names":{"en":"Mafraq","zh":"马弗拉克省"}}
+{"countryCode":"TD","admin1Code":"14","names":{"en":"Tandjile","zh":"坦吉莱区"}}
+{"countryCode":"KE","admin1Code":"19","names":{"en":"Kajiado County","zh":"卡耶亚多郡"}}
+{"countryCode":"MG","admin1Code":"13","names":{"en":"Itasy","zh":"Itasy"}}
+{"countryCode":"TM","admin1Code":"01","names":{"en":"Ahal","zh":"阿哈尔州"}}
+{"countryCode":"LA","admin1Code":"22","names":{"en":"Bokeo","zh":"博胶省"}}
+{"countryCode":"BW","admin1Code":"09","names":{"en":"South-East","zh":"South-East"}}
+{"countryCode":"AT","admin1Code":"01","names":{"en":"Burgenland","zh":"布尔根兰州"}}
+{"countryCode":"OM","admin1Code":"01","names":{"en":"Ad Dakhiliyah","zh":"内地省"}}
+{"countryCode":"DK","admin1Code":"20","names":{"en":"Zealand","zh":"西兰大区"}}
+{"countryCode":"PT","admin1Code":"18","names":{"en":"Santarem","zh":"圣塔伦区"}}
+{"countryCode":"SS","admin1Code":"02","names":{"en":"Eastern Equatoria","zh":"东赤道州"}}
+{"countryCode":"ER","admin1Code":"04","names":{"en":"Gash-Barka","zh":"加什-巴尔卡区"}}
+{"countryCode":"BW","admin1Code":"17","names":{"en":"Selibe Phikwe","zh":"Selibe Phikwe"}}
+{"countryCode":"MA","admin1Code":"11","names":{"en":"Laayoune-Sakia El Hamra","zh":"Laayoune-Sakia El Hamra"}}
+{"countryCode":"NA","admin1Code":"30","names":{"en":"Hardap Region","zh":"哈达普区"}}
+{"countryCode":"BT","admin1Code":"06","names":{"en":"Chukha","zh":"Chukha"}}
+{"countryCode":"CG","admin1Code":"08","names":{"en":"Plateaux","zh":"高原省"}}
+{"countryCode":"EG","admin1Code":"22","names":{"en":"Matruh","zh":"马特鲁省"}}
+{"countryCode":"LA","admin1Code":"27","names":{"en":"Vientiane","zh":"万象省"}}
+{"countryCode":"US","admin1Code":"AL","names":{"en":"Alabama","zh":"亚拉巴马州"}}
+{"countryCode":"MU","admin1Code":"12","names":{"en":"Black River","zh":"Black River"}}
+{"countryCode":"MU","admin1Code":"15","names":{"en":"Moka","zh":"Moka"}}
+{"countryCode":"IN","admin1Code":"52","names":{"en":"Dadra and Nagar Haveli and Daman and Diu","zh":"Dadra and Nagar Haveli and Daman and Diu"}}
+{"countryCode":"MU","admin1Code":"20","names":{"en":"Savanne","zh":"Savanne"}}
+{"countryCode":"JP","admin1Code":"16","names":{"en":"Iwate","zh":"岩手县"}}
+{"countryCode":"VN","admin1Code":"15","names":{"en":"Lao Cai","zh":"Lao Cai"}}
+{"countryCode":"US","admin1Code":"WY","names":{"en":"Wyoming","zh":"怀俄明州"}}
+{"countryCode":"MA","admin1Code":"08","names":{"en":"Draa-Tafilalet","zh":"Draa-Tafilalet"}}
+{"countryCode":"MU","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"JP","admin1Code":"26","names":{"en":"Nagano","zh":"长野县"}}
+{"countryCode":"TR","admin1Code":"41","names":{"en":"Kocaeli","zh":"科贾埃利省"}}
+{"countryCode":"AE","admin1Code":"02","names":{"en":"Ajman","zh":"Ajman"}}
+{"countryCode":"SX","admin1Code":"00","names":{"en":"00","zh":"00"}}
+{"countryCode":"PT","admin1Code":"23","names":{"en":"Azores","zh":"Azores"}}
+{"countryCode":"MA","admin1Code":"12","names":{"en":"Dakhla-Oued Ed-Dahab","zh":"Dakhla-Oued Ed-Dahab"}}
+{"countryCode":"US","admin1Code":"DE","names":{"en":"Delaware","zh":"特拉华州"}}
+{"countryCode":"SC","admin1Code":"07","names":{"en":"Baie Sainte Anne","zh":"贝圣安那区"}}
+{"countryCode":"JP","admin1Code":"44","names":{"en":"Yamagata","zh":"山形县"}}
+{"countryCode":"SC","admin1Code":"06","names":{"en":"Baie Lazare","zh":"贝拉扎尔区"}}
+{"countryCode":"SC","admin1Code":"01","names":{"en":"Anse-aux-Pins","zh":"安塞奥潘区"}}
+{"countryCode":"MX","admin1Code":"17","names":{"en":"Morelos","zh":"莫雷洛斯州"}}
+{"countryCode":"SC","admin1Code":"12","names":{"en":"Glacis","zh":"格拉西斯区"}}
+{"countryCode":"SC","admin1Code":"14","names":{"en":"Grand Anse Praslin","zh":"Grand Anse Praslin"}}
+{"countryCode":"UA","admin1Code":"06","names":{"en":"Ivano-Frankivsk","zh":"伊万诺-弗兰科夫斯克州"}}
+{"countryCode":"CA","admin1Code":"04","names":{"en":"New Brunswick","zh":"新不伦瑞克"}}
+{"countryCode":"IL","admin1Code":"03","names":{"en":"Northern District","zh":"北部区"}}
+{"countryCode":"JP","admin1Code":"43","names":{"en":"Wakayama","zh":"和歌山县"}}
+{"countryCode":"IR","admin1Code":"41","names":{"en":"South Khorasan Province","zh":"南呼罗珊省"}}
+{"countryCode":"US","admin1Code":"MT","names":{"en":"Montana","zh":"蒙大拿州"}}
+{"countryCode":"TR","admin1Code":"72","names":{"en":"Mardin","zh":"马尔丁省"}}
+{"countryCode":"US","admin1Code":"ME","names":{"en":"Maine","zh":"缅因州"}}
+{"countryCode":"US","admin1Code":"SC","names":{"en":"South Carolina","zh":"南卡罗来纳州"}}
+{"countryCode":"AR","admin1Code":"11","names":{"en":"La Pampa","zh":"拉潘帕省"}}
+{"countryCode":"NR","admin1Code":"01","names":{"en":"Aiwo District","zh":"艾沃区"}}
+{"countryCode":"CH","admin1Code":"JU","names":{"en":"Jura","zh":"汝拉州"}}
+{"countryCode":"BM","admin1Code":"06","names":{"en":"Saint George","zh":"Saint George"}}
+{"countryCode":"CH","admin1Code":"UR","names":{"en":"Uri","zh":"乌里州"}}
+{"countryCode":"MD","admin1Code":"64","names":{"en":"Cahul","zh":"卡胡尔区"}}
+{"countryCode":"LT","admin1Code":"63","names":{"en":"Telsiai","zh":"泰尔希艾县"}}
+{"countryCode":"IR","admin1Code":"35","names":{"en":"Mazandaran","zh":"马赞德兰省"}}

@@ -14,6 +14,12 @@ module.exports = {
       severity: 'error',
       from: { path: '^packages/[^/]+/src' },
       to: { path: '^apps/[^/]+/src' }
+    },
+    {
+      name: 'web-app-does-not-depend-on-root-data',
+      severity: 'error',
+      from: { path: '^apps/web/(?:src|tests)' },
+      to: { path: '^data/' }
     }
   ],
   options: {

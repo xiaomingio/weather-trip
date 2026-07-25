@@ -1,7 +1,7 @@
 # 地图边界报告
 
-生成时间：`2026-07-24T15:31:26.535Z`
-国家分层版本：`country-profiles-3d5372799eab`
+生成时间：`2026-07-25T03:30:23.049Z`
+国家分层版本：`country-profiles-ea0a90834d71`
 
 ## 生成检查
 
@@ -20,7 +20,7 @@
 | data/generated/geo/country.geojson | 246 |
 | data/generated/geo/c2_admin1.geojson | 725 |
 | data/generated/geo/c3_admin1.geojson | 97 |
-| data/generated/geo/c3_admin2/CN.geojson | 476 |
+| data/generated/geo/c3_admin2/CN.geojson | 390 |
 | data/generated/geo/c3_admin2/ES.geojson | 52 |
 | data/generated/geo/c3_admin2/FR.geojson | 96 |
 | data/generated/geo/c3_admin2/IT.geojson | 107 |
@@ -35,7 +35,7 @@
 | BR | C2 | 27/27 | 0/0 | 0.989 | geoBoundaries gbOpen ADM1 native shape |
 | CA | C2 | 13/13 | 0/0 | 0.935 | geoBoundaries gbOpen ADM1 native shape |
 | CL | C2 | 16/16 | 0/0 | 0.919 | geoBoundaries gbOpen ADM1 native shape |
-| CN | C3 | 34/34 | 476/476 | 0.994 | DataV/高德（Amap） province and Hong Kong/Macau/Taiwan admin1 boundary, DataV/高德（Amap） province full boundary, DataV/高德（Amap） Hong Kong/Macau/Taiwan detail boundary |
+| CN | C3 | 34/34 | 390/390 | 0.994 | DataV/高德（Amap） province and Hong Kong/Macau/Taiwan admin1 boundary, DataV/高德（Amap） province full boundary, DataV/高德（Amap） Hong Kong/Macau/Taiwan detail boundary |
 | CO | C2 | 33/33 | 0/0 | 0.987 | geoBoundaries gbOpen ADM1 native shape |
 | EG | C2 | 27/27 | 0/0 | 1.013 | geoBoundaries gbOpen ADM1 native shape |
 | ES | C3 | 19/19 | 52/52 | 1.004 | geoBoundaries gbOpen ADM1 native shape, geoBoundaries gbOpen ADM2 native shape |

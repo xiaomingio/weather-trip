@@ -88,11 +88,21 @@ PUBLIC_GEO_VECTOR_BASE_URL=/data/geo/region-tiles
 
 ## Wire 和 Bin 规则
 
-传输 JSON 类型统一使用 `Wire` 后缀，例如 `CitiesPayloadWire`、`WeatherCurrentWire`。`Wire` 指 on the wire，也就是跨网络边界传输和存储在 Pages / R2 上的紧凑 JSON 格式。天气 forecast 包使用 `.bin + ArrayBuffer`，解码后得到 `WeatherForecastMatrix`。没有 `Wire` 后缀的类型就是 fetch 后解码得到的应用模型，筛选、地图聚合、评分和 UI 只使用完整字段名或矩阵查询函数。
+public 数据只为浏览器读取和缓存优化。中间产物的审阅格式由 `docs/specs/31-data-flow.md` 定义，public contract 只约束发布到 `/data` 和 R2 的运行时格式。
 
-`v` 是数据批次版本，用来做缓存识别、问题排查和新鲜度判断，不参与城市和天气的关联。城市与天气只通过 `cityId` 关联。`cv` 表示天气包生成时读取的城市列表版本；如果 `cv` 和浏览器已加载的 `cities.json` 版本不一致，前端仍按 `cityId` 展示能匹配到的天气，新增城市显示暂无天气，过期天气行被忽略。
+| 对象 | 格式 | 命名 / 解码规则 | 边界 |
+| --- | --- | --- | --- |
+| Public JSON | compact JSON | 传输类型使用 `Wire` 后缀，例如 `CitiesPayloadWire`、`WeatherCurrentWire` | 短字段和数组行只存在于 Wire 格式，fetch 后立即 decode 成应用模型 |
+| Forecast 包 | `.bin + ArrayBuffer` | 解码后得到 `WeatherForecastMatrix` | 整数化单位和字段 offset 只属于 forecast bin，不进入 UI 层 |
+| 应用模型 | TypeScript 完整字段对象 | 不使用 `Wire` 后缀 | 筛选、地图聚合、评分和 UI 只使用完整字段名或矩阵查询函数 |
 
-短字段和数组行只属于 `Wire` 格式；天气包里的整数化单位和字段 offset 只属于 forecast bin 格式。只有浏览器会直接请求的 public JSON 使用紧凑格式；`data/generated/*.json` 和报告保留缩进，便于 review、diff 和复跑排查。前端 fetch 后立即 decode 成完整应用类型或 `WeatherForecastMatrix`；界面层、地图聚合、City Finder 筛选和评分逻辑都使用完整字段名和矩阵查询函数，不直接访问 `c[7]`、`d.a1` 或裸 offset。
+| 字段 | 作用 | 关联规则 |
+| --- | --- | --- |
+| `v` | 数据批次版本，用于缓存识别、问题排查和新鲜度判断 | 不参与城市和天气关联 |
+| `cv` | 天气包生成时读取的城市列表版本 | 只用于判断天气包与城市列表的批次关系 |
+| `cityId` | 城市与天气的稳定关联键 | 城市与天气只通过 `cityId` 关联 |
+
+如果 `cv` 和浏览器已加载的 `cities.json` 版本不一致，前端仍按 `cityId` 展示能匹配到的天气，新增城市显示暂无天气，过期天气行被忽略。
 
 ## 城市数据
 
@@ -141,6 +151,8 @@ type CityRowWire = [
 `selectionReasons` 不进入公开城市 JSON。它服务导入审计、覆盖复盘和调试，保存在 `data/report/city-selection-report.md`；前端展示控制使用 country tier、region key、rank 和后续明确新增的公开字段，不复用审计原因。
 
 `countryTier` 放在国家字典里，不在每个城市行重复。`rank` 不传输，`cities.c` 的顺序就是排序真源，解码后用数组位置 + 1 作为 rank。`geonameId`、`timezone`、`population`、城市列表生成时间和覆盖摘要也不进入公开城市 JSON。`geonameId` 用于追溯，放在生成报告；`timezone` 只影响天气源返回的当地日期，天气包已经保存 date-only 结果；Weather Map 默认列表、默认选中城市和 marker 避让都使用解码后的 rank；城市数量和覆盖统计由 `c.length`、字典和报告计算。
+
+城市和边界区块的空间校准不作为前端单独数据包发布。离线 point-in-polygon 或人工校准结果应折叠进城市 region key、MVT `weatherRegionKey` 或生成报告；浏览器只读取 `cities.json`、MVT 和天气包。
 
 ```ts
 interface CitiesPayload {
@@ -272,6 +284,7 @@ Open-Meteo Forecast API 支持最多 16 天预报；本项目使用未来 14 天
 ```ts
 type WeatherRegionTileFeature = {
   regionKey: string; // country:FR / admin1:CN.13 / admin2:ES.51.01
+  weatherRegionKey?: string; // 可选天气聚合 key，仅在边界和城市样本能可靠关联时写入
   level: 'country' | 'admin1' | 'admin2' | 'boundary';
   countryCode: string;
   admin1Code?: string;
@@ -289,7 +302,7 @@ type WeatherRegionTileFeature = {
 | 二级区域瓦片 | `/data/geo/region-tiles/admin2/{z}/{x}/{y}.mvt` | 地图 `z5-z8` 且视口覆盖到对应 tile 时读取；实际只生成 z5，z6-z8 overzoom | geo-native `admin2:<countryCode>.<sourceId>` 或中国高德 `admin2:CN.<admin1Code>.<admin2Code>`；可带 `weatherRegionKey` |
 | 城市 | `/data/cities.json` | Weather Map 和 City Finder 共用 | 解码城市字典后生成同一套 region key |
 
-边界瓦片以 `regionKey` 标识可渲染区块；填色优先按 `weatherRegionKey` 匹配天气区域聚合结果，没有该字段时再尝试 `regionKey`。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。
+边界瓦片以 `regionKey` 标识可渲染区块；填色优先按 `weatherRegionKey` 匹配天气区域聚合结果，没有该字段时再尝试 `regionKey`。无法匹配的区域使用无数据样式或只展示边界名，并写入边界生成报告或瓦片报告。marker 和区域着色使用同一批城市天气样本。区域颜色来自城市聚合，不使用行政区几何面积平均，也不做邻近插值；tooltip 显示区域名和当前图层指标，当前指标没有数据时显示“暂无数据 / No data”。区块层级不能比城市天气样本代表范围更细：中国北京、上海、天津、重庆在高 zoom 仍发布为 `admin1:CN.*`，不发布区县级 MVT 天气区块；其他国家如出现同类代表范围错位，MVT 保留边界但不把粗范围城市天气继承给更细区块。
 
 前端地区选择只暴露大区、C2/C3 国家和国家内一级行政区。`admin2:<countryCode>.<admin1Code>.<admin2Code>` 只用于高 zoom 边界着色和聚合结果；旧链接带有 admin2 时，运行时归一到所属 `admin1`。切换地区时的自动相机只使用当前结果城市点范围，世界视图使用固定默认相机，不再为了 bounds 读取完整行政区 outline。
 
