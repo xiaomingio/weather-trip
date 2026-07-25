@@ -42,9 +42,14 @@ npx tsx scripts/generate-static-weather.ts \
   --version-prefix=open-meteo
 ```
 
-## Env
+## Env 与公开配置
 
-Env 分成仓库共享变量和 Web app 专属变量。根目录 `.env.development` 是仓库级脚本共享 env；`apps/web/.env.development` 是 Web dev/build/start 的 app env。
+| 真源 | 用途 |
+| --- | --- |
+| `apps/web/src/domain/site-config.ts` | 正式域名、Umami、静态数据路径、生产天气 R2 公开读域名；随 Git 进入构建产物 |
+| `apps/web/.env.development` | 本机 Web 端口等可选覆盖；`scripts/dev.mjs` / `start.mjs` 加载 |
+| 根目录 `.env.development` | 仓库级脚本共享默认值 |
+| GitHub Actions secrets | 天气刷新上传 R2 的写密钥 |
 
 ```text
 /.env.example
@@ -52,23 +57,12 @@ Env 分成仓库共享变量和 Web app 专属变量。根目录 `.env.developme
 
 apps/web/.env.example
 apps/web/.env.development
-apps/web/.env.production
+apps/web/src/domain/site-config.ts
 ```
 
-真实 `.env.development` 和 `.env.production` 不提交。环境变量优先级为：命令行已经注入的 `process.env` 最高，app `.env.development` 次之，根目录 `.env.development` 作为本地共享默认值。
+真实 `.env.development` 不提交。当前静态公开站不使用 `apps/web/.env.production`：生产构建由 Cloudflare Pages 读仓库代码，公开配置不靠本机 production env。
 
-Web 默认读取：
-
-```dotenv
-WEB_HOST=127.0.0.1
-WEB_PORT=3000
-PUBLIC_STATIC_DATA_BASE_URL=/data
-PUBLIC_R2_DATA_BASE_URL=
-PUBLIC_GEO_VECTOR_BASE_URL=/data/geo/region-tiles
-SITE_URL=https://weather-trip.aicake.io
-```
-
-本地开发不需要设置 `PUBLIC_R2_DATA_BASE_URL`。没有本地天气包时页面会显示数据加载状态；需要完整天气体验时先运行 `npm run weather:refresh -- --source=open-meteo`。生产 Pages 构建可设置 `PUBLIC_R2_DATA_BASE_URL` 指向 R2 custom domain。
+本地编排只合并根与 app 的 `.env.development`；命令行已注入的 `process.env` 优先。本机开发时天气默认读 `/data`；没有本地天气包时可先 `npm run weather:refresh -- --source=open-meteo`。生产构建时 `site-config` 指向 R2 公开域名。
 
 GitHub Actions R2 上传需要 repo secrets：
 

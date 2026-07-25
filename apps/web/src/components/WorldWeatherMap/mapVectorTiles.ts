@@ -12,6 +12,7 @@ import {
   primaryCountryCodeForRegion,
   type MapRegionLayer
 } from '@/domain/regions';
+import { getGeoVectorBaseUrl } from '@/domain/site-config';
 import { getWeatherTypeLabel } from '@/domain/weather';
 import { messages } from '@/i18n';
 import {
@@ -87,7 +88,7 @@ type RegionSummaryAccumulator = {
   weatherVotes: Map<RegionWeatherSummary['weatherType'], number>;
 };
 
-const vectorTileBaseUrl = import.meta.env.PUBLIC_GEO_VECTOR_BASE_URL || '/data/geo/region-tiles';
+const vectorTileBaseUrl = getGeoVectorBaseUrl();
 export const vectorRegionSourceLayer = 'weather_region';
 
 function vectorTileUrl(subdir: string): string {

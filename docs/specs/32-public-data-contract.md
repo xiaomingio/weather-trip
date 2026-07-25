@@ -76,15 +76,15 @@ apps/web/public/data/
         └── local.bin
 ```
 
-前端数据 base URL 由环境变量或构建配置决定。`PUBLIC_STATIC_DATA_BASE_URL` 用于 `cities.json`，天气入口优先使用 `PUBLIC_R2_DATA_BASE_URL`，地图瓦片默认随 Pages 发布在 `/data/geo/region-tiles`：
+前端数据 base URL 由 `apps/web/src/domain/site-config.ts` 决定：
 
-```text
-PUBLIC_STATIC_DATA_BASE_URL=/data
-PUBLIC_R2_DATA_BASE_URL=https://static.weather-trip.example.com
-PUBLIC_GEO_VECTOR_BASE_URL=/data/geo/region-tiles
-```
+| 配置 | 用途 |
+| --- | --- |
+| `staticDataBaseUrl` | `cities.json` 等同源静态数据，默认 `/data` |
+| `weatherDataBaseUrl` | 生产天气 current / forecast 的 R2 公开读域名 |
+| `geoVectorBaseUrl` | 地图 MVT，默认 `/data/geo/region-tiles` |
 
-`PUBLIC_R2_DATA_BASE_URL` 为空时，天气 current 和 forecast 从 `PUBLIC_STATIC_DATA_BASE_URL/weather/*` 读取；本地默认就是 `/data/weather/*`。
+本地 `astro dev` 时天气回退到 `staticDataBaseUrl`（`/data/weather/*`）；生产静态构建使用 `weatherDataBaseUrl`。
 
 ## Wire 和 Bin 规则
 

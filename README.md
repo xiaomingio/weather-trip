@@ -49,7 +49,7 @@ npm install
 npm run dev
 ```
 
-Local development reads committed public data. Real `.env.development` and `.env.production` files are not committed; use `.env.example` and `apps/web/.env.example` as templates.
+Local development reads committed public data. Public site settings (domain, Umami, public weather data URL) live in `apps/web/src/domain/site-config.ts`. Real `.env.development` files are not committed; use `.env.example` and `apps/web/.env.example` as local templates.
 
 ## Common Commands
 

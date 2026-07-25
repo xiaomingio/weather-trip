@@ -17,9 +17,10 @@ daily refresh -> GitHub Actions
 | 对象 | 真源 |
 | --- | --- |
 | Web 静态构建 | `apps/web/astro.config.mjs`、`npm run build` |
+| 公开站点配置 | `apps/web/src/domain/site-config.ts` |
 | 城市静态数据 | `scripts/generate-static-cities.ts`、`data/report/city-selection-report.md` |
 | 天气刷新 | `.github/workflows/refresh-weather.yml`、`scripts/generate-static-weather.ts` |
-| Web env 模板 | `apps/web/.env.example` |
+| 本机 Web env 模板 | `apps/web/.env.example`（仅开发端口等） |
 | 数据流 | `docs/specs/31-data-flow.md` |
 | 公开数据契约 | `docs/specs/32-public-data-contract.md` |
 
@@ -27,10 +28,10 @@ daily refresh -> GitHub Actions
 
 | 集成 | 配置 |
 | --- | --- |
-| Cloudflare Pages | 托管 `apps/web/dist` 静态产物 |
+| Cloudflare Pages | 托管 `apps/web/dist` 静态产物；公开配置来自 `site-config.ts` |
 | Cloudflare R2 | 保存 `weather/current.json` 和 `weather/forecast-14d/<date>.bin` |
 | GitHub Actions | 每日刷新 Open-Meteo 天气包并上传 R2 |
-| Umami | 公开页面在设置 `UMAMI_WEBSITE_ID` 后加载统计脚本 |
+| Umami | 生产构建从 `site-config.ts` 注入统计脚本 |
 | Search Console | 通过 `sitemap.xml` 验证公开页面 |
 
 R2 上传凭据由 GitHub Actions repo secrets 提供：

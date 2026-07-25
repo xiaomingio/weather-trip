@@ -1,7 +1,0 @@
----
-const scriptUrl = (process.env.UMAMI_SCRIPT_URL ?? '').trim();
-const websiteId = (process.env.UMAMI_WEBSITE_ID ?? '').trim();
-const isEnabled = Boolean(scriptUrl && websiteId);
----
-
-{isEnabled && <script is:inline defer src={scriptUrl} data-website-id={websiteId}></script>}

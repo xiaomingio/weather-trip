@@ -4,9 +4,10 @@
  */
 import type { DisplayLocale } from './format';
 import { buildTopTabPath, topTabs, type TopTabId } from './navigation';
+import { siteOrigin } from './site-config';
 import { getStaticInfoPage, staticInfoPageIds, type StaticInfoPageId } from './static-info';
 
-export const siteOrigin = (process.env.SITE_URL ?? 'https://weather-trip.aicake.io').replace(/\/$/, '');
+export { siteOrigin };
 export const ogImagePath = '/landing/climate-atlas-sunny.webp';
 
 export type PublicPage = {

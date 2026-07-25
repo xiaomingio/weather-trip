@@ -49,7 +49,7 @@ npm install
 npm run dev
 ```
 
-本地开发会读取已提交的公开数据。真实 `.env.development` 和 `.env.production` 不提交，配置模板见 `.env.example` 和 `apps/web/.env.example`。
+本地开发会读取已提交的公开数据。公开站点配置（域名、Umami、天气公开读入口）在 `apps/web/src/domain/site-config.ts`。真实 `.env.development` 不提交，本机模板见 `.env.example` 和 `apps/web/.env.example`。
 
 ## 常用命令
 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found · Weather Trip</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18201f;
+        --muted: #68716d;
+        --paper: #f6f4ee;
+        --sea: #2f7f74;
+        --line: #d8d2c6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+      }
+
+      main {
+        width: min(100%, 28rem);
+        padding: 2rem 1.5rem;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fff;
+        text-align: center;
+      }
+
+      p {
+        margin: 0.4rem 0 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .code {
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      a {
+        display: inline-block;
+        margin-top: 1.25rem;
+        color: var(--sea);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="code">404</p>
+      <p>Page not found.</p>
+      <p>页面不存在。</p>
+      <a href="/">Back to Weather Trip</a>
+    </main>
+  </body>
+</html>

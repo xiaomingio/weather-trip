@@ -4,6 +4,7 @@
  */
 import { decodeCitiesPayload, decodeWeatherDataSnapshot, type CitiesPayloadWire, type WeatherCurrentWire } from 'weather-core/static-data';
 import type { City, WeatherDataSnapshot } from 'weather-core/types';
+import { getStaticDataBaseUrl, getWeatherDataBaseUrl } from './site-config';
 
 export type WeatherDataSource = {
   loadSnapshot: () => Promise<WeatherDataSnapshot>;
@@ -14,8 +15,8 @@ export type CityDataSnapshot = {
   cities: City[];
 };
 
-const staticDataBaseUrl = import.meta.env.PUBLIC_STATIC_DATA_BASE_URL || '/data';
-const weatherDataBaseUrl = import.meta.env.PUBLIC_R2_DATA_BASE_URL || staticDataBaseUrl;
+const staticDataBaseUrl = getStaticDataBaseUrl();
+const weatherDataBaseUrl = getWeatherDataBaseUrl();
 
 let snapshotPromise: Promise<WeatherDataSnapshot> | null = null;
 let citySnapshotPromise: Promise<CityDataSnapshot> | null = null;

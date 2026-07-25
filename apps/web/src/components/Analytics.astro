@@ -1,0 +1,13 @@
+---
+/**
+ * 文件说明: 在生产构建中注入 Umami 统计脚本；配置来自 site-config 公开真源。
+ * 对应文档: docs/specs/50-launch.md
+ */
+import { isUmamiEnabled, siteConfig } from '@/domain/site-config';
+
+const enabled = isUmamiEnabled();
+const scriptUrl = siteConfig.umami.scriptUrl;
+const websiteId = siteConfig.umami.websiteId;
+---
+
+{enabled && <script is:inline defer src={scriptUrl} data-website-id={websiteId}></script>}

@@ -44,11 +44,12 @@ Weather Map 的地图底图、地区选项和 MVT 边界不能依赖天气包成
 
 ## Env
 
-Env 分成根目录共享变量和 Web app 专属变量。根目录 `.env.development` 存放仓库级脚本共享配置；`apps/web/.env.development` 存放端口、公开数据 base URL、站点 URL 和统计配置。
+公开站点配置（域名、Umami、天气 R2 公开读入口）真源是 `apps/web/src/domain/site-config.ts`，会随 Git 构建进入产物。根目录 `.env.development` 给仓库级脚本；`apps/web/.env.development` 只给本机 Web 端口等可选覆盖。当前静态站不使用 Web 的 `.env.production`。
 
 ```text
 /.env.example
 apps/web/.env.example
+apps/web/src/domain/site-config.ts
 ```
 
-真实 `.env.development` 和 `.env.production` 不提交。
+真实 `.env.development` 不提交。R2 上传密钥只放 GitHub Actions secrets。
