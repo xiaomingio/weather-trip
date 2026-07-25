@@ -6,8 +6,10 @@ import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { GeoJSONVT, type GeoJSONVTTile } from '@maplibre/geojson-vt';
 import { fromGeojsonVt } from '@maplibre/vt-pbf';
+import { decodeCitiesPayload } from 'weather-core/static-data';
+import type { City } from 'weather-core/types';
 import { readJsonLines } from '../generated-jsonl.js';
-import { loadGeoNamesAdminDataset, type GeoNamesAdmin2 } from '../static-data/geonames.js';
+import { loadGeoNamesAdminDataset, type GeoNamesAdmin1, type GeoNamesAdmin2 } from '../static-data/geonames.js';
 
 type GeoJsonGeometry = {
   type: string;
@@ -65,6 +67,17 @@ type RegionParseResult = {
 };
 
 type Admin2WeatherKeyLookup = Map<string, Map<string, GeoNamesAdmin2[]>>;
+type Admin1WeatherKeyLookup = Map<string, Map<string, GeoNamesAdmin1[]>>;
+type CityAdmin1WeatherKeyLookup = Map<string, Map<string, string[]>>;
+
+type WeatherRegionCity = Pick<City, 'countryCode' | 'admin1' | 'admin1LocalName' | 'admin1RegionKey' | 'admin2RegionKey' | 'longitude' | 'latitude'>;
+
+type WeatherRegionKeyLookups = {
+  admin1ByCityName: CityAdmin1WeatherKeyLookup;
+  admin1ByName: Admin1WeatherKeyLookup;
+  admin2ByName: Admin2WeatherKeyLookup;
+  cities: WeatherRegionCity[];
+};
 
 type SourcePackageReport = {
   path: string;
@@ -183,6 +196,7 @@ const detailFitMaxZoom = 5.6;
 const defaultSourceLayer = 'weather_region';
 const defaultTileRootDir = path.join(publicGeoDir, 'region-tiles');
 const manifestFileName = 'manifest.json';
+const publicCitiesPath = path.join(rootDir, 'apps', 'web', 'public', 'data', 'cities.json');
 const countryDisplayNames = {
   zh: new Intl.DisplayNames(['zh-CN'], { type: 'region' }),
   en: new Intl.DisplayNames(['en-US'], { type: 'region' })
@@ -299,7 +313,7 @@ function parseRegionKey(regionKey: string): RegionParseResult | null {
   const countryMatch = /^country:([A-Z]{2})$/.exec(regionKey);
   if (countryMatch) return { level: 'country', countryCode: countryMatch[1] };
 
-  const admin1Match = /^admin1:([A-Z]{2})\.([^.]+)$/.exec(regionKey);
+  const admin1Match = /^admin1:([A-Z]{2})\.(.+)$/.exec(regionKey);
   if (admin1Match) return { level: 'admin1', countryCode: admin1Match[1], admin1Code: admin1Match[2] };
 
   const admin2Match = /^admin2:([A-Z]{2})\.(.+)$/.exec(regionKey);
@@ -327,7 +341,7 @@ function normalizeName(value: string): string {
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/\b(province|provincia|departement|department|region|regione|regency|kabupaten|kota|district|township|urban|municipality|comunidad|comunitat|autonoma|autonomous|principado|ciudad|citta|metropolitana|capitale|foral|of|de|di|da|do|del|dell|du|d|la|le|the|y)\b/g, ' ')
+    .replace(/\b(province|provincia|departement|department|region|regione|regency|kabupaten|kota|district|township|urban|municipality|comunidad|comunitat|autonoma|autonomous|principado|ciudad|citta|metropolitana|capitale|foral|state|oblast|krai|republic|islands|island|county|governorate|city|of|de|di|da|do|del|dell|du|d|la|le|the|y)\b/g, ' ')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 }
@@ -357,6 +371,80 @@ function buildAdmin2WeatherKeyLookup(admin2Items: GeoNamesAdmin2[]): Admin2Weath
   return lookup;
 }
 
+function buildAdmin1WeatherKeyLookup(admin1Items: GeoNamesAdmin1[]): Admin1WeatherKeyLookup {
+  const lookup: Admin1WeatherKeyLookup = new Map();
+  for (const admin1 of admin1Items) {
+    const countryLookup = lookup.get(admin1.countryCode) ?? new Map<string, GeoNamesAdmin1[]>();
+    for (const variant of [...nameVariants(admin1.name), ...nameVariants(admin1.asciiName)]) {
+      const matches = countryLookup.get(variant) ?? [];
+      if (!matches.some((match) => match.code === admin1.code)) matches.push(admin1);
+      countryLookup.set(variant, matches);
+    }
+    lookup.set(admin1.countryCode, countryLookup);
+  }
+  return lookup;
+}
+
+async function loadWeatherRegionCities(): Promise<WeatherRegionCity[]> {
+  const content = await readFile(publicCitiesPath, 'utf8');
+  const cities = decodeCitiesPayload(JSON.parse(content));
+  return cities.filter((city) => city.countryCode && Number.isFinite(city.longitude) && Number.isFinite(city.latitude));
+}
+
+function buildCityAdmin1WeatherKeyLookup(cities: WeatherRegionCity[]): CityAdmin1WeatherKeyLookup {
+  const lookup: CityAdmin1WeatherKeyLookup = new Map();
+  for (const city of cities) {
+    if (!city.countryCode || !city.admin1RegionKey) continue;
+    const countryLookup = lookup.get(city.countryCode) ?? new Map<string, string[]>();
+    for (const variant of [...nameVariants(city.admin1), ...nameVariants(city.admin1LocalName)]) {
+      const matches = countryLookup.get(variant) ?? [];
+      if (!matches.includes(city.admin1RegionKey)) matches.push(city.admin1RegionKey);
+      countryLookup.set(variant, matches);
+    }
+    lookup.set(city.countryCode, countryLookup);
+  }
+  return lookup;
+}
+
+function inferAdmin1WeatherRegionKeyFromCityNames(
+  feature: GeoJsonFeature,
+  parsed: RegionParseResult,
+  lookup: CityAdmin1WeatherKeyLookup
+): string | undefined {
+  if (parsed.level !== 'admin1') return undefined;
+  const countryLookup = lookup.get(parsed.countryCode);
+  if (!countryLookup) return undefined;
+
+  const labelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
+  const labelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
+  const matches = new Set<string>();
+  for (const variant of [...nameVariants(labelEn), ...nameVariants(labelZh)]) {
+    for (const match of countryLookup.get(variant) ?? []) {
+      matches.add(match);
+    }
+  }
+  return matches.size === 1 ? [...matches][0] : undefined;
+}
+
+function inferAdmin1WeatherRegionKey(feature: GeoJsonFeature, parsed: RegionParseResult, lookup: Admin1WeatherKeyLookup): string | undefined {
+  if (parsed.level !== 'admin1') return undefined;
+  const countryLookup = lookup.get(parsed.countryCode);
+  if (!countryLookup) return undefined;
+
+  const labelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
+  const labelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
+  const matchesByCode = new Map<string, GeoNamesAdmin1>();
+  for (const variant of [...nameVariants(labelEn), ...nameVariants(labelZh)]) {
+    for (const match of countryLookup.get(variant) ?? []) {
+      matchesByCode.set(match.code, match);
+    }
+  }
+  if (matchesByCode.size !== 1) return undefined;
+
+  const match = [...matchesByCode.values()][0];
+  return `admin1:${match.countryCode}.${match.admin1Code}`;
+}
+
 function inferAdmin2WeatherRegionKey(feature: GeoJsonFeature, parsed: RegionParseResult, lookup: Admin2WeatherKeyLookup): string | undefined {
   if (parsed.level !== 'admin2' && parsed.level !== 'boundary') return undefined;
   const countryLookup = lookup.get(parsed.countryCode);
@@ -376,6 +464,139 @@ function inferAdmin2WeatherRegionKey(feature: GeoJsonFeature, parsed: RegionPars
   return `admin2:${match.countryCode}.${match.admin1Code}.${match.admin2Code}`;
 }
 
+function coordinatePair(value: unknown): [number, number] | null {
+  if (!Array.isArray(value) || typeof value[0] !== 'number' || typeof value[1] !== 'number') return null;
+  if (!Number.isFinite(value[0]) || !Number.isFinite(value[1])) return null;
+  return [value[0], value[1]];
+}
+
+function geometryBbox(geometry: GeoJsonGeometry): [number, number, number, number] | null {
+  let minLongitude = Number.POSITIVE_INFINITY;
+  let minLatitude = Number.POSITIVE_INFINITY;
+  let maxLongitude = Number.NEGATIVE_INFINITY;
+  let maxLatitude = Number.NEGATIVE_INFINITY;
+
+  function visit(value: unknown): void {
+    if (!Array.isArray(value)) return;
+    const pair = coordinatePair(value);
+    if (pair) {
+      minLongitude = Math.min(minLongitude, pair[0]);
+      minLatitude = Math.min(minLatitude, pair[1]);
+      maxLongitude = Math.max(maxLongitude, pair[0]);
+      maxLatitude = Math.max(maxLatitude, pair[1]);
+      return;
+    }
+    value.forEach(visit);
+  }
+
+  visit(geometry.coordinates);
+  if (!Number.isFinite(minLongitude) || !Number.isFinite(minLatitude) || !Number.isFinite(maxLongitude) || !Number.isFinite(maxLatitude)) return null;
+  return [minLongitude, minLatitude, maxLongitude, maxLatitude];
+}
+
+function pointInRing(longitude: number, latitude: number, ring: unknown): boolean {
+  if (!Array.isArray(ring) || ring.length < 4) return false;
+  const points = ring.map(coordinatePair).filter((point): point is [number, number] => Boolean(point));
+  if (points.length < 4) return false;
+
+  let inside = false;
+  for (let index = 0, previousIndex = points.length - 1; index < points.length; previousIndex = index, index += 1) {
+    const [currentLongitude, currentLatitude] = points[index];
+    const [previousLongitude, previousLatitude] = points[previousIndex];
+    const crossesLatitude = (currentLatitude > latitude) !== (previousLatitude > latitude);
+    const crossLongitude = ((previousLongitude - currentLongitude) * (latitude - currentLatitude)) / (previousLatitude - currentLatitude) + currentLongitude;
+    if (crossesLatitude && longitude < crossLongitude) inside = !inside;
+  }
+  return inside;
+}
+
+function pointInPolygon(longitude: number, latitude: number, polygon: unknown): boolean {
+  if (!Array.isArray(polygon) || polygon.length === 0) return false;
+  const [outerRing, ...holes] = polygon;
+  if (!pointInRing(longitude, latitude, outerRing)) return false;
+  return !holes.some((hole) => pointInRing(longitude, latitude, hole));
+}
+
+function geometryContainsPoint(geometry: GeoJsonGeometry, longitude: number, latitude: number): boolean {
+  if (geometry.type === 'Polygon') return pointInPolygon(longitude, latitude, geometry.coordinates);
+  if (geometry.type !== 'MultiPolygon' || !Array.isArray(geometry.coordinates)) return false;
+  return geometry.coordinates.some((polygon) => pointInPolygon(longitude, latitude, polygon));
+}
+
+function geometryToMultiPolygonCoordinates(geometry: GeoJsonGeometry): unknown[] {
+  if (geometry.type === 'Polygon') return [geometry.coordinates];
+  if (geometry.type === 'MultiPolygon' && Array.isArray(geometry.coordinates)) return geometry.coordinates;
+  return [];
+}
+
+function inferWeatherRegionKeyFromCities(feature: GeoJsonFeature, parsed: RegionParseResult, cities: WeatherRegionCity[]): string | undefined {
+  if (parsed.level !== 'admin1' && parsed.level !== 'admin2' && parsed.level !== 'boundary') return undefined;
+  const bbox = geometryBbox(feature.geometry);
+  if (!bbox) return undefined;
+
+  const [minLongitude, minLatitude, maxLongitude, maxLatitude] = bbox;
+  const matches = new Set<string>();
+  for (const city of cities) {
+    if (city.countryCode !== parsed.countryCode) continue;
+    if (city.longitude < minLongitude || city.longitude > maxLongitude || city.latitude < minLatitude || city.latitude > maxLatitude) continue;
+    if (!geometryContainsPoint(feature.geometry, city.longitude, city.latitude)) continue;
+    const regionKey = parsed.level === 'admin1' ? city.admin1RegionKey : city.admin2RegionKey;
+    if (regionKey) matches.add(regionKey);
+    if (matches.size > 1) return undefined;
+  }
+
+  return [...matches][0];
+}
+
+function admin1RollupLabel(admin1RegionKey: string, cities: WeatherRegionCity[]): { labelEn?: string; labelZh?: string } {
+  const sample = cities.find((city) => city.admin1RegionKey === admin1RegionKey);
+  return {
+    labelEn: sample?.admin1,
+    labelZh: sample?.admin1LocalName ?? sample?.admin1
+  };
+}
+
+function buildAdmin1RollupFeaturesFromDetails(detailFeatures: GeoJsonFeature[], cities: WeatherRegionCity[]): GeoJsonFeature[] {
+  const featuresByAdmin1RegionKey = new Map<string, GeoJsonFeature[]>();
+
+  for (const feature of detailFeatures) {
+    const countryCode = typeof feature.properties.countryCode === 'string' ? feature.properties.countryCode : undefined;
+    const admin1Code = typeof feature.properties.admin1Code === 'string' ? feature.properties.admin1Code : undefined;
+    if (!countryCode || !admin1Code) continue;
+    const admin1RegionKey = `admin1:${countryCode}.${admin1Code}`;
+    const features = featuresByAdmin1RegionKey.get(admin1RegionKey) ?? [];
+    features.push(feature);
+    featuresByAdmin1RegionKey.set(admin1RegionKey, features);
+  }
+
+  return [...featuresByAdmin1RegionKey.entries()].flatMap(([admin1RegionKey, features]): GeoJsonFeature[] => {
+    const parsed = parseRegionKey(admin1RegionKey);
+    if (!parsed?.admin1Code) return [];
+    const coordinates = features.flatMap((feature) => geometryToMultiPolygonCoordinates(feature.geometry));
+    if (coordinates.length === 0) return [];
+    const label = admin1RollupLabel(admin1RegionKey, cities);
+    return [{
+      type: 'Feature',
+      id: admin1RegionKey,
+      properties: {
+        regionKey: admin1RegionKey,
+        level: 'admin1',
+        countryCode: parsed.countryCode,
+        admin1Code: parsed.admin1Code,
+        ...(label.labelZh ? { labelZh: label.labelZh } : {}),
+        ...(label.labelEn ? { labelEn: label.labelEn } : {}),
+        weatherRegionKey: admin1RegionKey,
+        minDisplayZoom: minDisplayZoom('admin1'),
+        weatherLevel: 'admin2'
+      },
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates
+      }
+    }];
+  }).sort((left, right) => featureRegionKey(left).localeCompare(featureRegionKey(right)));
+}
+
 function weatherLevelForCountry(countryCode: string, countries: Map<string, TileCountry>): WeatherLevel {
   const tier = countries.get(countryCode)?.tier;
   if (tier === 'C3') return 'admin2';
@@ -389,7 +610,7 @@ function minDisplayZoom(level: WeatherRegionLevel): number {
   return 5;
 }
 
-function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, TileCountry>, admin2WeatherKeyLookup: Admin2WeatherKeyLookup): GeoJsonFeature | null {
+function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, TileCountry>, lookups: WeatherRegionKeyLookups): GeoJsonFeature | null {
   const regionKey = typeof feature.properties.regionKey === 'string' ? feature.properties.regionKey : '';
   const parsed = parseRegionKey(regionKey);
   if (!parsed) return null;
@@ -398,7 +619,12 @@ function normalizedTileFeature(feature: GeoJsonFeature, countries: Map<string, T
   const sourceLabelZh = typeof feature.properties.labelZh === 'string' ? feature.properties.labelZh : undefined;
   const sourceLabelEn = typeof feature.properties.labelEn === 'string' ? feature.properties.labelEn : undefined;
   const existingWeatherRegionKey = typeof feature.properties.weatherRegionKey === 'string' ? feature.properties.weatherRegionKey : undefined;
-  const weatherRegionKey = existingWeatherRegionKey ?? inferAdmin2WeatherRegionKey(feature, parsed, admin2WeatherKeyLookup);
+  const weatherRegionKey =
+    inferWeatherRegionKeyFromCities(feature, parsed, lookups.cities) ??
+    inferAdmin1WeatherRegionKeyFromCityNames(feature, parsed, lookups.admin1ByCityName) ??
+    inferAdmin1WeatherRegionKey(feature, parsed, lookups.admin1ByName) ??
+    inferAdmin2WeatherRegionKey(feature, parsed, lookups.admin2ByName) ??
+    existingWeatherRegionKey;
   const weatherRegion = weatherRegionKey ? parseRegionKey(weatherRegionKey) : null;
   const weatherLevel = weatherLevelForCountry(parsed.countryCode, countries);
   const admin1Code = weatherRegion?.admin1Code ?? parsed.admin1Code;
@@ -456,7 +682,7 @@ function addFeature(featuresByKey: Map<string, GeoJsonFeature>, feature: GeoJson
   featuresByKey.set(regionKey, feature);
 }
 
-async function buildTileSources(countries: Map<string, TileCountry>, admin2WeatherKeyLookup: Admin2WeatherKeyLookup): Promise<{
+async function buildTileSources(countries: Map<string, TileCountry>, lookups: WeatherRegionKeyLookups): Promise<{
   reports: SourcePackageReport[];
   allFeatures: GeoJsonFeature[];
   worldLowFeatures: GeoJsonFeature[];
@@ -472,12 +698,13 @@ async function buildTileSources(countries: Map<string, TileCountry>, admin2Weath
   const allFeaturesByKey = new Map<string, GeoJsonFeature>();
   const lowFeaturesByKey = new Map<string, GeoJsonFeature>();
   const worldMidFeatures: GeoJsonFeature[] = [];
+  const detailFeaturesForAdmin1Rollup: GeoJsonFeature[] = [];
   const detailParentKeysWithChildren = new Set<string>();
 
   const countryPackage = await loadSourcePackage(path.join(generatedGeoDir, 'country.geojson'));
   reports.push(countryPackage.report);
   for (const sourceFeature of countryPackage.collection.features) {
-    const normalized = normalizedTileFeature(sourceFeature, countries, admin2WeatherKeyLookup);
+    const normalized = normalizedTileFeature(sourceFeature, countries, lookups);
     if (!normalized) {
       skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
       continue;
@@ -493,13 +720,15 @@ async function buildTileSources(countries: Map<string, TileCountry>, admin2Weath
     const admin1Package = await loadSourcePackage(path.join(generatedGeoDir, packageName));
     reports.push(admin1Package.report);
     for (const sourceFeature of admin1Package.collection.features) {
-      const normalized = normalizedTileFeature(sourceFeature, countries, admin2WeatherKeyLookup);
+      const normalized = normalizedTileFeature(sourceFeature, countries, lookups);
       if (!normalized) {
         skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
         continue;
       }
       addFeature(allFeaturesByKey, normalized, duplicateRegionKeys);
-      worldMidFeatures.push(normalized);
+      const normalizedCountryCode = featureCountryCode(normalized);
+      const shouldUseDetailRollup = countries.get(normalizedCountryCode)?.tier === 'C3' && normalizedCountryCode !== 'CN';
+      if (!shouldUseDetailRollup) worldMidFeatures.push(normalized);
     }
   }
 
@@ -508,7 +737,7 @@ async function buildTileSources(countries: Map<string, TileCountry>, admin2Weath
     reports.push(countryPackage.report);
 
     for (const sourceFeature of countryPackage.collection.features) {
-      const normalized = normalizedTileFeature(sourceFeature, countries, admin2WeatherKeyLookup);
+      const normalized = normalizedTileFeature(sourceFeature, countries, lookups);
       if (!normalized) {
         skippedRegionKeys.add(String(sourceFeature.properties.regionKey ?? ''));
         continue;
@@ -516,8 +745,16 @@ async function buildTileSources(countries: Map<string, TileCountry>, admin2Weath
       addFeature(allFeaturesByKey, normalized, duplicateRegionKeys);
       if (['admin2', 'boundary'].includes(featureLevel(normalized)) && typeof normalized.properties.admin1Code === 'string') {
         detailParentKeysWithChildren.add(`admin1:${featureCountryCode(normalized)}.${normalized.properties.admin1Code}`);
+        if (countries.get(featureCountryCode(normalized))?.tier === 'C3' && featureCountryCode(normalized) !== 'CN') {
+          detailFeaturesForAdmin1Rollup.push(normalized);
+        }
       }
     }
+  }
+
+  for (const rollupFeature of buildAdmin1RollupFeaturesFromDetails(detailFeaturesForAdmin1Rollup, lookups.cities)) {
+    addFeature(allFeaturesByKey, rollupFeature, duplicateRegionKeys);
+    worldMidFeatures.push(rollupFeature);
   }
 
   const detailFeatures = [...allFeaturesByKey.values()].filter((feature) => {
@@ -904,7 +1141,14 @@ export async function runGenerateStaticGeoTiles(args: string[]): Promise<void> {
 
   const countries = await tileCountries();
   const adminDataset = await loadGeoNamesAdminDataset(rootDir);
-  const tileSources = await buildTileSources(countries, buildAdmin2WeatherKeyLookup(adminDataset.admin2Items));
+  const cities = await loadWeatherRegionCities();
+  const lookups: WeatherRegionKeyLookups = {
+    admin1ByCityName: buildCityAdmin1WeatherKeyLookup(cities),
+    admin1ByName: buildAdmin1WeatherKeyLookup(adminDataset.admin1Items),
+    admin2ByName: buildAdmin2WeatherKeyLookup(adminDataset.admin2Items),
+    cities
+  };
+  const tileSources = await buildTileSources(countries, lookups);
   const tierDefinitions = buildTierDefinitions(tileSources);
   const tierReports: TileTierReport[] = [];
   for (const tier of tierDefinitions) {
