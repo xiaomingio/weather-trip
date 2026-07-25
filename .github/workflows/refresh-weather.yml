@@ -26,6 +26,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run build --workspace weather-core
+
       - run: npm run static:cities
 
       - name: Generate Open-Meteo forecast package
